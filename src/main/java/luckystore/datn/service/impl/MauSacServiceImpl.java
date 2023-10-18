@@ -67,8 +67,6 @@ public class MauSacServiceImpl implements MauSacService {
     }
 
     private void checkWhenUpdate(MauSacDto mauSacDto) {
-
-
         if(mauSacRepo.existsByTenAndIdNot(mauSacDto.getTen(), mauSacDto.getId())) {
             String errorObject = JsonString.errorToJsonObject("ten", "Tên đã tồn tại");
             throw new DuplicateException(JsonString.stringToJson(errorObject));

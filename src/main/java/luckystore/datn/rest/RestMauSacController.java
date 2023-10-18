@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/rest/mau-sac")
+@RequestMapping("/admin/rest/mau-sac")
 public class RestMauSacController {
 
     @Autowired
@@ -46,6 +46,11 @@ public class RestMauSacController {
     @GetMapping("/{id}")
     public ResponseEntity getMauSac(@PathVariable("id") Long id){
         return new ResponseEntity(mauSacService.findById(id), HttpStatus.OK);
+    }
+
+    @GetMapping("get-all")
+    public ResponseEntity getAll() {
+        return new ResponseEntity(mauSacService.getAll(), HttpStatus.OK);
     }
 
     private ResponseEntity getErrorJson(BindingResult result) {
