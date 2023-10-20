@@ -1,6 +1,7 @@
 package luckystore.datn.service;
 
-import luckystore.datn.dto.MauSacDto;
+import luckystore.datn.model.request.MauSacRequest;
+import luckystore.datn.model.response.MauSacResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,9 +9,12 @@ import java.util.List;
 @Service
 public interface MauSacService {
 
-    List<MauSacDto> getAll();
-    MauSacDto addMauSac(MauSacDto mauSacDto);
-    MauSacDto updateMauSac(Long id, MauSacDto mauSacDto);
-    MauSacDto findById(Long id);
+    List<MauSacResponse> getAll();
+
+    MauSacResponse addMauSac(MauSacRequest mauSacRequest);
+
+    MauSacResponse updateMauSac(Long id, MauSacRequest mauSacRequest);
+
+    MauSacResponse findById(Long id);
 
 }

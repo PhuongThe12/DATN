@@ -1,7 +1,7 @@
 package luckystore.datn.rest;
 
 import jakarta.validation.Valid;
-import luckystore.datn.dto.MauSacDto;
+import luckystore.datn.model.request.MauSacRequest;
 import luckystore.datn.service.MauSacService;
 import luckystore.datn.util.JsonString;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,33 +28,33 @@ public class RestMauSacController {
     private MauSacService mauSacService;
 
     @PostMapping
-    public ResponseEntity addMauSac(@Valid @RequestBody MauSacDto mauSacDto, BindingResult result) {
+    public ResponseEntity addMauSac(@Valid @RequestBody MauSacRequest mauSacRequest, BindingResult result) {
         ResponseEntity errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
-        return new ResponseEntity(mauSacService.addMauSac(mauSacDto), HttpStatus.OK);
+        return new ResponseEntity(mauSacService.addMauSac(mauSacRequest), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateMauSac(@PathVariable("id") Long id, @Valid @RequestBody MauSacDto mauSacDto, BindingResult result) {
+    public ResponseEntity updateMauSac(@PathVariable("id") Long id, @Valid @RequestBody MauSacRequest mauSacRequest, BindingResult result) {
         ResponseEntity errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
-        return new ResponseEntity(mauSacService.updateMauSac(id, mauSacDto), HttpStatus.OK);
+        return new ResponseEntity(mauSacService.updateMauSac(id, mauSacRequest), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getMauSac(@PathVariable("id") Long id){
+    public ResponseEntity getMauSac(@PathVariable("id") Long id) {
         return new ResponseEntity(mauSacService.findById(id), HttpStatus.OK);
     }
 
-    @GetMapping("get-all")
+    @GetMapping("/get-all")
     public ResponseEntity getAll() {
         return new ResponseEntity(mauSacService.getAll(), HttpStatus.OK);
     }
 
     private ResponseEntity getErrorJson(BindingResult result) {
-        if(result.hasErrors()) {
+        if (result.hasErrors()) {
             List<String> fieldErrors = new ArrayList<>();
             for (FieldError fieldError : result.getFieldErrors()) {
                 String errorMessage = JsonString.errorToJsonObject(fieldError.getField(), fieldError.getDefaultMessage());

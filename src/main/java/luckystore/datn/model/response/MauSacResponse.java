@@ -1,11 +1,29 @@
 package luckystore.datn.model.response;
 
-//@Projection(types = {VaiTro.class, CoSo.class}) --  có thể join nhiều bảng để lấy field của bảng khác
-public interface MauSacResponse {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import luckystore.datn.entity.MauSac;
 
-    Long getId();
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class MauSacResponse {
 
-    String getTen();
+    private Long id;
 
-    String getMoTa();
+    private String ten;
+
+    private String moTa;
+
+    public MauSacResponse(MauSac mauSac) {
+        if (mauSac != null) {
+            this.id = mauSac.getId();
+            this.ten = mauSac.getTen();
+            this.moTa = mauSac.getMoTa();
+        }
+    }
+
 }
