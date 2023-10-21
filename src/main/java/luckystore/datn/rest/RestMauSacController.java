@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -46,6 +47,11 @@ public class RestMauSacController {
     @GetMapping("/{id}")
     public ResponseEntity getMauSac(@PathVariable("id") Long id) {
         return new ResponseEntity(mauSacService.findById(id), HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity getMauSacPage(@RequestParam(value = "page", defaultValue = "1") Integer page) {
+        return new ResponseEntity(mauSacService.getPage(page), HttpStatus.OK);
     }
 
     @GetMapping("/get-all")
