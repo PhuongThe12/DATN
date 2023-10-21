@@ -11,6 +11,10 @@ import luckystore.datn.repository.MauSacRepository;
 import luckystore.datn.service.MauSacService;
 import luckystore.datn.util.JsonString;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +29,11 @@ public class MauSacServiceImpl implements MauSacService {
     @Override
     public List<MauSacResponse> getAll() {
         return mauSacRepo.findAllResponse();
+    }
+
+    @Override
+    public Page<MauSacResponse> getPage(int page) {
+        return mauSacRepo.getPageResponse(PageRequest.of((page - 1), 1));
     }
 
     @Override
