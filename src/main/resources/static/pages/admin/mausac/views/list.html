@@ -1,0 +1,31 @@
+<a class="btn btn-primary" href="#/add">Thêm màu sắc</a>
+
+
+<h1>Danh sách màu sắc</h1>
+<div>
+    <table class="table" border="1">
+        <tr>
+            <th>ID</th>
+            <th>Tên</th>
+            <th>Trạng thái</th>
+            <th></th>
+        </tr>
+
+        <tr ng-repeat="mauSac in mauSacs">
+            <td>{{mauSac.id}}</td>
+            <td>{{mauSac.ten}}</td>
+            <td>{{mauSac.trangThai == 1? "Đang kinh doanh" : "Ngừng khinh doanh"}}</td>
+            <td>
+                <a class="btn btn-info" ng-href="#/detail/{{mauSac.id}}">Chi tiết</a>
+                <a class="btn btn-info" ng-href="#/update/{{mauSac.id}}">Cập nhật</a>
+            </td>
+        </tr>
+    </table>
+
+    <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages" data-current-page="curPage" data-max-size="maxSize"
+        data-boundary-links="true">
+    </div>
+
+
+
+</div>

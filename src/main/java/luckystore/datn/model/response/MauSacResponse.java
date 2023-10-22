@@ -18,11 +18,14 @@ public class MauSacResponse {
 
     private String moTa;
 
+    private Integer trangThai;
+
     public MauSacResponse(MauSac mauSac) {
         if (mauSac != null) {
             this.id = mauSac.getId();
             this.ten = mauSac.getTen();
             this.moTa = mauSac.getMoTa();
+            this.trangThai = mauSac.getTrangThai();
         }
     }
 

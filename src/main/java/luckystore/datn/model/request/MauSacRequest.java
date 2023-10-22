@@ -22,4 +22,6 @@ public class MauSacRequest {
     private String ten;
 
     private String moTa;
+
+    private Integer trangThai;
 }
