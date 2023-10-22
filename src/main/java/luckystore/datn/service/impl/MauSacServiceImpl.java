@@ -11,14 +11,11 @@ import luckystore.datn.repository.MauSacRepository;
 import luckystore.datn.service.MauSacService;
 import luckystore.datn.util.JsonString;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class MauSacServiceImpl implements MauSacService {
@@ -65,6 +62,7 @@ public class MauSacServiceImpl implements MauSacService {
     private MauSac getMauSac(MauSac mauSac, MauSacRequest mauSacRequest) {
         mauSac.setTen(mauSacRequest.getTen());
         mauSac.setMoTa(mauSacRequest.getMoTa());
+        mauSac.setTrangThai(mauSacRequest.getTrangThai() == null || mauSacRequest.getTrangThai() == 0 ? 0 : 1);
         return mauSac;
     }
 
