@@ -29,8 +29,8 @@ public class MauSacServiceImpl implements MauSacService {
     }
 
     @Override
-    public Page<MauSacResponse> getPage(int page) {
-        return mauSacRepo.getPageResponse(PageRequest.of((page - 1), 1));
+    public Page<MauSacResponse> getPage(int page, String searchText, Integer status) {
+        return mauSacRepo.getPageResponse(searchText, status, PageRequest.of((page - 1), 5));
     }
 
     @Override

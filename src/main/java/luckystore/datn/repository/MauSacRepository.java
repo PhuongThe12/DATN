@@ -16,8 +16,9 @@ public interface MauSacRepository extends JpaRepository<MauSac, Long> {
     @Query("select new luckystore.datn.model.response.MauSacResponse(ms) from MauSac ms")
     List<MauSacResponse> findAllResponse();
 
-    @Query("select new luckystore.datn.model.response.MauSacResponse(ms) from MauSac ms")
-    Page<MauSacResponse> getPageResponse(Pageable pageable);
+    @Query("select new luckystore.datn.model.response.MauSacResponse(ms) from MauSac ms " +
+            "WHERE (:searchText IS NULL OR ms.ten LIKE %:searchText%) AND (:status IS NULL OR ms.trangThai = :status)")
+    Page<MauSacResponse> getPageResponse(String searchText, Integer status, Pageable pageable);
 
     Boolean existsByTen(String ten);
 

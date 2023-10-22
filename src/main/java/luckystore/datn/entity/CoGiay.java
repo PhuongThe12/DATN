@@ -30,4 +30,7 @@ public class CoGiay {
     @Column(name = "MO_TA")
     private String moTa;
 
+    @Column(name = "TRANG_THAI")
+    private Integer trangThai;
+
 }

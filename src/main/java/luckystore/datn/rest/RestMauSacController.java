@@ -50,8 +50,10 @@ public class RestMauSacController {
     }
 
     @GetMapping
-    public ResponseEntity getMauSacPage(@RequestParam(value = "page", defaultValue = "1") Integer page) {
-        return new ResponseEntity(mauSacService.getPage(page), HttpStatus.OK);
+    public ResponseEntity getMauSacPage(@RequestParam(value = "page", defaultValue = "1") Integer page,
+                                        @RequestParam(value = "search", required = false) String searchText,
+                                        @RequestParam(value = "status", required = false) Integer status) {
+        return new ResponseEntity(mauSacService.getPage(page, searchText, status), HttpStatus.OK);
     }
 
     @GetMapping("/get-all")

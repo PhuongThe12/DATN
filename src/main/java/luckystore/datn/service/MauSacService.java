@@ -12,7 +12,7 @@ public interface MauSacService {
 
     List<MauSacResponse> getAll();
 
-    Page<MauSacResponse> getPage(int page);
+    Page<MauSacResponse> getPage(int page, String searchText, Integer status);
 
     MauSacResponse addMauSac(MauSacRequest mauSacRequest);
 
