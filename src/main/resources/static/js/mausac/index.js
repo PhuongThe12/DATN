@@ -64,18 +64,47 @@ app.controller("detailMauSacController", function ($scope, $http, $location, $ro
 app.controller("mauSacListController", function ($scope, $http, $window, $location) {
 
     $scope.curPage = 1,
-        $scope.itemsPerPage = 1,
+        $scope.itemsPerPage = 5,
         $scope.maxSize = 5;
 
+    let searchText;
+
+    $scope.search = function () {
+        if(!$scope.searchText) {
+            toastr["error"]("Vui lòng nhập tên muốn tìm kiếm");
+            return;
+        }
+        searchText = $scope.searchText;
+        getData(1, searchText);
+    };
+
+    $scope.changeRadio = function (status) {
+        $scope.status = status;
+        getData(1);
+    }
+
     function getData(currentPage) {
-        $http.get(host + '/admin/rest/mau-sac?page=' + currentPage)
+        let apiUrl = host + '/admin/rest/mau-sac?page=' + currentPage;
+        if (searchText) {
+            apiUrl += '&search=' + searchText;
+        }
+
+        if($scope.status == 0) {
+            apiUrl += '&status=' + 0;
+        } else if($scope.status == 1) {
+            apiUrl += '&status=' + 1;
+        }
+
+        console.log(apiUrl);
+
+        $http.get(apiUrl)
             .then(function (response) {
                 $scope.mauSacs = response.data.content;
                 $scope.numOfPages = response.data.totalPages;
             })
             .catch(function (error) {
                 toastr["error"]("Lấy dữ liệu thất bại");
-                window.location.href = feHost + '/trang-chu';
+                // window.location.href = feHost + '/trang-chu';
             });
     }
 
