@@ -2,7 +2,7 @@ var app = angular.module("app", ["ngRoute", "ui.bootstrap"]);
 app.config(function ($routeProvider, $locationProvider) {
     $locationProvider.hashPrefix('');
     $routeProvider
-        .when("/danhsach", {
+        .when("/list", {
             templateUrl: '/pages/admin/mausac/views/list.html',
             controller: 'mauSacListController'
         }).when("/detail/:id", {
@@ -15,7 +15,7 @@ app.config(function ($routeProvider, $locationProvider) {
             templateUrl: '/pages/admin/mausac/views/add.html',
             controller: 'addMauSacController'
         })
-        .otherwise({ redirectTo: '/danhsach' });
+        .otherwise({ redirectTo: '/list' });
 });
 
 app.controller("addMauSacController", function ($scope, $http, $location) {
@@ -33,12 +33,11 @@ app.controller("addMauSacController", function ($scope, $http, $location) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
                 }
-                $location.path("/danhsach");
+                $location.path("/list");
             })
             .catch(function (error) {
                 toastr["error"]("Thêm thất bại");
                 if (error.status === 400) {
-                    console.log($scope.mauSacForm);
                     $scope.mauSacForm.ten.$dirty = false;
                     $scope.mauSacForm.moTa.$dirty = false;
                     $scope.errors = error.data;
@@ -56,7 +55,7 @@ app.controller("detailMauSacController", function ($scope, $http, $location, $ro
             $scope.mauSac = response.data;
         }).catch(function (error) {
         toastr["error"]("Lấy dữ liệu thất bại");
-        $location.path("/danhsach");
+        $location.path("/list");
     });
 
 });
@@ -95,8 +94,6 @@ app.controller("mauSacListController", function ($scope, $http, $window, $locati
             apiUrl += '&status=' + 1;
         }
 
-        console.log(apiUrl);
-
         $http.get(apiUrl)
             .then(function (response) {
                 $scope.mauSacs = response.data.content;
@@ -124,7 +121,7 @@ app.controller("updateMauSacController", function ($scope, $http, $routeParams, 
             $scope.mauSac = response.data;
         }).catch(function (error) {
             toastr["error"]("Lấy dữ liệu thất bại");
-            $location.path("/danhsach");
+            $location.path("/list");
         });
 
     $scope.updateMauSac = function () {
@@ -138,7 +135,7 @@ app.controller("updateMauSacController", function ($scope, $http, $routeParams, 
                 } else {
                     toastr["error"]("Cập nhât thất bại. Lỗi bất định")
                 }
-                $location.path("/danhsach");
+                $location.path("/list");
             }).catch(function (error) {
                 toastr["error"]("Cập nhật thất bại");
                 if (error.status === 400) {

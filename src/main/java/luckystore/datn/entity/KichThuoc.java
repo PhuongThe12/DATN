@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Kichthuoc {
+public class KichThuoc {
 
     @Id
     @Column(name = "ID")

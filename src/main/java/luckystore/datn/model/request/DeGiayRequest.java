@@ -1,0 +1,32 @@
+package luckystore.datn.model.request;
+
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class DeGiayRequest {
+
+    private Long id;
+
+    @NotNull(message = "Không được để trống tên")
+    @Length(message = "Tên không được vượt quá 50 ký tự")
+    private String ten;
+
+    @NotNull(message = "Không được để trống chất liệu")
+    @Length(message = "Chât liệu không được vượt quá 50 ký tự")
+    private String chatLieu;
+
+    @NotNull(message = "Không được để trống mô tả")
+    @Length(message = "Mô tả không được quá ngắn", min = 3)
+    @Length(message = "Mô tả không được vượt quá 3000 ký tự", max = 3000)
+    private String moTa;
+
+    private Integer trangThai;
+}
