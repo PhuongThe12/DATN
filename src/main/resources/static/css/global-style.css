@@ -28,7 +28,7 @@
     transition: transform .2s ease-in-out, width .2s ease-in-out, -webkit-transform .2s ease-in-out;
 }
 
-.custom-radio input:checked+label::before {
+.custom-radio input:checked + label::before {
     transform: scaleX(1);
 }
 
@@ -40,4 +40,65 @@
 .custom-radio input[type="radio"]:checked + .radio-label {
     font-weight: bold;
     color: #007bff;
+}
+
+@font-face {
+    font-family: 'rabilo';
+    /* Đặt tên cho font chữ của bạn */
+    src: url('/font-text/Roboto-Medium.ttf') format('woff2');
+    /* Đường dẫn đến tệp font */
+    /* Nếu bạn có các phiên bản font khác, hãy thêm chúng ở đây */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'rabilo';
+}
+.bd-success-custom{
+    color: #2bd27f;
+    background: #e7fbf0 !important;
+    font-weight: 500;
+}
+
+.bd-danger-custom{
+    background-color: #f1c3c8!important;
+    color: darkred;
+    font-weight: 500;
+}
+
+table{
+    font-size: 14px;
+}
+
+table td{
+    word-break: break-all
+}
+
+.btn-custom{
+    color: #0d6efd;
+    background-color: #dfecfe;
+    font-size: 15px !important;
+    margin: 0px 2px;
+}
+
+.btn-custom:hover{
+    color: #dfecfe;
+    background-color: #0d6efd;
+}
+
+.radio-filter{
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #dee2e6;
+    padding: 15px 0px;
+    border-radius: 0px 10px 0px 0px;
+}
+
+.add-search-custom{
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #dee2e6;
+    padding: 10px 7px;
 }
