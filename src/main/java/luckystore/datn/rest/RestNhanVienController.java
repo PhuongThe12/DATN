@@ -49,7 +49,8 @@ public class RestNhanVienController {
     public ResponseEntity getNhanVienPage(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                           @RequestParam(value = "search", required = false) String searchText,
                                           @RequestParam(value = "status", required = false) Integer status,
-                                          @RequestParam(value = "chucVu", required = false) Integer chucVu) {
+                                          @RequestParam(value = "chucVu", required = false) Integer chucVu) throws InterruptedException {
+//        Thread.sleep(2000); // Fake Lag - Tạm dừng 2s trước khi gọi đến DB
         return new ResponseEntity(nhanVienService.getPage(page, searchText, status, chucVu), HttpStatus.OK);
     }
 

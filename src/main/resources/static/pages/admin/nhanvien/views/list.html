@@ -1,17 +1,55 @@
+<div ng-show="isLoading" class="loading-spinner">
+    <div class="text-center" style="  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Màu nền đục để làm mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; ">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
 
-<div class="card" style="margin: 20px">
-    <h5 class="card-header">Danh sách Nhân Viên</h5>
+<div class="title-page">
+    <h5>Nhân Viên</h5>
+    <div class="d-flex">
+        <p class="text-secondary m-0">Trang chủ - Quản Lý Nhân Viên - Danh Sách</p>
+    </div>
+</div>
+<div class="box-shadow-page" style="margin: 20px">
     <div class="card-body">
         <div class="d-flex add-search-custom">
-            <div class="input-group w-25">
-                <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
-                <input id="seachText" class="form-control" type="text" ng-model="searchText"
-                       placeholder="Nhập từ khóa">
-                <button class="btn btn-custom " ng-click="search()">Tìm kiếm</button>
+            <div>
+                <div>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white" id="basic-addon1"><i class="fas fa-search"></i></span>
+                        <input id="seachText" class="form-control" type="text" ng-model="searchText"
+                               placeholder="Nhập từ khóa">
+                        <button class="btn btn-custom " ng-click="search()">Tìm kiếm</button>
+                    </div>
+                </div>
             </div>
-            <a class="btn btn-primary" href="#/add">Thêm Nhân Viên</a>
+            <div class="row">
+                <div class="col-md-6">
+<!--                    <select class="mx-3 select-basic shadow-none  form-select" id="status" name="status"-->
+<!--                            ng-model="status" ng-change="changeRadio(status)">-->
+<!--                        <option value="-1">Tất cả</option>-->
+<!--                        <option value="1">Đang Làm</option>-->
+<!--                        <option value="0">Đã Nghỉ</option>-->
+<!--                        <option value="2">Nhân Viên</option>-->
+<!--                        <option value="3">Chủ Cửa Hàng</option>-->
+<!--                    </select>-->
+                </div>
+                <div class="col-md-6">
+                    <a class="btn btn-primary" href="#/add">Thêm Nhân Viên</a>
+                </div>
+            </div>
         </div>
-
         <div class="d-flex justify-content-start radio-filter">
             <div class="custom-radio">
                 <input type="radio" id="all" name="status" ng-model="status" value="-1" ng-checked="status != 0 && status != 1"
@@ -41,18 +79,15 @@
                 <label class="radio-label" for="admin">Chủ Cửa Hàng</label>
             </div>
         </div>
-
-
         <div>
             <table class="table" border="1">
-                <tr class="table-secondary">
+                <tr>
                     <th>ID</th>
                     <th>Họ Tên</th>
                     <th>Số Điện Thoại</th>
                     <th>Email</th>
-                    <th>Trạng Thái</th>
-                    <th>Địa chỉ</th>
                     <th>Chức Vụ</th>
+                    <th>Trạng Thái</th>
                     <th>Action</th>
                 </tr>
 
@@ -61,6 +96,7 @@
                     <td>{{nhanvien.hoTen}}</td>
                     <td>{{nhanvien.soDienThoai}}</td>
                     <td>{{nhanvien.email}}</td>
+                    <td>{{nhanvien.chucVu == 1 ? "Nhân Viên" : "Chủ Cửa Hàng"}}</td>
                     <td>
                         <h5>
                 <span ng-class="{'badge bd-success-custom': nhanvien.trangThai == 1, 'badge bd-danger-custom': nhanvien.trangThai != 1}">
@@ -68,25 +104,25 @@
                 </span>
                         </h5>
                     </td>
-                    <td>{{nhanvien.xa}} - {{nhanvien.huyen}} - {{nhanvien.tinh}}</td>
-                    <td>{{nhanvien.chucVu == 1 ? "Nhân Viên" : "Chủ Cửa Hàng"}}</td>
                     <td>
                         <div class="d-sm-inline-flex">
-                            <button class="btn btn-custom" ng-click="detailNhanVien(nhanvien.id)"><i class="fas fa-eye"></i>
+                            <button class="btn btn-custom" ng-click="detailNhanVien(nhanvien.id)"  data-bs-toggle="modal" data-bs-target="#showNhanVien" data-bs-placement="top" title="Xem Chi Tiết">
+                                <i class="fas fa-eye "></i>
                             </button>
-                            <a class="btn btn-custom" ng-href="#/update/{{nhanvien.id}}"><i class="far fa-edit"></i></a>
+                            <a class="btn btn-custom" ng-href="#/update/{{nhanvien.id}}" data-bs-placement="top" title="Cập Nhật"><i class="far fa-edit"></i></a>
                         </div>
                     </td>
                 </tr>
             </table>
 
-            <!-- Button trigger modal -->
-            <button type="button" hidden class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#showNhanVien">
+<!--            &lt;!&ndash; Button trigger modal &ndash;&gt;-->
+<!--            <button type="button" hidden class="btn btn-primary"  data-bs-target="#showNhanVien">-->
 
-            </button>
+<!--            </button>-->
 
             <!-- Modal -->
-            <div class="modal fade" id="showNhanVien" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal fade" id="showNhanVien" tabindex="-1" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -128,7 +164,7 @@
                                     <th>{{nhanVienDetail.xa}} - {{nhanVienDetail.huyen}} - {{nhanVienDetail.tinh}}</th>
                                 </tr>
                                 <tr>
-                                    <td>Chức Vụ : </td>
+                                    <td>Chức Vụ :</td>
                                     <th>{{nhanVienDetail.chucVu == 1 ? "Nhân Viên" : "Chủ Cửa Hàng"}}</th>
                                 </tr>
                             </table>
@@ -146,6 +182,5 @@
 
 
         </div>
-
     </div>
 </div>
