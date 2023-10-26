@@ -2,47 +2,45 @@ var app = angular.module("app", ["ngRoute", "ui.bootstrap"]);
 app.config(function ($routeProvider, $locationProvider) {
     $locationProvider.hashPrefix('');
     $routeProvider
-        .when("/danhsach", {
-            templateUrl: '/pages/admin/hangkhachhang/views/list.html',
-            controller: 'hangKhachHangListController'
+        .when("/list", {
+            templateUrl: '/pages/admin/degiay/views/list.html',
+            controller: 'deGiayListController'
         }).when("/detail/:id", {
-        templateUrl: '/pages/admin/hangkhachhang/views/detail.html',
-        controller: 'detailHangKhachHangController'
+        templateUrl: '/pages/admin/degiay/views/detail.html',
+        controller: 'detailDeGiayController'
     }).when("/update/:id", {
-        templateUrl: '/pages/admin/hangkhachhang/views/update.html',
-        controller: 'updateHangKhachHangController'
+        templateUrl: '/pages/admin/degiay/views/update.html',
+        controller: 'updateDeGiayController'
     }).when("/add", {
-        templateUrl: '/pages/admin/hangkhachhang/views/add.html',
-        controller: 'addHangKhachHangController'
+        templateUrl: '/pages/admin/degiay/views/add.html',
+        controller: 'addDeGiayController'
     })
-        .otherwise({ redirectTo: '/danhsach' });
+        .otherwise({ redirectTo: '/list' });
 });
 
-app.controller("addHangKhachHangController", function ($scope, $http, $location) {
-    $scope.hangKhachHang = {};
+app.controller("addDeGiayController", function ($scope, $http, $location) {
+    $scope.deGiay = {};
     $scope.change = function (input) {
         input.$dirty = true;
     }
 
-    $scope.addHangKhachHang = function () {
-        if ($scope.hangKhachHangForm.$invalid) {
+    $scope.addDeGiay = function () {
+        if ($scope.deGiayForm.$invalid) {
             return;
         }
-        $http.post(host + '/admin/rest/hang-khach-hang', $scope.hangKhachHang)
+        $http.post(host + '/admin/rest/de-giay', $scope.deGiay)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
                 }
-                $location.path("/danhsach");
+                $location.path("/list");
             })
             .catch(function (error) {
                 toastr["error"]("Thêm thất bại");
                 if (error.status === 400) {
-                    console.log($scope.hangKhachHangForm);
-                    $scope.hangKhachHangForm.tenHang.$dirty = false;
-                    $scope.hangKhachHangForm.dieuKien.$dirty = false;
-                    $scope.hangKhachHangForm.uuDai.$dirty = false;
-                    $scope.hangKhachHangForm.moTa.$dirty = false;
+                    $scope.deGiayForm.ten.$dirty = false;
+                    $scope.deGiayForm.moTa.$dirty = false;
+                    $scope.deGiayForm.chatLieu.$dirty = false;
                     $scope.errors = error.data;
                 }
             });
@@ -51,19 +49,19 @@ app.controller("addHangKhachHangController", function ($scope, $http, $location)
 });
 
 
-app.controller("detailHangKhachHangController", function ($scope, $http, $location, $routeParams) {
+app.controller("detailDeGiayController", function ($scope, $http, $location, $routeParams) {
     const id = $routeParams.id;
-    $http.get(host + '/admin/rest/hang-khach-hang/' + id)
+    $http.get(host + '/admin/rest/de-giay/' + id)
         .then(function (response) {
-            $scope.hangKhachHang = response.data;
+            $scope.deGiay = response.data;
         }).catch(function (error) {
         toastr["error"]("Lấy dữ liệu thất bại");
-        $location.path("/danhsach");
+        $location.path("/list");
     });
 
 });
 
-app.controller("hangKhachHangListController", function ($scope, $http, $window, $location) {
+app.controller("deGiayListController", function ($scope, $http, $window, $location) {
 
     $scope.curPage = 1,
         $scope.itemsPerPage = 5,
@@ -86,7 +84,7 @@ app.controller("hangKhachHangListController", function ($scope, $http, $window, 
     }
 
     function getData(currentPage) {
-        let apiUrl = host + '/admin/rest/hang-khach-hang?page=' + currentPage;
+        let apiUrl = host + '/admin/rest/de-giay?page=' + currentPage;
         if (searchText) {
             apiUrl += '&search=' + searchText;
         }
@@ -97,11 +95,9 @@ app.controller("hangKhachHangListController", function ($scope, $http, $window, 
             apiUrl += '&status=' + 1;
         }
 
-        console.log(apiUrl);
-
         $http.get(apiUrl)
             .then(function (response) {
-                $scope.hangKhachHangs = response.data.content;
+                $scope.deGiays = response.data.content;
                 $scope.numOfPages = response.data.totalPages;
             })
             .catch(function (error) {
@@ -110,44 +106,55 @@ app.controller("hangKhachHangListController", function ($scope, $http, $window, 
             });
     }
 
+    $scope.detailDeGiay = function (val) {
+        const id = val;
+
+        if (!isNaN(id)) {
+            $scope.deGiayDetail = $scope.deGiays.find(function(deGiay) {
+                return deGiay.id == id;
+            });
+        } else {
+            toastr["error"]("Lấy dữ liệu thất bại");
+        }
+    }
+
     $scope.$watch('curPage + numPerPage', function () {
         getData($scope.curPage);
     });
 
 });
 
-app.controller("updateHangKhachHangController", function ($scope, $http, $routeParams, $location) {
+app.controller("updateDeGiayController", function ($scope, $http, $routeParams, $location) {
     const id = $routeParams.id;
     $scope.change = function (input) {
         input.$dirty = true;
     }
-    $http.get(host + '/admin/rest/hang-khach-hang/' + id)
+    $http.get(host + '/admin/rest/de-giay/' + id)
         .then(function (response) {
-            $scope.hangKhachHang = response.data;
+            $scope.deGiay = response.data;
         }).catch(function (error) {
         toastr["error"]("Lấy dữ liệu thất bại");
-        $location.path("/danhsach");
+        $location.path("/list");
     });
 
-    $scope.updateHangKhachHang = function () {
-        if ($scope.hangKhachHangForm.$invalid) {
+    $scope.updateDeGiay = function () {
+        if ($scope.deGiayForm.$invalid) {
             return;
         }
-        $http.put(host + '/admin/rest/hang-khach-hang/' + id, $scope.hangKhachHang)
+        $http.put(host + '/admin/rest/de-giay/' + id, $scope.deGiay)
             .then(function (response) {
                 if (response.status == 200) {
                     toastr["success"]("Cập nhật thành công")
                 } else {
                     toastr["error"]("Cập nhât thất bại. Lỗi bất định")
                 }
-                $location.path("/danhsach");
+                $location.path("/list");
             }).catch(function (error) {
             toastr["error"]("Cập nhật thất bại");
             if (error.status === 400) {
-                $scope.hangKhachHangForm.tenHang.$dirty = false;
-                $scope.hangKhachHangForm.dieuKien.$dirty = false;
-                $scope.hangKhachHangForm.uuDai.$dirty = false;
-                $scope.hangKhachHangForm.moTa.$dirty = false;
+                $scope.deGiayForm.ten.$dirty = false;
+                $scope.deGiayForm.moTa.$dirty = false;
+                $scope.deGiayForm.chatLieu.$dirty = false;
                 $scope.errors = error.data;
             }
         })

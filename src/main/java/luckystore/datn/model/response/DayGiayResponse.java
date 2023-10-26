@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import luckystore.datn.entity.DayGiay;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,7 +15,7 @@ public class DayGiayResponse {
 
     private String ten;
 
-    private String dayGiay;
+    private String mauSac;
 
     private String moTa;
 
@@ -26,6 +25,7 @@ public class DayGiayResponse {
         if (dayGiay != null) {
             this.id = dayGiay.getId();
             this.ten = dayGiay.getTen();
+            this.mauSac = dayGiay.getMauSac();
             this.moTa = dayGiay.getMoTa();
             this.trangThai = dayGiay.getTrangThai();
         }

@@ -3,9 +3,9 @@
     <button ng-click="search()">Tìm kiếm</button>
 </div>
 
-<a class="btn btn-primary" href="#/add">Hạng Khách hàng</a>
+<a class="btn btn-primary" href="#/add">Thêm hash tag</a>
 
-<h1>Danh sách hạng khách hàng</h1>
+<h1>Danh sách hash tag</h1>
 
 <div class="d-flex justify-content-start">
     <div class="custom-radio">
@@ -25,27 +25,19 @@
 </div>
 
 <div>
-    <table class="table" border="1">
+    <table class="table align-middle text-center" border="1">
         <tr>
-            <th>ID</th>
             <th>Tên</th>
-            <th>Điều Kiện</th>
-            <th>Ưu Đãi</th>
-            <th>Mô tả</th>
             <th>Trạng thái</th>
             <th></th>
         </tr>
 
-        <tr ng-repeat="hangKhachHang in hangKhachHangs">
-            <td>{{hangKhachHang.id}}</td>
-            <td>{{hangKhachHang.tenHang}}</td>
-            <td>{{hangKhachHang.dieuKien}}</td>
-            <td>{{hangKhachHang.uuDai}}</td>
-            <td>{{hangKhachHang.moTa}}</td>
-            <td>{{hangKhachHang.trangThai == 1? "Áp dụng" : "Không áp dụng"}}</td>
+        <tr ng-repeat="hashTag in hashTags">
+            <td>{{hashTag.ten}}</td>
+            <td>{{hashTag.trangThai == 1? "Đang kinh doanh" : "Ngừng khinh doanh"}}</td>
             <td>
-                <a class="btn btn-info" ng-href="#/detail/{{hangKhachHang.id}}">Chi tiết</a>
-                <a class="btn btn-info" ng-href="#/update/{{hangKhachHang.id}}">Cập nhật</a>
+                <a class="btn btn-info" ng-href="#/detail/{{hashTag.id}}">Chi tiết</a>
+                <a class="btn btn-info" ng-href="#/update/{{hashTag.id}}">Cập nhật</a>
             </td>
         </tr>
     </table>

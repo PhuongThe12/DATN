@@ -1,53 +1,72 @@
-<div>
-    <label for="seachText">Tên: </label><input id="seachText"  type="text" ng-model="searchText" placeholder="Nhập từ khóa">
-    <button ng-click="search()">Tìm kiếm</button>
-</div>
+<div class="card" style="margin: 20px">
+    <h5>Danh sách chất liệu</h5>
+    <div class="card-body">
+        <div class="d-flex add-search-custom">
+            <div class="input-group w-25">
+                <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
+                <input id="seachText" class="form-control" type="text" ng-model="searchText"
+                       placeholder="Nhập từ khóa">
+                <button class="btn btn-custom " ng-click="search()">Tìm kiếm</button>
+            </div>
+            <a class="btn btn-primary" href="#/add">Thêm chất liệu</a>
+        </div>
 
-<a class="btn btn-primary" href="#/add">Thêm chất liệu</a>
+        <div class="d-flex justify-content-start radio-filter">
+            <div class="custom-radio">
+                <input type="radio" id="all" name="status" ng-model="status" value="-1"
+                       ng-checked="status != 0 && status != 1"
+                       ng-change="changeRadio(-1)">
+                <label class="radio-label" for="all">Tất cả</label>
+            </div>
 
-<h1>Danh sách chất liệu</h1>
+            <div class="custom-radio">
+                <input type="radio" id="active" name="status" ng-model="status" value="1" ng-checked="status == 1"
+                       ng-change="changeRadio(1)">
+                <label class="radio-label" for="active">Đang kinh doanh</label>
+            </div>
 
-<div class="d-flex justify-content-start">
-    <div class="custom-radio">
-        <input type="radio" id="all" name="status" ng-model="status" value="-1" ng-checked="status != 0 && status != 1" ng-change="changeRadio(-1)">
-        <label class="radio-label" for="all">Tất cả</label>
+            <div class="custom-radio">
+                <input type="radio" id="disable" name="status" ng-model="status" value="0" ng-checked="status == 0"
+                       ng-change="changeRadio(0)">
+                <label class="radio-label" for="disable">Ngừng kinh doanh</label>
+            </div>
+        </div>
+
+        <div>
+            <table class="table align-middle text-center" border="1">
+                <tr>
+                    <th>Tên</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+
+                <tr ng-repeat="chatLieu in chatLieus">
+                    <td>{{chatLieu.ten}}</td>
+                    <td>
+                        <h5>
+                <span ng-class="{'badge bd-success-custom': chatLieu.trangThai == 1, 'badge bd-danger-custom': chatLieu.trangThai != 1}">
+                    {{chatLieu.trangThai == 1? "Đang kinh doanh" : "Ngừng khinh doanh"}}
+                </span>
+                        </h5>
+                    </td>
+                    <td>
+                        <div class="d-sm-inline-flex">
+                            <button class="btn btn-custom" ng-click="detailChatLieu(chatLieu.id)"><i
+                                    class="fas fa-eye"></i>
+                            </button>
+                            <a class="btn btn-custom" ng-href="#/update/{{chatLieu.id}}"><i class="far fa-edit"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages" data-current-page="curPage"
+                 data-max-size="maxSize"
+                 data-boundary-links="true">
+            </div>
+
+
+        </div>
     </div>
-
-    <div class="custom-radio">
-        <input type="radio" id="active" name="status" ng-model="status" value="1" ng-checked="status == 1" ng-change="changeRadio(1)">
-        <label class="radio-label" for="active">Đang kinh doanh</label>
-    </div>
-
-    <div class="custom-radio">
-        <input type="radio" id="disable" name="status" ng-model="status" value="0" ng-checked="status == 0" ng-change="changeRadio(0)">
-        <label class="radio-label" for="disable">Ngừng kinh doanh</label>
-    </div>
-</div>
-
-<div>
-    <table class="table" border="1">
-        <tr>
-            <th>ID</th>
-            <th>Tên</th>
-            <th>Trạng thái</th>
-            <th></th>
-        </tr>
-
-        <tr ng-repeat="chatLieu in chatLieus">
-            <td>{{chatLieu.id}}</td>
-            <td>{{chatLieu.ten}}</td>
-            <td>{{chatLieu.trangThai == 1? "Đang kinh doanh" : "Ngừng khinh doanh"}}</td>
-            <td>
-                <a class="btn btn-info" ng-href="#/detail/{{chatLieu.id}}">Chi tiết</a>
-                <a class="btn btn-info" ng-href="#/update/{{chatLieu.id}}">Cập nhật</a>
-            </td>
-        </tr>
-    </table>
-
-    <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages" data-current-page="curPage" data-max-size="maxSize"
-        data-boundary-links="true">
-    </div>
-
-
 
 </div>
