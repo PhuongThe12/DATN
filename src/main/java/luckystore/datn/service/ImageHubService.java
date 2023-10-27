@@ -11,11 +11,11 @@ import java.util.List;
 @Service
 public interface ImageHubService {
 
-    ResponseEntity<String> upload(List<MultipartFile> files) throws IOException;
+    ResponseEntity<String> upload(MultipartFile[] files) throws IOException;
 
     public boolean isImage(InputStream fileInputStream);
 
     String[] getFileNames();
 
-    String upload2(MultipartFile file);
+    String deleteFile(String name);
 }

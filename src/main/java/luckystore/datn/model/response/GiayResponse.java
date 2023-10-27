@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import luckystore.datn.entity.Giay;
+import luckystore.datn.entity.HinhAnh;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ public class GiayResponse {
 
     private Integer namSX;
 
-    private String hinhAnh;
+    private List<String> lstAnh;
 
     private Integer trangThai;
 
@@ -48,7 +49,7 @@ public class GiayResponse {
             this.id = giay.getId();
             this.ten = giay.getTen();
             this.namSX = giay.getNamSX();
-            this.hinhAnh = giay.getHinhAnh();
+            this.lstAnh = giay.getLstAnh().stream().map(HinhAnh::getLink).collect(Collectors.toList());
             this.trangThai = giay.getTrangThai();
             this.moTa = giay.getMoTa();
             this.deGiay = new DeGiayResponse(giay.getDeGiay());
@@ -64,10 +65,10 @@ public class GiayResponse {
         }
     }
 
-    public GiayResponse(Long id, String ten, String hinhAnh) {
+    public GiayResponse(Long id, String ten, List<HinhAnh> lstAnh) {
         this.id = id;
         this.ten = ten;
-        this.hinhAnh = hinhAnh;
+        this.lstAnh = lstAnh.stream().map(HinhAnh::getLink).collect(Collectors.toList());
     }
 
 }
