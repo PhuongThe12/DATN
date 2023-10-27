@@ -11,12 +11,15 @@ public class TaiKhoanResponse {
 
     private Integer trangThai;
 
+    private Integer role;
+
     public TaiKhoanResponse(TaiKhoan taiKhoan) {
         if (taiKhoan != null) {
             this.id = taiKhoan.getId();
             this.tenDangNhap = taiKhoan.getTenDangNhap();
             this.matKhau = taiKhoan.getMatKhau();
             this.trangThai = taiKhoan.getTrangThai();
+            this.role = taiKhoan.getRole();
         }
     }
 }

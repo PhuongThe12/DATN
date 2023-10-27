@@ -20,6 +20,15 @@ app.config(function ($routeProvider, $locationProvider) {
 
 
 app.controller("addNhanVienController", function ($scope, $http, $location) {
+
+    $scope.addTest = function (){
+        $http.post(host + '/admin/rest/test', $scope.ngayBatDau)
+            .then(function (response) {
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
     // $scope.nhanVien = {};
     $scope.change = function (input) {
         input.$dirty = true;

@@ -20,9 +20,8 @@ public class NhanVienController {
         return "/admin/nhanvien/index";
     }
 
-    @GetMapping("/detail/{id}")
-    public String getDetail(@PathVariable("id") Long id, Model model){
-         model.addAttribute("nhanVien",nhanVienService.findById(id));
-         return "/admin/nhanvien/detail";
+    @GetMapping("/detail")
+    public String getDetail(){
+         return "/admin/nhanvien/demo";
     }
 }

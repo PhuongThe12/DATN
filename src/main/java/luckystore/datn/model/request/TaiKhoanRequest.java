@@ -21,4 +21,6 @@ public class TaiKhoanRequest {
 
     private Integer trangThai;
 
+    private Integer role;
+
 }
