@@ -25,16 +25,14 @@
 </div>
 
 <div>
-    <table class="table" border="1">
+    <table class="table align-middle text-center" border="1">
         <tr>
-            <th>ID</th>
             <th>Tên</th>
             <th>Trạng thái</th>
             <th></th>
         </tr>
 
         <tr ng-repeat="coGiay in coGiays">
-            <td>{{coGiay.id}}</td>
             <td>{{coGiay.ten}}</td>
             <td>{{coGiay.trangThai == 1? "Đang kinh doanh" : "Ngừng khinh doanh"}}</td>
             <td>

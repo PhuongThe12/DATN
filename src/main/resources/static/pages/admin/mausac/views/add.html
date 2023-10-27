@@ -2,6 +2,52 @@
 
 <form name="mauSacForm" ng-submit="addMauSac()">
     <div class="form-group">
+        <label for="mauSacMau">Màu sắc: </label>
+        <input type="color" class="form-control" style="width: 10%; height: 40px;" list="commonColors" id="mauSacMau" name="maMau" ng-model="mauSac.maMau" ng-required="true"
+            ng-change="change(mauSacForm.maMau)">
+        <datalist id="commonColors">
+            <option>#ff80ed</option>
+            <option>#065535</option>
+            <option>#000000</option>
+            <option>#133337</option>
+            <option>#ffc0cb</option>
+            <option>#ffffff</option>
+            <option>#ffe4e1</option>
+            <option>#008080</option>
+            <option>#ff0000</option>
+            <option>#e6e6fa</option>
+            <option>#ffd700</option>
+            <option>#00ffff</option>
+            <option>#ffa500</option>
+            <option>#0000ff</option>
+            <option>#ff7373</option>
+            <option>#c6e2ff</option>
+            <option>#40e0d0</option>
+            <option>#b0e0e6</option>
+            <option>#d3ffce</option>
+            <option>#f0f8ff</option>
+            <option>#666666</option>
+            <option>#faebd7</option>
+            <option>#bada55</option>
+            <option>#fa8072</option>
+            <option>#003366</option>
+            <option>#ffb6c1</option>
+            <option>#c0c0c0</option>
+            <option>#ffff00</option>
+            <option>#800000</option>
+            <option>#c39797</option>
+            <option>#800080</option>
+            <option>#00ff00</option>
+            <option>#fff68f</option>
+            <option>#7fffd4</option>
+            <option>#cccccc</option>
+        </datalist>
+        <small class="error-message" ng-show="(mauSacForm.maMau.$dirty || mauSacForm.maMau.$touched) && mauSacForm.maMau.$error.required">Không được để
+            trống màu sắc</small>
+        <small class="error-message" ng-show="errors.maMau && !mauSacForm.maMau.$dirty">{{errors.maMau}}</small>
+    </div>
+
+    <div class="form-group">
         <label for="mauSacTen">Tên: </label>
         <input type="text" class="form-control" id="mauSacTen" name="ten" ng-model="mauSac.ten" ng-maxlength="50" ng-required="true"
             ng-change="change(mauSacForm.ten)">

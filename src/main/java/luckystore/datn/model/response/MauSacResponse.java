@@ -14,6 +14,8 @@ public class MauSacResponse {
 
     private Long id;
 
+    private String maMau;
+
     private String ten;
 
     private String moTa;
@@ -23,6 +25,7 @@ public class MauSacResponse {
     public MauSacResponse(MauSac mauSac) {
         if (mauSac != null) {
             this.id = mauSac.getId();
+            this.maMau = mauSac.getMaMau();
             this.ten = mauSac.getTen();
             this.moTa = mauSac.getMoTa();
             this.trangThai = mauSac.getTrangThai();

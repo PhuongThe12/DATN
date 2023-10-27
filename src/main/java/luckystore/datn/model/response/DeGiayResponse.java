@@ -26,6 +26,7 @@ public class DeGiayResponse {
         if (deGiay != null) {
             this.id = deGiay.getId();
             this.ten = deGiay.getTen();
+            this.chatLieu = deGiay.getChatLieu();
             this.moTa = deGiay.getMoTa();
             this.trangThai = deGiay.getTrangThai();
         }
