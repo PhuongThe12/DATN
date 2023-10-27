@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BienTheGiayRepository extends JpaRepository<BienTheGiay, Long> {
+
+    Boolean existsByHinhAnh(String link);
+
 }

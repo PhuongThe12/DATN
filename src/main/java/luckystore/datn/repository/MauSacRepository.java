@@ -22,6 +22,10 @@ public interface MauSacRepository extends JpaRepository<MauSac, Long> {
 
     Boolean existsByTen(String ten);
 
+    Boolean existsByMaMau(String maMau);
+
     Boolean existsByTenAndIdNot(String ten, Long id);
+
+    Boolean existsByMaMauAndIdNot(String maMau, Long id);
 
 }

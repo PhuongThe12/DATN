@@ -1,0 +1,37 @@
+<h1>Thêm giày</h1>
+
+<form name="giayForm" ng-submit="addDayGiay()">
+    <div class="form-group">
+        <label>Hình ảnh: </label>
+
+        <small class="error-message" ng-show="errors.hinhAnh && !giayForm.hinhAnh.$dirty">{{errors.hinhAnh}}</small>
+    </div>
+
+    <div class="form-group">
+        <label for="giayDayGiay">Màu sắc: </label>
+        <input type="text" class="form-control" id="giayDayGiay" name="mauSac" ng-model="giay.mauSac" ng-maxlength="50" ng-required="true"
+               ng-change="change(giayForm.mauSac)">
+        <small class="error-message" ng-show="(giayForm.mauSac.$dirty || giayForm.mauSac.$touched) && giayForm.mauSac.$error.required">Không được để
+            trống màu sắc</small>
+        <small class="error-message" ng-show="(giayForm.mauSac.$dirty || giayForm.mauSac.$touched) && giayForm.mauSac.$error.maxlength">Màu sắc không được
+            vượt quá 50 ký tự</small>
+        <small class="error-message" ng-show="errors.mauSac && !giayForm.mauSac.$dirty">{{errors.mauSac}}</small>
+    </div>
+
+    <div class="form-group">
+        <label for="giayMoTa">Mô tả: </label>
+        <textarea class="form-control" id="giayMoTa" name="moTa" rows="3" ng-model="giay.moTa" ng-change="change(giayForm.moTa)"></textarea>
+        <small class="error-message" ng-show="errors.moTa && !giayForm.moTa.$dirty">{{errors.moTa}}</small>
+    </div>
+
+    <div class="form-group">
+        <label>Trạng thái: </label>
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="giayTrangThai" name="trangThai" ng-model="giay.trangThai" ng-true-value="1"
+                   ng-false-value="0" ng-init="giay.trangThai = 1">
+            <label class="form-check-label" for="giayTrangThai">Đang kinh doanh</label>
+        </div>
+        <small class="error-message" ng-show="errors.trangThai && !giayForm.trangThai.$dirty">{{errors.trangThai}}</small>
+    </div>
+    <button type="submit" class="btn btn-primary">Tạo mới</button>
+</form>

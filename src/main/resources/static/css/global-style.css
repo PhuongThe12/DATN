@@ -1,3 +1,7 @@
+.modal table td {
+    white-space: nowrap;
+}
+
 .custom-radio {
     display: inline-block;
     position: relative;

@@ -105,6 +105,18 @@ app.controller("lotGiayListController", function ($scope, $http, $window, $locat
             });
     }
 
+    $scope.detailMauSac = function (val) {
+        const id = val;
+
+        if (!isNaN(id)) {
+            $scope.lotGiayDetail = $scope.lotGiays.find(function(lotGiay) {
+                return lotGiay.id == id;
+            });
+        } else {
+            toastr["error"]("Lấy dữ liệu thất bại");
+        }
+    }
+
     $scope.$watch('curPage + numPerPage', function () {
         getData($scope.curPage);
     });
