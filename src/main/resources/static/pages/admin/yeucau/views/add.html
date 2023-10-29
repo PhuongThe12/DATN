@@ -1,0 +1,61 @@
+<h1>Thêm Yêu Cầu</h1>
+
+<form name="addYeuCauForm" ng-submit="addYeuCau()">
+    <div>
+        <div class="form-group">
+            <label for="hoaDon">Hoá Đơn:</label>
+            <input type="text" class="form-control" id="hoaDon" name="hoaDon" ng-model="yeuCau.hoaDon" ng-change="change(addYeuCauForm.hoaDon)" ng-required="true">
+            <small class="error-message" ng-show="(addYeuCauForm.hoaDon.$dirty || addYeuCauForm.hoaDon.$touched) && addYeuCauForm.hoaDon.$error.required">Không được để trống id hóa đơn</small>
+            <small class="error-message" ng-show="errors.hoaDon && !addYeuCauForm.hoaDon.$dirty">{{errors.hoaDon}}</small>
+        </div>
+
+        <div class="form-group">
+            <label for="nguoiThucHien">Chọn nhân viên:</label>
+            <select id="nguoiThucHien" name="nguoiThucHien" ng-model="yeuCau.nguoiThucHien">
+                <option ng-repeat="nhanVien in danhSachNhanVien" value="{{nhanVien.id}}">{{nhanVien.ten}}</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="loaiYeuCau">Loại Yêu Cầu:</label>
+            <select id="loaiYeuCau" name="loaiYeuCau" ng-model="yeuCau.loaiYeuCau">
+                <option value="1">Yêu Cầu Đổi</option>
+                <option value="2">Yêu Cầu Trả</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="trangThai">Trạng Thái:</label>
+            <select id="trangThai" name="trangThai" ng-model="yeuCau.trangThai">
+                <option value="1">Chờ Xét Duyệt</option>
+                <option value="2">Đã Xét Duyệt</option>
+                <option value="3">Đã Hoàn Thành</option>
+                <option value="4">Bị Hủy</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="ghiChu">Ghi Chú:</label>
+            <textarea class="form-control" id="ghiChu" name="ghiChu" rows="3" ng-model="yeuCau.ghiChu" ng-change="change(addYeuCauForm.ghiChu)"></textarea>
+        </div>
+    </div>
+    <div>
+        <table class="table">
+            <tr>
+                <th>ID</th>
+                <th>Tên</th>
+                <th>Số Lượng Mua</th>
+                <th>Trạng Thái</th>
+            </tr>
+
+            <tr ng-repeat="bienTheGiay in listBienTheGiay">
+                <td>{{bienTheGiay.id}}</td>
+                <td>{{bienTheGiay.ten}}</td>
+                <td>{{bienTheGiay.soLuong}}</td>
+                <td>{{bienTheGiay.trangThai}}</td>
+            </tr>
+
+        </table>
+    </div>
+    <button type="submit" class="btn btn-primary">Tạo mới</button>
+</form>
