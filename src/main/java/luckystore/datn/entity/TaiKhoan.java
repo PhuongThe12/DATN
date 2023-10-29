@@ -27,4 +27,7 @@ public class TaiKhoan {
 
     @Column(name = "TRANG_THAI")
     private Integer trangThai;
+
+    @Column(name = "ROLE")
+    private Integer role;
 }

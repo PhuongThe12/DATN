@@ -78,6 +78,15 @@ public class NhanVienServiceImpl implements NhanVienService {
         return new NhanVienResponse(nhanVienRepo.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND)));
     }
 
+    @Override
+    public NhanVienResponse findNhanVienByIdTaiKhoan(Long id) {
+        NhanVien nhanVien = nhanVienRepo.findNhanVienByIdTaiKhoan(id);
+        if(nhanVienRepo.findNhanVienByIdTaiKhoan(id) == null){
+            throw new NotFoundException(ErrorMessage.NOT_FOUND);
+        }
+        return new NhanVienResponse(nhanVien);
+    }
+
     private NhanVien getNhanVien(NhanVien nhanVien, NhanVienRequest nhanVienRequest) {
         nhanVien.setHoTen(nhanVienRequest.getHoTen());
         nhanVien.setGioiTinh(nhanVienRequest.getGioiTinh());

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhân Viên</title>
+
+    <!-- Pagination -->
+    <link rel="stylesheet" href="/pagination/pagination.css">
+    <script src="/pagination/pagination.min.js" defer></script>
+    <!--Boostrap-->
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!--AngularJS-->
+    <script src="/angular-1.8.2/angular.min.js"></script>
+    <script src="/angular-1.8.2/angular-route.min.js"></script>
+    <!--Toastr-->
+    <script src="/toastr/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="/toastr/toastr/build/toastr.min.css">
+    <script src="/toastr/toastr/build/toastr.min.js"></script>
+    <script src="/toastr/toastr/build/toastr.min.js"></script>
+
+    <!-- Icon -->
+    <link rel="stylesheet" href="/icon/css/all.min.css">
+
+    <!-- Global -->
+    <script src="/js/global.js"></script>
+    <link rel="stylesheet" href="/css/global-style.css">
+    <script src="/js/httpInterceptor.js" defer></script>
+
+</head>
+
+<body ng-controller="loginController">
+<div class="container aling-center">
+    <div class="col-md-3 m-auto">
+        <form name="user" ng-submit="loginUser()">
+
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Tài khoản</label>
+                <input type="text" ng-model="userLogin.tenDangNhap" class="form-control" id="taiKhoan">
+            </div>
+            <label for="" class="form-label">Mật Khẩu</label>
+            <div class="input-group mb-3">
+
+                <input type="password" ng-model="userLogin.matKhau" class="form-control" aria-label="Recipient's username" aria-describedby="button-addon2">
+                <button class="btn btn-outline-secondary" type="button" id="button-addon2"><i class="fas fa-eye"></i></button>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 mb-2">Đăng nhập</button>
+            <div class="w-100" style="text-align: center;">
+                <p>Tôi không có tài khoản ?<a href="">Đăng ký</a></p>
+            </div>
+            <hr>
+            <div class="w-100">
+                <div class="sign-in-with">
+                    <a href="" class="btn btn-light btn-css"><img width="30px" src="https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png" alt=""></a>
+                    <a href="" class="btn btn-light btn-css"><img width="23px" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1200px-Facebook_Logo_%282019%29.png" alt=""></a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="/js/user/index.js"></script>
+</body>
+
+</html>
