@@ -62,6 +62,8 @@ public class KichThuocServiceImpl implements KichThuocService {
     private KichThuoc getKichThuoc(KichThuoc kichThuoc, KichThuocRequest kichThuocRequest) {
         kichThuoc.setTen(kichThuocRequest.getTen());
         kichThuoc.setMoTa(kichThuocRequest.getMoTa());
+        kichThuoc.setChieuDai(kichThuocRequest.getChieuDai());
+        kichThuoc.setChieuRong(kichThuocRequest.getChieuRong());
         kichThuoc.setTrangThai(kichThuocRequest.getTrangThai() == null || kichThuocRequest.getTrangThai() == 0 ? 0 : 1);
         return kichThuoc;
     }

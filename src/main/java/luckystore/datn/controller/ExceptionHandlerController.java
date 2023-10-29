@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.io.IOException;
+
 @ControllerAdvice
 public class ExceptionHandlerController {
 
@@ -24,5 +26,10 @@ public class ExceptionHandlerController {
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity nullExceptionHandler(NotFoundException exception) {
         return new ResponseEntity(exception.getData(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity nullExceptionHandler(RuntimeException exception) {
+        return new ResponseEntity(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

@@ -40,6 +40,7 @@ app.controller("addMauSacController", function ($scope, $http, $location) {
                 if (error.status === 400) {
                     $scope.mauSacForm.ten.$dirty = false;
                     $scope.mauSacForm.moTa.$dirty = false;
+                    $scope.mauSacForm.maMau.$dirty = false;
                     $scope.errors = error.data;
                 }
             });
@@ -105,6 +106,18 @@ app.controller("mauSacListController", function ($scope, $http, $window, $locati
             });
     }
 
+    $scope.detailMauSac = function (val) {
+        const id = val;
+
+        if (!isNaN(id)) {
+            $scope.mauSacDetail = $scope.mauSacs.find(function(mauSac) {
+                return mauSac.id == id;
+            });
+        } else {
+            toastr["error"]("Lấy dữ liệu thất bại");
+        }
+    }
+
     $scope.$watch('curPage + numPerPage', function () {
         getData($scope.curPage);
     });
@@ -141,6 +154,7 @@ app.controller("updateMauSacController", function ($scope, $http, $routeParams, 
                 if (error.status === 400) {
                     $scope.mauSacForm.ten.$dirty = false;
                     $scope.mauSacForm.moTa.$dirty = false;
+                    $scope.mauSacForm.maMau.$dirty = false;
                     $scope.errors = error.data;
                 }
             })

@@ -1,6 +1,7 @@
 package luckystore.datn.model.request;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +17,10 @@ import org.hibernate.validator.constraints.Length;
 public class MauSacRequest {
 
     private Long id;
+
+    @NotNull(message = "Không được để trống màu sắc")
+    @Pattern(regexp = "#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})", message = "Màu sắc không đúng dịnh dạng")
+    private String maMau;
 
     @NotNull(message = "Không được để trống tên")
     @Length(message = "Tên không được vượt quá 50 ký tự")

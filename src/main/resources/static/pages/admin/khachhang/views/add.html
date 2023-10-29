@@ -1,0 +1,88 @@
+<style>
+    .form-input {
+        background-color: white;
+        padding: 20px;
+        margin: 20px;
+        box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    }
+
+    .error-message {
+        color: red;
+        font-weight: bold;
+    }
+</style>
+<h1>Thêm Khách Hàng</h1>
+
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-10">
+        <div class="form-input">
+            <form name="khachHangForm" ng-submit="addKhachHang()">
+                <div class="form-group">
+                    <label for="khachHangHoTen">Tên</label>
+                    <input type="text" class="form-control" id="khachHangHoTen" name="hoTen" ng-model="khachHang.hoTen"
+                           ng-maxlength="50" ng-required="true" ng-change="change(khachHangForm.hoTen)">
+                    <small class="error-message"
+                           ng-show="(khachHangForm.hoTen.$dirty || khachHangForm.hoTen.$touched) && khachHangForm.hoTen.$error.required">Không
+                        được để
+                        trống tên</small>
+                    <small class="error-message"
+                           ng-show="(khachHangForm.hoTen.$dirty || khachHangForm.hoTen.$touched) && khachHangForm.hoTen.$error.maxlength">Số
+                        điện thoại không được vượt quá 20 ký tự</small>
+                    <small class="error-message" ng-show="errors.ten">{{errors.ten}}</small>
+
+                    <div class="form-group">
+                        <label for="khachHangGioiTinh">Giới Tính: </label>
+                        <input type="radio"  id="khachHangGioiTinh" value="true" name="gioiTinh" ng-model="khachHang.gioiTinh" ng-required="true"
+                               ng-change="change(khachHangForm.gioiTinh)">Nam
+                        <input type="radio"  id="khachHangGioiTinh1" value="false" name="gioiTinh" ng-model="khachHang.gioiTinh" ng-required="true"
+                               ng-change="change(khachHangForm.gioiTinh)">Nữ
+                        <small class="error-message" ng-show="(khachHangForm.hoTen.$dirty || khachHangForm.hoTen.$touched) && khachHangForm.hoTen.$error.required">
+                            Không được để trống tên</small>
+                        <small class="error-message" ng-show="errors.gioiTinh && !khachHangForm.gioiTinh.$dirty">{{errors.gioiTinh}}</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="khachHangNgaySinh">Ngày Sinh: </label>
+                        <input type="date" class="form-control" id="khachHangNgaySinh" name="ngaySinh" ng-model="khachHang.ngaySinh" ng-required="true"
+                               ng-change="change(khachHangForm.ngaySinh)">
+                        <small class="error-message" ng-show="(khachHangForm.ngaySinh.$dirty || khachHangForm.ngaySinh.$touched) && khachHangForm.ngaySinh.$error.required">
+                            Không được để trống ngày sinh</small>
+                        <small class="error-message" ng-show="errors.ngaySinh && !khachHangForm.ngaySinh.$dirty">{{errors.ngaySinh}}</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="khachHangSoDienThoai">Số điện thoại: </label>
+                        <input type="text" class="form-control" id="khachHangSoDienThoai" name="soDienThoai" ng-model="khachHang.soDienThoai" ng-required="true"
+                               ng-change="change(khachHangForm.soDienThoai)">
+                        <small class="error-message" ng-show="(khachHangForm.soDienThoai.$dirty || khachHangForm.soDienThoai.$touched) && khachHangForm.soDienThoai.$error.required">
+                            Không được để trống số điện thoại</small>
+                        <small class="error-message" ng-show="errors.soDienThoai && !khachHangForm.soDienThoai.$dirty">{{errors.soDienThoai}}</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="khachHangEmail">Email: </label>
+                        <input type="text" class="form-control" id="khachHangEmail" name="email" ng-model="khachHang.email" ng-required="true"
+                               ng-change="change(khachHangForm.email)">
+                        <small class="error-message" ng-show="(khachHangForm.email.$dirty || khachHangForm.email.$touched) && khachHangForm.email.$error.required">
+                            Không được để trống số điện thoại</small>
+                        <small class="error-message" ng-show="errors.email && !khachHangForm.email.$dirty">{{errors.email}}</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="khachHangTrangThai">Trạng thái: </label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="khachHangTrangThai" name="trangThai" ng-model="khachHang.trangThai" ng-true-value="1"
+                                   ng-false-value="0" ng-init="khachHang.trangThai = 1">
+                            <label class="form-check-label" for="khachHangTrangThai">Hoạt động</label>
+                        </div>
+                        <small class="error-message" ng-show="errors.trangThai && !khachHangForm.trangThai.$dirty">{{errors.trangThai}}</small>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Tạo mới</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

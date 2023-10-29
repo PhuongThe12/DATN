@@ -77,4 +77,8 @@ public class Giay {
     @JsonManagedReference
     private List<BienTheGiay> lstBienTheGiay;
 
+    @OneToMany(mappedBy = "giay")
+    @JsonManagedReference
+    private List<HinhAnh> lstAnh;
+
 }

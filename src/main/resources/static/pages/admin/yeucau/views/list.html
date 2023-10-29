@@ -1,0 +1,65 @@
+<div>
+    <label for="seachText">ID Hóa Đơn: </label><input id="seachText"  type="text" ng-model="searchText" placeholder="Nhập từ khóa">
+    <button ng-click="search()">Tìm kiếm</button>
+</div>
+
+<div>
+   <label>Ngày bắt đầu: </label> <input id="ngayBatDau">
+    <label>Ngày kết thúc: </label> <input id="ngayKetThuc">
+<!--    <button ng-click="searchByDate()">Tìm kiếm</button>-->
+</div>
+
+
+
+<a class="btn btn-primary" href="#/add">Thêm yêu cầu</a>
+
+<h1>Danh sách yêu cầu</h1>
+
+<div class="d-flex justify-content-start">
+    <div class="custom-radio">
+        <input type="radio" id="all" name="loaiYeuCau" ng-model="loaiYeuCau" value="0" ng-checked="loaiYeuCau != 1 && loaiYeuCau != 2" ng-change="changeRadio(0)">
+        <label class="radio-label" for="all">Tất cả</label>
+    </div>
+
+    <div class="custom-radio">
+        <input type="radio" id="active" name="loaiYeuCau" ng-model="loaiYeuCau" value="1" ng-checked="loaiYeuCau == 1" ng-change="changeRadio(1)">
+        <label class="radio-label" for="active">Yêu Cầu Đổi</label>
+    </div>
+
+    <div class="custom-radio">
+        <input type="radio" id="disable" name="loaiYeuCau" ng-model="loaiYeuCau" value="2" ng-checked="loaiYeuCau == 2" ng-change="changeRadio(2)">
+        <label class="radio-label" for="disable">Yêu Cầu Trả</label>
+    </div>
+</div>
+
+<div>
+    <table class="table">
+        <tr>
+            <th>ID</th>
+            <th>Hóa Đơn</th>
+            <th>Yêu Cầu</th>
+            <th>Ngày Tạo</th>
+            <th>Ngày Sửa</th>
+            <th>Trạng Thái</th>
+            <th>Ghi Chú</th>
+        </tr>
+
+        <tr ng-repeat="yeuCau in listYeuCau">
+            <td>{{yeuCau.id}}</td>
+            <td>{{yeuCau.hoaDon.id}}</td>
+            <td>{{yeuCau.loaiYeuCau == 1?"Yêu Cầu Đổi":"Yêu Cầu Trả"}}</td>
+            <td>{{ formatDateView(yeuCau.ngayTao) }}</td>
+            <td>{{ formatDateView(yeuCau.ngaySua) }}</td>
+            <td>{{yeuCau.trangThai==1?"Chờ Xét Duyệt":yeuCau.trangThai==2?"Đã Xét Duyệt":yeuCau.trangThai==3?"Đã Hoàn Thành":"Bị Hủy"}}</td>
+            <td>{{yeuCau.ghiChu}}</td>
+            <td>
+                <a class="btn btn-info" ng-href="#/detail/{{yeuCau.id}}">Chi Tiết</a>
+                <a class="btn btn-info" ng-href="#/update/{{yeuCau.id}}">Cập Nhật</a>
+            </td>
+        </tr>
+    </table>
+
+    <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages" data-current-page="curPage" data-max-size="maxSize"
+        data-boundary-links="true">
+    </div>
+</div>
