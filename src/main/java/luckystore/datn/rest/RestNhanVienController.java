@@ -40,9 +40,9 @@ public class RestNhanVienController {
         return new ResponseEntity(nhanVienService.updateNhanVien(id, nhanVienRequest), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity getNhanVien(@PathVariable("id") Long id) {
-        return new ResponseEntity(nhanVienService.findById(id), HttpStatus.OK);
+    @GetMapping("/find-tai-khoan/{id}")
+    public ResponseEntity findNhanVienByIdTaiKhoan(@PathVariable("id") Long id) {
+        return new ResponseEntity(nhanVienService.findNhanVienByIdTaiKhoan(id), HttpStatus.OK);
     }
 
     @GetMapping
@@ -52,6 +52,11 @@ public class RestNhanVienController {
                                           @RequestParam(value = "chucVu", required = false) Integer chucVu) throws InterruptedException {
 //        Thread.sleep(2000); // Fake Lag - Tạm dừng 2s trước khi gọi đến DB
         return new ResponseEntity(nhanVienService.getPage(page, searchText, status, chucVu), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity getNhanVien(@PathVariable("id") Long id) {
+        return new ResponseEntity(nhanVienService.findById(id), HttpStatus.OK);
     }
 
     @GetMapping("/get-all")

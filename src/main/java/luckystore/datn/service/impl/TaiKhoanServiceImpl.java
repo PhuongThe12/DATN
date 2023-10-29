@@ -48,6 +48,7 @@ public class TaiKhoanServiceImpl implements TaiKhoanService {
     }
 
     public TaiKhoanResponse login(TaiKhoanRequest taiKhoanRequest) {
+        System.out.println(taiKhoanRepository.findByTenDangNhapAndMatKhau(taiKhoanRequest.getTenDangNhap(), taiKhoanRequest.getMatKhau()));
         TaiKhoan taiKhoan = taiKhoanRepository.findByTenDangNhapAndMatKhau(taiKhoanRequest.getTenDangNhap(), taiKhoanRequest.getMatKhau());
         if (taiKhoan == null) {
             throw new NotFoundException(ErrorMessage.NOT_FOUND);

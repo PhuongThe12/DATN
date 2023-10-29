@@ -98,7 +98,7 @@ table tr {
 
 .btn-custom {
     color: white;
-    background-color: #845adf;
+    background-color: #111c43;
     font-size: 15px !important;
     margin: 0px 2px;
     transition: 0.3s ease-in-out;
@@ -106,7 +106,7 @@ table tr {
 
 .btn-custom:hover {
     color: white;
-    background-color: #845adf;
+    background-color: #111c43;
     opacity: 0.7;
 }
 
@@ -165,8 +165,4 @@ input.ng-invalid.ng-touched {
 .card-body{
     border-radius: 10px;
     background: white;
-}
-.btn-primary{
-    background-color: #845adf !important;
-    border: none;
 }

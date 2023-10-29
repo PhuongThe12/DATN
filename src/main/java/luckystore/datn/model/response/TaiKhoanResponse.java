@@ -1,7 +1,13 @@
 package luckystore.datn.model.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import luckystore.datn.entity.TaiKhoan;
-
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class TaiKhoanResponse {
     private Long id;
 

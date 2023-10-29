@@ -42,7 +42,7 @@
 .pagination ul>.active>a,
 .pagination ul>.active>span {
     transition: 0.3s all;
-    background-color: #845adf;
+    background-color: #111c43;
     color: white;
     cursor: pointer;
 }
@@ -50,7 +50,7 @@
 .pagination ul>.active>a,
 .pagination ul>.active>span {
     color: #fff!important;
-    background-color: #845adf !important;
+    background-color: #111c43 !important;
     cursor: pointer;
 }
 

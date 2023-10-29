@@ -9,10 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +21,12 @@ public class RestTaiKhoanController {
     @Autowired
     TaiKhoanServiceImpl taiKhoanService;
 
-    @GetMapping("/detail")
-    public ResponseEntity<?> detail(@Valid @RequestBody TaiKhoanRequest taiKhoanRequest,
-                                BindingResult bindingResult){
-        ResponseEntity errorJson = getErrorJson(bindingResult);
-        if (errorJson != null) return errorJson;
-
+    @PostMapping("/detail")
+    public ResponseEntity<?> detail(@RequestBody TaiKhoanRequest taiKhoanRequest) {
+        System.out.println(taiKhoanRequest);
+//        ResponseEntity errorJson = getErrorJson(bindingResult);
+//        if (errorJson != null) return errorJson;
+        System.out.println("Data " + taiKhoanService.login(taiKhoanRequest));
         return new ResponseEntity(taiKhoanService.login(taiKhoanRequest), HttpStatus.OK);
     }
 
