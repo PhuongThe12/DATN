@@ -1,0 +1,42 @@
+<h1>Thêm dây giày</h1>
+
+<form name="dayGiayForm" ng-submit="addDayGiay()">
+    <div class="form-group">
+        <label for="dayGiayTen">Tên: </label>
+        <input type="text" class="form-control" id="dayGiayTen" name="ten" ng-model="dayGiay.ten" ng-maxlength="50" ng-required="true"
+            ng-change="change(dayGiayForm.ten)">
+        <small class="error-message" ng-show="(dayGiayForm.ten.$dirty || dayGiayForm.ten.$touched) && dayGiayForm.ten.$error.required">Không được để
+            trống tên</small>
+        <small class="error-message" ng-show="(dayGiayForm.ten.$dirty || dayGiayForm.ten.$touched) && dayGiayForm.ten.$error.maxlength">Tên không được
+            vượt quá 50 ký tự</small>
+        <small class="error-message" ng-show="errors.ten && !dayGiayForm.ten.$dirty">{{errors.ten}}</small>
+    </div>
+
+    <div class="form-group">
+        <label for="dayGiayDayGiay">Màu sắc: </label>
+        <input type="text" class="form-control" id="dayGiayDayGiay" name="mauSac" ng-model="dayGiay.mauSac" ng-maxlength="50" ng-required="true"
+               ng-change="change(dayGiayForm.mauSac)">
+        <small class="error-message" ng-show="(dayGiayForm.mauSac.$dirty || dayGiayForm.mauSac.$touched) && dayGiayForm.mauSac.$error.required">Không được để
+            trống màu sắc</small>
+        <small class="error-message" ng-show="(dayGiayForm.mauSac.$dirty || dayGiayForm.mauSac.$touched) && dayGiayForm.mauSac.$error.maxlength">Màu sắc không được
+            vượt quá 50 ký tự</small>
+        <small class="error-message" ng-show="errors.mauSac && !dayGiayForm.mauSac.$dirty">{{errors.mauSac}}</small>
+    </div>
+
+    <div class="form-group">
+        <label for="dayGiayMoTa">Mô tả: </label>
+        <textarea class="form-control" id="dayGiayMoTa" name="moTa" rows="3" ng-model="dayGiay.moTa" ng-change="change(dayGiayForm.moTa)"></textarea>
+        <small class="error-message" ng-show="errors.moTa && !dayGiayForm.moTa.$dirty">{{errors.moTa}}</small>
+    </div>
+
+    <div class="form-group">
+        <label>Trạng thái: </label>
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="dayGiayTrangThai" name="trangThai" ng-model="dayGiay.trangThai" ng-true-value="1"
+                   ng-false-value="0" ng-init="dayGiay.trangThai = 1">
+            <label class="form-check-label" for="dayGiayTrangThai">Đang kinh doanh</label>
+        </div>
+        <small class="error-message" ng-show="errors.trangThai && !dayGiayForm.trangThai.$dirty">{{errors.trangThai}}</small>
+    </div>
+    <button type="submit" class="btn btn-primary">Tạo mới</button>
+</form>

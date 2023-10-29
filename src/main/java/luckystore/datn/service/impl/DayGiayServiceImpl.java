@@ -62,6 +62,7 @@ public class DayGiayServiceImpl implements DayGiayService {
     private DayGiay getDayGiay(DayGiay dayGiay, DayGiayRequest dayGiayRequest) {
         dayGiay.setTen(dayGiayRequest.getTen());
         dayGiay.setMoTa(dayGiayRequest.getMoTa());
+        dayGiay.setMauSac(dayGiayRequest.getMauSac());
         dayGiay.setTrangThai(dayGiayRequest.getTrangThai() == null || dayGiayRequest.getTrangThai() == 0 ? 0 : 1);
         return dayGiay;
     }

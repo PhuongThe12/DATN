@@ -30,39 +30,39 @@ public class RestDayGiayController {
     private DayGiayService dayGiayService;
 
     @PostMapping
-    public ResponseEntity addDayGiay(@Valid @RequestBody DayGiayRequest dayGiayRequest, BindingResult result) {
-        ResponseEntity errorJson = getErrorJson(result);
+    public ResponseEntity<?> addDayGiay(@Valid @RequestBody DayGiayRequest dayGiayRequest, BindingResult result) {
+        ResponseEntity<?>errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
-        return new ResponseEntity(dayGiayService.addDayGiay(dayGiayRequest), HttpStatus.OK);
+        return new ResponseEntity<>(dayGiayService.addDayGiay(dayGiayRequest), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateDayGiay(@PathVariable("id") Long id, @Valid @RequestBody DayGiayRequest dayGiayRequest, BindingResult result) {
-        ResponseEntity errorJson = getErrorJson(result);
+    public ResponseEntity<?> updateDayGiay(@PathVariable("id") Long id, @Valid @RequestBody DayGiayRequest dayGiayRequest, BindingResult result) {
+        ResponseEntity<?> errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
-        return new ResponseEntity(dayGiayService.updateDayGiay(id, dayGiayRequest), HttpStatus.OK);
+        return new ResponseEntity<>(dayGiayService.updateDayGiay(id, dayGiayRequest), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getDayGiay(@PathVariable("id") Long id) {
-        return new ResponseEntity(dayGiayService.findById(id), HttpStatus.OK);
+    public ResponseEntity<?> getDayGiay(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(dayGiayService.findById(id), HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity getDayGiayPage(@RequestParam(value = "page", defaultValue = "1") Integer page,
+    public ResponseEntity<?> getDayGiayPage(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                         @RequestParam(value = "search", required = false) String searchText,
                                         @RequestParam(value = "status", required = false) Integer status) {
-        return new ResponseEntity(dayGiayService.getPage(page, searchText, status), HttpStatus.OK);
+        return new ResponseEntity<>(dayGiayService.getPage(page, searchText, status), HttpStatus.OK);
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity getAll() {
-        return new ResponseEntity(dayGiayService.getAll(), HttpStatus.OK);
+    public ResponseEntity<?> getAll() {
+        return new ResponseEntity<>(dayGiayService.getAll(), HttpStatus.OK);
     }
 
-    private ResponseEntity getErrorJson(BindingResult result) {
+    private ResponseEntity<?> getErrorJson(BindingResult result) {
         if (result.hasErrors()) {
             List<String> fieldErrors = new ArrayList<>();
             for (FieldError fieldError : result.getFieldErrors()) {
@@ -70,7 +70,7 @@ public class RestDayGiayController {
                 fieldErrors.add(errorMessage);
             }
             String errorJson = JsonString.stringToJson(String.join(",", fieldErrors));
-            return new ResponseEntity(errorJson, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(errorJson, HttpStatus.BAD_REQUEST);
         }
         return null;
     }

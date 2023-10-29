@@ -63,6 +63,7 @@ public class DeGiayServiceImpl implements DeGiayService {
     private DeGiay getDeGiay(DeGiay deGiay, DeGiayRequest deGiayRequest) {
         deGiay.setTen(deGiayRequest.getTen());
         deGiay.setMoTa(deGiayRequest.getMoTa());
+        deGiay.setChatLieu(deGiayRequest.getChatLieu());
         deGiay.setTrangThai(deGiayRequest.getTrangThai() == null || deGiayRequest.getTrangThai() == 0 ? 0 : 1);
         return deGiay;
     }
