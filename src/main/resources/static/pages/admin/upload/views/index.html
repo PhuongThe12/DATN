@@ -93,7 +93,7 @@
     <div>
         <span ng-repeat="image in images">
             <label class="imageRelative">
-                <img ng-src="{{image.url}}" alt="{{image.name}}" loading="lazy" class="image-list product mx-2">
+                <img ng-src="{{image}}" loading="lazy" class="image-list product mx-2">
                 <div class="remove-icon-image-list justify-content-center text-center"
                      ng-click="removeImageFromList(image.name)"><i class="fas fa-times"></i></div>
             </label>

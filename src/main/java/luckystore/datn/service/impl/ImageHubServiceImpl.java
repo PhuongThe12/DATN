@@ -7,6 +7,8 @@ import luckystore.datn.service.ImageHubService;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,8 +21,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Comparator;
+import java.util.List;
 import java.util.ServiceLoader;
 
 @Service
@@ -36,8 +41,8 @@ public class ImageHubServiceImpl implements ImageHubService {
     private BienTheGiayRepository bienTheGiayRepository;
 
     @Override
-    public ResponseEntity<String> upload(MultipartFile[] files) {
-
+    public ResponseEntity<?> upload(MultipartFile[] files) {
+        List<String> result = new ArrayList<>();
         for (MultipartFile file : files) {
 
             try (InputStream inputStream = file.getInputStream()) {
@@ -49,9 +54,10 @@ public class ImageHubServiceImpl implements ImageHubService {
                     if (!Files.exists(uploadPath)) {
                         Files.createDirectories(uploadPath);
                     }
-                    Path filePath = uploadPath.resolve(System.currentTimeMillis() + file.getOriginalFilename());
+                    String fileName = System.currentTimeMillis() + file.getOriginalFilename();
+                    Path filePath = uploadPath.resolve(fileName);
                     Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-
+                    result.add(fileName);
                 } else {
                     throw new FileException("Không đúng định dạng");
                 }
@@ -60,7 +66,7 @@ public class ImageHubServiceImpl implements ImageHubService {
             }
         }
         
-        return new ResponseEntity<>("Tải ảnh thành công", HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @Override
@@ -75,19 +81,41 @@ public class ImageHubServiceImpl implements ImageHubService {
     }
 
     @Override
-    public String[] getFileNames() {
-        try {
-            File directory = new File(uploadDir);
-            String[] fileNames = directory.list();
+    public ResponseEntity<?> getImage(String[] fileNames) {
+        List<String> result = new ArrayList<>();
+        for (String filename : fileNames) {
+            try {
+                Path imagePath = Paths.get(uploadDir, filename);
+                Resource resource = new UrlResource(imagePath.toUri());
 
-            if (fileNames != null) {
-                Arrays.sort(fileNames, Comparator.reverseOrder());
-                return fileNames;
+                if (resource.exists() && resource.isReadable()) {
+                    byte[] imageBytes = Files.readAllBytes(imagePath);
+                    String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+                    result.add("data:image/jpeg;base64," + base64Image);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            return null;
-        } catch (Exception e) {
-            throw new FileException("Lỗi truy cập");
+            return ResponseEntity.notFound().build();
         }
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @Override
+    public String getImage(String filename) {
+        try {
+            Path imagePath = Paths.get(uploadDir, filename);
+            Resource resource = new UrlResource(imagePath.toUri());
+
+            if (resource.exists() && resource.isReadable()) {
+                byte[] imageBytes = Files.readAllBytes(imagePath);
+                String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+                return "data:image/jpeg;base64," + base64Image;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
