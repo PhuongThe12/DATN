@@ -91,7 +91,6 @@ app.controller("uploadController", function ($scope, $http, $location) {
         $scope.selectedImages = [];
         $scope.imageFiles = [];
         $scope.removeImage();
-        setTimeout(getImages, 3000);
     };
 
     const getImages = function () {

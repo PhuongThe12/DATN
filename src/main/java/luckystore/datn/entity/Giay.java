@@ -36,9 +36,6 @@ public class Giay {
     @Column(name = "NAM_SX")
     private Integer namSX;
 
-    @Column(name = "HINH_ANH")
-    private String hinhAnh;
-
     @Column(name = "TRANG_THAI")
     private Integer trangThai;
 
