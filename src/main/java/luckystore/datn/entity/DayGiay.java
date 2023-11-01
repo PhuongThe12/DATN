@@ -6,34 +6,41 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.Nationalized;
 
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
 @Entity
 @Table(name = "DayGiay")
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 public class DayGiay {
-
     @Id
-    @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
     private Long id;
 
-    @Column(name = "TEN")
+    @Size(max = 100)
+    @Nationalized
+    @Column(name = "TEN", length = 100)
     private String ten;
 
-    @Column(name = "MAU_SAC")
+    @Size(max = 100)
+    @Nationalized
+    @Column(name = "MAU_SAC", length = 100)
     private String mauSac;
 
-    @Column(name = "MO_TA")
+    @Size(max = 3000)
+    @Column(name = "MO_TA", length = 3000)
     private String moTa;
 
     @Column(name = "TRANG_THAI")
     private Integer trangThai;
+
+    @Column(name = "NGAY_TAO")
+    private LocalDateTime ngayTao;
 
 }

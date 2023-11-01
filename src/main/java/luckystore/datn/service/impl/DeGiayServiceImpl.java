@@ -26,7 +26,7 @@ public class DeGiayServiceImpl implements DeGiayService {
 
     @Override
     public List<DeGiayResponse> getAll() {
-        return deGiayRepo.findAllResponse();
+        return deGiayRepo.findAllActive();
     }
 
     @Override

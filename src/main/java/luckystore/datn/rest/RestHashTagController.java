@@ -30,39 +30,39 @@ public class RestHashTagController {
     private HashTagService hashTagService;
 
     @PostMapping
-    public ResponseEntity addHashTag(@Valid @RequestBody HashTagRequest hashTagRequest, BindingResult result) {
-        ResponseEntity errorJson = getErrorJson(result);
+    public ResponseEntity<?> addHashTag(@Valid @RequestBody HashTagRequest hashTagRequest, BindingResult result) {
+        ResponseEntity<?> errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
-        return new ResponseEntity(hashTagService.addHashTag(hashTagRequest), HttpStatus.OK);
+        return new ResponseEntity<>(hashTagService.addHashTag(hashTagRequest), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateHashTag(@PathVariable("id") Long id, @Valid @RequestBody HashTagRequest hashTagRequest, BindingResult result) {
-        ResponseEntity errorJson = getErrorJson(result);
+    public ResponseEntity<?> updateHashTag(@PathVariable("id") Long id, @Valid @RequestBody HashTagRequest hashTagRequest, BindingResult result) {
+        ResponseEntity<?> errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
-        return new ResponseEntity(hashTagService.updateHashTag(id, hashTagRequest), HttpStatus.OK);
+        return new ResponseEntity<>(hashTagService.updateHashTag(id, hashTagRequest), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getHashTag(@PathVariable("id") Long id) {
-        return new ResponseEntity(hashTagService.findById(id), HttpStatus.OK);
+    public ResponseEntity<?> getHashTag(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(hashTagService.findById(id), HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity getHashTagPage(@RequestParam(value = "page", defaultValue = "1") Integer page,
+    public ResponseEntity<?> getHashTagPage(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                         @RequestParam(value = "search", required = false) String searchText,
                                         @RequestParam(value = "status", required = false) Integer status) {
-        return new ResponseEntity(hashTagService.getPage(page, searchText, status), HttpStatus.OK);
+        return new ResponseEntity<>(hashTagService.getPage(page, searchText, status), HttpStatus.OK);
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity getAll() {
-        return new ResponseEntity(hashTagService.getAll(), HttpStatus.OK);
+    public ResponseEntity<?> getAll() {
+        return new ResponseEntity<>(hashTagService.getAll(), HttpStatus.OK);
     }
 
-    private ResponseEntity getErrorJson(BindingResult result) {
+    private ResponseEntity<?> getErrorJson(BindingResult result) {
         if (result.hasErrors()) {
             List<String> fieldErrors = new ArrayList<>();
             for (FieldError fieldError : result.getFieldErrors()) {
@@ -70,7 +70,7 @@ public class RestHashTagController {
                 fieldErrors.add(errorMessage);
             }
             String errorJson = JsonString.stringToJson(String.join(",", fieldErrors));
-            return new ResponseEntity(errorJson, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(errorJson, HttpStatus.BAD_REQUEST);
         }
         return null;
     }

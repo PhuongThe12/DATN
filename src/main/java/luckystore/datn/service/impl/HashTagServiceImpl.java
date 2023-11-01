@@ -26,7 +26,7 @@ public class HashTagServiceImpl implements HashTagService {
 
     @Override
     public List<HashTagResponse> getAll() {
-        return hashTagRepo.findAllResponse();
+        return hashTagRepo.findAllActive();
     }
 
     @Override

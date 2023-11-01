@@ -20,6 +20,12 @@ public interface KichThuocRepository extends JpaRepository<KichThuoc, Long> {
             "WHERE (:searchText IS NULL OR kt.ten LIKE %:searchText%) AND (:status IS NULL OR kt.trangThai = :status)")
     Page<KichThuocResponse> getPageResponse(String searchText, Integer status, Pageable pageable);
 
+
+    @Query("select new luckystore.datn.model.response.KichThuocResponse(kt) from KichThuoc kt " +
+            "where kt.trangThai = 1 order by kt.id desc ")
+    List<KichThuocResponse> findAllActive();
+
+
     Boolean existsByTen(String ten);
 
     Boolean existsByTenAndIdNot(String ten, Long id);

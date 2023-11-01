@@ -45,7 +45,7 @@ public class BienTheGiayResponse {
             this.barCode = bienTheGiay.getBarCode();
             this.trangThai = bienTheGiay.getTrangThai();
             this.mauSac = new MauSacResponse(bienTheGiay.getMauSac());
-            this.kichthuoc = new KichThuocResponse(bienTheGiay.getKichthuoc());
+            this.kichthuoc = new KichThuocResponse(bienTheGiay.getKichThuoc());
         }
     }
 
