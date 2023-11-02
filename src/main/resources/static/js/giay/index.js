@@ -15,27 +15,26 @@ app.config(function ($routeProvider, $locationProvider) {
         templateUrl: '/pages/admin/giay/views/add.html',
         controller: 'addGiayController'
     })
-        .otherwise({ redirectTo: '/list' });
+        .otherwise({redirectTo: '/list'});
 });
-app.controller('addGiayController', function ($scope, DetailEntityService) {
-
-    // $scope.modalCountry = "modalCountry";
-    // $scope.modalProvince = "modalProvince";
+app.controller('addGiayController', function ($scope, $http, $location, DetailEntityService) {
 
     $scope.selectedCoGiay = {};
 
-    $scope.selectedLotGiay = {};
-
-
     $scope.selectedMauSac = [];
     $scope.selectedKichThuoc = [];
-
+    $scope.selectedHashTag = [];
 
     $scope.selectedMauSacs = [];
+    $scope.selectedKichThuocs = [];
 
     $scope.changeSelectedKichThuoc = function () {
         // Sao chép selectedMauSacs
-        var selectedMauSacsCopy = angular.copy($scope.selectedMauSacs);
+        let selectedMauSacsCopy = angular.copy($scope.selectedMauSacs);
+        const length = $scope.selectedMauSacs.length;
+        for (let i = 0; i < length; i++) {
+            selectedMauSacsCopy[i].hinhAnh = $scope.selectedMauSacs[i].hinhAnh;
+        }
 
         // Kiểm tra và cập nhật selectedMauSacs dựa trên selectedMauSac
         $scope.selectedMauSac.forEach(function (mauSac) {
@@ -63,7 +62,7 @@ app.controller('addGiayController', function ($scope, DetailEntityService) {
         // Xóa các màu không tồn tại trong selectedMauSac
         selectedMauSacsCopy = selectedMauSacsCopy.filter(function (mauSac) {
             return $scope.selectedMauSac.some(function (ms) {
-                return ms.id === mauSac.id && ms.status == 'active'; // update thì bỏ && ...
+                return ms.id === mauSac.id && ms.status === 'active'; // update thì bỏ && ...
             });
         });
 
@@ -84,13 +83,26 @@ app.controller('addGiayController', function ($scope, DetailEntityService) {
         selectedMauSacsCopy.forEach(function (mauSac) {
             mauSac.selectedKichThuocs = mauSac.selectedKichThuocs.filter(function (kt) {
                 return $scope.selectedKichThuoc.some(function (kth) {
-                    return kth.id === kt.id && kth.status == 'active';
+                    return kth.id === kt.id && kth.status === 'active';
                 });
             });
         });
 
+
         // Cập nhật $scope.selectedMauSacs
         $scope.selectedMauSacs = selectedMauSacsCopy;
+
+        setTimeout(function () {
+            $scope.selectedMauSacs.forEach(mauSac => {
+                if (mauSac.hinhAnh) {
+                    loadImage(mauSac.hinhAnh, 'selectedColorImage' + mauSac.id);
+                    const imageElement = document.getElementById('selectedColorImage' + mauSac.id);
+                    imageElement.parentElement.nextElementSibling.style.display = 'none';
+                    imageElement.parentElement.parentElement.nextElementSibling.style.display = 'block';
+                }
+            })
+        }, 0);
+
 
     }
 
@@ -102,8 +114,14 @@ app.controller('addGiayController', function ($scope, DetailEntityService) {
     $scope.showSelectedColorImage = function (e, input) {
         $scope.$apply(function () {
             if (e.target.files && e.target.files[0]) {
-                loadImage(e.target.files[0], input.id.replace('imageColorInput', 'selectedColorImage'));
+                const file = e.target.files[0];
+                if (!isImage(file.name)) {
+                    toastr["error"]("Chỉ cho phép định dạng jpg/png/jpeg");
+                    return;
+                }
+                loadImage(file, input.id.replace('imageColorInput', 'selectedColorImage'));
                 document.getElementById('imageTextContainer' + input.id.replace('imageColorInput', '')).style.display = 'none';
+                $scope.selectedMauSacs[input.getAttribute("ms-index")].hinhAnh = file;
                 input.parentElement.nextElementSibling.style.display = 'block';
             }
         });
@@ -113,25 +131,30 @@ app.controller('addGiayController', function ($scope, DetailEntityService) {
     $scope.showSelectedImage = function (e, image) {
         $scope.$apply(function () {
             if (e.target.files && e.target.files[0]) {
+                const file = event.target.files[0];
+                if (!isImage(file.name)) {
+                    toastr["error"]("Chỉ cho phép định dạng jpg/png/jpeg");
+                    return;
+                }
                 switch (image) {
                     case 2:
-                        $scope.image2 = event.target.files[0];
+                        $scope.image2 = file;
                         loadImage($scope.image2, 'selectedImage2');
                         break;
                     case 3:
-                        $scope.image3 = event.target.files[0];
+                        $scope.image3 = file;
                         loadImage($scope.image3, 'selectedImage3');
                         break;
                     case 4:
-                        $scope.image4 = event.target.files[0];
+                        $scope.image4 = file;
                         loadImage($scope.image4, 'selectedImage4');
                         break;
                     case 5:
-                        $scope.image5 = event.target.files[0];
+                        $scope.image5 = file;
                         loadImage($scope.image5, 'selectedImage5');
                         break;
                     default:
-                        $scope.image1 = event.target.files[0];
+                        $scope.image1 = file;
                         loadImage($scope.image1, 'selectedImage1');
                         break;
                 }
@@ -139,6 +162,11 @@ app.controller('addGiayController', function ($scope, DetailEntityService) {
 
         });
 
+    }
+
+    function isImage(fileName) {
+        const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+        return allowedExtensions.test(fileName);
     }
 
     //Load selected image function
@@ -157,9 +185,9 @@ app.controller('addGiayController', function ($scope, DetailEntityService) {
         document.getElementById('selectedColorImage' + id).src = '';
         document.getElementById('selectedColorImage' + id).style.display = 'none';
         document.getElementById('imageColorInput' + id).value = '';
-        $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].hinhAnh = null;
+        $scope.selectedMauSacs[msIndex].hinhAnh = null;
 
-        if (e.target.tagName == 'I') {
+        if (e.target.tagName === 'I') {
             e.target.parentElement.style.display = 'none';
         } else {
             e.target.style.display = 'none';
@@ -185,311 +213,243 @@ app.controller('addGiayController', function ($scope, DetailEntityService) {
     };
 
     //Select lot giay
-    $scope.lotGiays = [
-        {
-            "id": 1,
-            "ten": "BOOST",
-            "moTa": "Ra m?t l?n d?u tiên vào nam 2013, công ngh? BOOST c?a Adidas dã gây lên “con s?t” trên toàn c?u. Boost là ch?t li?u d?m giày có kh? nang hoàn tr? nang lu?ng t?i uu nh?t so v?i nh?ng ch?t li?u khác.",
-            "trangThai": 1
-        },
-        {
-            "id": 3,
-            "ten": "CLOUDFOAM",
-            "moTa": "B?n có th? c?m nh?n dôi giày này nhu chính cái tên c?a nó Cloudfoam – b?t mây ngay t? khi d?t chân vào dôi giày. Nh? nhàng",
-            "trangThai": 1
-        }
-    ];
+    $scope.lotGiays = [];
+    setTimeout(function () {
+        $http.get(host + "/admin/rest/lot-giay/get-all")
+            .then(function (response) {
+                $scope.lotGiays = response.data;
+                $scope.selectedLotGiay = $scope.lotGiays[0] ? $scope.lotGiays[0] : {};
+            })
+            .catch(function (error) {
+                toastr["error"]("Lấy dữ liệu lót giày thất bại");
+                // window.location.href = feHost + '/trang-chu';
+            });
+    }, 0);
 
     //Select de giay
-    $scope.deGiays = [
-        {
-            "id": 1,
-            "ten": "BOOST",
-            "moTa": "Ra m?t l?n d?u tiên vào nam 2013, công ngh? BOOST c?a Adidas dã gây lên “con s?t” trên toàn c?u. Boost là ch?t li?u d?m giày có kh? nang hoàn tr? nang lu?ng t?i uu nh?t so v?i nh?ng ch?t li?u khác.",
-            "trangThai": 1
-        },
-        {
-            "id": 3,
-            "ten": "CLOUDFOAM",
-            "moTa": "B?n có th? c?m nh?n dôi giày này nhu chính cái tên c?a nó Cloudfoam – b?t mây ngay t? khi d?t chân vào dôi giày. Nh? nhàng",
-            "trangThai": 1
-        }
-    ];
-
+    $scope.deGiays = [];
+    setTimeout(function () {
+        $http.get(host + "/admin/rest/de-giay/get-all")
+            .then(function (response) {
+                $scope.deGiays = response.data;
+                $scope.selectedDeGiay = $scope.deGiays[0] ? $scope.deGiays[0] : {};
+            })
+            .catch(function (error) {
+                toastr["error"]("Lấy dữ liệu đế giày thất bại");
+                // window.location.href = feHost + '/trang-chu';
+            });
+    }, 0);
     //Select mui giay
-    $scope.muiGiays = [
-        {
-            "id": 1,
-            "ten": "Mui giay 1",
-            "moTa": "Mui giay",
-            "trangThai": 1
-        },
-        {
-            "id": 2,
-            "ten": "Round Toe",
-            "moTa": "Mui giày d?u tròn (Round Toe) là m?t lo?i mui giày ph? bi?n trong h?u h?t các lo?i giày th? thao. Ð?c di?m chính c?a mui giày d?u tròn là hình d?ng tròn",
-            "trangThai": 1
-        },
-        {
-            "id": 3,
-            "ten": "Pointed Toe",
-            "moTa": "Mui giày d?u nh?n (Pointed Toe) là m?t lo?i mui giày có hình d?ng hoi nh?n ? ph?n d?u. Thu?ng du?c s? d?ng trong các lo?i giày th? thao th?i trang và mang l?i m?t di?n m?o sang tr?ng và n?i b?t. ",
-            "trangThai": 1
-        },
-        {
-            "id": 4,
-            "ten": "Square Toe",
-            "moTa": "Mui giày vuông (Square Toe) là m?t lo?i mui giày có hình d?ng vuông góc ? ph?n d?u. Ðây là m?t ki?u mui giày ph? bi?n trong các lo?i giày th? thao nhu giày bóng r?",
-            "trangThai": 1
-        }
-    ];
+    $scope.muiGiays = [];
+    setTimeout(function () {
+        $http.get(host + "/admin/rest/mui-giay/get-all")
+            .then(function (response) {
+                $scope.muiGiays = response.data;
+                $scope.selectedMuiGiay = $scope.muiGiays[0] ? $scope.muiGiays[0] : {};
+            })
+            .catch(function (error) {
+                toastr["error"]("Lấy dữ liệu mũi giày thất bại");
+                // window.location.href = feHost + '/trang-chu';
+            });
+    }, 0);
 
     //Select co giay
+    $scope.coGiays = [];
+    setTimeout(function () {
+        $http.get(host + "/admin/rest/co-giay/get-all")
+            .then(function (response) {
+                $scope.coGiays = response.data;
+                $scope.selectedCoGiay = $scope.coGiays[0] ? $scope.coGiays[0] : {};
+            })
+            .catch(function (error) {
+                toastr["error"]("Lấy dữ liệu cổ giày thất bại");
+                // window.location.href = feHost + '/trang-chu';
+            });
+    }, 0);
 
     //Select thuong hieu
+    $scope.thuongHieus = [];
+    setTimeout(function () {
+        $http.get(host + "/admin/rest/thuong-hieu/get-all")
+            .then(function (response) {
+                $scope.thuongHieus = response.data;
+                $scope.selectedThuongHieu = $scope.thuongHieus[0] ? $scope.thuongHieus[0] : {};
+            })
+            .catch(function (error) {
+                toastr["error"]("Lấy dữ liệu thương hiệu thất bại");
+                // window.location.href = feHost + '/trang-chu';
+            });
+    }, 0);
 
     //Select chat lieu
+    $scope.chatLieus = [];
+    setTimeout(function () {
+        $http.get(host + "/admin/rest/chat-lieu/get-all")
+            .then(function (response) {
+                $scope.chatLieus = response.data;
+                $scope.selectedChatLieu = $scope.chatLieus[0] ? $scope.chatLieus[0] : {};
+            })
+            .catch(function (error) {
+                toastr["error"]("Lấy dữ liệu chất liệu thất bại");
+                // window.location.href = feHost + '/trang-chu';
+            });
+    }, 0);
 
     //Select day giay
+    $scope.dayGiays = [];
+    setTimeout(function () {
+        $http.get(host + "/admin/rest/day-giay/get-all")
+            .then(function (response) {
+                $scope.dayGiays = response.data;
+                $scope.selectedDayGiay = $scope.dayGiays[0] ? $scope.dayGiays[0] : {};
+            })
+            .catch(function (error) {
+                toastr["error"]("Lấy dữ liệu dây giày thất bại");
+                // window.location.href = feHost + '/trang-chu';
+            });
+    }, 0);
 
     //Select mau sac
-    $scope.mauSacs = [
-        {
-            "id": 1,
-            "maMau": "#e6e6fa",
-            "ten": "Tím nh?t",
-            "moTa": "123456",
-            "trangThai": 1
-        },
-        {
-            "id": 2,
-            "maMau": "#0000ff",
-            "ten": "xanh duong",
-            "moTa": null,
-            "trangThai": 1
-        },
-        {
-            "id": 3,
-            "maMau": null,
-            "ten": "I",
-            "moTa": null,
-            "trangThai": 0
-        },
-        {
-            "id": 10002,
-            "maMau": null,
-            "ten": "Cat",
-            "moTa": null,
-            "trangThai": 0
-        },
-        {
-            "id": 10003,
-            "maMau": null,
-            "ten": "g",
-            "moTa": null,
-            "trangThai": 0
-        },
-        {
-            "id": 10004,
-            "maMau": null,
-            "ten": "A",
-            "moTa": null,
-            "trangThai": 1
-        },
-        {
-            "id": 10005,
-            "maMau": null,
-            "ten": "phuong2",
-            "moTa": null,
-            "trangThai": 1
-        },
-        {
-            "id": 10006,
-            "maMau": null,
-            "ten": "phuongthe3",
-            "moTa": null,
-            "trangThai": 1
-        },
-        {
-            "id": 10007,
-            "maMau": null,
-            "ten": "phuongthe4",
-            "moTa": null,
-            "trangThai": 1
-        },
-        {
-            "id": 10008,
-            "maMau": null,
-            "ten": "phuongthe5",
-            "moTa": null,
-            "trangThai": 1
-        },
-        {
-            "id": 10009,
-            "maMau": null,
-            "ten": "phuongthe6",
-            "moTa": null,
-            "trangThai": 1
-        },
-        {
-            "id": 10010,
-            "maMau": null,
-            "ten": "phuongthe7",
-            "moTa": null,
-            "trangThai": 1
-        },
-        {
-            "id": 10011,
-            "maMau": null,
-            "ten": "phuongthe8",
-            "moTa": null,
-            "trangThai": 1
-        },
-        {
-            "id": 10012,
-            "maMau": null,
-            "ten": "Tr?ng",
-            "moTa": null,
-            "trangThai": 1
-        },
-        {
-            "id": 10013,
-            "maMau": null,
-            "ten": "Ðen",
-            "moTa": null,
-            "trangThai": 1
-        },
-        {
-            "id": 10014,
-            "maMau": null,
-            "ten": "Xanh",
-            "moTa": null,
-            "trangThai": 1
-        },
-        {
-            "id": 20004,
-            "maMau": "#0000ff",
-            "ten": "xanh duong",
-            "moTa": null,
-            "trangThai": 1
-        }
-    ];
+    $scope.mauSacs = [];
+    setTimeout(function () {
+        $http.get(host + "/admin/rest/mau-sac/get-all")
+            .then(function (response) {
+                $scope.mauSacs = response.data;
+            })
+            .catch(function (error) {
+                toastr["error"]("Lấy dữ liệu màu sắc thất bại");
+                // window.location.href = feHost + '/trang-chu';
+            });
+    }, 0);
 
     //Select size
-    $scope.kichThuocs = [
-        {
-            "id": 1,
-            "ten": "36",
-            "chieuDai": 23.0,
-            "chieuRong": 9.0,
-            "moTa": null,
-            "trangThai": 1
-        },
-        {
-            "id": 2,
-            "ten": "37",
-            "chieuDai": 23.5,
-            "chieuRong": 10.0,
-            "moTa": null,
-            "trangThai": 1
-        },
-        {
-            "id": 3,
-            "ten": "38",
-            "chieuDai": 24.0,
-            "chieuRong": 9.5,
-            "moTa": null,
-            "trangThai": 1
-        },
-        {
-            "id": 4,
-            "ten": "39",
-            "chieuDai": 24.5,
-            "chieuRong": 9.5,
-            "moTa": null,
-            "trangThai": 1
-        },
-        {
-            "id": 5,
-            "ten": "40",
-            "chieuDai": 25.0,
-            "chieuRong": 10.0,
-            "moTa": null,
-            "trangThai": 1
-        },
-        {
-            "id": 6,
-            "ten": "42",
-            "chieuDai": 26.0,
-            "chieuRong": 10.5,
-            "moTa": null,
-            "trangThai": 1
-        },
-        {
-            "id": 7,
-            "ten": "41",
-            "chieuDai": 25.5,
-            "chieuRong": 10.0,
-            "moTa": null,
-            "trangThai": 1
-        }
-    ]
+    $scope.kichThuocs = [];
+    setTimeout(function () {
+        $http.get(host + "/admin/rest/kich-thuoc/get-all")
+            .then(function (response) {
+                $scope.kichThuocs = response.data;
+            })
+            .catch(function (error) {
+                toastr["error"]("Lấy dữ liệu kích thước thất bại");
+                // window.location.href = feHost + '/trang-chu';
+            });
+    }, 0);
 
     //Select hashtag
-    $scope.hashTags = [
-        {
-            "id": 1,
-            "ten": "giaydep",
-            "moTa": null,
-            "trangThai": 1
-        },
-        {
-            "id": 2,
-            "ten": "giaysinhvien",
-            "moTa": null,
-            "trangThai": 1
-        },
-        {
-            "id": 3,
-            "ten": "giaynam",
-            "moTa": null,
-            "trangThai": 1
-        },
-        {
-            "id": 4,
-            "ten": "giaynike",
-            "moTa": null,
-            "trangThai": 1
-        },
-        {
-            "id": 1,
-            "ten": "giaydep",
-            "moTa": null,
-            "trangThai": 1
-        },
-        {
-            "id": 2,
-            "ten": "giaysinhvien",
-            "moTa": null,
-            "trangThai": 1
-        },
-        {
-            "id": 3,
-            "ten": "giaynam",
-            "moTa": null,
-            "trangThai": 1
-        },
-        {
-            "id": 4,
-            "ten": "giaynike",
-            "moTa": null,
-            "trangThai": 1
-        }
-    ]
+    $scope.hashTags = [];
+    setTimeout(function () {
+        $http.get(host + "/admin/rest/hash-tag/get-all")
+            .then(function (response) {
+                $scope.hashTags = response.data;
+            })
+            .catch(function (error) {
+                toastr["error"]("Lấy dữ liệu hash tag thất bại");
+                // window.location.href = feHost + '/trang-chu';
+            });
+    }, 0);
 
-    $scope.send = function () {
-        $scope.selectedMauSacs.forEach(function (varient) {
-            varient.hinhAnh = document.getElementById('imageColorInput' + varient.id).files[0];
+    $scope.setBarcode = function (msIndex, ktIndex) {
+        $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].barcode = new Date().getTime();
+    }
+
+    $scope.submitData = function () {
+
+        // if (!isValid()) {
+        //     return;
+        // }
+
+        let giayRequest = {};
+
+        let imagePromises = [];
+        if ($scope.image1) {
+            imagePromises.push(getBase64($scope.image1).then(data => giayRequest.image1 = data + ""));
+        }
+        if ($scope.image2) {
+            imagePromises.push(getBase64($scope.image2).then(data => giayRequest.image2 = data + ""));
+        }
+        if ($scope.image3) {
+            imagePromises.push(getBase64($scope.image3).then(data => giayRequest.image3 = data + ""));
+        }
+        if ($scope.image4) {
+            imagePromises.push(getBase64($scope.image4).then(data => giayRequest.image4 = data + ""));
+        }
+        if ($scope.image5) {
+            imagePromises.push(getBase64($scope.image5).then(data => giayRequest.image5 = data + ""));
+        }
+
+        giayRequest.ten = $scope.ten;
+        giayRequest.namSX = $scope.namSX;
+        giayRequest.lotGiayId = $scope.selectedLotGiay.id;
+        giayRequest.muiGiayId = $scope.selectedMuiGiay.id;
+        giayRequest.coGiayId = $scope.selectedCoGiay.id;
+        giayRequest.thuongHieuId = $scope.selectedThuongHieu.id;
+        giayRequest.chatLieuId = $scope.selectedChatLieu.id;
+        giayRequest.dayGiayId = $scope.selectedDayGiay.id;
+        giayRequest.deGiayId = $scope.selectedDeGiay.id;
+        giayRequest.trangThai = $scope.trangThai;
+        giayRequest.moTa = $scope.moTa;
+        giayRequest.hashTagIds = $scope.selectedHashTag.map(hashTag => hashTag.id);
+        giayRequest.mauSacImages = {};
+
+        let bienTheGiays = [];
+        async function processMauSac(mauSac) {
+            if (mauSac.hinhAnh) {
+                let mauSacImage = await getBase64(mauSac.hinhAnh);
+                giayRequest.mauSacImages[mauSac.id] = mauSacImage + "";
+            }
+            mauSac.selectedKichThuocs.forEach(kichThuoc => {
+                let bienTheGiay = {
+                    mauSacId: mauSac.id,
+                    kichThuocId: kichThuoc.id,
+                    giaNhap: kichThuoc.giaNhap,
+                    soLuong: kichThuoc.soLuong,
+                    giaBan: kichThuoc.giaBan,
+                    trangThai: kichThuoc.trangThai,
+                    barcode: kichThuoc.barcode
+                }
+                bienTheGiays.push(bienTheGiay);
+            });
+        }
+
+        Promise.all(imagePromises)
+            .then(() => {
+                Promise.all($scope.selectedMauSacs.map(processMauSac))
+                    .then(() => {
+                        giayRequest.bienTheGiays = bienTheGiays;
+
+                        $http.post(host + '/admin/rest/giay/add', JSON.stringify(giayRequest))
+                            .then(function (response) {
+                                toastr["success"]("Thêm thành công");
+                                $location.path("/list");
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                                $scope.addGiayForm.ten.$dirty = false;
+                                $scope.addGiayForm.moTa.$dirty = false;
+                                $scope.addGiayForm.namSX.$dirty = false;
+                                $scope.errors = error.data;
+                                toastr["error"]("Thêm thất bại");
+                                // window.location.href = feHost + '/trang-chu';
+                            });
+                    })
+                    .catch(error => {
+                        console.error("Lỗi xử lý dữ liệu:", error);
+                    });
+            });
+
+
+    };
+    let isValid = function () {
+        alert('Chú ý');
+        return false;
+    }
+
+    function getBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
         });
     }
 
@@ -503,7 +463,7 @@ app.controller('giayListController', function ($scope) {
 
 });
 
-app.controller ('detailGiayController', function ($scope) {
+app.controller('detailGiayController', function ($scope) {
 
 });
 //combobox chung
@@ -531,15 +491,21 @@ app.directive('customSelect', function ($injector) {
                 $scope.isActive = false;
             };
 
-            if ($scope.ngModel && $scope.items) {
-                var selectedItem = $scope.items.find((item) => item.id == $scope.ngModel.id);
-                if (selectedItem) { $scope.selectItem(selectedItem); }
-            }
+            $scope.$watch('ngModel', function (newNgModel, oldNgModel) {
+                if (!oldNgModel && newNgModel || newNgModel && newNgModel.id !== oldNgModel.id) {
+                    if ($scope.items) {
+                        var selectedItem = $scope.items.find((item) => item.id === newNgModel.id);
+                        if (selectedItem) {
+                            $scope.selectItem(selectedItem);
+                        }
+                    }
+                }
+            }, true);
 
             $scope.showDetailComboboxModal = function (title, item) {
                 event.stopPropagation();
                 var DetailEntityService = $injector.get('DetailEntityService');
-                let detailEntity = { title: title, ...item };
+                let detailEntity = {title: title, ...item};
                 DetailEntityService.setDetailEntity(detailEntity);
 
                 setTimeout(function () {
@@ -606,11 +572,11 @@ app.directive('customInput', function () {
                     $scope.items.splice(index, 1);
                 }
 
-                if ($scope.selectType == "mausac") {
+                if ($scope.selectType === "mausac") {
                     setTimeout(function () {
                         document.getElementById('inputChangeMauSac').click();
                     }, 0);
-                } else if ($scope.selectType == "kichthuoc") {
+                } else if ($scope.selectType === "kichthuoc") {
                     setTimeout(function () {
                         document.getElementById('inputChangeKichThuoc').click();
                     }, 0);
@@ -632,11 +598,11 @@ app.directive('customInput', function () {
                     tag.status = 'disabled';
                     $scope.items.push(tag);
                 }
-                if ($scope.selectType == "mausac") {
+                if ($scope.selectType === "mausac") {
                     setTimeout(function () {
                         document.getElementById('inputChangeMauSac').click();
                     }, 0);
-                } else if ($scope.selectType == "kichthuoc") {
+                } else if ($scope.selectType === "kichthuoc") {
                     setTimeout(function () {
                         document.getElementById('inputChangeKichThuoc').click();
                     }, 0);

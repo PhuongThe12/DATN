@@ -65,10 +65,10 @@ public class GiayResponse {
         }
     }
 
-    public GiayResponse(Long id, String ten, List<HinhAnh> lstAnh) {
+    public GiayResponse(Long id, String ten) {
         this.id = id;
         this.ten = ten;
-        this.lstAnh = lstAnh.stream().map(HinhAnh::getLink).collect(Collectors.toList());
+//        this.lstAnh = lstAnh.stream().map(HinhAnh::getLink).collect(Collectors.toList());
     }
 
 }

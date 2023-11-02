@@ -14,7 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -22,11 +25,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
-import java.util.Comparator;
 import java.util.List;
-import java.util.ServiceLoader;
 
 @Service
 public class ImageHubServiceImpl implements ImageHubService {
@@ -65,7 +65,7 @@ public class ImageHubServiceImpl implements ImageHubService {
                 throw new FileException("Lỗi truy cập dường dẫn ảnh");
             }
         }
-        
+
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -102,6 +102,35 @@ public class ImageHubServiceImpl implements ImageHubService {
     }
 
     @Override
+    public String base64ToFile(String base64Data) {
+        String filename = System.currentTimeMillis() + ".txt";
+        String filePath = uploadDir + "/" + filename;
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
+            writer.write(base64Data);
+            writer.close();
+            return filename;
+        } catch (IOException e) {
+            throw new FileException("Lỗi đọc file");
+        }
+    }
+
+
+    @Override
+    public String getBase64FromFile(String filename) {
+        String filePath = uploadDir + "/" + filename;
+
+        try {
+            byte[] encoded = Files.readAllBytes(Paths.get(filePath));
+
+            return new String(Files.readAllBytes(Paths.get(filePath)));
+
+        } catch (IOException e) {
+            throw new FileException("Lỗi đọc file");
+        }
+    }
+
+    @Override
     public String getImage(String filename) {
         try {
             Path imagePath = Paths.get(uploadDir, filename);
@@ -120,10 +149,6 @@ public class ImageHubServiceImpl implements ImageHubService {
 
     @Override
     public String deleteFile(String name) {
-
-        if (giayRepository.checkImageUsed(name) || bienTheGiayRepository.existsByHinhAnh(name)) {
-            throw new FileException("Ảnh đã được sử dụng. Không thể xóa");
-        }
         Path path = Paths.get(uploadDir + "/" + name);
         try {
             Files.delete(path);

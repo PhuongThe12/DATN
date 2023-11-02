@@ -12,13 +12,19 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Nationalized;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -39,8 +45,6 @@ public class BienTheGiay {
     @Column(name = "GIA_NHAP")
     private BigDecimal giaNhap;
 
-    @Nationalized
-    @Lob
     @Column(name = "HINH_ANH")
     private String hinhAnh;
 

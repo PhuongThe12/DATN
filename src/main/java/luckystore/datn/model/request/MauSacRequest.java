@@ -23,7 +23,7 @@ public class MauSacRequest {
     private String maMau;
 
     @NotNull(message = "Không được để trống tên")
-    @Length(message = "Tên không được vượt quá 50 ký tự")
+    @Length(message = "Tên không được vượt quá 100 ký tự", max = 100)
     private String ten;
 
     private String moTa;

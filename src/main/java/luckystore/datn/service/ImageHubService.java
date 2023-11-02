@@ -16,6 +16,11 @@ public interface ImageHubService {
 
     public ResponseEntity<?> getImage(String[] fileNames);
 
+
+    String getBase64FromFile(String filename);
+
+    public String base64ToFile(String base64Data);
+
     String deleteFile(String name);
 
     String getImage(String filename);

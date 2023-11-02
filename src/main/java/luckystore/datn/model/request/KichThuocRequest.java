@@ -18,7 +18,7 @@ public class KichThuocRequest {
     private Long id;
 
     @NotNull(message = "Không được để trống tên")
-    @Length(message = "Tên không được vượt quá 50 ký tự")
+    @Length(message = "Tên không được vượt quá 100 ký tự", max = 100)
     private String ten;
 
     @NotNull(message = "Không được để trống chiều rộng")

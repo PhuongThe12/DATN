@@ -28,4 +28,6 @@ public interface HashTagRepository extends JpaRepository<HashTag, Long> {
     Boolean existsByTen(String ten);
 
     Boolean existsByTenAndIdNot(String ten, Long id);
+
+    List<HashTag> findByIdIn(List<Long> ids);
 }

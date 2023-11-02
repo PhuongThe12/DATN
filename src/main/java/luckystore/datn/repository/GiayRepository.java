@@ -14,13 +14,14 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
     @Query("select new luckystore.datn.model.response.GiayResponse(g) from Giay g  where g.trangThai = 1")
     List<GiayResponse> findAllByTrangThai(Integer trangThai);
 
-    @Query("select new luckystore.datn.model.response.GiayResponse(g.id, g.ten, g.lstAnh) from Giay g  where g.trangThai = 1")
+    @Query("select new luckystore.datn.model.response.GiayResponse(g.id, g.ten) from Giay g  where g.trangThai = 1")
     List<GiayResponse> findAllActive();
 
     @Query("select new luckystore.datn.model.response.GiayResponse(g) from Giay g where g.id in :ids")
     List<GiayResponse> findAllContains(List<Long> ids);
 
-    @Query("select count(g) > 0 from Giay g join g.lstAnh lst where lst.link = :link")
-    Boolean checkImageUsed(String link);
+    Boolean existsByTen(String ten);
+
+    Boolean existsByTenAndIdNot(String ten, Long id);
 
 }
