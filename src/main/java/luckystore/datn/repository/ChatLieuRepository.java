@@ -19,6 +19,10 @@ public interface ChatLieuRepository extends JpaRepository<ChatLieu, Long> {
             "WHERE (:searchText IS NULL OR cl.ten LIKE %:searchText%) AND (:status IS NULL OR cl.trangThai = :status)")
     Page<ChatLieuResponse> getPageResponse(String searchText, Integer status, Pageable pageable);
 
+    @Query("select new luckystore.datn.model.response.ChatLieuResponse(cl) from ChatLieu cl " +
+            "where cl.trangThai = 1 order by cl.id desc")
+    List<ChatLieuResponse> findAllActive();
+
     Boolean existsByTen(String ten);
 
     Boolean existsByTenAndIdNot(String ten, Long id);

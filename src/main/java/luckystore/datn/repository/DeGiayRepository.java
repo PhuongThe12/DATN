@@ -19,6 +19,12 @@ public interface DeGiayRepository extends JpaRepository<DeGiay, Long> {
             "WHERE (:searchText IS NULL OR dg.ten LIKE %:searchText%) AND (:status IS NULL OR dg.trangThai = :status)")
     Page<DeGiayResponse> getPageResponse(String searchText, Integer status, Pageable pageable);
 
+
+    @Query("select new luckystore.datn.model.response.DeGiayResponse(dg) from DeGiay dg " +
+            "where dg.trangThai = 1 order by dg.id desc ")
+    List<DeGiayResponse> findAllActive();
+
+
     Boolean existsByTen(String ten);
 
     Boolean existsByTenAndIdNot(String ten, Long id);

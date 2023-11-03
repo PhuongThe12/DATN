@@ -3,30 +3,30 @@
 <form name="deGiayForm" ng-submit="updateDeGiay()">
     <div class="form-group">
         <label for="deGiayTen">Tên: </label>
-        <input type="text" class="form-control" id="deGiayTen" name="ten" ng-model="deGiay.ten" ng-maxlength="50" ng-required="true"
+        <input type="text" class="form-control" id="deGiayTen" name="ten" ng-model="deGiay.ten" ng-maxlength="100" ng-required="true"
                ng-change="change(deGiayForm.ten)">
-        <small class="error-message" ng-show="(deGiayForm.ten.$dirty || deGiayForm.ten.$touched) && deGiayForm.ten.$error.required">Không được để
+        <small class="text-danger" ng-show="(deGiayForm.ten.$dirty || deGiayForm.ten.$touched) && deGiayForm.ten.$error.required">Không được để
             trống tên</small>
-        <small class="error-message" ng-show="(deGiayForm.ten.$dirty || deGiayForm.ten.$touched) && deGiayForm.ten.$error.maxlength">Tên không được
+        <small class="text-danger" ng-show="(deGiayForm.ten.$dirty || deGiayForm.ten.$touched) && deGiayForm.ten.$error.maxlength">Tên không được
             vượt quá 50 ký tự</small>
-        <small class="error-message" ng-show="errors.ten && !deGiayForm.ten.$dirty">{{errors.ten}}</small>
+        <small class="text-danger" ng-show="errors.ten && !deGiayForm.ten.$dirty">{{errors.ten}}</small>
     </div>
 
     <div class="form-group">
         <label for="deGiayChatLieu">Màu sắc: </label>
         <input type="text" class="form-control" id="deGiayChatLieu" name="chatLieu" ng-model="deGiay.chatLieu" ng-maxlength="50" ng-required="true"
                ng-change="change(deGiayForm.chatLieu)">
-        <small class="error-message" ng-show="(deGiayForm.chatLieu.$dirty || deGiayForm.chatLieu.$touched) && deGiayForm.chatLieu.$error.required">Không được để
+        <small class="text-danger" ng-show="(deGiayForm.chatLieu.$dirty || deGiayForm.chatLieu.$touched) && deGiayForm.chatLieu.$error.required">Không được để
             trống chất liệu</small>
-        <small class="error-message" ng-show="(deGiayForm.chatLieu.$dirty || deGiayForm.chatLieu.$touched) && deGiayForm.chatLieu.$error.maxlength">Chất liệu không được
-            vượt quá 50 ký tự</small>
-        <small class="error-message" ng-show="errors.chatLieu && !deGiayForm.chatLieu.$dirty">{{errors.chatLieu}}</small>
+        <small class="text-danger" ng-show="(deGiayForm.chatLieu.$dirty || deGiayForm.chatLieu.$touched) && deGiayForm.chatLieu.$error.maxlength">Chất liệu không được
+            vượt quá 100 ký tự</small>
+        <small class="text-danger" ng-show="errors.chatLieu && !deGiayForm.chatLieu.$dirty">{{errors.chatLieu}}</small>
     </div>
 
     <div class="form-group">
         <label for="deGiayMoTa">Mô tả: </label>
         <textarea class="form-control" id="deGiayMoTa" name="moTa" rows="3" ng-model="deGiay.moTa" ng-change="change(deGiayForm.moTa)"></textarea>
-        <small class="error-message" ng-show="errors.moTa && !deGiayForm.moTa.$dirty">{{errors.moTa}}</small>
+        <small class="text-danger" ng-show="errors.moTa && !deGiayForm.moTa.$dirty">{{errors.moTa}}</small>
     </div>
 
     <div class="form-group">
@@ -36,7 +36,7 @@
                    ng-false-value="0" ng-init="deGiay.trangThai = 1">
             <label class="form-check-label" for="deGiayTrangThai">Đang kinh doanh</label>
         </div>
-        <small class="error-message" ng-show="errors.trangThai && !deGiayForm.trangThai.$dirty">{{errors.trangThai}}</small>
+        <small class="text-danger" ng-show="errors.trangThai && !deGiayForm.trangThai.$dirty">{{errors.trangThai}}</small>
     </div>
     <button type="submit" class="btn btn-primary">Cập nhật</button>
 </form>

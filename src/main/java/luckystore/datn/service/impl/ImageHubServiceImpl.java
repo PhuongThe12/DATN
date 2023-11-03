@@ -7,37 +7,60 @@ import luckystore.datn.service.ImageHubService;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.ServiceLoader;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
 
 @Service
 public class ImageHubServiceImpl implements ImageHubService {
 
     @Value("${file.upload-dir}")
+    private static String uploadDirStatic;
+    @Value("${file.upload-dir}")
     private String uploadDir;
-
     @Autowired
     private GiayRepository giayRepository;
 
     @Autowired
     private BienTheGiayRepository bienTheGiayRepository;
 
-    @Override
-    public ResponseEntity<String> upload(MultipartFile[] files) {
+    public static String getImageStatic(String filename) {
+        if (filename != null && !filename.isBlank()) {
 
+            try {
+                Path imagePath = Paths.get(uploadDirStatic, filename);
+                Resource resource = new UrlResource(imagePath.toUri());
+
+                if (resource.exists() && resource.isReadable()) {
+                    byte[] imageBytes = Files.readAllBytes(imagePath);
+                    String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+                    return "data:image/jpeg;base64," + base64Image;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<?> upload(MultipartFile[] files) {
+        List<String> result = new ArrayList<>();
         for (MultipartFile file : files) {
 
             try (InputStream inputStream = file.getInputStream()) {
@@ -49,9 +72,10 @@ public class ImageHubServiceImpl implements ImageHubService {
                     if (!Files.exists(uploadPath)) {
                         Files.createDirectories(uploadPath);
                     }
-                    Path filePath = uploadPath.resolve(System.currentTimeMillis() + file.getOriginalFilename());
+                    String fileName = System.currentTimeMillis() + file.getOriginalFilename();
+                    Path filePath = uploadPath.resolve(fileName);
                     Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-
+                    result.add(fileName);
                 } else {
                     throw new FileException("Không đúng định dạng");
                 }
@@ -59,8 +83,8 @@ public class ImageHubServiceImpl implements ImageHubService {
                 throw new FileException("Lỗi truy cập dường dẫn ảnh");
             }
         }
-        
-        return new ResponseEntity<>("Tải ảnh thành công", HttpStatus.OK);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @Override
@@ -75,27 +99,75 @@ public class ImageHubServiceImpl implements ImageHubService {
     }
 
     @Override
-    public String[] getFileNames() {
-        try {
-            File directory = new File(uploadDir);
-            String[] fileNames = directory.list();
+    public ResponseEntity<?> getImage(String[] fileNames) {
+        List<String> result = new ArrayList<>();
+        for (String filename : fileNames) {
+            try {
+                Path imagePath = Paths.get(uploadDir, filename);
+                Resource resource = new UrlResource(imagePath.toUri());
 
-            if (fileNames != null) {
-                Arrays.sort(fileNames, Comparator.reverseOrder());
-                return fileNames;
+                if (resource.exists() && resource.isReadable()) {
+                    byte[] imageBytes = Files.readAllBytes(imagePath);
+                    String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+                    result.add("data:image/jpeg;base64," + base64Image);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            return null;
-        } catch (Exception e) {
-            throw new FileException("Lỗi truy cập");
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @Override
+    public String base64ToFile(String base64Data) {
+        String filename = System.currentTimeMillis() + ".txt";
+        String filePath = uploadDir + "/" + filename;
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
+            writer.write(base64Data);
+            writer.close();
+            return filename;
+        } catch (IOException e) {
+            throw new FileException("Lỗi đọc file");
         }
     }
 
     @Override
-    public String deleteFile(String name) {
+    public String getBase64FromFile(String filename) {
+        String filePath = uploadDir + "/" + filename;
 
-        if (giayRepository.checkImageUsed(name) || bienTheGiayRepository.existsByHinhAnh(name)) {
-            throw new FileException("Ảnh đã được sử dụng. Không thể xóa");
+        try {
+            byte[] encoded = Files.readAllBytes(Paths.get(filePath));
+
+            return new String(Files.readAllBytes(Paths.get(filePath)));
+
+        } catch (IOException e) {
+            throw new FileException("Lỗi đọc file");
         }
+    }
+
+    @Override
+    public String getImage(String filename) {
+        if (filename != null && !filename.isBlank()) {
+            try {
+                Path imagePath = Paths.get(uploadDir, filename);
+                Resource resource = new UrlResource(imagePath.toUri());
+
+                if (resource.exists() && resource.isReadable()) {
+                    byte[] imageBytes = Files.readAllBytes(imagePath);
+                    String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+                    return "data:image/jpeg;base64," + base64Image;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public String deleteFile(String name) {
         Path path = Paths.get(uploadDir + "/" + name);
         try {
             Files.delete(path);

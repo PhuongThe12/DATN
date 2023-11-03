@@ -18,18 +18,18 @@ public class KichThuocRequest {
     private Long id;
 
     @NotNull(message = "Không được để trống tên")
-    @Length(message = "Tên không được vượt quá 50 ký tự")
+    @Length(message = "Tên không được vượt quá 100 ký tự", max = 100)
     private String ten;
 
     @NotNull(message = "Không được để trống chiều rộng")
     @Min(message = "Chiều rộng không được âm", value = 0)
     @Max(message = "Chiều rộng không hợp lệ, chiều rộng không được vượt quá 100", value = 100)
-    private Float chieuRong;
+    private Double chieuRong;
 
     @NotNull(message = "Không được để trống chiều dài")
     @Min(message = "Chiều dài không được âm", value = 0)
     @Max(message = "Chiều dài không hợp lệ, chiều dài không được vượt quá 100", value = 100)
-    private Float chieuDai;
+    private Double chieuDai;
 
     private String moTa;
 

@@ -16,11 +16,11 @@ public class DeGiayRequest {
     private Long id;
 
     @NotNull(message = "Không được để trống tên")
-    @Length(message = "Tên không được vượt quá 50 ký tự")
+    @Length(message = "Tên không được vượt quá 100 ký tự", max = 100)
     private String ten;
 
     @NotNull(message = "Không được để trống chất liệu")
-    @Length(message = "Chât liệu không được vượt quá 50 ký tự")
+    @Length(message = "Tên không được vượt quá 50 ký tự", max = 50)
     private String chatLieu;
 
     @NotNull(message = "Không được để trống mô tả")
