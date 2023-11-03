@@ -22,7 +22,7 @@
             <div class="custom-radio">
                 <input type="radio" id="active" name="status" ng-model="status" value="1" ng-checked="status == 1"
                        ng-change="changeRadio(1)">
-                <label class="radio-label" for="active">Đang kinh doanh</label>
+                <label class="radio-label" for="active">Hiển thị</label>
             </div>
 
             <div class="custom-radio">
@@ -49,7 +49,7 @@
                     <td>
                         <h5>
                 <span ng-class="{'badge bd-success-custom': kichThuoc.trangThai == 1, 'badge bd-danger-custom': kichThuoc.trangThai != 1}">
-                    {{kichThuoc.trangThai == 1? "Đang kinh doanh" : "Ngừng khinh doanh"}}
+                    {{kichThuoc.trangThai == 1? "Hiển thị" : "Đã ẩn"}}
                 </span>
                         </h5>
                     </td>
@@ -113,7 +113,7 @@
                         <th>
                             <h5>
                 <span ng-class="{'badge bd-success-custom': kichThuocDetail.trangThai == 1, 'badge bd-danger-custom': kichThuocDetail.trangThai != 1}">
-                     {{kichThuocDetail.trangThai == 1? "Đang kinh doanh" : "Ngừng khinh doanh"}}
+                     {{kichThuocDetail.trangThai == 1? "Hiển thị" : "Đã ẩn"}}
                 </span>
                             </h5>
                         </th>

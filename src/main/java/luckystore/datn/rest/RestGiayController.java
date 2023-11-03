@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -28,14 +29,21 @@ public class RestGiayController {
     @Autowired
     private ImageHubService imageHubService;
 
-    @GetMapping("/get-all-active")
+    @PostMapping("/get-page")
+    public ResponseEntity<?> getPage(
+//            @RequestParam GiaySearch giaySearch
+    ) {
+        return ResponseEntity.ok(giayService.getPage());
+    }
+
+    @PostMapping("/get-all-active")
     public ResponseEntity<?> getAllActive() {
         return new ResponseEntity<>(giayService.getAllActive(), HttpStatus.OK);
     }
 
-    @GetMapping("/get-all-giay")
+    @PostMapping("/get-all-giay")
     public ResponseEntity<?> getAllGiay() {
-        return new ResponseEntity<>(giayService.getAllGiay(), HttpStatus.OK);
+        return new ResponseEntity<>(giayService.findAllForList(), HttpStatus.OK);
     }
 
     @PostMapping("/get-giay-contains")

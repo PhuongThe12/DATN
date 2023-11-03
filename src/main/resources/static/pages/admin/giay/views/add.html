@@ -1,6 +1,6 @@
 <img src="{{image}}" alt="">
 <h1>Thêm giày</h1>
-<form name="addGiayForm">
+<form name="addGiayForm" novalidate>
     <div class="mb-3 px-3">
         <label for="tenGiay" class="form-label">Tên giày <sup class="text-danger">(*)</sup></label>
         <input type="text" class="form-control" id="tenGiay" name="ten" ng-model="ten" ng-maxlength="120"
@@ -221,7 +221,8 @@
                 <label for="namSX" class="form-label">Năm sản xuất <sup class="text-danger">(*)</sup></label>
                 <input type="number" step="1" class="form-control" id="namSX" name="namSX" ng-model="namSX" min="1000"
                        ng-init="namSX = 2020" max="9999" ng-required="true">
-                <small class="text-danger" ng-show="(addGiayForm.namSX.$dirty || addGiayForm.namSX.$touched) && addGiayForm.namSX.$error.required">
+                <small class="text-danger"
+                       ng-show="(addGiayForm.namSX.$dirty || addGiayForm.namSX.$touched) && addGiayForm.namSX.$error.required">
                     Không được để trống năm sản xuất</small>
                 <small class="text-danger" ng-show="errors.namSX && !addGiayForm.namSX.$dirty">{{errors.namSX}}</small>
             </div>
@@ -244,7 +245,8 @@
 
         <small class="text-danger" ng-show="errors.namSX && !addGiayForm.namSX.$dirty">{{errors.namSX}}</small>
         <label for="moTa" class="form-label">Mô tả <sup class="text-danger">(*)</sup></label>
-        <textarea class="form-control" id="moTa" name="moTa" ng-model="moTa" rows="3" ng-minlength="3" ng-maxlength="3000"
+        <textarea class="form-control" id="moTa" name="moTa" ng-model="moTa" rows="3" ng-minlength="3"
+                  ng-maxlength="3000"
                   ng-required="true"></textarea>
         <small class="text-danger"
                ng-show="(addGiayForm.moTa.$dirty || addGiayForm.moTa.$touched) && addGiayForm.moTa.$error.required">
@@ -277,7 +279,7 @@
                            aria-describedby="labelGiaBanAll">
                 </div>
             </div>
-            <button class="btn btn-primary col col-3">Cập nhật cho toàn bộ</button>
+            <button type="button" class="btn btn-primary col col-3">Cập nhật cho toàn bộ</button>
         </div>
 
         <!-- Bảng phân loại -->
@@ -324,43 +326,74 @@
                 </td>
                 <td>{{kichThuoc.ten}}</td>
                 <td>
-                    <div class="input-group mb-3 px-3 py-2">
-                        <span class="input-group-text text-black-50" id="labelGiaNhap{{msIndex}}{{ktIndex}}">₫</span>
-                        <input type="number" class="form-control" ng-model="kichThuoc.giaNhap" placeholder="Giá nhập"
-                               aria-label="Giá nhập"
-                               aria-describedby="labelGiaNhap{{msIndex}}{{ktIndex}}">
+                    <div class="input-group mb-3 px-3 d-flex flex-column" style="margin-bottom: 0 !important;">
+                        <div class="d-flex flex-row">
+                            <span class="input-group-text text-black-50" id="labelGiaBan{{msIndex}}{{ktIndex}}">₫</span>
+                            <input type="number" class="form-control" ng-model="kichThuoc.giaNhap" placeholder="Giá nhập"
+                                   aria-label="Giá nhập" ng-required="true" min="0" ng-change="changeInput(msIndex, ktIndex, 'giaNhap')"
+                                   ng-blur="blurInput(msIndex, ktIndex, 'giaNhap')" name="giaNhap" onkeypress="nextInput(event)"
+                                   aria-describedby="labelGiaNhap{{msIndex}}{{ktIndex}}">
+                        </div>
+                        <div>
+                            <small class="text-danger"
+                                   ng-show="kichThuoc.errors.giaNhap">{{kichThuoc.errors.giaNhap}}</small></div>
+                        <div>
                     </div>
 
                 </td>
                 <td>
-                    <div class="input-group mb-3 px-3 py-2" style="margin-bottom: 0 !important;">
-                        <span class="input-group-text text-black-50" id="labelGiaBan{{msIndex}}{{ktIndex}}">₫</span>
-                        <input type="number" class="form-control" ng-model="kichThuoc.giaBan" placeholder="Giá bán"
-                               aria-label="Giá bán"
-                               aria-describedby="labelGiaBan{{msIndex}}{{ktIndex}}">
+                    <div class="input-group mb-3 px-3 d-flex flex-column" style="margin-bottom: 0 !important;">
+                        <div class="d-flex flex-row">
+                            <span class="input-group-text text-black-50" id="labelGiaBan{{msIndex}}{{ktIndex}}">₫</span>
+                            <input type="number" class="form-control" ng-model="kichThuoc.giaBan" placeholder="Giá bán"
+                                   aria-label="Giá bán" ng-required="true" min="0"
+                                   aria-describedby="labelGiaBan{{msIndex}}{{ktIndex}}">
+                        </div>
+                        <div>
+                            <small class="text-danger"
+                                   ng-show="(addGiayForm.kichThuoc.giaBan.$dirty || addGiayForm.kichThuoc.giaBan.$touched) && addGiayForm.kichThuoc.giaBan.$error.required">Không
+                                được để trống</small></div>
+                        <div><small class="text-danger"
+                                    ng-show="(addGiayForm.kichThuoc.giaBan.$dirty || addGiayForm.kichThuoc.giaBan.$touched) && addGiayForm.kichThuoc.giaBan.$error.min">Số
+                            lượng không được âm</small></div>
                     </div>
-                    <!-- <div><small class="text-danger">Không được để trống</small></div> -->
+
                 </td>
                 <td>
-                    <div class="input-group mb-3 px-3 py-2" style="margin-bottom: 0 !important;">
-                        <input type="number" step="1" class="form-control" ng-model="kichThuoc.soLuong"
-                               placeholder="Số lượng">
+                    <div class="input-group mb-3 px-3 d-flex flex-column" style="margin-bottom: 0 !important;">
+                        <div class="d-flex flex-row">
+                            <input type="number" step="1" class="form-control" ng-model="kichThuoc.soLuong"
+                                   placeholder="Số lượng" ng-required="true" min="0" ng-init="kichThuoc.soLuong = 0">
+                        </div>
+                        <div>
+                            <small class="text-danger"
+                                   ng-show="(addGiayForm.kichThuoc.soLuong.$dirty || addGiayForm.kichThuoc.soLuong.$touched) && addGiayForm.kichThuoc.soLuong.$error.required">Không
+                                được để trống</small></div>
+                        <div><small class="text-danger"
+                                    ng-show="(addGiayForm.kichThuoc.soLuong.$dirty || addGiayForm.kichThuoc.soLuong.$touched) && addGiayForm.kichThuoc.soLuong.$error.min">Số
+                            lượng không được âm</small></div>
                     </div>
-                    <!-- <div><small class="text-danger">Không được để trống</small></div> -->
                 </td>
                 <td>
                     <div class="w-100 form-switch">
                         <input class="form-check-input" type="checkbox" id="kichThuocTrangThai" name="trangThai"
-                               style="cursor: pointer;"
+                               style="cursor: pointer;" ng-required="true"
                                ng-model="kichThuoc.trangThai" ng-true-value="1" ng-false-value="0"
                                ng-init="kichThuoc.trangThai = 1">
                     </div>
                 </td>
                 <td>
-                    <div class="input-group mb-3 px-3 py-2">
-                        <input type="text" class="form-control" ng-model="kichThuoc.barcode" name="barcode" id="barcode{{msIndex}}{{ktIndex}}" placeholder="Barcode">
-                        <button class="input-group-text" ng-click="setBarcode(msIndex, ktIndex)"><i class="fas fa-qrcode"></i>
-                        </button>
+                    <div class="input-group mb-3 px-3 d-flex flex-column">
+                        <div class="d-flex flex-row">
+                            <input type="text" class="form-control" ng-model="kichThuoc.barcode" name="barcode"
+                                   id="barcode{{msIndex}}{{ktIndex}}" placeholder="Barcode" ng-required="true">
+                            <button type="button" role="button" class="input-group-text"
+                                    ng-click="setBarcode(msIndex, ktIndex)"><i class="fas fa-qrcode"></i>
+                            </button>
+                        </div>
+                        <div><small class="text-danger"
+                                    ng-show="(addGiayForm.barcode.$dirty || addGiayForm.barcode.$touched) && addGiayForm.barcode.$error.required">Không
+                            được để trống</small></div>
                     </div>
                 </td>
             </tr>
@@ -368,79 +401,81 @@
         </table>
     </div>
 
-</form>
-<!-- Button trigger modal -->
-<button type="button" hidden ng-click="getDetailEntity()" id="modalDetail" class="btn btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#exampleModal">
-</button>
-<!-- Modal -->
-<div class="modal fade" onclick="event.stopPropagation()" id="exampleModal" tabindex="-1"
-     aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Chi tiết {{detailEntity.title}}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <table>
-                    <tr>
-                        <td class="nowrap-column px-3">ID :</td>
-                        <th>{{detailEntity.id}}</th>
-                    </tr>
-                    <tr ng-show="detailEntity.ten">
-                        <td class="nowrap-column px-3">Tên :</td>
-                        <th>{{detailEntity.ten}}</th>
-                    </tr>
-                    <tr ng-show="detailEntity.moTa" class="nowrap-column px-3">
-                        <td class="nowrap-column px-3">Mô tả :</td>
-                        <th>{{detailEntity.moTa}}</th>
-                    </tr>
+    <!-- Button trigger modal -->
+    <button type="button" hidden ng-click="getDetailEntity()" id="modalDetail" class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#exampleModal">
+    </button>
+    <!-- Modal -->
+    <div class="modal fade" onclick="event.stopPropagation()" id="exampleModal" tabindex="-1"
+         aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Chi tiết {{detailEntity.title}}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table>
+                        <tr>
+                            <td class="nowrap-column px-3">ID :</td>
+                            <th>{{detailEntity.id}}</th>
+                        </tr>
+                        <tr ng-show="detailEntity.ten">
+                            <td class="nowrap-column px-3">Tên :</td>
+                            <th>{{detailEntity.ten}}</th>
+                        </tr>
+                        <tr ng-show="detailEntity.moTa" class="nowrap-column px-3">
+                            <td class="nowrap-column px-3">Mô tả :</td>
+                            <th>{{detailEntity.moTa}}</th>
+                        </tr>
 
-                    <tr ng-show="detailEntity.chatLieu">
-                        <td class="nowrap-column px-3">Chất liệu :</td>
-                        <th>{{detailEntity.chatLieu}}</th>
-                    </tr>
+                        <tr ng-show="detailEntity.chatLieu">
+                            <td class="nowrap-column px-3">Chất liệu :</td>
+                            <th>{{detailEntity.chatLieu}}</th>
+                        </tr>
 
-                    <tr ng-show="detailEntity.chieuDai">
-                        <td class="nowrap-column px-3">Chiều dài :</td>
-                        <th> {{detailEntity.chieuDai}}cm</th>
-                    </tr>
-                    <tr ng-show="detailEntity.chieuRong">
-                        <td class="nowrap-column px-3">Chiều rộng :</td>
-                        <th> {{detailEntity.chieuRong}}cm</th>
-                    </tr>
+                        <tr ng-show="detailEntity.chieuDai">
+                            <td class="nowrap-column px-3">Chiều dài :</td>
+                            <th> {{detailEntity.chieuDai}}cm</th>
+                        </tr>
+                        <tr ng-show="detailEntity.chieuRong">
+                            <td class="nowrap-column px-3">Chiều rộng :</td>
+                            <th> {{detailEntity.chieuRong}}cm</th>
+                        </tr>
 
-                    <tr ng-show="detailEntity.maMau">
-                        <td class="nowrap-column px-3">Màu sắc :</td>
-                        <td><span ng-style="{'color': detailEntity.maMau}"><i class="fas fa-square fa-lg"></i></span>
-                        </td>
-                    </tr>
+                        <tr ng-show="detailEntity.maMau">
+                            <td class="nowrap-column px-3">Màu sắc :</td>
+                            <td><span ng-style="{'color': detailEntity.maMau}"><i
+                                    class="fas fa-square fa-lg"></i></span>
+                            </td>
+                        </tr>
 
-                    <tr ng-show="detailEntity.trangThai">
-                        <td class="nowrap-column px-3">Trạng thái:</td>
-                        <td>
-                            <h5>
+                        <tr ng-show="detailEntity.trangThai">
+                            <td class="nowrap-column px-3">Trạng thái:</td>
+                            <td>
+                                <h5>
                                         <span
                                                 ng-class="{'badge bd-success-custom': detailEntity.trangThai == 1, 'badge bd-danger-custom': detailEntity.trangThai != 1}">
-                                            {{detailEntity.trangThai == 1? "Đang kinh doanh" : "Ngừng khinh doanh"}}
+                                            {{detailEntity.trangThai == 1? "Hiển thị" : "Ngừng khinh doanh"}}
                                         </span>
-                            </h5>
-                        </td>
-                    </tr>
+                                </h5>
+                            </td>
+                        </tr>
 
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 
-<div class="px-3 py-2">
-    <button ng-click="submitData()" class="btn btn-primary">Tạo mới</button>
-</div>
+    <div class="px-3 py-2">
+        <button ng-click="submitData()" type="submit" class="btn btn-primary">Tạo mới</button>
+    </div>
+
+</form>

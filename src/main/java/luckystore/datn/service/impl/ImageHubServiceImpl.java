@@ -30,33 +30,7 @@ import java.util.List;
 public class ImageHubServiceImpl implements ImageHubService {
 
     @Value("${file.upload-dir}")
-    private static String uploadDirStatic;
-    @Value("${file.upload-dir}")
     private String uploadDir;
-    @Autowired
-    private GiayRepository giayRepository;
-
-    @Autowired
-    private BienTheGiayRepository bienTheGiayRepository;
-
-    public static String getImageStatic(String filename) {
-        if (filename != null && !filename.isBlank()) {
-
-            try {
-                Path imagePath = Paths.get(uploadDirStatic, filename);
-                Resource resource = new UrlResource(imagePath.toUri());
-
-                if (resource.exists() && resource.isReadable()) {
-                    byte[] imageBytes = Files.readAllBytes(imagePath);
-                    String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-                    return "data:image/jpeg;base64," + base64Image;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
 
     @Override
     public ResponseEntity<?> upload(MultipartFile[] files) {
@@ -98,26 +72,26 @@ public class ImageHubServiceImpl implements ImageHubService {
         }
     }
 
-    @Override
-    public ResponseEntity<?> getImage(String[] fileNames) {
-        List<String> result = new ArrayList<>();
-        for (String filename : fileNames) {
-            try {
-                Path imagePath = Paths.get(uploadDir, filename);
-                Resource resource = new UrlResource(imagePath.toUri());
-
-                if (resource.exists() && resource.isReadable()) {
-                    byte[] imageBytes = Files.readAllBytes(imagePath);
-                    String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-                    result.add("data:image/jpeg;base64," + base64Image);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return new ResponseEntity<>(null, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
+//    @Override
+//    public ResponseEntity<?> getImage(String[] fileNames) {
+//        List<String> result = new ArrayList<>();
+//        for (String filename : fileNames) {
+//            try {
+//                Path imagePath = Paths.get(uploadDir, filename);
+//                Resource resource = new UrlResource(imagePath.toUri());
+//
+//                if (resource.exists() && resource.isReadable()) {
+//                    byte[] imageBytes = Files.readAllBytes(imagePath);
+//                    String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+//                    result.add("data:image/jpeg;base64," + base64Image);
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            return new ResponseEntity<>(null, HttpStatus.OK);
+//        }
+//        return new ResponseEntity<>(result, HttpStatus.OK);
+//    }
 
     @Override
     public String base64ToFile(String base64Data) {
@@ -133,13 +107,21 @@ public class ImageHubServiceImpl implements ImageHubService {
         }
     }
 
+    public static String getBase64FromFileStatic(String filename) {
+        String filePath = "src/main/resources/static/upload/images/" + filename;
+
+        try {
+            return new String(Files.readAllBytes(Paths.get(filePath)));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     @Override
     public String getBase64FromFile(String filename) {
         String filePath = uploadDir + "/" + filename;
-
         try {
-            byte[] encoded = Files.readAllBytes(Paths.get(filePath));
-
             return new String(Files.readAllBytes(Paths.get(filePath)));
 
         } catch (IOException e) {
@@ -149,9 +131,11 @@ public class ImageHubServiceImpl implements ImageHubService {
 
     @Override
     public String getImage(String filename) {
+        System.out.println("filename: " + filename);
         if (filename != null && !filename.isBlank()) {
             try {
                 Path imagePath = Paths.get(uploadDir, filename);
+                System.out.println("path: " + uploadDir + "/" + filename);
                 Resource resource = new UrlResource(imagePath.toUri());
 
                 if (resource.exists() && resource.isReadable()) {
