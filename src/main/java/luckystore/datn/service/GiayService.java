@@ -15,4 +15,5 @@ public interface GiayService {
 
     GiayResponse addGiay(GiayRequest giayRequest);
 
+    List<GiayResponse> getAllGiay();
 }

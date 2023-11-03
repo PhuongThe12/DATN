@@ -14,8 +14,8 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
     @Query("select new luckystore.datn.model.response.GiayResponse(g) from Giay g  where g.trangThai = 1")
     List<GiayResponse> findAllByTrangThai(Integer trangThai);
 
-    @Query("select new luckystore.datn.model.response.GiayResponse(g.id, g.ten) from Giay g  where g.trangThai = 1")
-    List<GiayResponse> findAllActive();
+//    @Query("select new luckystore.datn.model.response.GiayResponse(g.id, g.ten) from Giay g  where g.trangThai = 1")
+//    List<GiayResponse> findAllActive();
 
     @Query("select new luckystore.datn.model.response.GiayResponse(g) from Giay g where g.id in :ids")
     List<GiayResponse> findAllContains(List<Long> ids);
@@ -24,4 +24,6 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
 
     Boolean existsByTenAndIdNot(String ten, Long id);
 
+    @Query("select new luckystore.datn.model.response.GiayResponse(g.id, g.ten, anh.link) from Giay g inner join g.lstAnh anh where g.trangThai = 1")
+    List<GiayResponse> findAllGiay();
 }

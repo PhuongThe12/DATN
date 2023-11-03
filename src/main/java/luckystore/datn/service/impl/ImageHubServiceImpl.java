@@ -14,9 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,13 +30,33 @@ import java.util.List;
 public class ImageHubServiceImpl implements ImageHubService {
 
     @Value("${file.upload-dir}")
+    private static String uploadDirStatic;
+    @Value("${file.upload-dir}")
     private String uploadDir;
-
     @Autowired
     private GiayRepository giayRepository;
 
     @Autowired
     private BienTheGiayRepository bienTheGiayRepository;
+
+    public static String getImageStatic(String filename) {
+        if (filename != null && !filename.isBlank()) {
+
+            try {
+                Path imagePath = Paths.get(uploadDirStatic, filename);
+                Resource resource = new UrlResource(imagePath.toUri());
+
+                if (resource.exists() && resource.isReadable()) {
+                    byte[] imageBytes = Files.readAllBytes(imagePath);
+                    String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+                    return "data:image/jpeg;base64," + base64Image;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
 
     @Override
     public ResponseEntity<?> upload(MultipartFile[] files) {
@@ -96,7 +114,7 @@ public class ImageHubServiceImpl implements ImageHubService {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>(null, HttpStatus.OK);
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -115,7 +133,6 @@ public class ImageHubServiceImpl implements ImageHubService {
         }
     }
 
-
     @Override
     public String getBase64FromFile(String filename) {
         String filePath = uploadDir + "/" + filename;
@@ -132,17 +149,19 @@ public class ImageHubServiceImpl implements ImageHubService {
 
     @Override
     public String getImage(String filename) {
-        try {
-            Path imagePath = Paths.get(uploadDir, filename);
-            Resource resource = new UrlResource(imagePath.toUri());
+        if (filename != null && !filename.isBlank()) {
+            try {
+                Path imagePath = Paths.get(uploadDir, filename);
+                Resource resource = new UrlResource(imagePath.toUri());
 
-            if (resource.exists() && resource.isReadable()) {
-                byte[] imageBytes = Files.readAllBytes(imagePath);
-                String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-                return "data:image/jpeg;base64," + base64Image;
+                if (resource.exists() && resource.isReadable()) {
+                    byte[] imageBytes = Files.readAllBytes(imagePath);
+                    String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+                    return "data:image/jpeg;base64," + base64Image;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return null;
     }

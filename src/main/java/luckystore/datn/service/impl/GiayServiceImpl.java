@@ -142,6 +142,11 @@ public class GiayServiceImpl implements GiayService {
 
     }
 
+    @Override
+    public List<GiayResponse> getAllGiay() {
+        return giayRepository.findAllGiay();
+    }
+
     private void getGiay(Giay giay, GiayRequest giayRequest) {
 
         DayGiay dayGiay = dayGiayRepository.findById(giayRequest.getDayGiayId()).orElseThrow(() ->
