@@ -23,8 +23,13 @@ public class HoaDon implements Serializable {
     @Column(name = "ID_HOA_DON_GOC")
     private Long idHoaDonGoc;
 
-    @Column(name = "ID_KHACH_HANG")
-    private String idKhachHang;
+    @ManyToOne
+    @JoinColumn(name = "ID_KHACH_HANG")
+    private KhachHang khachHang;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_NHAN_VIEN")
+    private NhanVien nhanVien;
 
     @Column(name = "TONG_TIEN")
     private Long tongTien;
@@ -37,5 +42,8 @@ public class HoaDon implements Serializable {
 
     @Column(name = "TRANG_THAI")
     private Integer trangThai;
+
+    @Column(name = "GHI_CHU")
+    private String ghiChu;
 
 }

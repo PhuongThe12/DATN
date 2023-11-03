@@ -78,6 +78,12 @@ body {
     font-weight: 500;
 }
 
+.bd-warning-custom {
+    background-color: #ffdf9b !important;
+    color: #e49c06;
+    font-weight: 500;
+}
+
 table {
     font-size: 14px;
     color: #686e7e !important;
@@ -162,7 +168,8 @@ input.ng-invalid.ng-touched {
 .form-label {
     color: #686e7e !important;
 }
-.card-body{
+
+.card-body {
     border-radius: 10px;
     background: white;
 }

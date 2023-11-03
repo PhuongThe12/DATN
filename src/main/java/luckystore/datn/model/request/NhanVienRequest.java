@@ -2,6 +2,7 @@ package luckystore.datn.model.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,8 +27,7 @@ public class NhanVienRequest {
 
     private Date ngaySinh;
 
-    @NotNull(message = "Không được để trống số điện thoại")
-    @Length(message = "Số điện thoại không được vượt quá 20 ký tự",max = 20)
+    @Pattern(regexp = "^(0[0-9]{9}|84[0-9]{8})$", message = "Số điện thoại không hợp lệ")
     private String soDienThoai;
 
     @Email(message = "Email không hợp lệ")
@@ -58,4 +58,6 @@ public class NhanVienRequest {
 
     @NotNull(message = "Không được để trống mật khẩu")
     private String matKhau;
+
+    private Integer role;
 }
