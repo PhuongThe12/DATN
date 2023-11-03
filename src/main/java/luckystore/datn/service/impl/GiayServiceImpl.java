@@ -21,6 +21,7 @@ import luckystore.datn.exception.InvalidIdException;
 import luckystore.datn.model.request.BienTheGiayRequest;
 import luckystore.datn.model.request.GiayRequest;
 import luckystore.datn.model.response.GiayResponse;
+import luckystore.datn.repository.BienTheGiayRepository;
 import luckystore.datn.repository.ChatLieuRepository;
 import luckystore.datn.repository.CoGiayRepository;
 import luckystore.datn.repository.DayGiayRepository;
@@ -35,6 +36,9 @@ import luckystore.datn.repository.ThuongHieuRepository;
 import luckystore.datn.service.GiayService;
 import luckystore.datn.service.ImageHubService;
 import luckystore.datn.util.JsonString;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -58,6 +62,7 @@ public class GiayServiceImpl implements GiayService {
     private final ThuongHieuRepository thuongHieuRepository;
     private final MuiGiayRepository muiGiayRepository;
     private final ImageHubService imageHubService;
+    private final BienTheGiayRepository bienTheGiayRepository;
 
     @Override
     public List<GiayResponse> getAllActive() {
@@ -143,8 +148,18 @@ public class GiayServiceImpl implements GiayService {
     }
 
     @Override
-    public List<GiayResponse> getAllGiay() {
-        return giayRepository.findAllGiay();
+    public Page<GiayResponse> findAllForList() {
+        Pageable pageable = PageRequest.of(0, 5);
+        Page<GiayResponse> giayResponsePage = giayRepository.findAllForList(pageable);
+        giayResponsePage.stream().forEach(giayResponse -> {
+            giayResponse.setLstBienTheGiay(bienTheGiayRepository.getSimpleByIdGiay(giayResponse.getId()));
+        });
+        return giayResponsePage;
+    }
+
+    @Override
+    public Page<GiayResponse> getPage() {
+        return giayRepository.findAllByTrangThai(PageRequest.of(0, 5));
     }
 
     private void getGiay(Giay giay, GiayRequest giayRequest) {

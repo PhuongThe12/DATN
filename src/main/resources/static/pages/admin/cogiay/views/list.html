@@ -15,7 +15,7 @@
 
     <div class="custom-radio">
         <input type="radio" id="active" name="status" ng-model="status" value="1" ng-checked="status == 1" ng-change="changeRadio(1)">
-        <label class="radio-label" for="active">Đang kinh doanh</label>
+        <label class="radio-label" for="active">Hiển thị</label>
     </div>
 
     <div class="custom-radio">
@@ -34,7 +34,7 @@
 
         <tr ng-repeat="coGiay in coGiays">
             <td>{{coGiay.ten}}</td>
-            <td>{{coGiay.trangThai == 1? "Đang kinh doanh" : "Ngừng khinh doanh"}}</td>
+            <td>{{coGiay.trangThai == 1? "Hiển thị" : "Đã ẩn"}}</td>
             <td>
                 <a class="btn btn-info" ng-href="#/detail/{{coGiay.id}}">Chi tiết</a>
                 <a class="btn btn-info" ng-href="#/update/{{coGiay.id}}">Cập nhật</a>

@@ -1,11 +1,12 @@
 package luckystore.datn.model.response;
 
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import luckystore.datn.entity.BienTheGiay;
 import luckystore.datn.entity.Giay;
-import luckystore.datn.entity.HinhAnh;
 import luckystore.datn.service.impl.ImageHubServiceImpl;
 
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public class GiayResponse {
             this.id = giay.getId();
             this.ten = giay.getTen();
             this.namSX = giay.getNamSX();
-            this.lstAnh = giay.getLstAnh().stream().map(HinhAnh::getLink).collect(Collectors.toList());
+            this.lstAnh = giay.getLstAnh().stream().map(anh -> ImageHubServiceImpl.getBase64FromFileStatic(anh.getLink())).collect(Collectors.toList());
             this.trangThai = giay.getTrangThai();
             this.moTa = giay.getMoTa();
             this.deGiay = new DeGiayResponse(giay.getDeGiay());
@@ -71,7 +72,7 @@ public class GiayResponse {
         this.id = id;
         this.ten = ten;
         this.lstAnh = new ArrayList<>();
-        lstAnh.add(ImageHubServiceImpl.getImageStatic(thubmail));
+        lstAnh.add(ImageHubServiceImpl.getBase64FromFileStatic(thubmail));
     }
 
 }

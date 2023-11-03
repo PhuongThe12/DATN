@@ -354,9 +354,9 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
 
     $scope.submitData = function () {
 
-        // if (!isValid()) {
-        //     return;
-        // }
+        if (!isValid()) {
+            return;
+        }
 
         let giayRequest = {};
 
@@ -392,6 +392,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
         giayRequest.mauSacImages = {};
 
         let bienTheGiays = [];
+
         async function processMauSac(mauSac) {
             if (mauSac.hinhAnh) {
                 let mauSacImage = await getBase64(mauSac.hinhAnh);
@@ -440,7 +441,11 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
 
     };
     let isValid = function () {
-        alert('Chú ý');
+        $scope.selectedMauSacs[0].selectedKichThuocs[0].errors = {};
+        if (!$scope.image1) {
+
+        }
+        $scope.selectedMauSacs[0].selectedKichThuocs[0].errors.giaNhap = 'Giá nhập không được để trống';
         return false;
     }
 
@@ -453,19 +458,31 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
         });
     }
 
+    $scope.changeInput = function (msIndex, ktIndex, model) {
+        if (model === 'giaNhap' && $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors) {
+            $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaNhap = null;
+        }
+    }
+
+    $scope.blurInput = function (msIndex, ktIndex, model) {
+        $scope.selectedMauSacs[0].selectedKichThuocs[0].errors = {};
+        if (model === 'giaNhap' && isNaN($scope.selectedMauSacs[0].selectedKichThuocs[0].giaNhap)) {
+            $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaNhap = 'Giá nhập không được để trống';
+            $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaNhap = '';
+        }
+    }
+
 });
+
 
 app.controller('updateGiayController', function ($scope, DetailEntityService) {
-
-});
-
-app.controller('giayListController', function ($scope) {
 
 });
 
 app.controller('detailGiayController', function ($scope) {
 
 });
+
 //combobox chung
 app.directive('customSelect', function ($injector) {
     return {
@@ -643,3 +660,8 @@ app.service('DetailEntityService', function () {
     };
 });
 
+function nextInput (e) {
+    if (e.which === 13) {
+        e.target.focus = false;
+    }
+}
