@@ -25,7 +25,7 @@ public class MauSacServiceImpl implements MauSacService {
 
     @Override
     public List<MauSacResponse> getAll() {
-        return mauSacRepo.findAllResponse();
+        return mauSacRepo.findAllActive();
     }
 
     @Override

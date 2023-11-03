@@ -1,0 +1,31 @@
+<style>
+    .select-option-detail:hover {
+        color: green;
+    }
+</style>
+<div class="wrapper" id="{{id}}">
+    <div ng-click="toggleDropdown()" class="">
+        <div class="form-select">
+            <option>{{selectedItem.ten?selectedItem.ten:selectedItem || "Chọn " + title}}</option>
+        </div>
+    </div>
+    <div class="content" ng-show="isActive" style="z-index: 999; width: 94.5%;">
+        <div class="search">
+            <!-- <i class="uil uil-search"></i> -->
+            <input spellcheck="false" type="text" placeholder="Search" ng-model="searchKeyword">
+        </div>
+        <ul class="options">
+            <li ng-repeat="item in items | filter: searchKeyword" ng-click="selectItem(item)" ng-class="{selected: item == selectedItem}"
+                style="display: flex; justify-content: space-between;">
+                <span>{{item.ten?item.ten:item}}</span>
+                <div ng-click="showDetailComboboxModal(title, item)" class="select-option-detail"><i class="fas fa-eye"></i>
+                </div>
+            </li>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#{{modalId}}">
+                Thêm {{title}}
+            </button>
+
+        </ul>
+    </div>
+
+</div>
