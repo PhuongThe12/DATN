@@ -24,7 +24,7 @@ public class CoGiayServiceImpl implements CoGiayService {
 
     @Override
     public List<CoGiayResponse> getAll() {
-        return coGiayRepo.findAllResponse();
+        return coGiayRepo.findAllActive();
     }
 
     @Override

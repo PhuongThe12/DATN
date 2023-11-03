@@ -26,7 +26,7 @@ public class MuiGiayServiceImpl implements MuiGiayService {
 
     @Override
     public List<MuiGiayResponse> getAll() {
-        return muiGiayRepo.findAllResponse();
+        return muiGiayRepo.findAllActive();
     }
 
     @Override

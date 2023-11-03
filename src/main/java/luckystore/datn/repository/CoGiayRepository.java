@@ -15,9 +15,11 @@ public interface CoGiayRepository extends JpaRepository<CoGiay, Long> {
     @Query("select new luckystore.datn.model.response.CoGiayResponse(cg) from CoGiay cg")
     List<CoGiayResponse> findAllResponse();
 
-    @Query("select new luckystore.datn.model.response.CoGiayResponse(cg) from CoGiay cg " +
-            "WHERE (:searchText IS NULL OR cg.ten LIKE %:searchText%) AND (:status IS NULL OR cg.trangThai = :status)")
+    @Query("select new luckystore.datn.model.response.CoGiayResponse(cg) from CoGiay cg " + "WHERE (:searchText IS NULL OR cg.ten LIKE %:searchText%) AND (:status IS NULL OR cg.trangThai = :status)")
     Page<CoGiayResponse> getPageResponse(String searchText, Integer status, Pageable pageable);
+
+    @Query("select new luckystore.datn.model.response.CoGiayResponse(cg) from CoGiay cg " + "where cg.trangThai = 1 order by cg.id desc ")
+    List<CoGiayResponse> findAllActive();
 
     Boolean existsByTen(String ten);
 

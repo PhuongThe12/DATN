@@ -2,6 +2,7 @@ package luckystore.datn.repository;
 
 import luckystore.datn.entity.MuiGiay;
 import luckystore.datn.model.response.MuiGiayResponse;
+import luckystore.datn.model.response.MuiGiayResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,6 +19,10 @@ public interface MuiGiayRepository extends JpaRepository<MuiGiay, Long> {
     @Query("select new luckystore.datn.model.response.MuiGiayResponse(mg) from MuiGiay mg " +
             "WHERE (:searchText IS NULL OR mg.ten LIKE %:searchText%) AND (:status IS NULL OR mg.trangThai = :status)")
     Page<MuiGiayResponse> getPageResponse(String searchText, Integer status, Pageable pageable);
+
+    @Query("select new luckystore.datn.model.response.MuiGiayResponse(mg) from MuiGiay mg " +
+            "where mg.trangThai = 1 order by mg.id desc ")
+    List<MuiGiayResponse> findAllActive();
 
     Boolean existsByTen(String ten);
 
