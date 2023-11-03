@@ -15,16 +15,254 @@ app.config(function ($routeProvider, $locationProvider) {
 });
 
 app.controller("addYeuCauController", function ($scope, $http, $location) {
+
+    const formListHoaDon = document.getElementById("formListHoaDon");
+    const formSanPhamDaMua = document.getElementById("formSanPhamDaMua");
+    const formSanPhamThayThe = document.getElementById("formSanPhamThayThe");
+    const formChonSanPhamThayThe = document.getElementById("formChonSanPhamThayThe");
+    const formYeuCau = document.getElementById("formYeuCau");
+
+    $scope.soLuongTra = 0;
+    $scope.soLuongMua = 1;
+    $scope.soLuongDoi = 1;
+
+    $scope.listBienTheGiayDoi = [];
+
     $scope.yeuCau = {
-        nguoiThucHien: "1", loaiYeuCau: "1", trangThai: "1",
+        nguoiThucHien: "1",
+        loaiYeuCau: "1",
+        trangThai: "1",
     };
     $scope.change = function (input) {
         input.$dirty = true;
     }
-    $scope.danhSachNhanVien = [{id: 1, ten: "Quân"}, {id: 2, ten: "Tuấn"}, {id: 3, ten: "Chiến"}, {
-        id: 4,
-        ten: "Phương"
-    }, {id: 5, ten: "Hoàng"}, {id: 6, ten: "Cường"}];
+    $scope.danhSachNhanVien = [
+        {"id": 1, "ten": "Quân"},
+        {"id": 2, "ten": "Tuấn"},
+        {"id": 3, "ten": "Chiến"},
+        {"id": 4, "ten": "Phương"},
+        {"id": 5, "ten": "Hoàng"},
+        {"id": 6, "ten": "Cường"}
+    ];
+
+    $scope.listHoaDon = [
+        {
+            "id": 1,
+            "khachHang": "Tuấn",
+            "nhanVien":"Quân",
+            "kenhBan":1,
+            "loaiHoaDon":1,
+            "tongTien":1,
+            "trangThai":1,
+        },
+        {
+            "id": 2,
+            "khachHang": "Tuấn",
+            "nhanVien":"Phương",
+            "kenhBan":1,
+            "loaiHoaDon":1,
+            "tongTien":1,
+            "trangThai":1,
+        },
+        {
+            "id": 3,
+            "khachHang": "Tuấn",
+            "nhanVien":"Cường",
+            "kenhBan":1,
+            "loaiHoaDon":1,
+            "tongTien":1,
+            "trangThai":1,
+        },
+    ];
+
+
+
+    const getAllChiTietHoaDon = [
+        {
+            "id": 1,
+            "idHoaDon": 1,
+            "idBienTheGiay": [
+                {
+                    "id": 1,
+                    "ten": "Giày vans triệu like",
+                }
+            ],
+            "donGia": 200000,
+            "soLuong": 1,
+            "trangThai": 1,
+            "moTag": "hihi",
+        },
+        {
+            "id": 2,
+            "idHoaDon": 1,
+            "idBienTheGiay": [
+                {
+                    "id": 2,
+                    "ten": "Giày vans màu đỏ",
+                }
+            ],
+            "donGia": 300000,
+            "soLuong": 2,
+            "trangThai": 1,
+            "moTag": "hihi",
+        },
+        {
+            "id": 3,
+            "idHoaDon": 2,
+            "idBienTheGiay": [
+                {
+                    "id": 3,
+                    "ten": "Giày vans hường",
+                }
+            ],
+            "donGia": 200000,
+            "soLuong": 1,
+            "trangThai": 1,
+            "moTag": "hihi",
+        },
+        {
+            "id": 4,
+            "idHoaDon": 2,
+            "idBienTheGiay": [
+                {
+                    "id": 2,
+                    "ten": "Giày vans màu đỏ",
+                }
+            ],
+            "donGia": 300000,
+            "soLuong": 2,
+            "trangThai": 1,
+            "moTag": "hihi",
+        },
+        {
+            "id": 5,
+            "idHoaDon": 3,
+            "idBienTheGiay": [
+                {
+                    "id": 4,
+                    "ten": "Giày like màu Bê Đê",
+                }
+            ],
+            "donGia": 200000,
+            "soLuong": 1,
+            "trangThai": 1,
+            "moTag": "hihi",
+        },
+        {
+            "id": 6,
+            "idHoaDon": 3,
+            "idBienTheGiay": [
+                {
+                    "id": 2,
+                    "ten": "Giày vans màu đỏ",
+                }
+            ],
+            "donGia": 300000,
+            "soLuong": 2,
+            "trangThai": 1,
+            "moTag": "hihi",
+        },
+        {
+            "id": 7,
+            "idHoaDon": 4,
+            "idBienTheGiay": [
+                {
+                    "id": 4,
+                    "ten": "Giày like màu Bê Đê",
+                }
+            ],
+            "donGia": 200000,
+            "soLuong": 1,
+            "trangThai": 1,
+            "moTag": "hihi",
+        },
+        {
+            "id": 8,
+            "idHoaDon": 4,
+            "idBienTheGiay": [
+                {
+                    "id": 1,
+                    "ten": "Giày vans triệu like",
+                }
+            ],
+            "donGia": 300000,
+            "soLuong": 2,
+            "trangThai": 1,
+            "moTag": "hihi",
+        },
+    ];
+
+
+    $scope.listBienTheGiays = [
+        {
+            "id": 1,
+            "ten": "Giày 1 điểm",
+            "soLuong": 5,
+            "giaBan": 100000,
+        },        {
+            "id": 2,
+            "ten": "Giày 2 điểm",
+            "soLuong": 5,
+            "giaBan": 200000,
+        },        {
+            "id": 3,
+            "ten": "Giày 3 điểm",
+            "soLuong": 5,
+            "giaBan": 300000,
+        },        {
+            "id": 4,
+            "ten": "Giày 4 điểm",
+            "soLuong": 5,
+            "giaBan": 400000,
+        },        {
+            "id": 5,
+            "ten": "Giày 5 điểm",
+            "soLuong": 5,
+            "giaBan": 500000,
+        },
+    ];
+
+    $scope.chonHoaDon = function (hoaDon) {
+        // Lưu đối tượng hóa đơn được chọn vào biến hoaDonSelected
+        $scope.hoaDonSelected = hoaDon;
+    };
+
+
+    function filterChiTietByHoaDonId(hoaDonSelected) {
+        return getAllChiTietHoaDon.filter(function (chiTiet) {
+            return chiTiet.idHoaDon === hoaDonSelected.id;
+        });
+    }
+
+
+///////////////////////////////////
+
+    $scope.taoYeuCau = function () {
+        // Kiểm tra xem đã chọn hóa đơn nào chưa
+        if ($scope.hoaDonSelected) {
+            formListHoaDon.style.display = "none";
+            formSanPhamDaMua.style.display = "block";
+            formSanPhamThayThe.style.display = "block";
+            formYeuCau.style.display = "block";
+            //truyền listHoaDonChiTiet vào form
+            $scope.listHoaDonChiTiet = filterChiTietByHoaDonId($scope.hoaDonSelected);
+        }else{
+            toastr["error"]("Vui lòng chọn một hóa đơn");
+        };
+    };
+
+    $scope.chonSanPhamDoi = function(){
+        formSanPhamThayThe.style.display = "none";
+        formYeuCau.style.display = "none";
+        formChonSanPhamThayThe.style.display = "block";
+    }
+
+    $scope.chonGiayDoi = function(bienTheGiay){
+        formChonSanPhamThayThe.style.display = "none";
+        formSanPhamThayThe.style.display = "block";
+        formYeuCau.style.display = "block";
+        $scope.listBienTheGiayDoi.push(bienTheGiay);
+    }
 
     $scope.addYeuCau = function () {
         if ($scope.addYeuCauForm.$invalid) {
@@ -82,6 +320,9 @@ app.controller("yeuCauListController", function ($scope, $http, $window, $locati
         $scope.itemsPerPage = 5,
         $scope.maxSize = 5;
     let searchText;
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
     // Datepicker ngày bắt đầu
     const fpStart = flatpickr('#ngayBatDau', {
         dateFormat: 'd/m/Y',
@@ -155,6 +396,8 @@ app.controller("yeuCauListController", function ($scope, $http, $window, $locati
     let startDate;
 // Lấy giá trị ngày kết thúc
     let endDate;
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
     $scope.searchByDate = function () {
         startDate = fpStart.selectedDates[0];
