@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface HashTagRepository extends JpaRepository<HashTag, Long> {
@@ -29,5 +30,5 @@ public interface HashTagRepository extends JpaRepository<HashTag, Long> {
 
     Boolean existsByTenAndIdNot(String ten, Long id);
 
-    List<HashTag> findByIdIn(List<Long> ids);
+    List<HashTag> findByIdIn(Set<Long> ids);
 }

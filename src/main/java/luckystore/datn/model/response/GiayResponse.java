@@ -1,18 +1,21 @@
 package luckystore.datn.model.response;
 
-import jakarta.annotation.Nullable;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import luckystore.datn.entity.BienTheGiay;
 import luckystore.datn.entity.Giay;
+import luckystore.datn.entity.HinhAnh;
 import luckystore.datn.service.impl.ImageHubServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,7 +28,7 @@ public class GiayResponse {
 
     private Integer namSX;
 
-    private List<String> lstAnh;
+    private List<String> lstAnh = new ArrayList<>();
 
     private Integer trangThai;
 
@@ -45,7 +48,9 @@ public class GiayResponse {
 
     private DayGiayResponse dayGiay;
 
-    private List<BienTheGiayResponse> lstBienTheGiay;
+    private List<BienTheGiayResponse> lstBienTheGiay = new ArrayList<>();
+
+    private Map<Long, String> mauSacImages;
 
     public GiayResponse(Giay giay) {
         if (giay != null) {
@@ -71,8 +76,12 @@ public class GiayResponse {
     public GiayResponse(Long id, String ten, String thubmail) {
         this.id = id;
         this.ten = ten;
-        this.lstAnh = new ArrayList<>();
         lstAnh.add(ImageHubServiceImpl.getBase64FromFileStatic(thubmail));
+    }
+
+    public GiayResponse(Long id, String ten) {
+        this.id = id;
+        this.ten = ten;
     }
 
 }

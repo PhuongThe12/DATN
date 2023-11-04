@@ -120,6 +120,7 @@
                 </div>
             </div>
         </div>
+        <div><small class="text-danger" ng-show="errors.anh">Phải chọn ít nhất một ảnh</small></div>
     </div>
 
     <!-- combobox -->
@@ -265,21 +266,28 @@
     <div ng-show="selectedMauSac.length > 0 && selectedKichThuoc.length > 0">
         <div class="input-group mb-3 row g-3 d-flex align-items-center justify-content-center">
             <span class=" col col-2">Chỉnh sửa cho toàn bộ</span>
-            <div class="col col-3">
+            <div class="col col-2">
                 <div class="input-group mb-3 px-3 py-2" style="margin-bottom: 0 !important;">
-                    <span class="input-group-text text-black-50" id="giaNhapAll">Giá nhập ₫</span>
+                    <span class="input-group-text text-black-50" id="giaNhapAll">Giá nhập</span>
                     <input type="number" class="form-control" ng-model="giaNhapAll" aria-label="Giá nhập"
                            aria-describedby="labelGiaNhapAll">
                 </div>
             </div>
-            <div class="col col-3">
+            <div class="col col-2">
                 <div class="input-group mb-3 px-3 py-2" style="margin-bottom: 0 !important;">
-                    <span class="input-group-text text-black-50" id="labelGiaBanAll">Giá bán ₫</span>
+                    <span class="input-group-text text-black-50" id="labelGiaBanAll">Giá bán</span>
                     <input type="number" class="form-control" ng-model="giaBanAll" aria-label="Giá bán"
                            aria-describedby="labelGiaBanAll">
                 </div>
             </div>
-            <button type="button" class="btn btn-primary col col-3">Cập nhật cho toàn bộ</button>
+            <div class="col col-2">
+                <div class="input-group mb-3 px-3 py-2" style="margin-bottom: 0 !important;">
+                    <span class="input-group-text text-black-50" id="labelGiaBanAll">Số lượng</span>
+                    <input type="number" class="form-control" ng-model="soLuongAll" aria-label="Số lượng"
+                           aria-describedby="labelSoLuongAll">
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary col col-2" ng-click="updateForAll()">Cập nhật cho toàn bộ</button>
         </div>
 
         <!-- Bảng phân loại -->
@@ -351,11 +359,8 @@
                         </div>
                         <div>
                             <small class="text-danger"
-                                   ng-show="(addGiayForm.kichThuoc.giaBan.$dirty || addGiayForm.kichThuoc.giaBan.$touched) && addGiayForm.kichThuoc.giaBan.$error.required">Không
-                                được để trống</small></div>
-                        <div><small class="text-danger"
-                                    ng-show="(addGiayForm.kichThuoc.giaBan.$dirty || addGiayForm.kichThuoc.giaBan.$touched) && addGiayForm.kichThuoc.giaBan.$error.min">Số
-                            lượng không được âm</small></div>
+                                   ng-show="kichThuoc.errors.giaBan">{{kichThuoc.errors.giaBan}}</small></div>
+                        <div>
                     </div>
 
                 </td>
@@ -367,11 +372,8 @@
                         </div>
                         <div>
                             <small class="text-danger"
-                                   ng-show="(addGiayForm.kichThuoc.soLuong.$dirty || addGiayForm.kichThuoc.soLuong.$touched) && addGiayForm.kichThuoc.soLuong.$error.required">Không
-                                được để trống</small></div>
-                        <div><small class="text-danger"
-                                    ng-show="(addGiayForm.kichThuoc.soLuong.$dirty || addGiayForm.kichThuoc.soLuong.$touched) && addGiayForm.kichThuoc.soLuong.$error.min">Số
-                            lượng không được âm</small></div>
+                                   ng-show="kichThuoc.errors.soLuong">{{kichThuoc.errors.soLuong}}</small></div>
+                        <div>
                     </div>
                 </td>
                 <td>
@@ -391,9 +393,10 @@
                                     ng-click="setBarcode(msIndex, ktIndex)"><i class="fas fa-qrcode"></i>
                             </button>
                         </div>
-                        <div><small class="text-danger"
-                                    ng-show="(addGiayForm.barcode.$dirty || addGiayForm.barcode.$touched) && addGiayForm.barcode.$error.required">Không
-                            được để trống</small></div>
+                        <div>
+                            <small class="text-danger"
+                                   ng-show="kichThuoc.errors.barcode">{{kichThuoc.errors.barcode}}</small></div>
+                        <div>
                     </div>
                 </td>
             </tr>

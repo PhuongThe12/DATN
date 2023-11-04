@@ -88,9 +88,9 @@ app.controller("chatLieuListController", function ($scope, $http, $window, $loca
             apiUrl += '&search=' + searchText;
         }
 
-        if($scope.status == 0) {
+        if($scope.status === 0) {
             apiUrl += '&status=' + 0;
-        } else if($scope.status == 1) {
+        } else if($scope.status === 1) {
             apiUrl += '&status=' + 1;
         }
 
@@ -103,6 +103,24 @@ app.controller("chatLieuListController", function ($scope, $http, $window, $loca
                 toastr["error"]("Lấy dữ liệu thất bại");
                 // window.location.href = feHost + '/trang-chu';
             });
+    }
+
+    $scope.resetSearch = function () {
+        searchText = null;
+        $scope.searchText = '';
+        $scope.status = -1;
+        getData(1);
+    }
+
+    $scope.detailChatLieu = function (val) {
+        const id = val;
+        if (!isNaN(id)) {
+            $scope.chatLieuDetail = $scope.chatLieus.find(function(chatLieu) {
+                return chatLieu.id === id;
+            });
+        } else {
+            toastr["error"]("Lấy dữ liệu thất bại");
+        }
     }
 
     $scope.$watch('curPage + numPerPage', function () {

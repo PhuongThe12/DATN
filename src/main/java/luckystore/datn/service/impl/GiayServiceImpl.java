@@ -18,8 +18,10 @@ import luckystore.datn.entity.MuiGiay;
 import luckystore.datn.entity.ThuongHieu;
 import luckystore.datn.exception.DuplicateException;
 import luckystore.datn.exception.InvalidIdException;
+import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.model.request.BienTheGiayRequest;
 import luckystore.datn.model.request.GiayRequest;
+import luckystore.datn.model.request.GiaySearch;
 import luckystore.datn.model.response.GiayResponse;
 import luckystore.datn.repository.BienTheGiayRepository;
 import luckystore.datn.repository.ChatLieuRepository;
@@ -28,6 +30,7 @@ import luckystore.datn.repository.DayGiayRepository;
 import luckystore.datn.repository.DeGiayRepository;
 import luckystore.datn.repository.GiayRepository;
 import luckystore.datn.repository.HashTagRepository;
+import luckystore.datn.repository.HinhAnhRepository;
 import luckystore.datn.repository.KichThuocRepository;
 import luckystore.datn.repository.LotGiayRepository;
 import luckystore.datn.repository.MauSacRepository;
@@ -43,8 +46,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -63,6 +69,7 @@ public class GiayServiceImpl implements GiayService {
     private final MuiGiayRepository muiGiayRepository;
     private final ImageHubService imageHubService;
     private final BienTheGiayRepository bienTheGiayRepository;
+    private final HinhAnhRepository hinhAnhRepository;
 
     @Override
     public List<GiayResponse> getAllActive() {
@@ -148,11 +155,13 @@ public class GiayServiceImpl implements GiayService {
     }
 
     @Override
-    public Page<GiayResponse> findAllForList() {
-        Pageable pageable = PageRequest.of(0, 5);
-        Page<GiayResponse> giayResponsePage = giayRepository.findAllForList(pageable);
+    public Page<GiayResponse> findAllForList(GiaySearch giaySearch) {
+        Pageable pageable = PageRequest.of(giaySearch.getCurrentPage(), giaySearch.getPageSize());
+
+        Page<GiayResponse> giayResponsePage = giayRepository.findPageForList(giaySearch, pageable);
         giayResponsePage.stream().forEach(giayResponse -> {
             giayResponse.setLstBienTheGiay(bienTheGiayRepository.getSimpleByIdGiay(giayResponse.getId()));
+            giayResponse.getLstAnh().add(imageHubService.getBase64FromFile(hinhAnhRepository.findThubmailByIdGiay(giayResponse.getId())));
         });
         return giayResponsePage;
     }
@@ -160,6 +169,24 @@ public class GiayServiceImpl implements GiayService {
     @Override
     public Page<GiayResponse> getPage() {
         return giayRepository.findAllByTrangThai(PageRequest.of(0, 5));
+    }
+
+    @Override
+    public GiayResponse getResponseById(Long id) {
+        GiayResponse giayResponse = giayRepository.findResponseById(id);
+        if(giayResponse == null) {
+            throw new NotFoundException("Không tìm thấy giày này");
+        }
+        Map<Long, String> mauSacImages = new HashMap<>();
+
+        giayResponse.getLstBienTheGiay().forEach(bienThe -> {
+            if (!mauSacImages.containsKey(bienThe.getMauSac().getId())) {
+                mauSacImages.put(bienThe.getMauSac().getId(), imageHubService.getBase64FromFile(bienThe.getHinhAnh()));
+            }
+        });
+        giayResponse.setMauSacImages(mauSacImages);
+
+        return giayResponse;
     }
 
     private void getGiay(Giay giay, GiayRequest giayRequest) {
@@ -208,7 +235,7 @@ public class GiayServiceImpl implements GiayService {
 
         List<HashTag> hashTags = hashTagRepository.findByIdIn(giayRequest.getHashTagIds());
         List<HashTagChiTiet> hashTagChiTiets = hashTags.stream().map(hashTag ->
-                HashTagChiTiet.builder().giay(giay).hashTag(hashTag).build()).toList();
+                HashTagChiTiet.builder().giay(giay).hashTag(hashTag).build()).collect(Collectors.toList());
 
         giay.setHashTagChiTiets(hashTagChiTiets);
         giay.setTrangThai(giayRequest.getTrangThai());

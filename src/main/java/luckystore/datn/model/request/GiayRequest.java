@@ -10,8 +10,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -64,10 +64,10 @@ public class GiayRequest {
     @Length(message = "Mô tả không được quá 3000 ký tự", max = 3000)
     private String moTa;
 
-    private List<Long> hashTagIds;
+    private Set<Long> hashTagIds;
 
     @Valid
-    private List<BienTheGiayRequest> bienTheGiays;
+    private Set<BienTheGiayRequest> bienTheGiays;
 
     private Map<Long, String> mauSacImages;
 

@@ -2,6 +2,7 @@ package luckystore.datn.rest;
 
 import jakarta.validation.Valid;
 import luckystore.datn.model.request.GiayRequest;
+import luckystore.datn.model.request.GiaySearch;
 import luckystore.datn.service.GiayService;
 import luckystore.datn.service.ImageHubService;
 import luckystore.datn.service.impl.ImageHubServiceImpl;
@@ -31,9 +32,14 @@ public class RestGiayController {
 
     @PostMapping("/get-page")
     public ResponseEntity<?> getPage(
-//            @RequestParam GiaySearch giaySearch
+//            @RequestBody GiaySearch giaySearch
     ) {
         return ResponseEntity.ok(giayService.getPage());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getOne(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(giayService.getResponseById(id));
     }
 
     @PostMapping("/get-all-active")
@@ -42,8 +48,8 @@ public class RestGiayController {
     }
 
     @PostMapping("/get-all-giay")
-    public ResponseEntity<?> getAllGiay() {
-        return new ResponseEntity<>(giayService.findAllForList(), HttpStatus.OK);
+    public ResponseEntity<?> getAllGiay(@RequestBody GiaySearch giaySearch) {
+        return new ResponseEntity<>(giayService.findAllForList(giaySearch), HttpStatus.OK);
     }
 
     @PostMapping("/get-giay-contains")
@@ -61,10 +67,10 @@ public class RestGiayController {
         return ResponseEntity.ok(giayService.addGiay(giayRequest));
     }
 
-    @GetMapping("/{name}")
-    public ResponseEntity<?> getImage(@PathVariable("name") String name) {
-        return ResponseEntity.ok(new ImageHubServiceImpl().getImage(name));
-    }
+//    @GetMapping("/{name}")
+//    public ResponseEntity<?> getImage(@PathVariable("name") String name) {
+//        return ResponseEntity.ok(new ImageHubServiceImpl().getImage(name));
+//    }
 
     @GetMapping("/getData")
     public ResponseEntity<String> getData() {

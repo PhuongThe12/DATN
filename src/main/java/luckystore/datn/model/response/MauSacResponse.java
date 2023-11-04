@@ -1,11 +1,13 @@
 package luckystore.datn.model.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import luckystore.datn.entity.MauSac;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

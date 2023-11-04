@@ -2,7 +2,7 @@ app.controller('giayListController', function ($scope, $http) {
 
     $scope.giays = [];
 
-    $http.post(host + '/admin/rest/giay/get-all-giay')
+    $http.post(host + '/admin/rest/giay/get-all-giay', {})
         .then(function (response) {
             $scope.giays = response.data.content;
             $scope.numOfPages = response.data.totalPages;
@@ -16,7 +16,6 @@ app.controller('giayListController', function ($scope, $http) {
     $scope.showVarients = {};
     $scope.toggleVarients = function (index) {
         $scope.showVarients[index] = !$scope.showVarients[index];
-        console.log(index, $scope.showVarients[index]);
     }
 
 });

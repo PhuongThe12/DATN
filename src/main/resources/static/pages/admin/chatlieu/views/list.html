@@ -45,14 +45,14 @@
                     <td>
                         <h5>
                 <span ng-class="{'badge bd-success-custom': chatLieu.trangThai == 1, 'badge bd-danger-custom': chatLieu.trangThai != 1}">
-                    {{chatLieu.trangThai == 1? "Hiển thị" : "Đã â"}}
+                    {{chatLieu.trangThai == 1? "Hiển thị" : "Đã ẩn"}}
                 </span>
                         </h5>
                     </td>
                     <td>
                         <div class="d-sm-inline-flex">
-                            <button class="btn btn-custom" ng-click="detailChatLieu(chatLieu.id)"><i
-                                    class="fas fa-eye"></i>
+                            <button class="btn btn-custom" ng-click="detailMauSac(chatLieu.id)" data-bs-toggle="modal" data-bs-target="#showMauSac">
+                                <i class="fas fa-eye"></i>
                             </button>
                             <a class="btn btn-custom" ng-href="#/update/{{chatLieu.id}}"><i class="far fa-edit"></i></a>
                         </div>
@@ -65,8 +65,50 @@
                  data-boundary-links="true">
             </div>
 
-
         </div>
     </div>
 
+</div>
+
+<!-- Modal Detail-->
+<div class="modal fade" id="showCoGiay" tabindex="-1" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Chi Tiết Chất Liệu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table>
+                    <tr>
+                        <td>ID :</td>
+                        <th>{{chatLieuDetail.id}}</th>
+                    </tr>
+                    <tr>
+                        <td>Tên :</td>
+                        <th>{{chatLieuDetail.ten}}</th>
+                    </tr>
+                    <tr>
+                        <td>Mô tả :</td>
+                        <th>{{chatLieuDetail.moTa}}</th>
+                    </tr>
+
+                    <tr>
+                        <td>Mô tả :</td>
+                        <th>
+                            <h5>
+                <span ng-class="{'badge bd-success-custom': chatLieuDetail.trangThai == 1, 'badge bd-danger-custom': chatLieuDetail.trangThai != 1}">
+                    {{chatLieuDetail.trangThai == 1? "Hiển thị" : "Đã ẩn"}}
+                </span>
+                            </h5>
+                        </th>
+                    </tr>
+
+                </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
 </div>

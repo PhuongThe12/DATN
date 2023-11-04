@@ -19,6 +19,7 @@ app.config(function ($routeProvider, $locationProvider) {
 });
 app.controller('addGiayController', function ($scope, $http, $location, DetailEntityService) {
 
+    $scope.errors = {};
     $scope.selectedCoGiay = {};
 
     $scope.selectedMauSac = [];
@@ -112,6 +113,9 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
     }
 
     $scope.showSelectedColorImage = function (e, input) {
+        if (input === 1) {
+            $scope.errors.anh = null;
+        }
         $scope.$apply(function () {
             if (e.target.files && e.target.files[0]) {
                 const file = e.target.files[0];
@@ -405,7 +409,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
                     giaNhap: kichThuoc.giaNhap,
                     soLuong: kichThuoc.soLuong,
                     giaBan: kichThuoc.giaBan,
-                    trangThai: kichThuoc.trangThai,
+                    trangThai: kichThuoc.trangThai === 0? 0 : 1,
                     barcode: kichThuoc.barcode
                 }
                 bienTheGiays.push(bienTheGiay);
@@ -441,12 +445,103 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
 
     };
     let isValid = function () {
-        $scope.selectedMauSacs[0].selectedKichThuocs[0].errors = {};
+        let valid = true;
+        let count = 0;
         if (!$scope.image1) {
-
+            $scope.errors.anh = true;
+            valid = false;
+            count++;
         }
-        $scope.selectedMauSacs[0].selectedKichThuocs[0].errors.giaNhap = 'Giá nhập không được để trống';
-        return false;
+
+        if (!$scope.ten || $scope.ten.length === 0) {
+            valid = false;
+            count++;
+        } else if ($scope.ten.length > 120) {
+            valid = false;
+            count++;
+        }
+
+        if (!$scope.moTa || $scope.moTa.length === 0) {
+            valid = false;
+            count++;
+        } else if ($scope.moTa.length > 3000) {
+            valid = false;
+            count++;
+        }
+
+        if (!$scope.namSX || isNaN($scope.namSX)) {
+            valid = false;
+            count++;
+        } else if ($scope.moTa) {
+            valid = false;
+            count++;
+        }
+
+        if (!$scope.selectedMauSacs || $scope.selectedMauSacs.length === 0) {
+            toastr["error"]("Hãy chọn ít nhất một màu sắc");
+            valid = false;
+            count++
+        }
+
+        if (!$scope.selectedKichThuocs || $scope.selectedKichThuocs.length === 0) {
+            toastr["error"]("Hãy chọn ít nhất một kích thước");
+            valid = false;
+            count++
+        }
+
+        $scope.selectedMauSacs.forEach(mauSac => {
+            mauSac.selectedKichThuocs.forEach(kichThuoc => {
+                $scope.kichThuoc.errors = {};
+
+                    if(!isNaN(kichThuoc.giaBan)) {
+                        $scope.kichThuoc.giaBan = '';
+                        $scope.kichThuoc.errors.giaBan = 'Không được bỏ trống giá bán';
+                        valid = false;
+                        count++;
+                    }
+
+                    if(!isNaN(kichThuoc.giaNhap)) {
+                        $scope.kichThuoc.giaNhap = '';
+                        $scope.kichThuoc.errors.giaNhap = 'Không được bỏ trống giá nhập';
+                        valid = false;
+                        count++;
+                    }
+
+                    if(isNaN(kichThuoc.giaNhap) && isNaN(kichThuoc.giaBan) && kichThuoc.giaNhap > kichThuoc.giaBan) {
+                        $scope.kichThuoc.giaBan = '';
+                        $scope.kichThuoc.errors.giaBan = 'Giá bán không được nhỏ hơn giá nhập';
+                        valid = false;
+                        count++;
+                    }
+
+                    if(!isNaN(kichThuoc.soLuong)) {
+                        $scope.kichThuoc.soLuong = '';
+                        $scope.kichThuoc.errors.soLuong = 'Không được bỏ trống số lượng';
+                        valid = false;
+                        count++;
+                    } else if(kichThuoc.soLuong < 0) {
+                        $scope.kichThuoc.soLuong = '';
+                        $scope.kichThuoc.errors.soLuong = 'Không được bỏ trống số lượng';
+                        valid = false;
+                        count++;
+                    }
+
+                    if(!isNaN(kichThuoc.barcode)) {
+                        $scope.kichThuoc.barcode = '';
+                        $scope.kichThuoc.errors.barcode = 'Không được bỏ trống barcode';
+                        valid = false;
+                        count++;
+                    }
+
+
+                }
+            )
+        })
+
+        if (!valid) {
+            toastr["error"](count + " trường không hợp lệ!");
+        }
+        return valid;
     }
 
     function getBase64(file) {
@@ -465,14 +560,66 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
     }
 
     $scope.blurInput = function (msIndex, ktIndex, model) {
-        $scope.selectedMauSacs[0].selectedKichThuocs[0].errors = {};
-        if (model === 'giaNhap' && isNaN($scope.selectedMauSacs[0].selectedKichThuocs[0].giaNhap)) {
+        $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors = {};
+        if (model === 'giaNhap' && model.length === 0 && isNaN($scope.selectedMauSacs[0].selectedKichThuocs[0].giaNhap)) {
             $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaNhap = 'Giá nhập không được để trống';
             $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaNhap = '';
         }
     }
 
-});
+    $scope.updateForAll = function () {
+        if ($scope.giaNhapAll && !isNaN($scope.giaNhapAll) && $scope.giaBanAll && !isNaN($scope.giaBanAll)) {
+            if ($scope.giaNhapAll > $scope.giaBanAll) {
+                toastr["error"]("Giá nhập phải nhỏ hơn giá bán");
+                $scope.resetFormForAll();
+                return;
+            }
+        }
+
+        if ($scope.giaNhapAll && !isNaN($scope.giaNhapAll)) {
+            $scope.selectedMauSacs.forEach(mauSac => {
+                mauSac.selectedKichThuocs.forEach(kichThuoc => {
+                    if (!kichThuoc.giaBan || !isNaN(kichThuoc.giaNhap) && kichThuoc.giaNhap < $scope.giaNhapAll) {
+                        kichThuoc.giaNhap = $scope.giaNhapAll;
+                    } else {
+                        kichThuoc.giaNhap = '';
+                    }
+                })
+            })
+        }
+
+        if ($scope.giaBanAll && !isNaN($scope.giaBanAll)) {
+            $scope.selectedMauSacs.forEach(mauSac => {
+                mauSac.selectedKichThuocs.forEach(kichThuoc => {
+                    if (!kichThuoc.giaNhap || !isNaN(kichThuoc.giaBan) && kichThuoc.giaBan < $scope.giaBanAll) {
+                        kichThuoc.giaBan = $scope.giaBanAll;
+                    } else {
+                        kichThuoc.giaBan = '';
+                    }
+                })
+            })
+        }
+
+        if ($scope.soLuongAll && !isNaN($scope.soLuongAll)) {
+            $scope.selectedMauSacs.forEach(mauSac => {
+                mauSac.selectedKichThuocs.forEach(kichThuoc => {
+                    kichThuoc.soLuong = $scope.soLuongAll;
+                })
+            })
+        }
+
+        $scope.resetFormForAll();
+
+    }
+
+    $scope.resetFormForAll = function () {
+        $scope.soLuongAll = '';
+        $scope.giaBanAll = '';
+        $scope.giaNhapAll = '';
+    }
+
+})
+;
 
 
 app.controller('updateGiayController', function ($scope, DetailEntityService) {
@@ -660,8 +807,9 @@ app.service('DetailEntityService', function () {
     };
 });
 
-function nextInput (e) {
+function nextInput(e) {
     if (e.which === 13) {
-        e.target.focus = false;
+        e.target.blur();
+        console.log(e.target);
     }
 }
