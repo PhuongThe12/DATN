@@ -11,7 +11,7 @@ import java.util.List;
 public interface NhanVienService {
     List<NhanVienResponse> getAll();
 
-    Page<NhanVienResponse> getPage(int page, String searchText, Integer status , Integer chucVu);
+    Page<NhanVienResponse> getPage(int page, String searchText, Integer status, Integer chucVu);
 
     NhanVienResponse addNhanVien(NhanVienRequest nhanVienRequest);
 

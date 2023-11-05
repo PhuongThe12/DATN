@@ -3,6 +3,6 @@ package luckystore.datn.exception;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class NullException extends RuntimeException{
+public class NullException extends RuntimeException {
 
 }

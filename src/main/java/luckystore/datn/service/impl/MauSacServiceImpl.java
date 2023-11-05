@@ -70,12 +70,12 @@ public class MauSacServiceImpl implements MauSacService {
     private void checkWhenInsert(MauSacRequest mauSacRequest) {
         String error = "";
         if (mauSacRepo.existsByTen(mauSacRequest.getTen())) {
-             error += JsonString.errorToJsonObject("ten", "Tên đã tồn tại");
+            error += JsonString.errorToJsonObject("ten", "Tên đã tồn tại");
         }
-        if(mauSacRepo.existsByMaMau(mauSacRequest.getMaMau())) {
+        if (mauSacRepo.existsByMaMau(mauSacRequest.getMaMau())) {
             error += ", " + JsonString.errorToJsonObject("maMau", "Màu sắc đã tồn tại");
         }
-        if(!error.isBlank()) {
+        if (!error.isBlank()) {
             throw new DuplicateException(JsonString.stringToJson(error));
         }
     }
@@ -86,10 +86,10 @@ public class MauSacServiceImpl implements MauSacService {
         if (mauSacRepo.existsByTenAndIdNot(mauSacRequest.getTen(), mauSacRequest.getId())) {
             error += JsonString.errorToJsonObject("ten", "Tên đã tồn tại");
         }
-        if(mauSacRepo.existsByMaMauAndIdNot(mauSacRequest.getMaMau(), mauSacRequest.getId())) {
+        if (mauSacRepo.existsByMaMauAndIdNot(mauSacRequest.getMaMau(), mauSacRequest.getId())) {
             error += ", " + JsonString.errorToJsonObject("maMau", "Màu sắc đã tồn tại");
         }
-        if(!error.isBlank()) {
+        if (!error.isBlank()) {
             throw new DuplicateException(JsonString.stringToJson(error));
         }
     }

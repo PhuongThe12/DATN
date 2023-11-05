@@ -1,11 +1,6 @@
 package luckystore.datn.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,7 +28,7 @@ public class MauSac {
     @Column(name = "MO_TA")
     private String moTa;
 
-    @Column(name ="TRANG_THAI")
+    @Column(name = "TRANG_THAI")
     private Integer trangThai;
 
 }

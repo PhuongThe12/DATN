@@ -10,14 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +24,7 @@ public class RestDayGiayController {
 
     @PostMapping
     public ResponseEntity<?> addDayGiay(@Valid @RequestBody DayGiayRequest dayGiayRequest, BindingResult result) {
-        ResponseEntity<?>errorJson = getErrorJson(result);
+        ResponseEntity<?> errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
         return new ResponseEntity<>(dayGiayService.addDayGiay(dayGiayRequest), HttpStatus.OK);
@@ -52,8 +45,8 @@ public class RestDayGiayController {
 
     @GetMapping
     public ResponseEntity<?> getDayGiayPage(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                        @RequestParam(value = "search", required = false) String searchText,
-                                        @RequestParam(value = "status", required = false) Integer status) {
+                                            @RequestParam(value = "search", required = false) String searchText,
+                                            @RequestParam(value = "status", required = false) Integer status) {
         return new ResponseEntity<>(dayGiayService.getPage(page, searchText, status), HttpStatus.OK);
     }
 

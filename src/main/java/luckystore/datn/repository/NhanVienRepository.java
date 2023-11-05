@@ -1,7 +1,6 @@
 package luckystore.datn.repository;
 
 import luckystore.datn.entity.NhanVien;
-import luckystore.datn.model.response.MauSacResponse;
 import luckystore.datn.model.response.NhanVienResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,4 +22,8 @@ public interface NhanVienRepository extends JpaRepository<NhanVien, Long> {
     Boolean existsByHoTen(String ten);
 
     Boolean existsByHoTenAndIdNot(String ten, Long id);
+
+    Boolean existsByEmail(String email);
+
+    NhanVien findNhanVienByEmail(String email);
 }

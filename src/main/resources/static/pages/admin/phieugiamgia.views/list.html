@@ -1,0 +1,159 @@
+
+<div class="card" style="margin: 20px">
+    <h5 class="card-header">Danh sách Phiếu Giảm Giá</h5>
+    <div class="card-body">
+        <div class="d-flex add-search-custom">
+            <div class="input-group w-25">
+                <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
+                <input id="seachText" class="form-control" type="text" ng-model="searchText"
+                       placeholder="Nhập từ khóa">
+                <button class="btn btn-custom " ng-click="search()">Tìm kiếm</button>
+            </div>
+            <a class="btn btn-primary" href="#/add">Thêm Phiếu Giảm Giá</a>
+        </div>
+
+<!--        <div class="d-flex justify-content-start radio-filter">-->
+<!--            <div class="custom-radio">-->
+<!--                <input type="radio" id="all" name="status" ng-model="status" value="-1" ng-checked="status != 0 && status != 1"-->
+<!--                       ng-change="changeRadio(-1)">-->
+<!--                <label class="radio-label" for="all">Tất cả</label>-->
+<!--            </div>-->
+
+<!--            <div class="custom-radio">-->
+<!--                <input type="radio" id="active" name="status" ng-model="status" value="1" ng-checked="status == 1"-->
+<!--                       ng-change="changeRadio(1)">-->
+<!--                <label class="radio-label" for="active">Đang Làm</label>-->
+<!--            </div>-->
+
+<!--            <div class="custom-radio">-->
+<!--                <input type="radio" id="disable" name="status" ng-model="status" value="0" ng-checked="status == 0"-->
+<!--                       ng-change="changeRadio(0)">-->
+<!--                <label class="radio-label" for="disable">Đã Nghỉ</label>-->
+<!--            </div>-->
+<!--            <div class="custom-radio">-->
+<!--                <input type="radio" id="staff" name="status" ng-model="status" value="2" ng-checked="status == 2"-->
+<!--                       ng-change="changeRadio(2)">-->
+<!--                <label class="radio-label" for="staff">Nhân Viên</label>-->
+<!--            </div>-->
+<!--            <div class="custom-radio">-->
+<!--                <input type="radio" id="admin" name="status" ng-model="status" value="3" ng-checked="status == 3"-->
+<!--                       ng-change="changeRadio(3)">-->
+<!--                <label class="radio-label" for="admin">Chủ Cửa Hàng</label>-->
+<!--            </div>-->
+<!--        </div>-->
+
+
+        <div>
+            <table class="table align-middle text-center" border="1">
+                <tr class="table-secondary">
+                    <th>Stt</th>
+                    <th>Mã phiếu</th>
+                    <th>Phần trăm giảm</th>
+                    <th>Số lượng phiếu</th>
+                    <th>Ngày bắt đầu</th>
+                    <th>Ngày kết thúc</th>
+                    <th>Giá trị đơn tối thiểu</th>
+                    <th>Giá trị giảm tối đa</th>
+                    <th>Đối tượng áp dụng</th>
+                    <th>Người tạo</th>
+                    <th>Ngày tạo</th>
+                    <th>Trạng thái</th>
+                    <th>Action</th>
+                </tr>
+
+                <tr ng-repeat="pgg in phieugiamgias" >
+                    <td>{{pgg.maGiamGia}}</td>
+                    <td>{{pgg.phanTramGiam}}</td>
+                    <td>{{pgg.soLuongPhieu}}</td>
+                    <td>{{pgg.ngayBatDau}}</td>
+                    <td>{{pgg.giaTriDonToiThieu}}</td>
+                    <td>{{pgg.giaTriGiamToiDa}}</td>
+                    <td>{{pgg.doiTuongApDung}}</td>
+                    <td>{{pgg.nguoiTao}}</td>
+                    <td>{{pgg.ngayTao}}</td>
+                    <td>
+                        <h5>
+                <span ng-class="{'badge bd-success-custom': pgg.trangThai == 1, 'badge bd-danger-custom': pgg.trangThai != 1}">
+                    {{pgg.trangThai == 1 ? 'Còn hạn' : 'Hết hạn'}}
+                </span>
+                        </h5>
+                    </td>
+                    <td>
+                        <div class="d-sm-inline-flex">
+                            <button class="btn btn-custom" ng-click="detailPhieuGiamGia(pgg.id)"><i class="fas fa-eye"></i>
+                            </button>
+                            <a class="btn btn-custom" ng-href="#/update/{{nhanvien.id}}"><i class="far fa-edit"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Button trigger modal -->
+            <button type="button" hidden class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#showPhieuGiamGia">
+
+            </button>
+
+            <!-- Modal -->
+<!--            <div class="modal fade" id="showNhanVien" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">-->
+<!--                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">-->
+<!--                    <div class="modal-content">-->
+<!--                        <div class="modal-header">-->
+<!--                            <h5 class="modal-title" id="exampleModalLabel">Chi Tiết Nhân Viên</h5>-->
+<!--                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--                        </div>-->
+<!--                        <div class="modal-body">-->
+<!--                            <table>-->
+<!--                                <tr>-->
+<!--                                    <td>ID :</td>-->
+<!--                                    <th>{{nhanVienDetail.id}}</th>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <td>Tên :</td>-->
+<!--                                    <th>{{nhanVienDetail.hoTen}}</th>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <td>Giới Tính :</td>-->
+<!--                                    <th>{{nhanVienDetail.gioiTinh == 1 ? "Nam" : "Nữ"}}</th>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <td>Ngày Sinh :</td>-->
+<!--                                    <th>{{nhanVienDetail.ngaySinh}}</th>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <td>Số Điện Thoại :</td>-->
+<!--                                    <th>{{nhanVienDetail.soDienThoai}}</th>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <td> Email :</td>-->
+<!--                                    <th>{{nhanVienDetail.email}}</th>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <td> Trạng Thái :</td>-->
+<!--                                    <th>{{nhanVienDetail.trangThai == 1 ? "Đang Làm" : "Nghỉ Làm"}}</th>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <td>Địa Chỉ :</td>-->
+<!--                                    <th>{{nhanVienDetail.xa}} - {{nhanVienDetail.huyen}} - {{nhanVienDetail.tinh}}</th>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <td>Chức Vụ : </td>-->
+<!--                                    <th>{{nhanVienDetail.chucVu == 1 ? "Nhân Viên" : "Chủ Cửa Hàng"}}</th>-->
+<!--                                </tr>-->
+<!--                            </table>-->
+<!--                        </div>-->
+<!--                        <div class="modal-footer">-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+
+            <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages" data-current-page="curPage"
+                 data-max-size="maxSize"
+                 data-boundary-links="true">
+            </div>
+
+
+        </div>
+
+    </div>
+</div>

@@ -12,9 +12,9 @@ public interface ImageHubService {
 
     ResponseEntity<?> upload(MultipartFile[] files) throws IOException;
 
-    public boolean isImage(InputStream fileInputStream);
+    boolean isImage(InputStream fileInputStream);
 
-    public ResponseEntity<?> getImage(String[] fileNames);
+    ResponseEntity<?> getImage(String[] fileNames);
 
     String deleteFile(String name);
 

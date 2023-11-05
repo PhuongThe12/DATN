@@ -18,7 +18,7 @@ public class NhanVienRequest {
     private Long id;
 
     @NotNull(message = "Không được để trống tên")
-    @Length(message = "Tên không được vượt quá 100 ký tự", min = 1 , max = 100)
+    @Length(message = "Tên không được vượt quá 100 ký tự", min = 1, max = 100)
     private String hoTen;
 
     @NotNull(message = "Không được để trống giới tính")
@@ -27,13 +27,13 @@ public class NhanVienRequest {
     private Date ngaySinh;
 
     @NotNull(message = "Không được để trống số điện thoại")
-    @Length(message = "Số điện thoại không được vượt quá 20 ký tự",max = 20)
+    @Length(message = "Số điện thoại không được vượt quá 20 ký tự", max = 20)
     private String soDienThoai;
 
     @Email(message = "Email không hợp lệ")
     private String email;
 
-    @Length(message = "Ghi chú không được vượt quá 255 ký tự",max = 255)
+    @Length(message = "Ghi chú không được vượt quá 255 ký tự", max = 255)
     private String ghiChu;
 
     @NotNull(message = "Không được để trống trạng Thái")

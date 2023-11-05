@@ -22,7 +22,7 @@ public class SecurityConfig {
 //                        .requestMatchers("/admin/**").hasRole("ROLE_ADMIN")
 //                        .requestMatchers("/staff/**").hasAnyRole("ROLE_ADMIN", "ROLE_STAFF")
 //                        .requestMatchers("/user/**").hasAnyRole("ROLE_ADMIN", "ROLE_USER", "ROLE_STAFF")
-                        .anyRequest().permitAll()
+                                .anyRequest().permitAll()
                 )
                 .httpBasic(Customizer.withDefaults())
                 .build();

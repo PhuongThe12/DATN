@@ -21,8 +21,8 @@ public class NhanVienController {
     }
 
     @GetMapping("/detail/{id}")
-    public String getDetail(@PathVariable("id") Long id, Model model){
-         model.addAttribute("nhanVien",nhanVienService.findById(id));
-         return "/admin/nhanvien/detail";
+    public String getDetail(@PathVariable("id") Long id, Model model) {
+        model.addAttribute("nhanVien", nhanVienService.findById(id));
+        return "/admin/nhanvien/detail";
     }
 }
