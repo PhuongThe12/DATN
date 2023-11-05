@@ -1,5 +1,5 @@
 <div class="card" style="margin: 20px">
-    <h5>Danh sách dây giày</h5>
+    <h5>Danh sách giày</h5>
     <div class="card-body">
         <div class="d-flex add-search-custom">
             <div class="input-group w-25">
@@ -8,59 +8,167 @@
                        placeholder="Nhập từ khóa">
                 <button class="btn btn-custom " ng-click="search()">Tìm kiếm</button>
             </div>
-            <a class="btn btn-primary" href="#/add">Thêm dây giày</a>
         </div>
 
-        <div class="d-flex justify-content-start radio-filter">
-            <div class="custom-radio">
-                <input type="radio" id="all" name="status" ng-model="status" value="-1"
-                       ng-checked="status != 0 && status != 1"
-                       ng-change="changeRadio(-1)">
-                <label class="radio-label" for="all">Tất cả</label>
-            </div>
+        <div class="d-flex justify-content-between radio-filter" style="border-bottom: none">
+            <div>
+                <div class="custom-radio">
+                    <input type="radio" id="all" name="status" ng-model="status" value="-1"
+                           ng-checked="status != 0 && status != 1"
+                           ng-change="changeRadio(-1)">
+                    <label class="radio-label" for="all">Tất cả</label>
+                </div>
 
-            <div class="custom-radio">
-                <input type="radio" id="active" name="status" ng-model="status" value="1" ng-checked="status == 1"
-                       ng-change="changeRadio(1)">
-                <label class="radio-label" for="active">Đang kinh doanh</label>
-            </div>
+                <div class="custom-radio">
+                    <input type="radio" id="active" name="status" ng-model="status" value="1" ng-checked="status == 1"
+                           ng-change="changeRadio(1)">
+                    <label class="radio-label" for="active">Đang hiển thị</label>
+                </div>
 
-            <div class="custom-radio">
-                <input type="radio" id="disable" name="status" ng-model="status" value="0" ng-checked="status == 0"
-                       ng-change="changeRadio(0)">
-                <label class="radio-label" for="disable">Ngừng kinh doanh</label>
+                <div class="custom-radio">
+                    <input type="radio" id="disable" name="status" ng-model="status" value="0" ng-checked="status == 0"
+                           ng-change="changeRadio(0)">
+                    <label class="radio-label" for="disable">Đã ẩn</label>
+                </div>
+            </div>
+            <div class="px-3">
+                <a class="btn btn-primary" href="#/add"><i class="fas fa-plus px-2 small"></i> Thêm 1 giày mới</a>
             </div>
         </div>
 
         <div>
-            <table class="table align-middle text-center" border="1">
-                <tr>
-                    <th>Tên</th>
-                    <th>Màu sắc</th>
-                    <th>Trạng thái</th>
-                    <th></th>
-                </tr>
 
-                <tr ng-repeat="dayGiay in dayGiays">
-                    <td>{{dayGiay.ten}}</td>
-                    <td>{{dayGiay.mauSac}}</td>
-                    <td>
-                        <h5>
-                <span ng-class="{'badge bd-success-custom': dayGiay.trangThai == 1, 'badge bd-danger-custom': dayGiay.trangThai != 1}">
-                    {{dayGiay.trangThai == 1? "Đang kinh doanh" : "Ngừng khinh doanh"}}
-                </span>
-                        </h5>
-                    </td>
-                    <td>
-                        <div class="d-sm-inline-flex">
-                            <button class="btn btn-custom" ng-click="detailDayGiay(dayGiay.id)" data-bs-toggle="modal" data-bs-target="#showDayGiay">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <a class="btn btn-custom" ng-href="#/update/{{dayGiay.id}}"><i class="far fa-edit"></i></a>
+            <div class="border border-dark p-3 text-center"
+                 style="border-radius: 10px; border-color: rgba(0, 0, 0, 0.25) !important;">
+                <div class="row mb-2">
+                    <div class="col col-3 border-top border-bottom border-dark border-opacity-25p">
+                        <div class="w-100"><h5 style="margin-top: 0.5rem">Tên sản phẩm</h5></div>
+                    </div>
+                    <div class="col col-9 row">
+                        <div class="col col-3 border-top border-bottom border-dark border-opacity-25p">
+                            <div class="w-100"><h5 style="margin-top: 0.5rem">Phân loại</h5></div>
                         </div>
-                    </td>
-                </tr>
-            </table>
+                        <div class="col col-2 border-top border-bottom border-opacity-25p border-dark">
+                            <div class="w-100"><h5 style="margin-top: 0.5rem">Giá bán</h5></div>
+                        </div>
+                        <div class="col col-2 border-top border-bottom border-opacity-25p border-dark">
+                            <div class="w-100"><h5 style="margin-top: 0.5rem">Giá nhập</h5></div>
+                        </div>
+                        <div class="col col-2 border-top border-bottom border-opacity-25p border-dark">
+                            <div class="w-100"><h5 style="margin-top: 0.5rem">Số lượng</h5></div>
+                        </div>
+                        <div class="col col-3 border-top border-bottom border-opacity-25p border-dark">
+                            <div class="w-100"><h5 style="margin-top: 0.5rem">Action</h5></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div ng-repeat="(index, giay) in giays">
+
+                    <div class="row border-bottom border-left border-right border-opacity-25p border-dark p-3">
+                        <div class="product col col-3 d-flex align-items-center flex-column">
+                            <div class="product-image">
+                                <img src="{{giay.lstAnh[0]}}" alt="Sản phẩm chưa có hình ảnh"
+                                     style="width:8rem; height: 8rem; background-color: aqua; object-fit: cover;">
+                            </div>
+                            <div class=" product-info">
+                                <h5>{{giay.ten}}</h5>
+                            </div>
+                        </div>
+
+                        <div class="col col-9 row text-center"
+                             style="line-height: 2.5rem; border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
+                            <div class="col col-3">
+                                <ul class="variants mb-0">
+                                    <li ng-repeat="bienThe in giay.lstBienTheGiay" ng-show="$index < 5"
+                                        class="border-botton-005">
+                                        <span class="bienTheField">{{bienThe.mauSac.ten}}, {{bienThe.kichThuoc.ten}}</span>
+                                    </li>
+                                </ul>
+                                <div class="collapse" id="collapseVarients{{index}}">
+                                    <ul class="variants">
+                                        <li ng-repeat="bienThe in giay.lstBienTheGiay" ng-show="$index >= 5"
+                                            class="border-botton-005">
+                                            <span class="bienTheField"></span>{{bienThe.mauSac.ten}}, <span
+                                                class="bienTheField"></span>{{bienThe.kichThuoc.ten}}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col col-2">
+                                <ul class="variants mb-0 ">
+                                    <div ng-repeat="bienThe in giay.lstBienTheGiay" ng-show="$index < 5"
+                                         class="border-botton-005">
+                                        <span class="bienTheField">{{bienThe.giaBan}} <i
+                                                class="fas fa-pen edit-icon"></i></span>
+                                    </div>
+                                </ul>
+                                <div class="collapse" id="collapseVarients{{index}}">
+                                    <ul class="variants">
+                                        <div ng-repeat="bienThe in giay.lstBienTheGiay" ng-show="$index >= 5"
+                                             class="border-botton-005">
+                                            <span class="bienTheField">{{bienThe.giaBan}}<i
+                                                    class="fas fa-pen edit-icon"></i></span>
+                                        </div>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col col-2">
+                                <ul class="variants mb-0 ">
+                                    <div ng-repeat="bienThe in giay.lstBienTheGiay" ng-show="$index < 5"
+                                         class="border-botton-005">
+                                        <span class="bienTheField">{{bienThe.giaNhap}} <i
+                                                class="fas fa-pen edit-icon"></i></span>
+                                    </div>
+                                </ul>
+                                <div class="collapse" id="collapseVarients{{index}}">
+                                    <ul class="variants">
+                                        <div ng-repeat="bienThe in giay.lstBienTheGiay" ng-show="$index >= 5"
+                                             class="border-botton-005">
+                                            <span class="bienTheField">{{bienThe.giaNhap}}<i
+                                                    class="fas fa-pen edit-icon"></i></span>
+                                        </div>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col col-2">
+                                <ul class="variants mb-0 ">
+                                    <div ng-repeat="bienThe in giay.lstBienTheGiay" ng-show="$index < 5"
+                                         class="border-botton-005">
+                                        <span class="bienTheField">{{bienThe.soLuong}}<i
+                                                class="fas fa-pen edit-icon"></i></span>
+                                    </div>
+                                </ul>
+                                <div class="collapse" id="collapseVarients{{index}}">
+                                    <ul class="variants">
+                                        <div ng-repeat="bienThe in giay.lstBienTheGiay" ng-show="$index >= 5"
+                                             class="border-botton-005">
+                                            <span class="bienTheField">{{bienThe.soLuong}}<i
+                                                    class="fas fa-pen edit-icon"></i></span>
+                                        </div>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col col-3">
+                                <div class="d-flex flex-column">
+                                    <button class="btn btn-primary m-3">Cập nhật</button>
+                                    <button class="btn btn-primary m-3">Xem chi tiết</button>
+                                </div>
+                            </div>
+                            <div ng-show="giay.lstBienTheGiay.length > 5 && !looped" class="w-100 text-center">
+                                <a data-bs-toggle="collapse" ng-click="toggleVarients(index)"
+                                   ng-show="!showVarients[index]" href="#collapseVarients{{index}}"
+                                   class="text-decoration-none text-dark">
+                                    Xem thêm {{giay.lstBienTheGiay.length - 5}} biến thể</a>
+                                <a data-bs-toggle="collapse" ng-click="toggleVarients(index)"
+                                   ng-show="showVarients[index]" href="#collapseVarients{{index}}"
+                                   class="text-decoration-none text-dark">Đóng</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages" data-current-page="curPage"
                  data-max-size="maxSize"
@@ -70,47 +178,4 @@
         </div>
     </div>
 
-</div>
-
-<!-- Modal Detail-->
-<div class="modal fade" id="showDayGiay" tabindex="-1" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Chi Tiết Màu Sắc</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <table>
-                    <tr>
-                        <td>ID :</td>
-                        <th>{{dayGiayDetail.id}}</th>
-                    </tr>
-                    <tr>
-                        <td>Tên :</td>
-                        <th>{{dayGiayDetail.ten}}</th>
-                    </tr>
-                    <tr>
-                        <td>Mô tả :</td>
-                        <th>{{dayGiayDetail.moTa}}</th>
-                    </tr>
-
-                    <tr>
-                        <td>Trạng thái:</td>
-                        <th>
-                            <h5>
-                <span ng-class="{'badge bd-success-custom': dayGiayDetail.trangThai == 1, 'badge bd-danger-custom': dayGiayDetail.trangThai != 1}">
-                    {{dayGiayDetail.trangThai == 1? "Đang kinh doanh" : "Ngừng khinh doanh"}}
-                </span>
-                            </h5>
-                        </th>
-                    </tr>
-
-                </table>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
 </div>

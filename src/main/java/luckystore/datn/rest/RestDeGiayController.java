@@ -23,39 +23,39 @@ public class RestDeGiayController {
     private DeGiayService deGiayService;
 
     @PostMapping
-    public ResponseEntity addDeGiay(@Valid @RequestBody DeGiayRequest deGiayRequest, BindingResult result) {
-        ResponseEntity errorJson = getErrorJson(result);
+    public ResponseEntity<?> addDeGiay(@Valid @RequestBody DeGiayRequest deGiayRequest, BindingResult result) {
+        ResponseEntity<?> errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
-        return new ResponseEntity(deGiayService.addDeGiay(deGiayRequest), HttpStatus.OK);
+        return new ResponseEntity<>(deGiayService.addDeGiay(deGiayRequest), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateDeGiay(@PathVariable("id") Long id, @Valid @RequestBody DeGiayRequest deGiayRequest, BindingResult result) {
-        ResponseEntity errorJson = getErrorJson(result);
+    public ResponseEntity<?> updateDeGiay(@PathVariable("id") Long id, @Valid @RequestBody DeGiayRequest deGiayRequest, BindingResult result) {
+        ResponseEntity<?> errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
-        return new ResponseEntity(deGiayService.updateDeGiay(id, deGiayRequest), HttpStatus.OK);
+        return new ResponseEntity<>(deGiayService.updateDeGiay(id, deGiayRequest), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getDeGiay(@PathVariable("id") Long id) {
-        return new ResponseEntity(deGiayService.findById(id), HttpStatus.OK);
+    public ResponseEntity<?> getDeGiay(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(deGiayService.findById(id), HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity getDeGiayPage(@RequestParam(value = "page", defaultValue = "1") Integer page,
+    public ResponseEntity<?> getDeGiayPage(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                         @RequestParam(value = "search", required = false) String searchText,
                                         @RequestParam(value = "status", required = false) Integer status) {
-        return new ResponseEntity(deGiayService.getPage(page, searchText, status), HttpStatus.OK);
+        return new ResponseEntity<>(deGiayService.getPage(page, searchText, status), HttpStatus.OK);
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity getAll() {
-        return new ResponseEntity(deGiayService.getAll(), HttpStatus.OK);
+    public ResponseEntity<?> getAll() {
+        return new ResponseEntity<>(deGiayService.getAll(), HttpStatus.OK);
     }
 
-    private ResponseEntity getErrorJson(BindingResult result) {
+    private ResponseEntity<?> getErrorJson(BindingResult result) {
         if (result.hasErrors()) {
             List<String> fieldErrors = new ArrayList<>();
             for (FieldError fieldError : result.getFieldErrors()) {
@@ -63,7 +63,7 @@ public class RestDeGiayController {
                 fieldErrors.add(errorMessage);
             }
             String errorJson = JsonString.stringToJson(String.join(",", fieldErrors));
-            return new ResponseEntity(errorJson, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(errorJson, HttpStatus.BAD_REQUEST);
         }
         return null;
     }

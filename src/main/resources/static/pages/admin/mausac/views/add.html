@@ -42,25 +42,25 @@
             <option>#7fffd4</option>
             <option>#cccccc</option>
         </datalist>
-        <small class="error-message" ng-show="(mauSacForm.maMau.$dirty || mauSacForm.maMau.$touched) && mauSacForm.maMau.$error.required">Không được để
+        <small class="text-danger" ng-show="(mauSacForm.maMau.$dirty || mauSacForm.maMau.$touched) && mauSacForm.maMau.$error.required">Không được để
             trống màu sắc</small>
-        <small class="error-message" ng-show="errors.maMau && !mauSacForm.maMau.$dirty">{{errors.maMau}}</small>
+        <small class="text-danger" ng-show="errors.maMau && !mauSacForm.maMau.$dirty">{{errors.maMau}}</small>
     </div>
 
     <div class="form-group">
         <label for="mauSacTen">Tên: </label>
-        <input type="text" class="form-control" id="mauSacTen" name="ten" ng-model="mauSac.ten" ng-maxlength="50" ng-required="true"
+        <input type="text" class="form-control" id="mauSacTen" name="ten" ng-model="mauSac.ten" ng-maxlength="100" ng-required="true"
             ng-change="change(mauSacForm.ten)">
-        <small class="error-message" ng-show="(mauSacForm.ten.$dirty || mauSacForm.ten.$touched) && mauSacForm.ten.$error.required">Không được để
+        <small class="text-danger" ng-show="(mauSacForm.ten.$dirty || mauSacForm.ten.$touched) && mauSacForm.ten.$error.required">Không được để
             trống tên</small>
-        <small class="error-message" ng-show="(mauSacForm.ten.$dirty || mauSacForm.ten.$touched) && mauSacForm.ten.$error.maxlength">Tên không được
-            vượt quá 50 ký tự</small>
-        <small class="error-message" ng-show="errors.ten && !mauSacForm.ten.$dirty">{{errors.ten}}</small>
+        <small class="text-danger" ng-show="(mauSacForm.ten.$dirty || mauSacForm.ten.$touched) && mauSacForm.ten.$error.maxlength">Tên không được
+            vượt quá 100 ký tự</small>
+        <small class="text-danger" ng-show="errors.ten && !mauSacForm.ten.$dirty">{{errors.ten}}</small>
     </div>
     <div class="form-group">
         <label for="mauSacMoTa">Mô tả: </label>
         <textarea class="form-control" id="mauSacMoTa" name="moTa" rows="3" ng-model="mauSac.moTa" ng-change="change(mauSacForm.moTa)"></textarea>
-        <small class="error-message" ng-show="errors.moTa && !mauSacForm.moTa.$dirty">{{errors.moTa}}</small>
+        <small class="text-danger" ng-show="errors.moTa && !mauSacForm.moTa.$dirty">{{errors.moTa}}</small>
     </div>
 
     <div class="form-group">
@@ -68,9 +68,9 @@
         <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" id="mauSacTrangThai" name="trangThai" ng-model="mauSac.trangThai" ng-true-value="1"
                    ng-false-value="0" ng-init="mauSac.trangThai = 1">
-            <label class="form-check-label" for="mauSacTrangThai">Đang kinh doanh</label>
+            <label class="form-check-label" for="mauSacTrangThai">Hiển thị</label>
         </div>
-        <small class="error-message" ng-show="errors.trangThai && !mauSacForm.trangThai.$dirty">{{errors.trangThai}}</small>
+        <small class="text-danger" ng-show="errors.trangThai && !mauSacForm.trangThai.$dirty">{{errors.trangThai}}</small>
     </div>
     <button type="submit" class="btn btn-primary">Tạo mới</button>
 </form>

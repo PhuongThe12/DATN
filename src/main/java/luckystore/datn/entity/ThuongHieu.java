@@ -1,31 +1,48 @@
 package luckystore.datn.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.Nationalized;
 
-@Entity
-@Table(name = "ThuongHieu")
-@Data
+import java.time.LocalDateTime;
+
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@Getter
+@Setter
+@Entity
+@Table(name = "ThuongHieu")
 public class ThuongHieu {
-
     @Id
-    @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
     private Long id;
 
-    @Column(name = "TEN")
-    private String ten;
-
-    @Column(name = "MO_TA")
+    @Size(max = 3000)
+    @Nationalized
+    @Column(name = "MO_TA", length = 3000)
     private String moTa;
+
+    @Size(max = 100)
+    @Nationalized
+    @Column(name = "TEN", length = 100)
+    private String ten;
 
     @Column(name = "TRANG_THAI")
     private Integer trangThai;
+
+    @Column(name = "NGAY_TAO")
+    private LocalDateTime ngayTao;
 
 }

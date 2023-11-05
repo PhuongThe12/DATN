@@ -1,0 +1,221 @@
+<style>
+     /*CSS cho phần container chứa toàn bộ nội dung */
+    .container {
+        /*display: flex;*/
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 20px;
+    }
+
+    /* CSS cho phần danh sách hóa đơn */
+    #formListHoaDon {
+        flex: 1;
+        margin-right: 20px;
+    }
+
+    /* CSS cho phần sản phẩm đã mua */
+    #formSanPhamDaMua {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    /* CSS cho phần sản phẩm thay thế */
+    #formSanPhamThayThe {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    /* CSS cho phần thông tin chi tiết */
+    #formThongTinChiTiet {
+        flex: 2;
+        background-color: #f9f9f9;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    /* CSS cho button */
+    button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    /* CSS cho select box */
+    select {
+        width: 100%;
+        padding: 10px;
+    }
+
+    /* CSS cho textarea */
+    textarea {
+        width: 100%;
+        padding: 10px;
+    }
+
+</style>
+
+<div class="container">
+    <form name="addYeuCauForm" ng-submit="addYeuCau()">
+
+        <div id="formListHoaDon">
+            <h2 style="text-align: center">Danh Sách Hóa Đơn</h2>
+
+            <table class="table">
+                <tr>
+                    <th>Mã Hóa đơn</th>
+                    <th>Khách Hàng</th>
+                    <th>Nhân Viên</th>
+                    <th>Kênh Bán</th>
+                    <th>Loại Hóa Đơn</th>
+                    <th>Tổng Tiền</th>
+                    <th>Trạng Thái</th>
+                    <th>Chọn</th>
+                </tr>
+
+                <tr ng-repeat="hoaDon in listHoaDon">
+                    <td>{{hoaDon.id}}</td>
+                    <td>{{hoaDon.khachHang}}</td>
+                    <td>{{hoaDon.nhanVien}}</td>
+                    <td>{{hoaDon.kenhBan ==1?"online":"Tại Quầy"}}</td>
+                    <td>{{hoaDon.loaiHoaDon==1?"Hóa Đơn Mua":hoaDon.loaiHoaDon==2?"Hóa Đơn
+                        Đổi":hoaDon.loaiHoaDon==3?"Hóa
+                        Đơn Trả Hàng - Hòa Tiền":"Hóa Đơn Trả Hàng - Đổi Mới"}}
+                    </td>
+                    <td>{{hoaDon.tongTien}}</td>
+                    <td>{{hoaDon.trangThai==1?"Đã Hoàn Thành":hoaDon.trangThai==2?"Đã Xét Duyệt":hoaDon.trangThai==3?"Đã
+                        Hoàn Thành":"Bị Hủy"}}
+                    </td>
+                    <td><input type="radio" name="hoaDonGroup" ng-click="chonHoaDon(hoaDon)"></td>
+                </tr>
+            </table>
+
+            <button class="btn btn-primary" type="button" id="openFormAdd" ng-click="taoYeuCau()">Tạo Yêu Cầu</button>
+        </div>
+
+        <div class="left">
+            <div id="formSanPhamDaMua" style="display: none;">
+                <h1 style="text-align: center">Sản Phẩm Đã Mua</h1>
+                <div>
+                    <table class="table">
+                        <tr>
+                            <th>Tên</th>
+                            <th>Số Lượng Trả</th>
+                            <th>Đơn Giá</th>
+                            <th>Thành Tiền</th>
+                        </tr>
+
+                        <tr ng-repeat="hoaDonChiTiet in listHoaDonChiTiet">
+                            <td>{{hoaDonChiTiet.idBienTheGiay[0].ten}}</td>
+                            <td>
+                                <input type="number" ng-model="soLuongTra" ng-init="0" min="0"
+                                       max="{{hoaDonChiTiet.soLuong}}">
+                                <span>/ {{hoaDonChiTiet.soLuong}}</span>
+                            </td>
+                            <td>{{hoaDonChiTiet.donGia}}</td>
+                            <td ng-if="soLuongTra">{{hoaDonChiTiet.donGia * soLuongTra}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div id="formSanPhamThayThe" style="display: none;">
+                <h1 style="text-align: center">Sản Phẩm Thay Thế</h1>
+                <button type="button" class="btn btn-primary" ng-click="chonSanPhamDoi()">Chọn Sản Phẩm Thay Thế
+                </button>
+                <div>
+                    <table class="table">
+                        <tr>
+                            <th>Tên</th>
+                            <th>Sô Lượng Đổi</th>
+                            <th>Đơn Giá</th>
+                            <th>Thành Tiền</th>
+                        </tr>
+                        <tr ng-repeat="bienTheGiay in listBienTheGiayDoi">
+                            <td>{{bienTheGiay.ten}}</td>
+                            <td>
+                                <input type="number" ng-model="soLuongDoi" ng-init="1" min="1"
+                                       max="{{bienTheGiay.soLuong}}">
+                            </td>
+                            <td>{{bienTheGiay.giaBan}}</td>
+                            <td ng-if="soLuongDoi">{{bienTheGiay.giaBan * soLuongDoi}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="formChonSanPhamThayThe" style="display: none;">
+            <h1 style="text-align: center">Kho Sản Phẩm</h1>
+            <div>
+                <table class="table">
+                    <tr>
+                        <th>Mã Sản Phẩm</th>
+                        <th>Tên</th>
+                        <th>Sô Lượng Tồn</th>
+                        <th>Đơn Giá</th>
+                    </tr>
+                    <tr ng-repeat="bienTheGiay in listBienTheGiays">
+                        <td>SP{{bienTheGiay.id}}</td>
+                        <td>{{bienTheGiay.ten}}</td>
+                        <td>{{bienTheGiay.soLuong}}</td>
+                        <td>{{bienTheGiay.giaBan}}</td>
+                        <td>
+                            <button type="button" ng-click="chonGiayDoi(bienTheGiay)">Chọn</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="right">
+            <div id="formYeuCau" style="display: none;">
+                <div class="form-group">
+                    <label>Hoá Đơn: <a>HD{{hoaDonSelected.id}}</a></label>
+
+                </div>
+
+                <div class="form-group">
+                    <label for="nguoiThucHien">Chọn nhân viên:</label>
+                    <select id="nguoiThucHien" name="nguoiThucHien" ng-model="yeuCau.nguoiThucHien">
+                        <option ng-repeat="nhanVien in danhSachNhanVien" value="{{nhanVien.id}}">{{nhanVien.ten}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="loaiYeuCau">Loại Yêu Cầu:</label>
+                    <select id="loaiYeuCau" name="loaiYeuCau" ng-model="yeuCau.loaiYeuCau">
+                        <option value="1">Yêu Cầu Đổi</option>
+                        <option value="2">Yêu Cầu Trả</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="trangThai">Trạng Thái:</label>
+                    <select id="trangThai" name="trangThai" ng-model="yeuCau.trangThai">
+                        <option value="1">Chờ Xét Duyệt</option>
+                        <option value="2">Đã Xét Duyệt</option>
+                        <option value="3">Đã Hoàn Thành</option>
+                        <option value="4">Bị Hủy</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="ghiChu">Ghi Chú:</label>
+                    <textarea class="form-control" id="ghiChu" name="ghiChu" rows="3" ng-model="yeuCau.ghiChu"
+                              ng-change="change(addYeuCauForm.ghiChu)"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Tạo mới</button>
+            </div>
+        </div>
+    </form>
+</div>

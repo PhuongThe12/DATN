@@ -1,0 +1,36 @@
+<h1>Cập nhật màu sắc</h1>
+
+<form name="updateYeuCauForm" ng-submit="updateYeuCau()">
+    <div class="form-group">
+        <label for="hoaDon">Hoá Đơn:</label>
+        <input type="text" class="form-control" id="hoaDon" name="hoaDon" ng-model="yeuCau.hoaDon" readonly>
+        <small class="error-message" ng-show="(addYeuCauForm.hoaDon.$dirty || addYeuCauForm.hoaDon.$touched) && addYeuCauForm.hoaDon.$error.required">Không được để trống id hóa đơn</small>
+        <small class="error-message" ng-show="errors.hoaDon && !addYeuCauForm.hoaDon.$dirty">{{errors.hoaDon}}</small>
+    </div>
+    <div class="form-group">
+        <label for="nguoiThucHien">Chọn nhân viên:</label>
+        <select id="nguoiThucHien" name="nguoiThucHien" ng-model="yeuCau.nguoiThucHien">
+            <option ng-repeat="nhanVien in danhSachNhanVien" value="{{nhanVien.id}}">{{nhanVien.ten}}</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="loaiYeuCau">Loại Yêu Cầu:</label>
+        <select id="loaiYeuCau" name="loaiYeuCau" ng-model="yeuCau.loaiYeuCau">
+            <option value="1" ng-selected="yeuCau.loaiYeuCau === 1">Yêu Cầu Đổi</option>
+            <option value="2" ng-selected="yeuCau.loaiYeuCau === 2">Yêu Cầu Trả</option>
+        </select>
+
+    </div>
+
+    <div class="form-group">
+        <label for="trangThai">Trạng Thái:</label>
+        <select id="trangThai" name="trangThai" ng-model="yeuCau.trangThai">
+            <option value="1" ng-selected="yeuCau.trangThai === 1">Chờ Xét Duyệt</option>
+            <option value="2" ng-selected="yeuCau.trangThai === 2">Đã Xét Duyệt</option>
+            <option value="3" ng-selected="yeuCau.trangThai === 3">Đã Hoàn Thành</option>
+            <option value="4" ng-selected="yeuCau.trangThai === 4">Bị Hủy</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Cập Nhật</button>
+</form>

@@ -26,7 +26,7 @@ public class ThuongHieuServiceImpl implements ThuongHieuService {
 
     @Override
     public List<ThuongHieuResponse> getAll() {
-        return thuongHieuRepo.findAllResponse();
+        return thuongHieuRepo.findAllActive();
     }
 
     @Override

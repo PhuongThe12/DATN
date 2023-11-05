@@ -22,39 +22,39 @@ public class RestMauSacController {
     private MauSacService mauSacService;
 
     @PostMapping
-    public ResponseEntity addMauSac(@Valid @RequestBody MauSacRequest mauSacRequest, BindingResult result) {
-        ResponseEntity errorJson = getErrorJson(result);
+    public ResponseEntity<?> addMauSac(@Valid @RequestBody MauSacRequest mauSacRequest, BindingResult result) {
+        ResponseEntity<?> errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
-        return new ResponseEntity(mauSacService.addMauSac(mauSacRequest), HttpStatus.OK);
+        return new ResponseEntity<>(mauSacService.addMauSac(mauSacRequest), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateMauSac(@PathVariable("id") Long id, @Valid @RequestBody MauSacRequest mauSacRequest, BindingResult result) {
-        ResponseEntity errorJson = getErrorJson(result);
+    public ResponseEntity<?> updateMauSac(@PathVariable("id") Long id, @Valid @RequestBody MauSacRequest mauSacRequest, BindingResult result) {
+        ResponseEntity<?> errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
-        return new ResponseEntity(mauSacService.updateMauSac(id, mauSacRequest), HttpStatus.OK);
+        return new ResponseEntity<>(mauSacService.updateMauSac(id, mauSacRequest), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getMauSac(@PathVariable("id") Long id) {
-        return new ResponseEntity(mauSacService.findById(id), HttpStatus.OK);
+    public ResponseEntity<?> getMauSac(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(mauSacService.findById(id), HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity getMauSacPage(@RequestParam(value = "page", defaultValue = "1") Integer page,
+    public ResponseEntity<?> getMauSacPage(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                         @RequestParam(value = "search", required = false) String searchText,
                                         @RequestParam(value = "status", required = false) Integer status) {
-        return new ResponseEntity(mauSacService.getPage(page, searchText, status), HttpStatus.OK);
+        return new ResponseEntity<>(mauSacService.getPage(page, searchText, status), HttpStatus.OK);
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity getAll() {
-        return new ResponseEntity(mauSacService.getAll(), HttpStatus.OK);
+    public ResponseEntity<?> getAll() {
+        return new ResponseEntity<>(mauSacService.getAll(), HttpStatus.OK);
     }
 
-    private ResponseEntity getErrorJson(BindingResult result) {
+    private ResponseEntity<?> getErrorJson(BindingResult result) {
         if (result.hasErrors()) {
             List<String> fieldErrors = new ArrayList<>();
             for (FieldError fieldError : result.getFieldErrors()) {
@@ -62,7 +62,7 @@ public class RestMauSacController {
                 fieldErrors.add(errorMessage);
             }
             String errorJson = JsonString.stringToJson(String.join(",", fieldErrors));
-            return new ResponseEntity(errorJson, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(errorJson, HttpStatus.BAD_REQUEST);
         }
         return null;
     }

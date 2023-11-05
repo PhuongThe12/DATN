@@ -22,39 +22,39 @@ public class RestCoGiayController {
     private CoGiayService coGiayService;
 
     @PostMapping
-    public ResponseEntity addCoGiay(@Valid @RequestBody CoGiayRequest coGiayRequest, BindingResult result) {
-        ResponseEntity errorJson = getErrorJson(result);
+    public ResponseEntity<?> addCoGiay(@Valid @RequestBody CoGiayRequest coGiayRequest, BindingResult result) {
+        ResponseEntity<?> errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
-        return new ResponseEntity(coGiayService.addCoGiay(coGiayRequest), HttpStatus.OK);
+        return new ResponseEntity<>(coGiayService.addCoGiay(coGiayRequest), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateCoGiay(@PathVariable("id") Long id, @Valid @RequestBody CoGiayRequest coGiayRequest, BindingResult result) {
-        ResponseEntity errorJson = getErrorJson(result);
+    public ResponseEntity<?> updateCoGiay(@PathVariable("id") Long id, @Valid @RequestBody CoGiayRequest coGiayRequest, BindingResult result) {
+        ResponseEntity<?> errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
-        return new ResponseEntity(coGiayService.updateCoGiay(id, coGiayRequest), HttpStatus.OK);
+        return new ResponseEntity<>(coGiayService.updateCoGiay(id, coGiayRequest), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getCoGiay(@PathVariable("id") Long id) {
-        return new ResponseEntity(coGiayService.findById(id), HttpStatus.OK);
+    public ResponseEntity<?> getCoGiay(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(coGiayService.findById(id), HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity getCoGiayPage(@RequestParam(value = "page", defaultValue = "1") Integer page,
+    public ResponseEntity<?> getCoGiayPage(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                         @RequestParam(value = "search", required = false) String searchText,
                                         @RequestParam(value = "status", required = false) Integer status) {
-        return new ResponseEntity(coGiayService.getPage(page, searchText, status), HttpStatus.OK);
+        return new ResponseEntity<>(coGiayService.getPage(page, searchText, status), HttpStatus.OK);
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity getAll() {
-        return new ResponseEntity(coGiayService.getAll(), HttpStatus.OK);
+    public ResponseEntity<?> getAll() {
+        return new ResponseEntity<>(coGiayService.getAll(), HttpStatus.OK);
     }
 
-    private ResponseEntity getErrorJson(BindingResult result) {
+    private ResponseEntity<?> getErrorJson(BindingResult result) {
         if (result.hasErrors()) {
             List<String> fieldErrors = new ArrayList<>();
             for (FieldError fieldError : result.getFieldErrors()) {
@@ -62,7 +62,7 @@ public class RestCoGiayController {
                 fieldErrors.add(errorMessage);
             }
             String errorJson = JsonString.stringToJson(String.join(",", fieldErrors));
-            return new ResponseEntity(errorJson, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(errorJson, HttpStatus.BAD_REQUEST);
         }
         return null;
     }

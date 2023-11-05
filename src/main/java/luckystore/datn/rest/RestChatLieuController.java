@@ -22,39 +22,39 @@ public class RestChatLieuController {
     private ChatLieuService chatLieuService;
 
     @PostMapping
-    public ResponseEntity addChatLieu(@Valid @RequestBody ChatLieuRequest chatLieuRequest, BindingResult result) {
-        ResponseEntity errorJson = getErrorJson(result);
+    public ResponseEntity<?> addChatLieu(@Valid @RequestBody ChatLieuRequest chatLieuRequest, BindingResult result) {
+        ResponseEntity<?> errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
-        return new ResponseEntity(chatLieuService.addChatLieu(chatLieuRequest), HttpStatus.OK);
+        return new ResponseEntity<>(chatLieuService.addChatLieu(chatLieuRequest), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateChatLieu(@PathVariable("id") Long id, @Valid @RequestBody ChatLieuRequest chatLieuRequest, BindingResult result) {
-        ResponseEntity errorJson = getErrorJson(result);
+    public ResponseEntity<?> updateChatLieu(@PathVariable("id") Long id, @Valid @RequestBody ChatLieuRequest chatLieuRequest, BindingResult result) {
+        ResponseEntity<?> errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
-        return new ResponseEntity(chatLieuService.updateChatLieu(id, chatLieuRequest), HttpStatus.OK);
+        return new ResponseEntity<>(chatLieuService.updateChatLieu(id, chatLieuRequest), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getChatLieu(@PathVariable("id") Long id) {
-        return new ResponseEntity(chatLieuService.findById(id), HttpStatus.OK);
+    public ResponseEntity<?> getChatLieu(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(chatLieuService.findById(id), HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity getChatLieuPage(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                          @RequestParam(value = "search", required = false) String searchText,
-                                          @RequestParam(value = "status", required = false) Integer status) {
-        return new ResponseEntity(chatLieuService.getPage(page, searchText, status), HttpStatus.OK);
+    public ResponseEntity<?> getChatLieuPage(@RequestParam(value = "page", defaultValue = "1") Integer page,
+                                        @RequestParam(value = "search", required = false) String searchText,
+                                        @RequestParam(value = "status", required = false) Integer status) {
+        return new ResponseEntity<>(chatLieuService.getPage(page, searchText, status), HttpStatus.OK);
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity getAll() {
-        return new ResponseEntity(chatLieuService.getAll(), HttpStatus.OK);
+    public ResponseEntity<?> getAll() {
+        return new ResponseEntity<>(chatLieuService.getAll(), HttpStatus.OK);
     }
 
-    private ResponseEntity getErrorJson(BindingResult result) {
+    private ResponseEntity<?> getErrorJson(BindingResult result) {
         if (result.hasErrors()) {
             List<String> fieldErrors = new ArrayList<>();
             for (FieldError fieldError : result.getFieldErrors()) {
@@ -62,7 +62,7 @@ public class RestChatLieuController {
                 fieldErrors.add(errorMessage);
             }
             String errorJson = JsonString.stringToJson(String.join(",", fieldErrors));
-            return new ResponseEntity(errorJson, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(errorJson, HttpStatus.BAD_REQUEST);
         }
         return null;
     }

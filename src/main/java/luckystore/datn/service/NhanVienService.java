@@ -18,4 +18,6 @@ public interface NhanVienService {
     NhanVienResponse updateNhanVien(Long id, NhanVienRequest nhanVienRequest);
 
     NhanVienResponse findById(Long id);
+
+    NhanVienResponse findNhanVienByIdTaiKhoan(Long id);
 }
