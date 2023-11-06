@@ -6,10 +6,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import luckystore.datn.entity.Giay;
+import luckystore.datn.entity.HashTagChiTiet;
 import luckystore.datn.entity.HinhAnh;
 import luckystore.datn.service.impl.ImageHubServiceImpl;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,12 +54,15 @@ public class GiayResponse {
 
     private Map<Long, String> mauSacImages;
 
+    private List<HashTagChiTietResponse> lstHashTagChiTiet;
+
     public GiayResponse(Giay giay) {
         if (giay != null) {
             this.id = giay.getId();
             this.ten = giay.getTen();
             this.namSX = giay.getNamSX();
-            this.lstAnh = giay.getLstAnh().stream().map(anh -> ImageHubServiceImpl.getBase64FromFileStatic(anh.getLink())).collect(Collectors.toList());
+            this.lstAnh = giay.getLstAnh().stream().sorted(Comparator.comparingInt(HinhAnh::getUuTien))
+                    .map(anh -> ImageHubServiceImpl.getBase64FromFileStatic(anh.getLink())).collect(Collectors.toList());
             this.trangThai = giay.getTrangThai();
             this.moTa = giay.getMoTa();
             this.deGiay = new DeGiayResponse(giay.getDeGiay());
@@ -69,6 +74,7 @@ public class GiayResponse {
             this.dayGiay = new DayGiayResponse(giay.getDayGiay());
 
             this.lstBienTheGiay = (giay.getLstBienTheGiay().stream().map(BienTheGiayResponse::new).collect(Collectors.toList()));
+            this.lstHashTagChiTiet = (giay.getHashTagChiTiets().stream().map(HashTagChiTietResponse::new).collect(Collectors.toList()));
 
         }
     }

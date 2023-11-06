@@ -22,4 +22,10 @@ public interface GiayService {
     Page<GiayResponse> findAllForList(GiaySearch giaySearch);
 
     Page<GiayResponse>  getPage();
+
+    GiayResponse updateSoLuong(GiayRequest giayRequest);
+
+    GiayResponse updateGia(GiayRequest giayRequest);
+
+    GiayResponse updateGiay(Long id, GiayRequest giayRequest);
 }

@@ -8,10 +8,10 @@ import luckystore.datn.validation.PriceCheck;
 public class PriceCheckValidator implements ConstraintValidator<PriceCheck, BienTheGiayRequest> {
     @Override
     public boolean isValid(BienTheGiayRequest value, ConstraintValidatorContext context) {
-        if (value == null) {
+        if (value == null || value.getGiaBan() == null || value.getGiaNhap() == null) {
             return true;
         }
 
-        return value.getGiaNhap().compareTo(value.getGiaBan()) < 0;
+        return value.getGiaNhap().compareTo(value.getGiaBan()) <= 0;
     }
 }

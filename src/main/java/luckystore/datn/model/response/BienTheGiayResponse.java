@@ -60,4 +60,11 @@ public class BienTheGiayResponse {
         this.kichThuoc = KichThuocResponse.builder().ten(tenKT).build();
     }
 
+    public BienTheGiayResponse(Long id, Long idMauSac, Long idKichThuoc, String barCode) {
+        this.id = id;
+        this.barCode = barCode;
+        this.mauSac = MauSacResponse.builder().id(idMauSac).build();
+        this.kichThuoc = KichThuocResponse.builder().id(idKichThuoc).build();
+    }
+
 }

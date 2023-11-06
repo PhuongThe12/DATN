@@ -1,23 +1,28 @@
 package luckystore.datn.rest;
 
-import jakarta.validation.Valid;
 import luckystore.datn.model.request.GiayRequest;
 import luckystore.datn.model.request.GiaySearch;
 import luckystore.datn.service.GiayService;
 import luckystore.datn.service.ImageHubService;
-import luckystore.datn.service.impl.ImageHubServiceImpl;
+import luckystore.datn.util.JsonString;
+import luckystore.datn.validation.groups.CreateGroup;
+import luckystore.datn.validation.groups.UpdateGiaGroup;
+import luckystore.datn.validation.groups.UpdateSoLuongGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -35,6 +40,11 @@ public class RestGiayController {
 //            @RequestBody GiaySearch giaySearch
     ) {
         return ResponseEntity.ok(giayService.getPage());
+    }
+
+    @GetMapping("/getData")
+    public ResponseEntity<String> getData() {
+        return ResponseEntity.ok(imageHubService.getBase64FromFile("demo.txt"));
     }
 
     @GetMapping("/{id}")
@@ -58,32 +68,50 @@ public class RestGiayController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> uploadData(@Valid @RequestBody GiayRequest giayRequest, BindingResult result) {
+    public ResponseEntity<?> uploadData(@Validated({CreateGroup.class}) @RequestBody GiayRequest giayRequest, BindingResult result) {
 
-        if(result.hasErrors()) {
-            return ResponseEntity.badRequest().body(result.getAllErrors());
-        }
+        ResponseEntity<?> errorJson = getErrorJson(result);
+        if (errorJson != null) return errorJson;
 
         return ResponseEntity.ok(giayService.addGiay(giayRequest));
     }
 
-//    @GetMapping("/{name}")
-//    public ResponseEntity<?> getImage(@PathVariable("name") String name) {
-//        return ResponseEntity.ok(new ImageHubServiceImpl().getImage(name));
-//    }
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateGiay(@PathVariable("id") Long id,
+                                        @Validated({UpdateGiaGroup.class}) @RequestBody GiayRequest giayRequest, BindingResult result) {
+        ResponseEntity<?> errorJson = getErrorJson(result);
+        if (errorJson != null) return errorJson;
 
-    @GetMapping("/getData")
-    public ResponseEntity<String> getData() {
-        return ResponseEntity.ok(imageHubService.getBase64FromFile("demo.txt"));
+        return ResponseEntity.ok(giayService.updateGiay(id, giayRequest));
     }
 
-//    @PostMapping("/add")
-//    public ResponseEntity<?> add(@RequestPart("giayRequest") GiayRequest giayRequest) {
-//        System.out.println("sended: " + giayRequest);
-////        if(result.hasErrors()) {
-////            return new ResponseEntity<>(result.getAllErrors(), HttpStatus.BAD_REQUEST);
-////        }
-//
-//        return new ResponseEntity<>(giayRequest, HttpStatus.OK);
-//    }
+    @PutMapping("/update-so-luong")
+    public ResponseEntity<?> updateSoLuong(@Validated({UpdateSoLuongGroup.class}) @RequestBody GiayRequest giayRequest, BindingResult result) {
+        ResponseEntity<?> errorJson = getErrorJson(result);
+        if (errorJson != null) return errorJson;
+
+        return ResponseEntity.ok(giayService.updateSoLuong(giayRequest));
+    }
+
+    @PutMapping("/update-gia")
+    public ResponseEntity<?> updateGia(@Validated({UpdateGiaGroup.class}) @RequestBody GiayRequest giayRequest, BindingResult result) {
+        ResponseEntity<?> errorJson = getErrorJson(result);
+        if (errorJson != null) return errorJson;
+
+        return ResponseEntity.ok(giayService.updateGia(giayRequest));
+    }
+
+    private ResponseEntity<?> getErrorJson(BindingResult result) {
+        if (result.hasErrors()) {
+            List<String> fieldErrors = new ArrayList<>();
+            for (FieldError fieldError : result.getFieldErrors()) {
+                String errorMessage = JsonString.errorToJsonObject(fieldError.getField(), fieldError.getDefaultMessage());
+                fieldErrors.add(errorMessage);
+            }
+            String errorJson = JsonString.stringToJson(String.join(",", fieldErrors));
+            return new ResponseEntity<>(errorJson, HttpStatus.BAD_REQUEST);
+        }
+        return null;
+
+    }
 }

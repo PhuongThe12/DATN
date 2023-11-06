@@ -16,12 +16,14 @@ import luckystore.datn.entity.LotGiay;
 import luckystore.datn.entity.MauSac;
 import luckystore.datn.entity.MuiGiay;
 import luckystore.datn.entity.ThuongHieu;
+import luckystore.datn.exception.ConflictException;
 import luckystore.datn.exception.DuplicateException;
 import luckystore.datn.exception.InvalidIdException;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.model.request.BienTheGiayRequest;
 import luckystore.datn.model.request.GiayRequest;
 import luckystore.datn.model.request.GiaySearch;
+import luckystore.datn.model.response.BienTheGiayResponse;
 import luckystore.datn.model.response.GiayResponse;
 import luckystore.datn.repository.BienTheGiayRepository;
 import luckystore.datn.repository.ChatLieuRepository;
@@ -49,6 +51,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -84,12 +88,11 @@ public class GiayServiceImpl implements GiayService {
     @Transactional
     @Override
     public GiayResponse addGiay(GiayRequest giayRequest) {
-        if (giayRepository.existsByTen(giayRequest.getTen())) {
-            String errorObject = JsonString.errorToJsonObject("ten", "Tên đã tồn tại");
-            throw new DuplicateException(JsonString.stringToJson(errorObject));
-        }
+
         Giay giay = new Giay();
         getGiay(giay, giayRequest);
+
+        checkForInsert(giayRequest);
 
         List<HinhAnh> hinhAnhs = new ArrayList<>();
         if (giayRequest.getImage1() != null) {
@@ -138,6 +141,7 @@ public class GiayServiceImpl implements GiayService {
 
             BienTheGiay bienTheGiay = BienTheGiay.builder()
                     .barCode(bienTheGiayRequest.getBarcode())
+                    .giay(giay)
                     .giaBan(bienTheGiayRequest.getGiaBan())
                     .giaNhap(bienTheGiayRequest.getGiaNhap())
                     .mauSac(mauSac)
@@ -172,9 +176,176 @@ public class GiayServiceImpl implements GiayService {
     }
 
     @Override
+    @Transactional
+    public GiayResponse updateSoLuong(GiayRequest giayRequest) {
+        Giay giay = giayRepository.findById(giayRequest.getId()).orElseThrow(() -> new InvalidIdException(JsonString.stringToJson(
+                JsonString.errorToJsonObject("giay", "Không tồn tại giày này"))));
+
+        giay.getLstBienTheGiay().forEach(bienTheGiay -> {
+            giayRequest.getBienTheGiays().forEach(bienTheRequest -> {
+                if (Objects.equals(bienTheRequest.getId(), bienTheGiay.getId())) {
+                    bienTheGiay.setSoLuong(bienTheRequest.getSoLuong());
+                }
+            });
+        });
+
+        return new GiayResponse(giayRepository.save(giay));
+
+    }
+
+    @Override
+    public GiayResponse updateGia(GiayRequest giayRequest) {
+        Giay giay = giayRepository.findById(giayRequest.getId()).orElseThrow(() -> new InvalidIdException(JsonString.stringToJson(
+                JsonString.errorToJsonObject("giay", "Không tồn tại giày này"))));
+
+        giay.getLstBienTheGiay().forEach(bienTheGiay -> {
+            giayRequest.getBienTheGiays().forEach(bienTheRequest -> {
+                if (Objects.equals(bienTheRequest.getId(), bienTheGiay.getId())) {
+                    bienTheGiay.setGiaBan(bienTheRequest.getGiaBan());
+                    bienTheGiay.setGiaNhap(bienTheRequest.getGiaNhap());
+                }
+            });
+        });
+
+        return new GiayResponse(giayRepository.save(giay));
+    }
+
+    @Override
+    public GiayResponse updateGiay(Long id, GiayRequest giayRequest) {
+        Giay giay = giayRepository.findById(id).orElseThrow(() -> new NotFoundException("Không tìm thấy"));
+
+        getGiay(giay, giayRequest);
+
+        List<String> errors = new ArrayList<>();
+        List<String> barCodes = new ArrayList<>();
+        if (giayRepository.existsByTenAndIdNot(giayRequest.getTen(), id)) {
+            errors.add("ten: Tên đã tồn tại");
+        }
+
+        List<HinhAnh> hinhAnhs = giay.getLstAnh();
+        Set<String> removeFiles = new HashSet<>();
+
+        if (!Objects.equals(giayRequest.getImage1(), "1")) {
+            String file = imageHubService.base64ToFile(giayRequest.getImage1());
+            for(int i = 0; i < hinhAnhs.size(); i++) {
+                if(hinhAnhs.get(i).getUuTien() == 1) {
+                    removeFiles.add(hinhAnhs.get(i).getLink());
+                    hinhAnhs.add(i, HinhAnh.builder().giay(giay).link(file).uuTien(1).build());
+                }
+            }
+        }
+
+        if (!Objects.equals(giayRequest.getImage2(), "1")) {
+            String file = imageHubService.base64ToFile(giayRequest.getImage2());
+            for(int i = 0; i < hinhAnhs.size(); i++) {
+                if(hinhAnhs.get(i).getUuTien() == 2) {
+                    removeFiles.add(hinhAnhs.get(i).getLink());
+                    hinhAnhs.add(i, HinhAnh.builder().giay(giay).link(file).uuTien(2).build());
+                }
+            }
+        }
+
+        if (!Objects.equals(giayRequest.getImage3(), "1")) {
+            String file = imageHubService.base64ToFile(giayRequest.getImage3());
+            for(int i = 0; i < hinhAnhs.size(); i++) {
+                if(hinhAnhs.get(i).getUuTien() == 3) {
+                    removeFiles.add(hinhAnhs.get(i).getLink());
+                    hinhAnhs.add(i, HinhAnh.builder().giay(giay).link(file).uuTien(3).build());
+                }
+            }
+        }
+        if (!Objects.equals(giayRequest.getImage4(), "1")) {
+            String file = imageHubService.base64ToFile(giayRequest.getImage4());
+            for(int i = 0; i < hinhAnhs.size(); i++) {
+                if(hinhAnhs.get(i).getUuTien() == 4) {
+                    removeFiles.add(hinhAnhs.get(i).getLink());
+                    hinhAnhs.add(i, HinhAnh.builder().giay(giay).link(file).uuTien(4).build());
+                }
+            }
+        }
+        if (!Objects.equals(giayRequest.getImage5(), "1")) {
+            String file = imageHubService.base64ToFile(giayRequest.getImage5());
+            for(int i = 0; i < hinhAnhs.size(); i++) {
+                if(hinhAnhs.get(i).getUuTien() == 5) {
+                    removeFiles.add(hinhAnhs.get(i).getLink());
+                    hinhAnhs.add(i, HinhAnh.builder().giay(giay).link(file).uuTien(5).build());
+                }
+            }
+        }
+
+        giay.setLstAnh(hinhAnhs);
+
+        Map<Long, String> files = new HashMap<>();
+        for (Map.Entry<Long, String> mauSacImage : giayRequest.getMauSacImages().entrySet()) {
+            if(!Objects.equals(mauSacImage.getValue(), "1")) {
+                String file = imageHubService.base64ToFile(mauSacImage.getValue());
+                files.put(mauSacImage.getKey(), file);
+            }
+        }
+
+
+        for (BienTheGiayRequest bienTheGiayRequest : giayRequest.getBienTheGiays()) {
+            boolean exists = false;
+
+            for (BienTheGiay bienThe : giay.getLstBienTheGiay()) {
+                if (Objects.equals(bienThe.getMauSac().getId(), bienTheGiayRequest.getMauSacId())
+                        && Objects.equals(bienThe.getKichThuoc().getId(), bienTheGiayRequest.getKichThuocId())) {
+
+                    if(bienTheGiayRepository.getBienTheGiayByBarCodeUpdate(bienTheGiayRequest.getBarcode(), bienThe.getId())) {
+                        errors.add(bienThe.getMauSac().getId() + ", "
+                                + bienThe.getKichThuoc().getId() + ": Barcode đã tồn tại");
+                    }
+                    bienThe.setGiaNhap(bienTheGiayRequest.getGiaNhap());
+                    bienThe.setGiaBan(bienTheGiayRequest.getGiaBan());
+                    bienThe.setSoLuong(bienTheGiayRequest.getSoLuong());
+                    bienThe.setTrangThai(bienTheGiayRequest.getTrangThai());
+                    bienThe.setBarCode(bienTheGiayRequest.getBarcode());
+                    if(files.containsKey(bienTheGiayRequest.getMauSacId())) {
+                        bienThe.setHinhAnh(files.get(bienTheGiayRequest.getMauSacId()));
+                    }
+                    exists = true;
+                    break;
+                }
+            }
+            if (!exists) {
+                barCodes.add(bienTheGiayRequest.getBarcode());
+                MauSac mauSac = mauSacRepository.findById(bienTheGiayRequest.getMauSacId()).orElseThrow(() ->
+                        new InvalidIdException(JsonString.stringToJson(
+                                JsonString.errorToJsonObject("mauSac", "Không tồn tại màu sắc này"))));
+
+                KichThuoc kichThuoc = kichThuocRepository.findById(bienTheGiayRequest.getKichThuocId()).orElseThrow(() ->
+                        new InvalidIdException(JsonString.stringToJson(
+                                JsonString.errorToJsonObject("kichThuoc", "Không tồn tại kích thước này"))));
+
+
+                BienTheGiay bienTheGiay = BienTheGiay.builder()
+                        .barCode(bienTheGiayRequest.getBarcode())
+                        .giay(giay)
+                        .giaBan(bienTheGiayRequest.getGiaBan())
+                        .giaNhap(bienTheGiayRequest.getGiaNhap())
+                        .mauSac(mauSac)
+                        .kichThuoc(kichThuoc)
+                        .trangThai(bienTheGiayRequest.getTrangThai())
+                        .soLuong(bienTheGiayRequest.getSoLuong())
+                        .build();
+
+                if(files.containsKey(bienTheGiay.getMauSac().getId())) {
+                    bienTheGiay.setHinhAnh(files.get(bienTheGiay.getMauSac().getId()));
+                }
+
+                giay.getLstBienTheGiay().add(bienTheGiay);
+            }
+        }
+
+        checkForUpdate(barCodes, errors);
+
+        return new GiayResponse(giayRepository.save(giay));
+    }
+
+    @Override
     public GiayResponse getResponseById(Long id) {
         GiayResponse giayResponse = giayRepository.findResponseById(id);
-        if(giayResponse == null) {
+        if (giayResponse == null) {
             throw new NotFoundException("Không tìm thấy giày này");
         }
         Map<Long, String> mauSacImages = new HashMap<>();
@@ -245,5 +416,41 @@ public class GiayServiceImpl implements GiayService {
 
     }
 
+    private void checkForInsert(GiayRequest giayRequest) {
+        List<String> errors = new ArrayList<>();
+
+        List<String> lstBarcode = giayRequest.getBienTheGiays().stream().map(BienTheGiayRequest::getBarcode).toList();
+        if (giayRepository.existsByTen(giayRequest.getTen())) {
+            errors.add("ten: Tên đã tồn tại");
+        }
+
+        List<BienTheGiayResponse> lstBienTheBarcode = bienTheGiayRepository.getBienTheGiayByListBarCode(lstBarcode);
+
+        for (BienTheGiayResponse bienTheGiayResponse : lstBienTheBarcode) {
+            errors.add(bienTheGiayResponse.getMauSac().getId() + ", "
+                    + bienTheGiayResponse.getKichThuoc().getId() + ": Barcode đã tồn tại");
+        }
+
+
+        if (!errors.isEmpty()) {
+            throw new ConflictException(errors);
+        }
+
+    }
+
+    private void checkForUpdate(List<String> lstBarcode , List<String> errors) {
+
+        List<BienTheGiayResponse> lstBienTheBarcode = bienTheGiayRepository.getBienTheGiayByListBarCode(lstBarcode);
+
+        for (BienTheGiayResponse bienTheGiayResponse : lstBienTheBarcode) {
+            errors.add(bienTheGiayResponse.getMauSac().getId() + ", "
+                    + bienTheGiayResponse.getKichThuoc().getId() + ": Barcode đã tồn tại");
+        }
+
+
+        if (!errors.isEmpty()) {
+            throw new ConflictException(errors);
+        }
+    }
 
 }
