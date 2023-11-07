@@ -22,3 +22,59 @@ Performer: phongtt35
 Action: Đăng nhập vào hệ thống
 Timestamp: 2023-11-06 / 19:24:22
 
+Performer: quanvdmph19717
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-07 / 12:52:11
+
+Performer: phongtt35
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-07 / 12:52:20
+
+Performer: phongtt35
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-07 / 12:53:42
+
+Performer: phongtt35
+Action: Thêm mới nhân viên
+Timestamp: 2023-11-07 / 12:54:07
+
+Performer: abc123
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-07 / 12:54:29
+
+Performer: quanvdmph19717
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-07 / 12:54:38
+
+Performer: phongtt35
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-07 / 12:54:43
+
+Performer: phongtt35
+Action: Cập nhật nhân viên
+Timestamp: 2023-11-07 / 12:56:26
+
+Performer: phongtt35
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-07 / 13:01:37
+
+Performer: phongtt35
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-07 / 13:02:21
+
+Performer: phongtt35
+Action: Thêm mới nhân viên
+Timestamp: 2023-11-07 / 13:03:49
+
+Performer: phongtt35
+Action: Cập nhật thông tin cá nhân
+Timestamp: 2023-11-07 / 13:04:37
+
+Performer: phongtt35
+Action: Cập nhật nhân viên
+Timestamp: 2023-11-07 / 13:04:54
+
+Performer: quanvdmph19717
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-07 / 13:07:26
+
