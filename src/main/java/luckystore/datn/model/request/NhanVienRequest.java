@@ -60,4 +60,6 @@ public class NhanVienRequest {
     private String matKhau;
 
     private Integer role;
+
+    private Integer updateAccount;
 }

@@ -84,8 +84,11 @@ public class NhanVienServiceImpl implements NhanVienService {
         nhanVien = getNhanVien(nhanVien, nhanVienRequest);
         if (SystemHistory.nhanVien == null) {
             SystemHistoryLogger.writeSystemHistoryEntry(new SystemHistoryEntry("Guest", SystemHistory.UPDATE_NV, "" + SystemHistoryLogger.getDateNow()));
+        } else if (nhanVienRequest.getUpdateAccount() != null) {
+            SystemHistoryLogger.writeSystemHistoryEntry(new SystemHistoryEntry(SystemHistory.nhanVien.getTaiKhoan().getTenDangNhap(), SystemHistory.UPDATE_ACCOUNT_INFO, "" + SystemHistoryLogger.getDateNow()));
         } else {
             SystemHistoryLogger.writeSystemHistoryEntry(new SystemHistoryEntry(SystemHistory.nhanVien.getTaiKhoan().getTenDangNhap(), SystemHistory.UPDATE_NV, "" + SystemHistoryLogger.getDateNow()));
+
         }
 
         return new NhanVienResponse(nhanVienRepo.save(nhanVien));
@@ -121,7 +124,7 @@ public class NhanVienServiceImpl implements NhanVienService {
         nhanVien.setXa(nhanVienRequest.getXa());
         nhanVien.setHuyen(nhanVienRequest.getHuyen());
         nhanVien.setTinh(nhanVienRequest.getTinh());
-            nhanVien.setChucVu(nhanVienRequest.getChucVu());
+        nhanVien.setChucVu(nhanVienRequest.getChucVu());
 
         return nhanVien;
     }
@@ -147,8 +150,8 @@ public class NhanVienServiceImpl implements NhanVienService {
         NhanVien nhanVien = nhanVienRepo.findNhanVienBySoDienThoai(nhanVienRequest.getSoDienThoai());
         String errorObject = "";
         if (nhanVien != null && !Objects.equals(nhanVien.getId(), nhanVienRequest.getId())) {
-                errorObject = JsonString.errorToJsonObject("soDienThoai", "Số điện thoại đã tồn tại");
-                throw new DuplicateException(JsonString.stringToJson(errorObject));
+            errorObject = JsonString.errorToJsonObject("soDienThoai", "Số điện thoại đã tồn tại");
+            throw new DuplicateException(JsonString.stringToJson(errorObject));
         }
     }
 

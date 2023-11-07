@@ -110,7 +110,7 @@ app.controller("detailNhanVienController", function ($scope, $http, $window, $lo
         toastr["error"]("Không tìm thấy người dùng , vui lòng đăng nhập lại !");
 
     });
-    $scope.updateNhanVien = function () {
+    $scope.updateNhanVien = function (updateAccount) {
         if ($scope.nhanVienForm.$invalid) {
             return;
         }
@@ -131,7 +131,8 @@ app.controller("detailNhanVienController", function ($scope, $http, $window, $lo
             huyen: $scope.nhanVien.huyen,
             tinh: $scope.nhanVien.tinh,
             ghiChu: $scope.nhanVien.ghiChu,
-            role: 1
+            role: 1,
+            updateAccount : updateAccount
         };
         console.log(nhanVienUpdate);
         $http.put(host + '/admin/rest/nhan-vien/' + nhanVienUpdate.id, nhanVienUpdate)
@@ -315,10 +316,7 @@ app.controller("updateNhanVienController", function ($scope, $http, $routeParams
                 $location.path("/list");
             }).catch(function (error) {
             console.log(error);
-            toastr["error"]("Cập nhật thất bại");
-            if (error.status === 400) {
-                $scope.errors = error.data;
-            }
+            toastr["error"]("Tài khoản đang được sử dụng");
         })
     };
     $scope.backToNhanVienList = function () {

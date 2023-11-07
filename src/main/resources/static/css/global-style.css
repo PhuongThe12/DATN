@@ -49,7 +49,7 @@
 @font-face {
     font-family: 'rabilo';
     /* Đặt tên cho font chữ của bạn */
-    src: url('/font-text/Roboto-Medium.ttf') format('woff2');
+    src: url('/font-text/Roboto-Light.ttf') format('woff2');
     /* Đường dẫn đến tệp font */
     /* Nếu bạn có các phiên bản font khác, hãy thêm chúng ở đây */
 }
@@ -58,7 +58,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'rabilo';
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
 }
 
 body {
@@ -83,6 +83,37 @@ body {
     color: #e49c06;
     font-weight: 500;
 }
+
+.bd-info-custom {
+    background-color: #abd3d9 !important;
+    color: #177787;
+    font-weight: 500;
+}
+
+.bd-primary-custom {
+    background-color: #17a2b8 !important;
+    color: white;
+    font-weight: 500;
+}
+
+.bd-warning2-custom{
+    background-color: #ffdf9b !important;
+    color: #e49c06;
+    font-weight: 500;
+}
+
+.bd-redOrange-custom{
+    background-color: #edb3a0 !important;
+    color: #c73c10;
+    font-weight: 500;
+}
+
+.bd-blueDark-custom{
+    background-color: #848cdf !important;
+    color: #000969;
+    font-weight: 500;
+}
+
 
 table {
     font-size: 14px;
@@ -172,4 +203,45 @@ input.ng-invalid.ng-touched {
 .card-body {
     border-radius: 10px;
     background: white;
+}
+
+/* Đơn Hàng CSS */
+.hr-item {
+    border-bottom: 2px solid gray;
+    width: 150px;
+}
+
+.passed {
+    color: #0088FF;
+}
+
+.passed div {
+    border-bottom: 2px solid #0088FF;
+}
+
+.progess-outer p {
+    margin: 0px;
+}
+
+.font-size-14 {
+    font-size: 14px;
+    color: gray;
+}
+
+.font-size-14-ncl {
+    font-size: 14px;
+}
+
+.li-custom {
+    width: 10px;
+    height: 10px;
+    box-shadow: 0 0 0 2px #E6F4FF;
+    flex-shrink: 0;
+    margin-right: 12px;
+    border-radius: 100%;
+    background-color: #0088FF;
+}
+
+.w-133px {
+    width: 133px;
 }

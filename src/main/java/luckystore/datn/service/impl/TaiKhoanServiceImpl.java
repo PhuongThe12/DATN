@@ -62,8 +62,10 @@ public class TaiKhoanServiceImpl implements TaiKhoanService {
         if (taiKhoan == null) {
             throw new NotFoundException(ErrorMessage.NOT_FOUND);
         }
-        SystemHistoryLogger.writeSystemHistoryEntry(new SystemHistoryEntry(taiKhoan.getTenDangNhap(), SystemHistory.LOGIN, "" + SystemHistoryLogger.getDateNow()));
-        SystemHistory.nhanVien = nhanVienRepository.findNhanVienByIdTaiKhoan(taiKhoan.getId());
+        if (taiKhoan.getRole() == 1) { // Nhaan Vien Login
+            SystemHistoryLogger.writeSystemHistoryEntry(new SystemHistoryEntry(taiKhoan.getTenDangNhap(), SystemHistory.LOGIN, "" + SystemHistoryLogger.getDateNow()));
+        }
+            SystemHistory.nhanVien = nhanVienRepository.findNhanVienByIdTaiKhoan(taiKhoan.getId());
         return new TaiKhoanResponse(taiKhoan);
     }
 }

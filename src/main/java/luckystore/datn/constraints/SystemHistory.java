@@ -14,4 +14,6 @@ public class SystemHistory {
 
     public final static String UPDATE_NV = "Cập nhật nhân viên";
 
+    public final static String UPDATE_ACCOUNT_INFO = "Cập nhật thông tin cá nhân";
+
 }

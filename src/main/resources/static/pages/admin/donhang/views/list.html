@@ -48,15 +48,30 @@
             </div>
 
             <div class="custom-radio">
-                <input type="radio" id="active" name="status" ng-model="status" value="1" ng-checked="status == 1"
+                <input type="radio" id="choThanhToan" name="status" ng-model="status" value="1" ng-checked="status == 1"
                        ng-change="changeRadio(1)">
-                <label class="radio-label" for="active">Chờ thanh toán</label>
+                <label class="radio-label" for="choThanhToan">Chờ thanh toán</label>
             </div>
 
             <div class="custom-radio">
-                <input type="radio" id="disable" name="status" ng-model="status" value="0" ng-checked="status == 2"
+                <input type="radio" id="daThanhToan" name="status" ng-model="status" value="2" ng-checked="status == 2"
                        ng-change="changeRadio(2)">
-                <label class="radio-label" for="disable">Đã thanh toán</label>
+                <label class="radio-label" for="daThanhToan">Đã thanh toán</label>
+            </div>
+            <div class="custom-radio">
+                <input type="radio" id="choDongGoi" name="status" ng-model="status" value="3" ng-checked="status == 3"
+                       ng-change="changeRadio(3)">
+                <label class="radio-label" for="choDongGoi">Chờ đóng gói</label>
+            </div>
+            <div class="custom-radio">
+                <input type="radio" id="choGiaoHang" name="status" ng-model="status" value="4" ng-checked="status == 4"
+                       ng-change="changeRadio(4)">
+                <label class="radio-label" for="choGiaoHang">Chờ giao hàng</label>
+            </div>
+            <div class="custom-radio">
+                <input type="radio" id="dangGiaoHang" name="status" ng-model="status" value="5" ng-checked="status == 5"
+                       ng-change="changeRadio(5)">
+                <label class="radio-label" for="dangGiaoHang">Đang giao hành</label>
             </div>
 
         </div>
@@ -78,9 +93,19 @@
                     <td>{{hoaDon.khachHang.hoTen}}</td>
                     <td>{{hoaDon.nhanVien.hoTen}}</td>
                     <td><h5>
-                <span ng-class="{'badge bd-warning-custom': hoaDon.trangThai == 1, 'badge bd-success-custom': hoaDon.trangThai == 2}">
-                    {{hoaDon.trangThai == 1 ? 'Chờ thanh toán' : 'Đã thanh toán'}}
-                </span>
+               <span ng-class="{
+                  'badge bd-warning-custom': hoaDon.trangThai == 1,
+                  'badge bd-success-custom': hoaDon.trangThai == 2,
+                  'badge bd-info-custom': hoaDon.trangThai == 3,
+                  'badge bd-redOrange-custom': hoaDon.trangThai == 4,
+                  'badge bd-blueDark-custom': hoaDon.trangThai == 5
+                }">
+              <span ng-if="hoaDon.trangThai == 1">Chờ thanh toán</span>
+              <span ng-if="hoaDon.trangThai == 2">Đã thanh toán</span>
+              <span ng-if="hoaDon.trangThai == 3">Chờ đóng gói</span>
+              <span ng-if="hoaDon.trangThai == 4">Chờ giao hàng</span>
+              <span ng-if="hoaDon.trangThai == 5">Đang giao hàng</span>
+</span>
                     </h5></td>
                     <td>
                         {{hoaDon.tongTien == null ? "NaN" : hoaDon.tongTien}}

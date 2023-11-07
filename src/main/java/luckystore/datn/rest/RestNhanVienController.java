@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import luckystore.datn.constraints.ErrorMessage;
 import luckystore.datn.constraints.SystemHistory;
 import luckystore.datn.entity.NhanVien;
+import luckystore.datn.exception.DuplicateException;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.model.request.NhanVienRequest;
 import luckystore.datn.service.NhanVienService;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/admin/rest/nhan-vien")
@@ -47,7 +49,9 @@ public class RestNhanVienController {
         System.out.println(nhanVienRequest);
         ResponseEntity errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
-
+        if ((nhanVienRequest.getId() == SystemHistory.nhanVien.getId()) && (nhanVienRequest.getUpdateAccount() == null)) {
+            return new ResponseEntity("Tài khoản đang được sử dụng, Vui lòng sử dụng 1 tài khoản khác để chỉnh sửa", HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity(nhanVienService.updateNhanVien(id, nhanVienRequest), HttpStatus.OK);
     }
 
