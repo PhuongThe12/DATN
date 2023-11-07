@@ -2,7 +2,7 @@
 
 <form name="phieuGiamGiaForm" ng-submit="updatePhieuGiamGia()">
 
-<!--    Mã phiếu giảm giá-->
+    <!--    Mã phiếu giảm giá-->
     <div class="form-group">
         <label for="maPhieu">Mã phiếu : </label>
         <input type="text" class="form-control" id="maPhieu" name="maPhieu" ng-model="phieuGiamGia.maGiamGia"
@@ -20,7 +20,7 @@
                ng-show="errors.maPhieu && ! phieuGiamGiaForm.maPhieu.$dirty">{{errors.maPhieu}}</small>
     </div>
 
-<!--    Giá tri giảm-->
+    <!--    Giá tri giảm-->
     <div class="form-group">
         <label for="phanTramGiam">Giá trị giảm</label>
         <input type="number" class="form-control" id="phanTramGiam" name="phanTramGiam"
@@ -35,8 +35,17 @@
         <small class="text-danger"
                ng-show="errors.phanTramGiam && ! phieuGiamGiaForm.phanTramGiam.$dirty">{{errors.phanTramGiam}}</small>
     </div>
+    <div class="mb-3">
+        <label class="form-label">Hạng Khách Hàng</label>
+        <select class="form-select" ng-model="phieuGiamGia.idHangKhachHang"
+                aria-label="Default select example" id="idHangKhachHang">
+            <option value="1">VIP_1</option>
+            <option value="2">VIP_2</option>
+            <option value="3">VIP_3</option>
+        </select>
+    </div>
 
-<!--    Ngày bắt đầu-->
+    <!--    Ngày bắt đầu-->
     <div class="col-md-5">
         <label class="form-label">Ngày bắt đầu</label>
         <input type="date" class="form-control" name="ngayBatDau" id="ngayBatDau"
@@ -46,7 +55,7 @@
             được để trống ngày bắt đầu</small>
     </div>
 
-<!--    Ngày kết thúc-->
+    <!--    Ngày kết thúc-->
     <div class="col-md-5">
         <label class="form-label">Ngày kết thúc</label>
         <input type="date" class="form-control" name="ngayKetThuc" id="ngayKetThuc"
@@ -56,7 +65,7 @@
             được để trống ngày kết thúc</small>
     </div>
 
-<!--    Số lượng phiếu-->
+    <!--    Số lượng phiếu-->
     <div class="form-group">
         <label for="soLuongPhieu">Số lượng phiếu</label>
         <input type="number" class="form-control" id="soLuongPhieu" name="soLuongPhieu"
@@ -72,7 +81,7 @@
                ng-show="errors.soLuongPhieu && ! phieuGiamGiaForm.soLuongPhieu.$dirty">{{errors.soLuongPhieu}}</small>
     </div>
 
-<!--    Giá trị đơn tối thiểu-->
+    <!--    Giá trị đơn tối thiểu-->
     <div class="form-group">
         <label for="giaTriDonToiThieu">Giá trị đơn tối thiểu</label>
         <input type="number" class="form-control" id="giaTriDonToiThieu" name="giaTriDonToiThieu"
@@ -88,7 +97,7 @@
                ng-show="errors.giaTriDonToiThieu && ! phieuGiamGiaForm.giaTriDonToiThieu.$dirty">{{errors.giaTriDonToiThieu}}</small>
     </div>
 
-<!--    Giá trị giảm tối đa-->
+    <!--    Giá trị giảm tối đa-->
     <div class="form-group">
         <label for="giaTriGiamToiDa">Giá trị giảm tối đa</label>
         <input type="number" class="form-control" id="giaTriGiamToiDa" name="giaTriGiamToiDa"
@@ -103,17 +112,25 @@
         <small class="text-danger"
                ng-show="errors.giaTriGiamToiDa && ! phieuGiamGiaForm.giaTriGiamToiDa.$dirty">{{errors.giaTriGiamToiDa}}</small>
     </div>
+    <div class="mb-3">
+        <label class="form-label">Trạng Thái</label>
+        <select class="form-select" ng-model="phieuGiamGia.trangThai"
+                aria-label="Default select example" id="nhanVienXa">
+            <option value="1">Đang hoạt động</option>
+            <option value="2">Ngừng hoạt động</option>
+        </select>
+    </div>
 
-<!--    <div class="form-group">-->
-<!--        <label>Trạng thái: </label>-->
-<!--        <div class="form-check form-switch">-->
-<!--            <input class="form-check-input" type="checkbox" id="trangThaiPhieuGiamGia" name="trangThai"-->
-<!--                   ng-model="phieuGiamGia.trangThai" ng-true-value="1"-->
-<!--                   ng-false-value="0" ng-init="phieuGiamGia.trangThai = 1">-->
-<!--            <label class="form-check-label" for="trangThaiPhieuGiamGia">Hiển thị</label>-->
-<!--        </div>-->
-<!--        <small class="text-danger"-->
-<!--               ng-show="errors.trangThai && !phieuGiamGiaForm.trangThai.$dirty">{{errors.trangThai}}</small>-->
-<!--    </div>-->
+    <!--    <div class="form-group">-->
+    <!--        <label>Trạng thái: </label>-->
+    <!--        <div class="form-check form-switch">-->
+    <!--            <input class="form-check-input" type="checkbox" id="trangThaiPhieuGiamGia" name="trangThai"-->
+    <!--                   ng-model="phieuGiamGia.trangThai" ng-true-value="1"-->
+    <!--                   ng-false-value="0" ng-init="phieuGiamGia.trangThai = 1">-->
+    <!--            <label class="form-check-label" for="trangThaiPhieuGiamGia">Hiển thị</label>-->
+    <!--        </div>-->
+    <!--        <small class="text-danger"-->
+    <!--               ng-show="errors.trangThai && !phieuGiamGiaForm.trangThai.$dirty">{{errors.trangThai}}</small>-->
+    <!--    </div>-->
     <button type="submit" class="btn btn-primary">Cập nhật</button>
 </form>

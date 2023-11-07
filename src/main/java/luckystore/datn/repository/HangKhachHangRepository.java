@@ -7,5 +7,7 @@ public interface HangKhachHangRepository extends JpaRepository<HangKhachHang, Lo
 
     boolean existsHangKhachHangByTenHang(String tenHang);
 
+    boolean existsHangKhachHangById(Long id);
+
     HangKhachHang findHangKhachHangByTenHang(String ten);
 }

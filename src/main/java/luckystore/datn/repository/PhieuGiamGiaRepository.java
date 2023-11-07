@@ -17,7 +17,7 @@ public interface PhieuGiamGiaRepository extends JpaRepository<PhieuGiamGia, Long
 
     @Query(value = """
             SELECT pgg.ID, pgg.MA_GIAM_GIA, pgg.PHAN_TRAM_GIAM, SO_LUONG_PHIEU, NGAY_BAT_DAU, NGAY_KET_THUC
-            	, GIA_TRI_DON_TOI_THIEU, GIA_TRI_GIAM_TOI_DA, hkh.TEN_HANG, nv.HO_TEN, pgg.NGAY_TAO, pgg.TRANG_THAI 
+            	, GIA_TRI_DON_TOI_THIEU, GIA_TRI_GIAM_TOI_DA,hkh.ID ID_HANG_KHACH_HANG, hkh.TEN_HANG, nv.HO_TEN, pgg.NGAY_TAO, pgg.TRANG_THAI 
             		FROM PhieuGiamGia pgg 
             LEFT JOIN NhanVien nv ON pgg.NGUOI_TAO = nv.ID 
             LEFT JOIN HangKhachHang hkh ON pgg.DOI_TUONG_AP_DUNG = hkh.ID ORDER BY pgg.NGAY_TAO DESC
@@ -25,7 +25,7 @@ public interface PhieuGiamGiaRepository extends JpaRepository<PhieuGiamGia, Long
     List<PhieuGiamGiaResponse> getAll();
     @Query(value = """
             SELECT pgg.ID, pgg.MA_GIAM_GIA, pgg.PHAN_TRAM_GIAM, SO_LUONG_PHIEU, NGAY_BAT_DAU, NGAY_KET_THUC
-            	, GIA_TRI_DON_TOI_THIEU, GIA_TRI_GIAM_TOI_DA, hkh.TEN_HANG, nv.HO_TEN, pgg.NGAY_TAO, pgg.TRANG_THAI 
+            	, GIA_TRI_DON_TOI_THIEU, GIA_TRI_GIAM_TOI_DA,hkh.ID ID_HANG_KHACH_HANG, hkh.TEN_HANG, nv.HO_TEN, pgg.NGAY_TAO, pgg.TRANG_THAI 
             		FROM PhieuGiamGia pgg 
             LEFT JOIN NhanVien nv ON pgg.NGUOI_TAO = nv.ID 
             LEFT JOIN HangKhachHang hkh ON pgg.DOI_TUONG_AP_DUNG = hkh.ID ORDER BY pgg.NGAY_TAO DESC
@@ -34,7 +34,7 @@ public interface PhieuGiamGiaRepository extends JpaRepository<PhieuGiamGia, Long
 
     @Query(value = """
             SELECT pgg.ID, pgg.MA_GIAM_GIA, pgg.PHAN_TRAM_GIAM, SO_LUONG_PHIEU, NGAY_BAT_DAU, NGAY_KET_THUC
-            	, GIA_TRI_DON_TOI_THIEU, GIA_TRI_GIAM_TOI_DA, hkh.TEN_HANG, nv.HO_TEN, pgg.NGAY_TAO, pgg.TRANG_THAI
+            	, GIA_TRI_DON_TOI_THIEU, GIA_TRI_GIAM_TOI_DA,hkh.ID ID_HANG_KHACH_HANG, hkh.TEN_HANG, nv.HO_TEN, pgg.NGAY_TAO, pgg.TRANG_THAI
             		FROM PhieuGiamGia pgg
             LEFT JOIN NhanVien nv ON pgg.NGUOI_TAO = nv.ID
             LEFT JOIN HangKhachHang hkh ON pgg.DOI_TUONG_AP_DUNG = hkh.ID WHERE pgg.ID = :id

@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Builder
 public class PhieuGiamGiaRequest {
 
@@ -42,7 +43,9 @@ public class PhieuGiamGiaRequest {
 
     private String nguoiTao;
 
-    private String doiTuongApDung;
+//    private String doiTuongApDung;
+
+    private Long idHangKhachHang;
 
     private int trangThai;
 

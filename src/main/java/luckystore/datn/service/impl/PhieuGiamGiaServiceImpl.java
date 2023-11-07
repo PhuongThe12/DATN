@@ -28,6 +28,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PhieuGiamGiaServiceImpl implements PhieuGiamGiaService {
@@ -69,7 +70,7 @@ public class PhieuGiamGiaServiceImpl implements PhieuGiamGiaService {
 
     @Override
     public PhieuGiamGia addPhieuGiamGia(PhieuGiamGiaRequest request) {
-
+        System.out.println(request);
         PhieuGiamGia phieuGiamGia = new PhieuGiamGia();
         checkToAdd(request);
         phieuGiamGia = convertToPhieuGiamGia(phieuGiamGia, request);
@@ -94,10 +95,12 @@ public class PhieuGiamGiaServiceImpl implements PhieuGiamGiaService {
     public void checkToAdd(PhieuGiamGiaRequest request) {
 
         JSONObject error = new JSONObject();
-        if (!hangKhachHangRepository.existsHangKhachHangByTenHang(request.getDoiTuongApDung())) {
+//        if (!hangKhachHangRepository.existsHangKhachHangByTenHang(request.getDoiTuongApDung())) {
+//            error.put("doiTuongApDung", ErrorMessage.HANG_KHACH_HANG_NOT_EXIST);
+//        }
+        if (!hangKhachHangRepository.existsHangKhachHangById(request.getIdHangKhachHang())) {
             error.put("doiTuongApDung", ErrorMessage.HANG_KHACH_HANG_NOT_EXIST);
         }
-
         if (request.getNgayBatDau().isAfter(request.getNgayKetThuc())) {
             error.put("ngayBatDau", ErrorMessage.INVALID_NGAY_BAT_DAU);
         }
@@ -118,9 +121,9 @@ public class PhieuGiamGiaServiceImpl implements PhieuGiamGiaService {
     public void checkToUpdate(PhieuGiamGiaRequest request) {
 
         JSONObject error = new JSONObject();
-        if (!hangKhachHangRepository.existsHangKhachHangByTenHang(request.getDoiTuongApDung())) {
-            error.put("doiTuongApDung", ErrorMessage.HANG_KHACH_HANG_NOT_EXIST);
-        }
+//        if (!hangKhachHangRepository.existsHangKhachHangByTenHang(request.getIdDoiTuongApDung())) {
+//            error.put("doiTuongApDung", ErrorMessage.HANG_KHACH_HANG_NOT_EXIST);
+//        }
 
         if (phieuGiamGiaRepository.existsPhieuGiamGiaByMaGiamGia(request.getMaGiamGia())) {
             error.put("maPhieuGiamGia", ErrorMessage.PHIEU_GIAM_GIA_ALREADY_EXIST);
@@ -146,7 +149,11 @@ public class PhieuGiamGiaServiceImpl implements PhieuGiamGiaService {
     public PhieuGiamGia convertToPhieuGiamGia(PhieuGiamGia phieuGiamGia, PhieuGiamGiaRequest request) {
 
         NhanVien nhanVien = nhanVienRepository.findNhanVienByEmail(request.getNguoiTao());
-        HangKhachHang hangKhachHang = hangKhachHangRepository.findHangKhachHangByTenHang(request.getDoiTuongApDung());
+        Optional<HangKhachHang> OptHangKhachHang = hangKhachHangRepository.findById(request.getIdHangKhachHang());
+        HangKhachHang hangKhachHang = null;
+        if(OptHangKhachHang.isPresent()){
+            hangKhachHang = OptHangKhachHang.get();
+        }
         phieuGiamGia.setMaGiamGia(request.getMaGiamGia());
         phieuGiamGia.setPhanTramGiam(request.getPhanTramGiam());
         phieuGiamGia.setSoLuongPhieu(request.getSoLuongPhieu());

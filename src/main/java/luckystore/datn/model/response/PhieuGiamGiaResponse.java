@@ -36,6 +36,9 @@ public interface PhieuGiamGiaResponse {
     @Value("#{target.GIA_TRI_GIAM_TOI_DA}")
     BigDecimal getGiaTriGiamToiDa();
 
+    @Value("#{target.ID_HANG_KHACH_HANG}")
+    String getIdHangKhachHang();
+
     @Value("#{target.TEN_HANG}")
     String getTenHang();
 
