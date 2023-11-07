@@ -13,6 +13,9 @@ import java.time.LocalDateTime;
 @Projection(types = {HangKhachHang.class, NhanVien.class, PhieuGiamGia.class})
 public interface PhieuGiamGiaResponse {
 
+    @Value("#{target.ID}")
+    Long getId();
+
     @Value("#{target.MA_GIAM_GIA}")
     String getMaGiamGia();
 

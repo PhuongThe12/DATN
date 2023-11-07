@@ -9,6 +9,7 @@ import luckystore.datn.exception.DuplicateException;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.exception.NullException;
 import luckystore.datn.infrastructure.constant.Contants;
+import luckystore.datn.infrastructure.constant.PaginationConstant;
 import luckystore.datn.model.request.PhieuGiamGiaRequest;
 import luckystore.datn.model.response.PhieuGiamGiaResponse;
 import luckystore.datn.repository.HangKhachHangRepository;
@@ -24,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -48,9 +50,9 @@ public class PhieuGiamGiaServiceImpl implements PhieuGiamGiaService {
     }
 
     @Override
-    public Page<PhieuGiamGiaResponse> getPagePhieuGiamGia(PageableRequest request) {
+    public Page<PhieuGiamGiaResponse> getPagePhieuGiamGia(int page) {
 
-        Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
+        Pageable pageable = PageRequest.of(page -1 , PaginationConstant.DEFAULT_SIZE);
         Page<PhieuGiamGiaResponse> res = phieuGiamGiaRepository.getPagePhieuGiamGia(pageable);
         return res;
     }
@@ -69,7 +71,7 @@ public class PhieuGiamGiaServiceImpl implements PhieuGiamGiaService {
     public PhieuGiamGia addPhieuGiamGia(PhieuGiamGiaRequest request) {
 
         PhieuGiamGia phieuGiamGia = new PhieuGiamGia();
-        checkvalidate(request);
+        checkToAdd(request);
         phieuGiamGia = convertToPhieuGiamGia(phieuGiamGia, request);
         return phieuGiamGiaRepository.save(phieuGiamGia);
     }
@@ -84,12 +86,36 @@ public class PhieuGiamGiaServiceImpl implements PhieuGiamGiaService {
             phieuGiamGia = phieuGiamGiaRepository.findById(id).
                     orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND));
         }
-        checkvalidate(request);
+        checkToUpdate(request);
         phieuGiamGia = convertToPhieuGiamGia(phieuGiamGia, request);
         return phieuGiamGiaRepository.save(phieuGiamGia);
     }
 
-    public void checkvalidate(PhieuGiamGiaRequest request) {
+    public void checkToAdd(PhieuGiamGiaRequest request) {
+
+        JSONObject error = new JSONObject();
+        if (!hangKhachHangRepository.existsHangKhachHangByTenHang(request.getDoiTuongApDung())) {
+            error.put("doiTuongApDung", ErrorMessage.HANG_KHACH_HANG_NOT_EXIST);
+        }
+
+        if (request.getNgayBatDau().isAfter(request.getNgayKetThuc())) {
+            error.put("ngayBatDau", ErrorMessage.INVALID_NGAY_BAT_DAU);
+        }
+
+        if (request.getNgayKetThuc().isBefore(request.getNgayBatDau())) {
+            error.put("ngayketThuc", ErrorMessage.INVALID_NGAY_KET_THUC);
+        }
+
+        if (ChronoUnit.DAYS.between(request.getNgayBatDau(), request.getNgayKetThuc()) < Contants.MOC_THOI_HAN) {
+            error.put("ngayketThuc", ErrorMessage.MOC_THOI_GIAN_PHIEU_GIAM_GIA);
+        }
+
+        if (!error.isEmpty()) {
+            throw new DuplicateException(error);
+        }
+    }
+
+    public void checkToUpdate(PhieuGiamGiaRequest request) {
 
         JSONObject error = new JSONObject();
         if (!hangKhachHangRepository.existsHangKhachHangByTenHang(request.getDoiTuongApDung())) {

@@ -16,7 +16,7 @@ import java.util.List;
 public interface PhieuGiamGiaRepository extends JpaRepository<PhieuGiamGia, Long> {
 
     @Query(value = """
-            SELECT pgg.MA_GIAM_GIA, pgg.PHAN_TRAM_GIAM, SO_LUONG_PHIEU, NGAY_BAT_DAU, NGAY_KET_THUC
+            SELECT pgg.ID, pgg.MA_GIAM_GIA, pgg.PHAN_TRAM_GIAM, SO_LUONG_PHIEU, NGAY_BAT_DAU, NGAY_KET_THUC
             	, GIA_TRI_DON_TOI_THIEU, GIA_TRI_GIAM_TOI_DA, hkh.TEN_HANG, nv.HO_TEN, pgg.NGAY_TAO, pgg.TRANG_THAI 
             		FROM PhieuGiamGia pgg 
             LEFT JOIN NhanVien nv ON pgg.NGUOI_TAO = nv.ID 
@@ -24,7 +24,7 @@ public interface PhieuGiamGiaRepository extends JpaRepository<PhieuGiamGia, Long
             """, nativeQuery = true)
     List<PhieuGiamGiaResponse> getAll();
     @Query(value = """
-            SELECT pgg.MA_GIAM_GIA, pgg.PHAN_TRAM_GIAM, SO_LUONG_PHIEU, NGAY_BAT_DAU, NGAY_KET_THUC
+            SELECT pgg.ID, pgg.MA_GIAM_GIA, pgg.PHAN_TRAM_GIAM, SO_LUONG_PHIEU, NGAY_BAT_DAU, NGAY_KET_THUC
             	, GIA_TRI_DON_TOI_THIEU, GIA_TRI_GIAM_TOI_DA, hkh.TEN_HANG, nv.HO_TEN, pgg.NGAY_TAO, pgg.TRANG_THAI 
             		FROM PhieuGiamGia pgg 
             LEFT JOIN NhanVien nv ON pgg.NGUOI_TAO = nv.ID 
@@ -33,7 +33,7 @@ public interface PhieuGiamGiaRepository extends JpaRepository<PhieuGiamGia, Long
     Page<PhieuGiamGiaResponse> getPagePhieuGiamGia(Pageable pageable);
 
     @Query(value = """
-            SELECT pgg.MA_GIAM_GIA, pgg.PHAN_TRAM_GIAM, SO_LUONG_PHIEU, NGAY_BAT_DAU, NGAY_KET_THUC
+            SELECT pgg.ID, pgg.MA_GIAM_GIA, pgg.PHAN_TRAM_GIAM, SO_LUONG_PHIEU, NGAY_BAT_DAU, NGAY_KET_THUC
             	, GIA_TRI_DON_TOI_THIEU, GIA_TRI_GIAM_TOI_DA, hkh.TEN_HANG, nv.HO_TEN, pgg.NGAY_TAO, pgg.TRANG_THAI
             		FROM PhieuGiamGia pgg
             LEFT JOIN NhanVien nv ON pgg.NGUOI_TAO = nv.ID

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDateTime;
 
 @Getter
@@ -20,10 +21,10 @@ public class PhieuGiamGiaRequest {
     private String maGiamGia;
 
     @NotNull(message = "Không được để trống!")
-    private Short phanTramGiam;
+    private int phanTramGiam;
 
     @NotNull(message = "Số lượng được để trống!")
-    private Short soLuongPhieu;
+    private int soLuongPhieu;
 
     @NotNull(message = "Không được để trống ngày bắt đầu!")
 //    @Pattern(regexp = "#(^\\d{4}/(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])$)", message = "Không đúng dịnh dạng!")
@@ -43,6 +44,6 @@ public class PhieuGiamGiaRequest {
 
     private String doiTuongApDung;
 
-    private Integer trangThai;
+    private int trangThai;
 
 }

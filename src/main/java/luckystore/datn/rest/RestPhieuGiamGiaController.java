@@ -22,16 +22,16 @@ public class RestPhieuGiamGiaController {
     @Autowired
     private PhieuGiamGiaService phieuGiamGiaService;
 
-    @GetMapping
+    @GetMapping("/get-all")
     public ResponseEntity getAll() {
 
         return new ResponseEntity(phieuGiamGiaService.getAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/get-all")
-    public ResponseEntity getPage(@RequestBody PageableRequest request) {
+    @GetMapping
+    public ResponseEntity getPage(@RequestParam("page") int page) {
 
-        return new ResponseEntity(phieuGiamGiaService.getPagePhieuGiamGia(request), HttpStatus.OK);
+        return new ResponseEntity(phieuGiamGiaService.getPagePhieuGiamGia(page), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

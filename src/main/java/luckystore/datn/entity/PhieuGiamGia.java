@@ -1,6 +1,5 @@
 package luckystore.datn.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -31,10 +30,10 @@ public class PhieuGiamGia {
 
     @NotNull
     @Column(name = "PHAN_TRAM_GIAM", nullable = false)
-    private Short phanTramGiam;
+    private int phanTramGiam;
 
     @Column(name = "SO_LUONG_PHIEU")
-    private Short soLuongPhieu;
+    private int soLuongPhieu;
 
     @Column(name = "NGAY_BAT_DAU")
     private LocalDateTime ngayBatDau;
@@ -60,6 +59,6 @@ public class PhieuGiamGia {
     private LocalDateTime ngayTao;
 
     @Column(name = "TRANG_THAI")
-    private Integer trangThai;
+    private int trangThai;
 
 }

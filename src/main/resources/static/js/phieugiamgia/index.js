@@ -3,14 +3,14 @@ app.config(function ($routeProvider, $locationProvider) {
     $locationProvider.hashPrefix('');
     $routeProvider
         .when("/danhsach", {
-            templateUrl: '/pages/admin/phieugiamgia/views/list.html',
+            templateUrl: '/pages/admin/phieugiamgia.views/list.html',
             controller: 'phieuGiamGiaListController'
         }).when("/detail/:id", {
         templateUrl: '/pages/admin/phieugiamgia/views/detail.html',
-        controller: 'detailNhanVienController'
+        controller: 'detailPhieuGiamGiaController'
     }).when("/update/:id", {
-        templateUrl: '/pages/admin/phieugiamgia/views/update.html',
-        controller: 'updateNhanVienController'
+        templateUrl: '/pages/admin/phieugiamgia.views/update.html',
+        controller: 'updatePhieuGiamGiaController'
     }).when("/add", {
         templateUrl: '/pages/admin/phieugiamgia/views/add.html',
         controller: 'addNhanVienController'
@@ -90,18 +90,16 @@ app.controller("phieuGiamGiaListController", function ($scope, $http, $window, $
     }
 
     $scope.detailPhieuGiamGia = function (val) {
-        var id = val;
-        $http.get(host + '/admin/rest/phieu-giam-gia/' + id)
-            .then(function (response) {
-                $scope.phieuGiamGiaDetail = response.data;
-                const button = document.querySelector('[data-bs-target="#showNPhieuGiamGIa"]');
-                if (button) {
-                    button.click();
-                }
-            })
-            .catch(function (error) {
-                toastr["error"]("Lấy dữ liệu thất bại");
+        const id = val;
+        if (!isNaN(id)) {
+            $scope.phieuGiamGiaDetail = $scope.phieugiamgias.find(function (phieuGiamGia) {
+                return phieuGiamGia.id = id;
             });
+        } else {
+            alert("aaaaa")
+            toastr["error"]("Lấy dữ liệu thất bại");
+        }
+
     }
 
     $scope.$watch('curPage + numPerPage', function () {
@@ -110,44 +108,43 @@ app.controller("phieuGiamGiaListController", function ($scope, $http, $window, $
 
 });
 
-app.controller("updateNhanVienController", function ($scope, $http, $routeParams, $location) {
+app.controller("detailPhieuGiamGiaController", function ($scope, $http, $location, $routeParams) {
+    const id = $routeParams.id;
+    $http.get(host + '/admin/rest/phieu-giam-gia/' + id)
+        .then(function (response) {
+            $scope.mauSac = response.data;
+        }).catch(function (error) {
+        toastr["error"]("Lấy dữ liệu thất bại");
+        alert("bbbb")
+        $location.path("/danhsach");
+    });
+
+});
+
+app.controller("updatePhieuGiamGiaController", function ($scope, $http, $routeParams, $location) {
     const id = $routeParams.id;
     $scope.change = function (input) {
         input.$dirty = true;
     }
 
-    $http.get(host + '/admin/rest/nhan-vien/' + id)
+    $http.get(host + '/admin/rest/phieu-giam-gia/' + id)
         .then(function (response) {
-            $scope.nhanVien = response.data;
-            console.log(response.data);
+            $scope.phieuGiamGia = response.data;
+            var ngayBatDauObject = new Date($scope.phieuGiamGia.ngayBatDau);
+            var ngayKetThucObject = new Date($scope.phieuGiamGia.ngayKetThuc);
+            $scope.phieuGiamGia.ngayBatDau = ngayBatDauObject;
+            $scope.phieuGiamGia.ngayKetThuc = ngayKetThucObject;
+            console.log($scope.phieuGiamGia.ngayBatDau);
         }).catch(function (error) {
         toastr["error"]("Lấy dữ liệu thất bại");
         $location.path("/danhsach");
     });
 
-    $scope.updateNhanVien = function () {
-        if ($scope.nhanVienForm.$invalid) {
+    $scope.updatePhieuGiamGia = function () {
+        if ($scope.phieuGiamGiaForm.$invalid) {
             return;
         }
-        const nhanVienUpdate = {
-            id: $scope.nhanVien.id,
-            hoTen: $scope.nhanVien.id,
-            gioiTinh : $scope.nhanVien.gioiTinh,
-            idTaiKhoan : $scope.nhanVien.taiKhoan.id,
-            tenDangNhap : $scope.nhanVien.taiKhoan.tenDangNhap,
-            matKhau : $scope.nhanVien.taiKhoan.matKhau,
-            soDienThoai : $scope.nhanVien.soDienThoai,
-            email : $scope.nhanVien.email,
-            trangThai : $scope.nhanVien.trangThai,
-            chucVu : $scope.nhanVien.chucVu,
-            ngaySinh : $scope.nhanVien.ngaySinh,
-            xa : $scope.nhanVien.xa,
-            huyen : $scope.nhanVien.huyen,
-            tinh : $scope.nhanVien.tinh,
-            ghiChu: $scope.nhanVien.ghiChu,
-        };
-        console.log($scope.nhanVien);
-        $http.put(host + '/admin/rest/nhan-vien/' + id, nhanVienUpdate)
+        $http.put(host + '/admin/rest/phieu-giam-gia/update/' + id, $scope.phieuGiamGia)
             .then(function (response) {
                 if (response.status == 200) {
                     toastr["success"]("Cập nhật thành công")
@@ -156,15 +153,13 @@ app.controller("updateNhanVienController", function ($scope, $http, $routeParams
                 }
                 $location.path("/danhsach");
             }).catch(function (error) {
-            console.log(error);
             toastr["error"]("Cập nhật thất bại");
             if (error.status === 400) {
-
-                $scope.nhanVienForm.hoTen = false;
-                // $scope.nhanVienForm.ghiChu.$dirty = false;
-                // $scope.nhanVienForm.soDienThoai.$dirty = false;
-                $scope.nhanVienForm.email.$dirty = false;
-                // $scope.nhanVienForm.tenDangNhap = error.data.tenDangNhap;
+                $scope.phieuGiamGiaForm.maPhieu.$dirty = false;
+                $scope.phieuGiamGiaForm.phanTramGiam.$dirty = false;
+                $scope.phieuGiamGiaForm.soLuongPhieu.$dirty = false;
+                $scope.phieuGiamGiaForm.giaTriDonToiThieu.$dirty = false;
+                $scope.phieuGiamGiaForm.giaTriGiamToiDa.$dirty = false;
                 $scope.errors = error.data;
             }
         })

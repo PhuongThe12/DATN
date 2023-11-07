@@ -1,6 +1,5 @@
 package luckystore.datn.service;
 
-import luckystore.datn.common.PageableRequest;
 import luckystore.datn.entity.PhieuGiamGia;
 import luckystore.datn.model.request.PhieuGiamGiaRequest;
 import luckystore.datn.model.response.PhieuGiamGiaResponse;
@@ -12,7 +11,7 @@ public interface PhieuGiamGiaService {
 
     List<PhieuGiamGiaResponse> getAll();
 
-    Page<PhieuGiamGiaResponse> getPagePhieuGiamGia(PageableRequest request);
+    Page<PhieuGiamGiaResponse> getPagePhieuGiamGia(int page);
 
     PhieuGiamGiaResponse findPhieuGiamGiaById(Long id);
 
