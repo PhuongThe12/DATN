@@ -28,7 +28,7 @@
             <div class="custom-radio">
                 <input type="radio" id="disable" name="status" ng-model="status" value="0" ng-checked="status == 0"
                        ng-change="changeRadio(0)">
-                <label class="radio-label" for="disable">Ngừng kinh doanh</label>
+                <label class="radio-label" for="disable">Đã ẩn</label>
             </div>
         </div>
 
@@ -36,14 +36,12 @@
             <table class="table align-middle text-center" border="1">
                 <tr>
                     <th>Tên</th>
-                    <th>Chất liệu</th>
                     <th>Trạng thái</th>
                     <th></th>
                 </tr>
 
                 <tr ng-repeat="deGiay in deGiays">
                     <td>{{deGiay.ten}}</td>
-                    <td>{{deGiay.chatLieu}}</td>
                     <td>
                         <h5>
                 <span ng-class="{'badge bd-success-custom': deGiay.trangThai == 1, 'badge bd-danger-custom': deGiay.trangThai != 1}">
@@ -78,7 +76,7 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Chi Tiết Đế Giày</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Chi Tiết Chất Liệu</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -92,16 +90,12 @@
                         <th>{{deGiayDetail.ten}}</th>
                     </tr>
                     <tr>
-                        <td>Chất liệu :</td>
-                        <th>{{deGiayDetail.chatLieu}}</th>
-                    </tr>
-                    <tr>
                         <td>Mô tả :</td>
                         <th>{{deGiayDetail.moTa}}</th>
                     </tr>
 
                     <tr>
-                        <td>Trạng thái:</td>
+                        <td>Mô tả :</td>
                         <th>
                             <h5>
                 <span ng-class="{'badge bd-success-custom': deGiayDetail.trangThai == 1, 'badge bd-danger-custom': deGiayDetail.trangThai != 1}">

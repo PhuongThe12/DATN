@@ -99,7 +99,8 @@
                             <div class="col col-2">
                                 <ul class="variants mb-0 ">
                                     <div ng-repeat="bienThe in giay.lstBienTheGiay" ng-show="$index < 5"
-                                         class="border-botton-005">
+                                         class="border-botton-005" data-bs-toggle="modal" data-bs-target="#giaModal"
+                                         ng-click="focusInputModal('giaBan', index, $index)">
                                         <span class="bienTheField">{{bienThe.giaBan}} <i
                                                 class="fas fa-pen edit-icon"></i></span>
                                     </div>
@@ -107,7 +108,8 @@
                                 <div class="collapse" id="collapseVarients{{index}}">
                                     <ul class="variants">
                                         <div ng-repeat="bienThe in giay.lstBienTheGiay" ng-show="$index >= 5"
-                                             class="border-botton-005">
+                                             class="border-botton-005" data-bs-toggle="modal" data-bs-target="#giaModal"
+                                             ng-click="focusInputModal('giaBan', index, $index)">
                                             <span class="bienTheField">{{bienThe.giaBan}}<i
                                                     class="fas fa-pen edit-icon"></i></span>
                                         </div>
@@ -117,7 +119,8 @@
                             <div class="col col-2">
                                 <ul class="variants mb-0 ">
                                     <div ng-repeat="bienThe in giay.lstBienTheGiay" ng-show="$index < 5"
-                                         class="border-botton-005">
+                                         class="border-botton-005" data-bs-toggle="modal" data-bs-target="#giaModal"
+                                         ng-click="focusInputModal('giaNhap', index, $index)">
                                         <span class="bienTheField">{{bienThe.giaNhap}} <i
                                                 class="fas fa-pen edit-icon"></i></span>
                                     </div>
@@ -125,7 +128,8 @@
                                 <div class="collapse" id="collapseVarients{{index}}">
                                     <ul class="variants">
                                         <div ng-repeat="bienThe in giay.lstBienTheGiay" ng-show="$index >= 5"
-                                             class="border-botton-005">
+                                             class="border-botton-005" data-bs-toggle="modal" data-bs-target="#giaModal"
+                                             ng-click="focusInputModal('giaNhap', index, $index)">
                                             <span class="bienTheField">{{bienThe.giaNhap}}<i
                                                     class="fas fa-pen edit-icon"></i></span>
                                         </div>
@@ -136,7 +140,8 @@
                                 <ul class="variants mb-0 ">
                                     <div ng-repeat="bienThe in giay.lstBienTheGiay" ng-show="$index < 5"
                                          class="border-botton-005">
-                                        <span class="bienTheField">{{bienThe.soLuong}}<i
+                                        <span class="bienTheField" data-bs-toggle="modal" data-bs-target="#soLuongModal"
+                                              ng-click="focusInputModal('soLuong', index, $index)">{{bienThe.soLuong}}<i
                                                 class="fas fa-pen edit-icon"></i></span>
                                     </div>
                                 </ul>
@@ -144,7 +149,9 @@
                                     <ul class="variants">
                                         <div ng-repeat="bienThe in giay.lstBienTheGiay" ng-show="$index >= 5"
                                              class="border-botton-005">
-                                            <span class="bienTheField">{{bienThe.soLuong}}<i
+                                            <span class="bienTheField" data-bs-toggle="modal"
+                                                  data-bs-target="#soLuongModal"
+                                                  ng-click="focusInputModal('soLuong', index, $index)">{{bienThe.soLuong}}<i
                                                     class="fas fa-pen edit-icon"></i></span>
                                         </div>
                                     </ul>
@@ -152,8 +159,8 @@
                             </div>
                             <div class="col col-3">
                                 <div class="d-flex flex-column">
-                                    <button class="btn btn-primary m-3">Cập nhật</button>
-                                    <button class="btn btn-primary m-3">Xem chi tiết</button>
+                                    <a class="btn btn-primary m-3"  ng-href="#/update/{{giay.id}}">Cập nhật</a>
+                                    <a class="btn btn-primary m-3"  ng-href="#/detail/{{giay.id}}">Xem chi tiết</a>
                                 </div>
                             </div>
                             <div ng-show="giay.lstBienTheGiay.length > 5 && !looped" class="w-100 text-center">
@@ -178,4 +185,158 @@
         </div>
     </div>
 
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="soLuongModal" tabindex="-1" aria-labelledby="soLuongModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable  modal-lg"
+         style="width: 600px; height: 60%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="d-flex align-items-start flex-column">
+                    <h5 class="modal-title" id="soLuongModalLabel">Cập nhật kho hàng</h5>
+                    <div>{{giayModal.ten}}</div>
+                </div>
+                <div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+            </div>
+            <div class="card" style="border-top: none;">
+                <div class="card-body">
+                    <div class="input-group">
+                        <small class="input-group-text border-dark border-opacity-50" id="updateKhoHang">Chỉnh sửa hàng
+                            loạt</small>
+                        <div>
+                            <input type="number" class="form-control border-dark border-opacity-50" id="basic-url"
+                                   aria-describedby="updateKhoHang" ng-model="soLuongUpdateAll"
+                                   ng-change="changeInputSetAllForUpdate()">
+                            <div>
+                                <small class="text-danger"
+                                       ng-show="soLuongUpdateAllErrors">{{soLuongUpdateAllErrors}}</small>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline-secondary" ng-click="setAllForUpdateSoLuong()"><small>Áp
+                            dụng</small></button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <table class="table table-border table-hover">
+                    <thead style="background: rgba(0, 0, 0, 0.25)">
+                    <th class="pl-3">Phân loại</th>
+                    <th class="pl-3">Số lượng</th>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="detailModal in giayModal.lstBienTheGiay">
+                        <th><span class="text-dark">{{detailModal.mauSac.ten}}, {{detailModal.kichThuoc.ten}}</span>
+                        </th>
+                        <td style="padding-right: 10%;" class="d-flex flex-column">
+                            <input type="number" class="form-control" ng-model="detailModal.soLuong"
+                                   id="detailModalSoLuong{{$index}}" ng-change="changeInputModal('soLuong', $index)">
+                            <div>
+                                <small class="text-danger" ng-show="detailModal.errors.soLuong">{{detailModal.errors.soLuong}}</small>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeModalSoLuong">Đóng
+                </button>
+                <button type="button" class="btn btn-primary" ng-click="updateSoLuong()">Cập nhật</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="giaModal" tabindex="-1" aria-labelledby="giaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable  modal-lg"
+         style="width: 800px; height: 60%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="d-flex align-items-start flex-column">
+                    <h5 class="modal-title" id="giaModalLabel">Cập nhật giá</h5>
+                    <div>{{giayModal.ten}}</div>
+                </div>
+                <div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+            </div>
+            <div class="card" style="border-top: none;">
+                <div class="card-body">
+                    <div class="input-group">
+                        <small class="input-group-text border-dark border-opacity-50" id="updateGia">Chỉnh sửa hàng
+                            loạt</small>
+                        <div class="d-flex flex-row">
+                            <div class="mx-3">
+                                <span class="input-group-text" id="updateGiaBan">Giá bán</span>
+                                <input type="number" class="form-control border-dark border-opacity-50"
+                                       aria-describedby="updateGiaBan" ng-model="giaBanUpdateAll" step="1000"
+                                       ng-change="changeInputSetAllForUpdateGia('giaBan')">
+                                <div>
+                                    <small class="text-danger"
+                                           ng-show="giaBanUpdateAllErrors">{{giaBanUpdateAllErrors}}</small>
+                                </div>
+                            </div>
+                            <div class="mx-3">
+                                <span class="input-group-text" id="updateGiaNhap">Giá nhập</span>
+                                <input type="number" class="form-control border-dark border-opacity-50"
+                                       ng-model="giaNhapUpdateAll" step="1000"
+                                       ng-change="changeInputSetAllForUpdateGia('giaBan')"
+                                       aria-describedby="updateGiaNhap">
+                                <div>
+                                    <small class="text-danger"
+                                           ng-show="giaNhapUpdateAllErrors">{{giaNhapUpdateAllErrors}}</small>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline-secondary"  ng-click="setAllForUpdateGia()"><small>Áp dụng</small></button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <table class="table table-border table-hover">
+                    <thead style="background: rgba(0, 0, 0, 0.25)">
+                    <th class="pl-3">Phân loại</th>
+                    <th class="pl-3">Giá bán</th>
+                    <th class="pl-3">Giá nhập</th>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="detailModal in giaGiayModal.lstBienTheGiay">
+                        <th><span class="text-dark">{{detailModal.mauSac.ten}}, {{detailModal.kichThuoc.ten}}</span>
+                        </th>
+                        <td style="padding-right: 10%;">
+                            <input type="number" class="form-control" ng-model="detailModal.giaBan"
+                                   ng-blur="blurGiaInput($index, 'giaNhap')"
+                                   onkeypress="nextInput(event)"
+                                   id="detailModalGiaBan{{$index}}" ng-change="changeInputModal('giaNhap', $index)">
+                            <div>
+                                <small class="text-danger" ng-show="detailModal.errors.giaBan">{{detailModal.errors.giaBan}}</small>
+                            </div>
+                        </td>
+                        <td style="padding-right: 10%;">
+                            <input type="number" class="form-control" ng-model="detailModal.giaNhap"
+                                   ng-blur="blurGiaInput($index, 'giaBan')"
+                                   onkeypress="nextInput(event)"
+                                   id="detailModalGiaNhap{{$index}}" ng-change="changeInputModal('giaNhap', $index)">
+                            <div>
+                                <small class="text-danger" ng-show="detailModal.errors.giaNhap">{{detailModal.errors.giaNhap}}</small>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeModalGia">Đóng
+                </button>
+                <button type="button" class="btn btn-primary" ng-click="updateGia()">Cập nhật</button>
+            </div>
+        </div>
+    </div>
 </div>

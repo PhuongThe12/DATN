@@ -105,6 +105,13 @@ app.controller("dayGiayListController", function ($scope, $http, $window, $locat
             });
     }
 
+    $scope.resetSearch = function () {
+        searchText = null;
+        $scope.searchText = '';
+        $scope.status = -1;
+        getData(1);
+    }
+
     $scope.detailDayGiay = function (val) {
         const id = val;
 

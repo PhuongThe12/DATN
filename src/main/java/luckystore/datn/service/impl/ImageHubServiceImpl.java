@@ -1,11 +1,8 @@
 package luckystore.datn.service.impl;
 
 import luckystore.datn.exception.FileException;
-import luckystore.datn.repository.BienTheGiayRepository;
-import luckystore.datn.repository.GiayRepository;
 import luckystore.datn.service.ImageHubService;
 import org.apache.tika.Tika;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -31,6 +28,20 @@ public class ImageHubServiceImpl implements ImageHubService {
 
     @Value("${file.upload-dir}")
     private String uploadDir;
+
+    public static String getBase64FromFileStatic(String filename) {
+        if (filename != null && filename.endsWith(".txt")) {
+            String filePath = "src/main/resources/static/upload/images/" + filename;
+
+            try {
+                return new String(Files.readAllBytes(Paths.get(filePath)));
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        return null;
+    }
 
     @Override
     public ResponseEntity<?> upload(MultipartFile[] files) {
@@ -61,17 +72,6 @@ public class ImageHubServiceImpl implements ImageHubService {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @Override
-    public boolean isImage(InputStream fileInputStream) {
-        try {
-            Tika tika = new Tika();
-            String mimeType = tika.detect(fileInputStream);
-            return mimeType.startsWith("image/");
-        } catch (IOException e) {
-            return false;
-        }
-    }
-
 //    @Override
 //    public ResponseEntity<?> getImage(String[] fileNames) {
 //        List<String> result = new ArrayList<>();
@@ -94,6 +94,17 @@ public class ImageHubServiceImpl implements ImageHubService {
 //    }
 
     @Override
+    public boolean isImage(InputStream fileInputStream) {
+        try {
+            Tika tika = new Tika();
+            String mimeType = tika.detect(fileInputStream);
+            return mimeType.startsWith("image/");
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    @Override
     public String base64ToFile(String base64Data) {
         String filename = System.currentTimeMillis() + ".txt";
         String filePath = uploadDir + "/" + filename;
@@ -107,26 +118,17 @@ public class ImageHubServiceImpl implements ImageHubService {
         }
     }
 
-    public static String getBase64FromFileStatic(String filename) {
-        String filePath = "src/main/resources/static/upload/images/" + filename;
-
-        try {
-            return new String(Files.readAllBytes(Paths.get(filePath)));
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
     @Override
     public String getBase64FromFile(String filename) {
-        String filePath = uploadDir + "/" + filename;
-        try {
-            return new String(Files.readAllBytes(Paths.get(filePath)));
-
-        } catch (IOException e) {
-            throw new FileException("Lỗi đọc file");
+        if (filename != null && filename.endsWith(".txt")) {
+            String filePath = uploadDir + "/" + filename;
+            try {
+                return new String(Files.readAllBytes(Paths.get(filePath)));
+            } catch (IOException e) {
+                return null;
+            }
         }
+        return null;
     }
 
     @Override

@@ -106,6 +106,13 @@ app.controller("deGiayListController", function ($scope, $http, $window, $locati
             });
     }
 
+    $scope.resetSearch = function () {
+        searchText = null;
+        $scope.searchText = '';
+        $scope.status = -1;
+        getData(1);
+    }
+
     $scope.detailDeGiay = function (val) {
         const id = val;
 
