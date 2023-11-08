@@ -1,9 +1,9 @@
-<h1>Cập nhật màu sắc</h1>
+<h1>Cập nhật Yêu Cầu</h1>
 
 <form name="updateYeuCauForm" ng-submit="updateYeuCau()">
     <div class="form-group">
         <label for="hoaDon">Hoá Đơn:</label>
-        <input type="text" class="form-control" id="hoaDon" name="hoaDon" ng-model="yeuCau.hoaDon" readonly>
+        <input type="text" class="form-control" id="hoaDon" name="hoaDon" ng-model="yeuCau.hoaDon.id" readonly>
         <small class="error-message" ng-show="(addYeuCauForm.hoaDon.$dirty || addYeuCauForm.hoaDon.$touched) && addYeuCauForm.hoaDon.$error.required">Không được để trống id hóa đơn</small>
         <small class="error-message" ng-show="errors.hoaDon && !addYeuCauForm.hoaDon.$dirty">{{errors.hoaDon}}</small>
     </div>

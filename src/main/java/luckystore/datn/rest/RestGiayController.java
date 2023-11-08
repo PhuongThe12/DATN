@@ -38,7 +38,7 @@ public class RestGiayController {
         return new ResponseEntity<>(giayService.getAllGiay(), HttpStatus.OK);
     }
 
-    @PostMapping("/get-giay-contains")
+    @PostMapping("/")
     public ResponseEntity<?> getAllContains(@RequestBody List<Long> ids) {
         return new ResponseEntity<>(giayService.getAllContains(ids), HttpStatus.OK);
     }
