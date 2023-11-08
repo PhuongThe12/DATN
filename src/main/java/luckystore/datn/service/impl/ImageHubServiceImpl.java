@@ -1,11 +1,8 @@
 package luckystore.datn.service.impl;
 
 import luckystore.datn.exception.FileException;
-import luckystore.datn.repository.BienTheGiayRepository;
-import luckystore.datn.repository.GiayRepository;
 import luckystore.datn.service.ImageHubService;
 import org.apache.tika.Tika;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -30,29 +27,17 @@ import java.util.List;
 public class ImageHubServiceImpl implements ImageHubService {
 
     @Value("${file.upload-dir}")
-    private static String uploadDirStatic;
-    @Value("${file.upload-dir}")
     private String uploadDir;
-    @Autowired
-    private GiayRepository giayRepository;
 
-    @Autowired
-    private BienTheGiayRepository bienTheGiayRepository;
-
-    public static String getImageStatic(String filename) {
-        if (filename != null && !filename.isBlank()) {
+    public static String getBase64FromFileStatic(String filename) {
+        if (filename != null && filename.endsWith(".txt")) {
+            String filePath = "src/main/resources/static/upload/images/" + filename;
 
             try {
-                Path imagePath = Paths.get(uploadDirStatic, filename);
-                Resource resource = new UrlResource(imagePath.toUri());
-
-                if (resource.exists() && resource.isReadable()) {
-                    byte[] imageBytes = Files.readAllBytes(imagePath);
-                    String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-                    return "data:image/jpeg;base64," + base64Image;
-                }
-            } catch (Exception e) {
+                return new String(Files.readAllBytes(Paths.get(filePath)));
+            } catch (IOException e) {
                 e.printStackTrace();
+                return null;
             }
         }
         return null;
@@ -87,6 +72,27 @@ public class ImageHubServiceImpl implements ImageHubService {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+//    @Override
+//    public ResponseEntity<?> getImage(String[] fileNames) {
+//        List<String> result = new ArrayList<>();
+//        for (String filename : fileNames) {
+//            try {
+//                Path imagePath = Paths.get(uploadDir, filename);
+//                Resource resource = new UrlResource(imagePath.toUri());
+//
+//                if (resource.exists() && resource.isReadable()) {
+//                    byte[] imageBytes = Files.readAllBytes(imagePath);
+//                    String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+//                    result.add("data:image/jpeg;base64," + base64Image);
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            return new ResponseEntity<>(null, HttpStatus.OK);
+//        }
+//        return new ResponseEntity<>(result, HttpStatus.OK);
+//    }
+
     @Override
     public boolean isImage(InputStream fileInputStream) {
         try {
@@ -96,27 +102,6 @@ public class ImageHubServiceImpl implements ImageHubService {
         } catch (IOException e) {
             return false;
         }
-    }
-
-    @Override
-    public ResponseEntity<?> getImage(String[] fileNames) {
-        List<String> result = new ArrayList<>();
-        for (String filename : fileNames) {
-            try {
-                Path imagePath = Paths.get(uploadDir, filename);
-                Resource resource = new UrlResource(imagePath.toUri());
-
-                if (resource.exists() && resource.isReadable()) {
-                    byte[] imageBytes = Files.readAllBytes(imagePath);
-                    String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-                    result.add("data:image/jpeg;base64," + base64Image);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return new ResponseEntity<>(null, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @Override
@@ -135,23 +120,24 @@ public class ImageHubServiceImpl implements ImageHubService {
 
     @Override
     public String getBase64FromFile(String filename) {
-        String filePath = uploadDir + "/" + filename;
-
-        try {
-            byte[] encoded = Files.readAllBytes(Paths.get(filePath));
-
-            return new String(Files.readAllBytes(Paths.get(filePath)));
-
-        } catch (IOException e) {
-            throw new FileException("Lỗi đọc file");
+        if (filename != null && filename.endsWith(".txt")) {
+            String filePath = uploadDir + "/" + filename;
+            try {
+                return new String(Files.readAllBytes(Paths.get(filePath)));
+            } catch (IOException e) {
+                return null;
+            }
         }
+        return null;
     }
 
     @Override
     public String getImage(String filename) {
+        System.out.println("filename: " + filename);
         if (filename != null && !filename.isBlank()) {
             try {
                 Path imagePath = Paths.get(uploadDir, filename);
+                System.out.println("path: " + uploadDir + "/" + filename);
                 Resource resource = new UrlResource(imagePath.toUri());
 
                 if (resource.exists() && resource.isReadable()) {

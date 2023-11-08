@@ -1,51 +1,114 @@
-<div>
-    <label for="seachText">Tên: </label><input id="seachText"  type="text" ng-model="searchText" placeholder="Nhập từ khóa">
-    <button ng-click="search()">Tìm kiếm</button>
+<div class="card" style="margin: 20px">
+    <h5>Danh sách thương hiệu</h5>
+    <div class="card-body">
+        <div class="d-flex add-search-custom">
+            <div class="input-group w-25">
+                <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
+                <input id="seachText" class="form-control" type="text" ng-model="searchText"
+                       placeholder="Nhập từ khóa">
+                <button class="btn btn-custom " ng-click="search()">Tìm kiếm</button>
+            </div>
+            <a class="btn btn-primary" href="#/add">Thêm thương hiệu</a>
+        </div>
+
+        <div class="d-flex justify-content-start radio-filter">
+            <div class="custom-radio">
+                <input type="radio" id="all" name="status" ng-model="status" value="-1"
+                       ng-checked="status != 0 && status != 1"
+                       ng-change="changeRadio(-1)">
+                <label class="radio-label" for="all">Tất cả</label>
+            </div>
+
+            <div class="custom-radio">
+                <input type="radio" id="active" name="status" ng-model="status" value="1" ng-checked="status == 1"
+                       ng-change="changeRadio(1)">
+                <label class="radio-label" for="active">Hiển thị</label>
+            </div>
+
+            <div class="custom-radio">
+                <input type="radio" id="disable" name="status" ng-model="status" value="0" ng-checked="status == 0"
+                       ng-change="changeRadio(0)">
+                <label class="radio-label" for="disable">Đã ẩn</label>
+            </div>
+        </div>
+
+        <div>
+            <table class="table align-middle text-center" border="1">
+                <tr>
+                    <th>Tên</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+
+                <tr ng-repeat="thuongHieu in thuongHieus">
+                    <td>{{thuongHieu.ten}}</td>
+                    <td>
+                        <h5>
+                <span ng-class="{'badge bd-success-custom': thuongHieu.trangThai == 1, 'badge bd-danger-custom': thuongHieu.trangThai != 1}">
+                    {{thuongHieu.trangThai == 1? "Hiển thị" : "Đã ẩn"}}
+                </span>
+                        </h5>
+                    </td>
+                    <td>
+                        <div class="d-sm-inline-flex">
+                            <button class="btn btn-custom" ng-click="detailThuongHieu(thuongHieu.id)" data-bs-toggle="modal" data-bs-target="#showThuongHieu">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <a class="btn btn-custom" ng-href="#/update/{{thuongHieu.id}}"><i class="far fa-edit"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages" data-current-page="curPage"
+                 data-max-size="maxSize"
+                 data-boundary-links="true">
+            </div>
+
+        </div>
+    </div>
+
 </div>
 
-<a class="btn btn-primary" href="#/add">Thêm thương hiệu</a>
+<!-- Modal Detail-->
+<div class="modal fade" id="showThuongHieu" tabindex="-1" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Chi Tiết Chất Liệu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table>
+                    <tr>
+                        <td>ID :</td>
+                        <th>{{thuongHieuDetail.id}}</th>
+                    </tr>
+                    <tr>
+                        <td>Tên :</td>
+                        <th>{{thuongHieuDetail.ten}}</th>
+                    </tr>
+                    <tr>
+                        <td>Mô tả :</td>
+                        <th>{{thuongHieuDetail.moTa}}</th>
+                    </tr>
 
-<h1>Danh sách thương hiệu</h1>
+                    <tr>
+                        <td>Mô tả :</td>
+                        <th>
+                            <h5>
+                <span ng-class="{'badge bd-success-custom': thuongHieuDetail.trangThai == 1, 'badge bd-danger-custom': thuongHieuDetail.trangThai != 1}">
+                    {{thuongHieuDetail.trangThai == 1? "Hiển thị" : "Đã ẩn"}}
+                </span>
+                            </h5>
+                        </th>
+                    </tr>
 
-<div class="d-flex justify-content-start">
-    <div class="custom-radio">
-        <input type="radio" id="all" name="status" ng-model="status" value="-1" ng-checked="status != 0 && status != 1" ng-change="changeRadio(-1)">
-        <label class="radio-label" for="all">Tất cả</label>
+                </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
     </div>
-
-    <div class="custom-radio">
-        <input type="radio" id="active" name="status" ng-model="status" value="1" ng-checked="status == 1" ng-change="changeRadio(1)">
-        <label class="radio-label" for="active">Đang kinh doanh</label>
-    </div>
-
-    <div class="custom-radio">
-        <input type="radio" id="disable" name="status" ng-model="status" value="0" ng-checked="status == 0" ng-change="changeRadio(0)">
-        <label class="radio-label" for="disable">Ngừng kinh doanh</label>
-    </div>
-</div>
-
-<div>
-    <table class="table align-middle text-center" border="1">
-        <tr>
-            <th>Tên</th>
-            <th>Trạng thái</th>
-            <th></th>
-        </tr>
-
-        <tr ng-repeat="thuongHieu in thuongHieus">
-            <td>{{thuongHieu.ten}}</td>
-            <td>{{thuongHieu.trangThai == 1? "Đang kinh doanh" : "Ngừng khinh doanh"}}</td>
-            <td>
-                <a class="btn btn-info" ng-href="#/detail/{{thuongHieu.id}}">Chi tiết</a>
-                <a class="btn btn-info" ng-href="#/update/{{thuongHieu.id}}">Cập nhật</a>
-            </td>
-        </tr>
-    </table>
-
-    <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages" data-current-page="curPage" data-max-size="maxSize"
-        data-boundary-links="true">
-    </div>
-
-
-
 </div>

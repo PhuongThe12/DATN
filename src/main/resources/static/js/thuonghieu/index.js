@@ -105,6 +105,24 @@ app.controller("thuongHieuListController", function ($scope, $http, $window, $lo
             });
     }
 
+    $scope.resetSearch = function () {
+        searchText = null;
+        $scope.searchText = '';
+        $scope.status = -1;
+        getData(1);
+    }
+
+    $scope.detailThuongHieu = function (val) {
+        const id = val;
+        if (!isNaN(id)) {
+            $scope.thuongHieuDetail = $scope.thuongHieus.find(function(thuongHieu) {
+                return thuongHieu.id === id;
+            });
+        } else {
+            toastr["error"]("Lấy dữ liệu thất bại");
+        }
+    }
+
     $scope.$watch('curPage + numPerPage', function () {
         getData($scope.curPage);
     });

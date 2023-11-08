@@ -25,6 +25,7 @@ public class RestYeuCauController {
     @Autowired
     private YeuCauService yeuCauService;
 
+
     @GetMapping("/get-all")
 //    @PreAuthorize('hasAuthor(ABC)')
     public ResponseEntity<?> getAll() {
