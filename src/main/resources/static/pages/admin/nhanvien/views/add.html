@@ -1,23 +1,13 @@
-<style>
-    .form-input {
-        background-color: white;
-        padding: 20px;
-        margin: 20px;
-        box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-    }
 
-    .error-message {
-        color: red;
-        font-weight: bold;
-    }
-</style>
-
-<div class="row">
-    <div class="col-md-12">
-        <button class="ms-5 btn btn-primary" ng-click="backToNhanVienList()">Back</button>
-        <div class=" col-md-10 m-auto">
-            <div class="form-input">
-
+<button class="ms-4 mb-3 btn btn-primary" ng-click="backToNhanVienList()">< Danh Sách</button>
+<div class="card rounded bg-white ms-4 mx-4">
+        <div class="card-header bg-white">
+            <h5 class="card-title p-2 mt-2">
+                Thêm Nhân Viên
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="p-3">
                 <form name="nhanVienForm" ng-submit="addNhanVien()">
                     <div class="form-group">
                         <div class="row">
@@ -219,6 +209,5 @@
                 </form>
             </div>
         </div>
-
-    </div>
 </div>
+

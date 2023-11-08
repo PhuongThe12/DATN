@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đơn Hàng</title>
+    <title>Nhân Viên</title>
 
     <!-- Pagination -->
     <link rel="stylesheet" href="/pagination/pagination.css">
@@ -25,6 +25,9 @@
     <!-- Icon -->
     <link rel="stylesheet" href="/icon/css/all.min.css">
 
+    <!--Sweet Alert -->
+    <link rel="stylesheet" href="/sweetalert2/dist/sweetalert2.min.css">
+
     <!-- Global -->
     <script src="/js/global.js"></script>
     <link rel="stylesheet" href="/css/global-style.css">
@@ -33,22 +36,18 @@
     <link rel="stylesheet" href="/css/base_sidebar/style.min.css">
 
 </head>
-<style>
-    p{
-        margin-bottom: 1rem !important;
-    }
-</style>
-<body ng-controller="indexController">
+
+<body>
 <div class="page-flex">
     <aside class="sidebar">
         <div class="sidebar-start">
             <div class="sidebar-head">
                 <a href="/" class="logo-wrapper" title="Home">
                     <span class="sr-only">Home</span>
-                    <img style="width: 61px; padding-right: 10px" src="/img/logo_datn.png" alt="">
+                    <img style="    border-radius: 10px;width: 35px;margin-right: 6px;" src="/img/logo_datn.png" alt="">
                     <div class="logo-text">
-                        <span class="logo-title">Lucky</span>
-                        <span class="logo-subtitle">Store</span>
+                        <span class="logo-title">LuckyStore</span>
+                        <span class="logo-subtitle"></span>
                     </div>
 
                 </a>
@@ -61,10 +60,12 @@
                 <span class="system-menu__title">Bán Hàng</span>
                 <ul class="sidebar-body-menu">
                     <li>
-                        <a class="active" href="http://localhost:8080/admin/tong-quan#/home"><i class="icon fas fa-th-large"></i></span>Tổng quan</a>
+                        <a class="active" href="http://localhost:8080/admin/tong-quan#/home"><i
+                                class="icon fas fa-th-large"></i></span>Tổng quan</a>
                     </li>
                     <li>
-                        <a href="http://localhost:8080/admin/ban-hang#/home"><i class="icon fas fa-vote-yea"></i></span>Máy POS</a>
+                        <a href="http://localhost:8080/admin/ban-hang#/home"><i class="icon fas fa-vote-yea"></i></span>
+                            Máy POS</a>
                     </li>
 
                     <li>
@@ -91,7 +92,7 @@
                         </ul>
 
                     </li>
-                    <li ng-show ="chuCuaHangLogged">
+                    <li>
                         <a class="show-cat-btn" href="##">
                             <i class="icon fas fa-socks"></i></span>Giày
                             <span class="category__btn transparent-btn" title="Open list">
@@ -99,7 +100,7 @@
                                    <i class="icon fas fa-angle-down"></i>
                                 </span>
                         </a>
-                        <ul  class="cat-sub-menu">
+                        <ul class="cat-sub-menu">
                             <li>
                                 <a href="categories.html">Giày</a>
                             </li>
@@ -151,8 +152,8 @@
                     </li>
 
                 </ul>
-                <span ng-show="chuCuaHangLogged" class="system-menu__title">hệ thống</span>
-                <ul ng-show="chuCuaHangLogged"  class="sidebar-body-menu">
+                <span class="system-menu__title">hệ thống</span>
+                <ul class="sidebar-body-menu">
 
                     <li>
                         <a href="http://localhost:8080/admin/nhan-vien#/list"><i class="icon fas fa-user"></i>Nhân Viên</a>
@@ -179,20 +180,6 @@
                     </li>
                 </ul>
             </div>
-        </div>
-        <div class="sidebar-footer">
-            <a href="http://localhost:8080/admin/nhan-vien#/detail" class="sidebar-user">
-                    <span class="sidebar-user-img">
-                        <picture>
-                            <source srcset="" type="image/webp"><img
-                                src="https://forkast.news/wp-content/uploads/2022/03/NFT-Avatar.png" alt="User name">
-                        </picture>
-                    </span>
-                <div class="sidebar-user-info">
-                    <span class="sidebar-user__title">{{nhanVienLogged.hoTen}}</span>
-                    <span class="sidebar-user__subtitle">{{nhanVienLogged.chucVu == 2 ? "Chủ cửa hàng" : "Nhân Viên"}}</span>
-                </div>
-            </a>
         </div>
     </aside>
 
@@ -282,7 +269,8 @@
                             <span class="nav-user-img">
                                     <picture>
                                         <source srcset="" type="image/webp"><img
-                                            src="https://forkast.news/wp-content/uploads/2022/03/NFT-Avatar.png" alt="User name">
+                                            src="https://forkast.news/wp-content/uploads/2022/03/NFT-Avatar.png"
+                                            alt="User name">
                                     </picture>
                                 </span>
                         </button>
@@ -312,7 +300,7 @@
     </div>
 </div>
 
-
+<script src="/sweetalert2/dist/sweetalert2.min.js"></script>
 <script src="/js/donhang/index.js"></script>
 <script src="/js/feather.min.js"></script>
 <script src="/js/navbar.js"></script>

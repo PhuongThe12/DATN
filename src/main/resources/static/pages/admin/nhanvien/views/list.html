@@ -24,155 +24,154 @@
 <div class="box-shadow-page" style="margin: 20px">
     <div class="card-body">
         <div class="d-flex add-search-custom">
-            <div>
-                <div>
-                    <div class="input-group">
-                        <span class="input-group-text bg-white" id="basic-addon1"><i class="fas fa-search"></i></span>
-                        <input id="seachText" class="form-control" type="text" ng-model="searchText"
-                               placeholder="Nhập từ khóa">
-                        <button class="btn btn-custom " ng-click="search()">Tìm kiếm</button>
-                    </div>
-                </div>
-            </div>
             <div class="">
-                <button ng-click="inBaoCao()" class="btn btn-primary">Báo Cáo Lịch Sử Hoạt Động</button>
                 <a class="btn btn-primary" href="#/add">Thêm Nhân Viên</a>
             </div>
         </div>
-        <div class="d-flex justify-content-start radio-filter">
-            <div class="custom-radio">
-                <input type="radio" id="all" name="status" ng-model="status" value="-1"
-                       ng-checked="status != 0 && status != 1"
-                       ng-change="changeRadio(-1)">
-                <label class="radio-label" for="all">Tất cả</label>
-            </div>
-
-            <div class="custom-radio">
-                <input type="radio" id="active" name="status" ng-model="status" value="1" ng-checked="status == 1"
-                       ng-change="changeRadio(1)">
-                <label class="radio-label" for="active">Đang Làm</label>
-            </div>
-
-            <div class="custom-radio">
-                <input type="radio" id="disable" name="status" ng-model="status" value="0" ng-checked="status == 0"
-                       ng-change="changeRadio(0)">
-                <label class="radio-label" for="disable">Đã Nghỉ</label>
-            </div>
-            <div class="custom-radio">
-                <input type="radio" id="staff" name="status" ng-model="status" value="2" ng-checked="status == 2"
-                       ng-change="changeRadio(2)">
-                <label class="radio-label" for="staff">Nhân Viên</label>
-            </div>
-            <div class="custom-radio">
-                <input type="radio" id="admin" name="status" ng-model="status" value="3" ng-checked="status == 3"
-                       ng-change="changeRadio(3)">
-                <label class="radio-label" for="admin">Chủ Cửa Hàng</label>
-            </div>
-        </div>
         <div>
-            <table class="table align-middle text-center" border="1">
-                <tr class="table-secondary">
-                    <th>ID</th>
-                    <th>Họ Tên</th>
-                    <th>Số Điện Thoại</th>
-                    <th>Email</th>
-                    <th>Chức Vụ</th>
-                    <th>Trạng Thái</th>
-                    <th>Action</th>
-                </tr>
+            <div class="card rounded-md bg-white">
+                <main class="card-body p-6">
+                    <div class="d-md-flex justify-content-between align-items-center mb-6">
 
-                <tr ng-repeat="nhanvien in nhanViens">
-                    <td>{{nhanvien.id}}</td>
-                    <td>{{nhanvien.hoTen}}</td>
-                    <td>{{nhanvien.soDienThoai}}</td>
-                    <td>{{nhanvien.email}}</td>
-                    <td>{{nhanvien.chucVu == 1 ? "Nhân Viên" : "Chủ Cửa Hàng"}}</td>
-                    <td>
-                        <h5>
-                <span ng-class="{'badge bd-success-custom': nhanvien.trangThai == 1, 'badge bd-danger-custom': nhanvien.trangThai != 1}">
-                    {{nhanvien.trangThai == 1 ? 'Đang Làm' : 'Đã Nghỉ'}}
-                </span>
-                        </h5>
-                    </td>
-                    <td>
-                        <div class="d-sm-inline-flex">
-                            <button class="btn btn-custom" ng-click="detailNhanVien(nhanvien.id)" data-bs-toggle="modal"
-                                    data-bs-target="#showNhanVien" data-bs-placement="top" title="Xem Chi Tiết">
-                                <i class="fas fa-eye "></i>
-                            </button>
-                            <a class="btn btn-custom" ng-href="#/update/{{nhanvien.id}}" data-bs-placement="top"
-                               title="Cập Nhật"><i class="far fa-edit"></i></a>
+                        <div>
+                            <h4 class="card-title fw-bold">
+                                Danh Sách Nhân Viên
+                            </h4>
+                            <div class="d-flex justify-content-start radio-filter">
+                                <div class="custom-radio">
+                                    <input type="radio" id="all" name="status" ng-model="status" value="-1"
+                                           ng-checked="status != 0 && status != 1"
+                                           ng-change="changeRadio(-1)">
+                                    <label class="radio-label" for="all">Tất cả</label>
+                                </div>
+
+                                <div class="custom-radio">
+                                    <input type="radio" id="active" name="status" ng-model="status" value="1"
+                                           ng-checked="status == 1"
+                                           ng-change="changeRadio(1)">
+                                    <label class="radio-label" for="active">Đang Làm</label>
+                                </div>
+
+                                <div class="custom-radio">
+                                    <input type="radio" id="disable" name="status" ng-model="status" value="0"
+                                           ng-checked="status == 0"
+                                           ng-change="changeRadio(0)">
+                                    <label class="radio-label" for="disable">Đã Nghỉ</label>
+                                </div>
+
+                            </div>
                         </div>
-                    </td>
-                </tr>
-            </table>
-
-            <!--            &lt;!&ndash; Button trigger modal &ndash;&gt;-->
-            <!--            <button type="button" hidden class="btn btn-primary"  data-bs-target="#showNhanVien">-->
-
-            <!--            </button>-->
-
-            <!-- Modal -->
-            <div class="modal fade" id="showNhanVien" tabindex="-1" aria-labelledby="exampleModalLabel"
-                 aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Chi Tiết Nhân Viên</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <table>
-                                <tr>
-                                    <td>ID :</td>
-                                    <th>{{nhanVienDetail.id}}</th>
-                                </tr>
-                                <tr>
-                                    <td>Tên :</td>
-                                    <th>{{nhanVienDetail.hoTen}}</th>
-                                </tr>
-                                <tr>
-                                    <td>Giới Tính :</td>
-                                    <th>{{nhanVienDetail.gioiTinh == 1 ? "Nam" : "Nữ"}}</th>
-                                </tr>
-                                <tr>
-                                    <td>Ngày Sinh :</td>
-                                    <th>{{nhanVienDetail.ngaySinh}}</th>
-                                </tr>
-                                <tr>
-                                    <td>Số Điện Thoại :</td>
-                                    <th>{{nhanVienDetail.soDienThoai}}</th>
-                                </tr>
-                                <tr>
-                                    <td> Email :</td>
-                                    <th>{{nhanVienDetail.email}}</th>
-                                </tr>
-                                <tr>
-                                    <td> Trạng Thái :</td>
-                                    <th>{{nhanVienDetail.trangThai == 1 ? "Đang Làm" : "Nghỉ Làm"}}</th>
-                                </tr>
-                                <tr>
-                                    <td>Địa Chỉ :</td>
-                                    <th>{{nhanVienDetail.xa}} - {{nhanVienDetail.huyen}} - {{nhanVienDetail.tinh}}</th>
-                                </tr>
-                                <tr>
-                                    <td>Chức Vụ :</td>
-                                    <th>{{nhanVienDetail.chucVu == 1 ? "Nhân Viên" : "Chủ Cửa Hàng"}}</th>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="modal-footer">
+                        <div>
+                            <div>
+                                <div class="form-group">
+                                    <input type="text" ng-model="searchText" ng-change="search()" placeholder="search..." class="form-control py-2">
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                    <div>
+                        <table class="table align-middle table-borderless text-center mw-100" border="1">
+                            <tr class="">
+                                <th>ID</th>
+                                <th>HỌ TÊN</th>
+                                <th>SỐ ĐIỆN THOẠI</th>
+                                <th>EMAIL</th>
+                                <th>CHỨC VỤ</th>
+                                <th>TRẠNG THÁI</th>
+                                <th>ACTION</th>
+                            </tr>
 
+                            <tr ng-repeat="nhanvien in nhanViens">
+                                <td>{{nhanvien.id}}</td>
+                                <td>{{nhanvien.hoTen}}</td>
+                                <td>{{nhanvien.soDienThoai}}</td>
+                                <td>{{nhanvien.email}}</td>
+                                <td>{{nhanvien.chucVu == 1 ? "Nhân Viên" : "Chủ Cửa Hàng"}}</td>
+                                <td>
+                                    <h5>
+                                    <span ng-class="{'badge bd-success-custom': nhanvien.trangThai == 1, 'badge bd-danger-custom': nhanvien.trangThai != 1}">
+                                        {{nhanvien.trangThai == 1 ? 'Đang Làm' : 'Đã Nghỉ'}}
+                                    </span>
+                                    </h5>
+                                </td>
+                                <td>
+                                    <div class="d-sm-inline-flex">
+                                        <button class="btn btn-custom" ng-click="detailNhanVien(nhanvien.id)"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#showNhanVien" data-bs-placement="top"
+                                                title="Xem Chi Tiết">
+                                            <i class="fas fa-eye "></i>
+                                        </button>
+                                        <a class="btn btn-custom" ng-href="#/update/{{nhanvien.id}}"
+                                           data-bs-placement="top"
+                                           title="Cập Nhật"><i class="far fa-edit"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </main>
+            </div>
             <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages" data-current-page="curPage"
                  data-max-size="maxSize"
                  data-boundary-links="true">
             </div>
 
 
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="showNhanVien" tabindex="-1" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Chi Tiết Nhân Viên</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table mw-100">
+                    <tr>
+                        <td>ID :</td>
+                        <th>{{nhanVienDetail.id}}</th>
+                    </tr>
+                    <tr>
+                        <td>Tên :</td>
+                        <th>{{nhanVienDetail.hoTen}}</th>
+                    </tr>
+                    <tr>
+                        <td>Giới Tính :</td>
+                        <th>{{nhanVienDetail.gioiTinh == 1 ? "Nam" : "Nữ"}}</th>
+                    </tr>
+                    <tr>
+                        <td>Ngày Sinh :</td>
+                        <th>{{nhanVienDetail.ngaySinh}}</th>
+                    </tr>
+                    <tr>
+                        <td>Số Điện Thoại :</td>
+                        <th>{{nhanVienDetail.soDienThoai}}</th>
+                    </tr>
+                    <tr>
+                        <td> Email :</td>
+                        <th>{{nhanVienDetail.email}}</th>
+                    </tr>
+                    <tr>
+                        <td> Trạng Thái :</td>
+                        <th>{{nhanVienDetail.trangThai == 1 ? "Đang Làm" : "Nghỉ Làm"}}</th>
+                    </tr>
+                    <tr>
+                        <td>Địa Chỉ :</td>
+                        <th>{{nhanVienDetail.xa}} - {{nhanVienDetail.huyen}} - {{nhanVienDetail.tinh}}</th>
+                    </tr>
+                    <tr>
+                        <td>Chức Vụ :</td>
+                        <th>{{nhanVienDetail.chucVu == 1 ? "Nhân Viên" : "Chủ Cửa Hàng"}}</th>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+            </div>
         </div>
     </div>
 </div>
