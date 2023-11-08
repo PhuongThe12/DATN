@@ -1,8 +1,16 @@
 package luckystore.datn.rest;
 
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
+import luckystore.datn.constraints.ErrorMessage;
+import luckystore.datn.constraints.SystemHistory;
+import luckystore.datn.entity.NhanVien;
+import luckystore.datn.exception.DuplicateException;
+import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.model.request.NhanVienRequest;
 import luckystore.datn.service.NhanVienService;
+import luckystore.datn.service.impl.EmailSenderService;
+import luckystore.datn.service.impl.SystemHistoryLogger;
 import luckystore.datn.util.JsonString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/admin/rest/nhan-vien")
@@ -20,6 +29,9 @@ public class RestNhanVienController {
 
     @Autowired
     private NhanVienService nhanVienService;
+
+    @Autowired
+    private EmailSenderService emailSenderService;
 
     @PostMapping
     public ResponseEntity addNhanVien(@Valid @RequestBody NhanVienRequest nhanVienRequest, BindingResult result) {
@@ -34,9 +46,12 @@ public class RestNhanVienController {
     public ResponseEntity updateNhanVien(@PathVariable("id") Long id,
                                          @Valid @RequestBody NhanVienRequest nhanVienRequest,
                                          BindingResult result) {
+        System.out.println(nhanVienRequest);
         ResponseEntity errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
-
+        if ((nhanVienRequest.getId() == SystemHistory.nhanVien.getId()) && (nhanVienRequest.getUpdateAccount() == null)) {
+            return new ResponseEntity("Tài khoản đang được sử dụng, Vui lòng sử dụng 1 tài khoản khác để chỉnh sửa", HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity(nhanVienService.updateNhanVien(id, nhanVienRequest), HttpStatus.OK);
     }
 
@@ -64,6 +79,28 @@ public class RestNhanVienController {
         return new ResponseEntity(nhanVienService.getAll(), HttpStatus.OK);
     }
 
+    @GetMapping("/check-logged")
+    public ResponseEntity checkLoggedNhanVien() {
+        if (SystemHistory.nhanVien == null) {
+            throw new NotFoundException(ErrorMessage.NOT_FOUND);
+        } else {
+            return new ResponseEntity(nhanVienService.findById(SystemHistory.nhanVien.getId()), HttpStatus.OK);
+        }
+    }
+
+
+    @GetMapping("/logger")
+    public ResponseEntity getLogger() {
+        return new ResponseEntity(nhanVienService.getLogger(), HttpStatus.OK);
+    }
+
+    @GetMapping("/send-report-daily")
+    public ResponseEntity sendReportDaily() throws MessagingException {
+        SystemHistoryLogger.sendDaiLyReport();
+        emailSenderService.triggerMail();
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     private ResponseEntity getErrorJson(BindingResult result) {
         if (result.hasErrors()) {
             List<String> fieldErrors = new ArrayList<>();
@@ -76,4 +113,6 @@ public class RestNhanVienController {
         }
         return null;
     }
+
+
 }

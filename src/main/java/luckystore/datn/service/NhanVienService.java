@@ -1,5 +1,6 @@
 package luckystore.datn.service;
 
+import luckystore.datn.entity.SystemHistoryEntry;
 import luckystore.datn.model.request.NhanVienRequest;
 import luckystore.datn.model.response.NhanVienResponse;
 import org.springframework.data.domain.Page;
@@ -20,4 +21,6 @@ public interface NhanVienService {
     NhanVienResponse findById(Long id);
 
     NhanVienResponse findNhanVienByIdTaiKhoan(Long id);
+
+    List<SystemHistoryEntry> getLogger();
 }
