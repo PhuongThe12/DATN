@@ -105,6 +105,24 @@ app.controller("hashTagListController", function ($scope, $http, $window, $locat
             });
     }
 
+    $scope.resetSearch = function () {
+        searchText = null;
+        $scope.searchText = '';
+        $scope.status = -1;
+        getData(1);
+    }
+
+    $scope.detailHashTag = function (val) {
+        const id = val;
+        if (!isNaN(id)) {
+            $scope.hashTagDetail = $scope.hashTags.find(function(hashTag) {
+                return hashTag.id === id;
+            });
+        } else {
+            toastr["error"]("Lấy dữ liệu thất bại");
+        }
+    }
+
     $scope.$watch('curPage + numPerPage', function () {
         getData($scope.curPage);
     });

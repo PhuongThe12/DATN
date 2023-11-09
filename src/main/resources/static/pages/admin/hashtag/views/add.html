@@ -1,6 +1,6 @@
 <h1>Thêm hash tag</h1>
 
-<form name="hashTagForm" ng-submit="addMauSac()">
+<form name="hashTagForm" ng-submit="addHashTag()">
     <div class="form-group">
         <label for="hashTagTen">Tên: </label>
         <input type="text" class="form-control" id="hashTagTen" name="ten" ng-model="hashTag.ten" ng-maxlength="100" ng-required="true"
@@ -22,7 +22,7 @@
         <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" id="hashTagTrangThai" name="trangThai" ng-model="hashTag.trangThai" ng-true-value="1"
                    ng-false-value="0" ng-init="hashTag.trangThai = 1">
-            <label class="form-check-label" for="hashTagTrangThai">Đang kinh doanh</label>
+            <label class="form-check-label" for="hashTagTrangThai">Hiển thị</label>
         </div>
         <small class="text-danger" ng-show="errors.trangThai && !hashTagForm.trangThai.$dirty">{{errors.trangThai}}</small>
     </div>
