@@ -1,61 +1,347 @@
-<h1>Thêm Yêu Cầu</h1>
+<style>
+    /*CSS cho phần container chứa toàn bộ nội dung */
+    .container {
+        /*display: flex;*/
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 20px;
+    }
 
-<form name="addYeuCauForm" ng-submit="addYeuCau()">
-    <div>
-        <div class="form-group">
-            <label for="hoaDon">Hoá Đơn:</label>
-            <input type="text" class="form-control" id="hoaDon" name="hoaDon" ng-model="yeuCau.hoaDon" ng-change="change(addYeuCauForm.hoaDon)" ng-required="true">
-            <small class="error-message" ng-show="(addYeuCauForm.hoaDon.$dirty || addYeuCauForm.hoaDon.$touched) && addYeuCauForm.hoaDon.$error.required">Không được để trống id hóa đơn</small>
-            <small class="error-message" ng-show="errors.hoaDon && !addYeuCauForm.hoaDon.$dirty">{{errors.hoaDon}}</small>
+    /* CSS cho phần danh sách hóa đơn */
+    #formListHoaDon {
+        flex: 1;
+        margin-right: 20px;
+    }
+
+    /* CSS cho phần sản phẩm đã mua */
+    #formSanPhamDaMua {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    /* CSS cho phần sản phẩm thay thế */
+    #formSanPhamThayThe {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    /* CSS cho phần thông tin chi tiết */
+    #formThongTinChiTiet {
+        flex: 2;
+        background-color: #f9f9f9;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    /* CSS cho button */
+    button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    /* CSS cho select box */
+    select {
+        width: 100%;
+        padding: 10px;
+    }
+
+    /* CSS cho textarea */
+    textarea {
+        width: 100%;
+        padding: 10px;
+    }
+
+
+    /* Áp dụng kiểu chung cho toàn bộ table */
+    .table {
+        width: 100%;
+        margin-bottom: 1rem;
+        background-color: transparent;
+    }
+
+    /* Áp dụng kiểu cho mỗi tbody, tạo thành khối riêng biệt */
+    .table tbody {
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem; /* Bo tròn góc */
+        margin-bottom: 15px; /* Khoảng cách giữa các khối */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Thêm đổ bóng nhẹ */
+    }
+
+    .table tbody tr:first-child td {
+        border-top-left-radius: 0.25rem; /* Bo tròn góc trên cùng bên trái của khối */
+        border-top-right-radius: 0.25rem; /* Bo tròn góc trên cùng bên phải của khối */
+    }
+
+    .table tbody tr:last-child td {
+        border-bottom-left-radius: 0.25rem; /* Bo tròn góc dưới cùng bên trái của khối */
+        border-bottom-right-radius: 0.25rem; /* Bo tròn góc dưới cùng bên phải của khối */
+    }
+
+    /* Áp dụng kiểu cho các ô (th, td) trong bảng */
+    .table th,
+    .table td {
+        padding: 0.75rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+    }
+
+    /* Bỏ đường viền trên cùng cho th và td ở hàng đầu tiên trong mỗi tbody */
+    .table tbody tr:first-child th,
+    .table tbody tr:first-child td {
+        border-top: 0;
+    }
+
+</style>
+
+<div class="container">
+    <form name="addYeuCauForm" ng-submit="addYeuCau()">
+
+        <div class="left">
+            <div id="formSanPhamDaMua">
+                <div class="card" style="margin: 20px">
+                    <h5>Sản Phẩm Đã Mua</h5>
+                    <div class="card-body">
+                        <div>
+                            <table class="table align-middle text-center" border="1">
+                                <tr>
+                                    <th>Tên</th>
+                                    <th>Số Lượng Trả</th>
+                                    <th>Kích Cỡ</th>
+                                    <th>Màu Sắc</th>
+                                    <th>Đơn Giá</th>
+                                    <th>Thành Tiền</th>
+                                    <th>Thao Tác</th>
+                                </tr>
+                                <tr ng-repeat="hoaDonChiTiet in listHoaDonChiTiet">
+                                    <td>{{hoaDonChiTiet.bienTheGiay[0].giay[0].ten}}</td>
+                                    <td>
+                                        <input type="number" ng-model="hoaDonChiTiet.soLuongTra" min="0"
+                                               max="{{hoaDonChiTiet.soLuong }}" ng-change="checkSoLuongDoi(hoaDonChiTiet)">
+                                        <span>/ {{hoaDonChiTiet.soLuong }}</span>
+                                    </td>
+                                    <td>{{hoaDonChiTiet.bienTheGiay[0].kichThuoc}}</td>
+                                    <td>{{hoaDonChiTiet.bienTheGiay[0].mauSac}}</td>
+                                    <td>{{hoaDonChiTiet.donGia}}</td>
+                                    <td>{{hoaDonChiTiet.donGia * hoaDonChiTiet.soLuongTra}}</td>
+                                    <td>
+                                        <button type="button" ng-click="doiSanPham(hoaDonChiTiet)">Đổi</button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="formSanPhamThayThe" style="display: none;">
+                <h5>Sản Phẩm Thay Thế</h5>
+                <div>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Mã</th>
+                            <th>Sản Phẩm Đổi</th>
+                            <th>Số Lượng Trả/Đổi</th>
+                            <th>Kích Cỡ</th>
+                            <th>Màu Sắc</th>
+                            <th>Đơn Giá</th>
+                            <th>Thành Tiền</th>
+                            <th>Lý Do</th>
+                            <th>Mô Tả Lý Do</th>
+                            <th>Thao Tác</th>
+                        </tr>
+                        </thead>
+                        <tbody ng-repeat="item in arrayForRepeat track by $index">
+                        <tr>
+                            <td>{{ item.key }}</td>
+                            <td>{{ item.value[0].bienTheGiay[0].giay[0].ten }}</td>
+                            <td>{{ item.value[0].soLuongTra }}</td>
+                            <td>{{ item.value[0].bienTheGiay[0].kichThuoc }}</td>
+                            <td>{{ item.value[0].bienTheGiay[0].mauSac }}</td>
+                            <td>{{ item.value[0].donGia }}</td>
+                            <td>{{ item.value[0].soLuongTra * item.value[0].donGia }}</td>
+                            <td>
+                                <select ng-model="item.lyDo">
+                                    <option value="1">Lỗi do nhà sản xuất</option>
+                                    <option value="2">Lỗi trong quá trình vận chuyển</option>
+                                    <option value="3">Sản phẩm không đúng như mô tả</option>
+                                    <option value="4">Khác</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" ng-model="item.ghiChu">
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-primary" ng-click="chonSanPham(item.key)">Chọn Sản Phẩm</button>
+                            </td>
+                        </tr>
+
+                        <tr ng-repeat="(index, item1) in arrayForRepeat1 track by $index"
+                            ng-if="item1.key === item.key">
+                            <td>{{ item1.key }}</td>
+                            <td>{{ item1.value.ten }}</td>
+                            <td>
+                                <!-- Giả định rằng mỗi item1.value có trường giay và giaBan tương ứng -->
+                                <!-- Cập nhật min để là 0 và ng-model sẽ là item1.soLuongDoi -->
+                                <input type="number" ng-model="item1.soLuongDoi" min="1"
+                                       max="{{item.value[0].soLuongTra}}" ng-init="item1.soLuongDoi=1"
+                                       ng-change="capNhatSoLuong(index,item1)">
+                            </td>
+                            <td>{{ item1.value.kichthuoc.ten }}</td>
+                            <td>{{ item1.value.mauSac.ten }}</td>
+                            <td>{{ item1.value.giaBan }}</td>
+                            <td>{{ item1.soLuongDoi * item1.value.giaBan }}</td>
+                            <td></td> <!-- Assume you wanted this empty -->
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div id="formChonSanPhamThayThe" style="display: none;">
+                <div class="card" style="margin: 20px">
+                    <h5>Danh sách giày</h5>
+                    <div class="card-body">
+                        <div>
+                            <table class="table align-middle text-center" border="1">
+                                <tr>
+                                    <th>Mã Sản Phẩm</th>
+                                    <th>Tên</th>
+                                    <th>Thao Tác</th>
+                                </tr>
+
+                                <tr ng-repeat="(index,giay) in listGiay">
+                                    <td>SP{{giay.id}}</td>
+                                    <td>{{giay.ten}}</td>
+                                    <td>
+                                        <button class="btn btn-primary" ng-click="chonGiayDoi(giay)">Chọn</button>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages"
+                                 data-current-page="curPage"
+                                 data-max-size="maxSize"
+                                 data-boundary-links="true">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="formBienTheGiay"  style="display: none;">
+                <div class="card" style="margin: 20px">
+                    <h5>Danh sách giày</h5>
+                    <div class="card-body">
+                        <div class="d-flex add-search-custom">
+                            <div class="input-group w-25">
+                                <select ng-model="selectedMauSac"
+                                        ng-options="mauSac as mauSac.ten for mauSac in listMauSac"
+                                        ng-change="getMauSac(giay)">
+                                </select>
+                            </div>
+                            <div class="input-group w-25">
+                                <select ng-model="selectedKichThuoc"
+                                        ng-options="kichThuoc as kichThuoc.ten for kichThuoc in listKichThuoc"
+                                        ng-change="getKichThuoc(giay)">
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <table class="table align-middle text-center" border="1">
+                                <tr>
+                                    <th>Mã Sản Phẩm</th>
+                                    <th>Tên</th>
+                                    <th>Màu Sắc</th>
+                                    <th>Kích Thước</th>
+                                    <th>Giá Bán</th>
+                                    <th>Số Lượng</th>
+                                    <th>Thao Tác</th>
+                                </tr>
+
+                                <tr ng-repeat="(index,bienTheGiay) in filteredBienTheGiay">
+                                    <td>SP{{bienTheGiay.id}}</td>
+                                    <td>{{giayDoi.ten}}</td>
+                                    <td>
+                                        {{bienTheGiay.mauSac.ten}}
+                                    </td>
+                                    <td>
+                                        {{bienTheGiay.kichthuoc.ten}}
+                                    </td>
+                                    <td>{{bienTheGiay.giaBan}}</td>
+                                    <td>{{bienTheGiay.soLuong}}</td>
+                                    <td>
+                                        <button class="btn btn-primary" ng-click="chonBienTheGiayDoi(bienTheGiay)">Chọn</button>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages"
+                                 data-current-page="curPage"
+                                 data-max-size="maxSize"
+                                 data-boundary-links="true">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="nguoiThucHien">Chọn nhân viên:</label>
-            <select id="nguoiThucHien" name="nguoiThucHien" ng-model="yeuCau.nguoiThucHien">
-                <option ng-repeat="nhanVien in danhSachNhanVien" value="{{nhanVien.id}}">{{nhanVien.ten}}</option>
-            </select>
+
+
+        <div class="right">
+            <div id="formYeuCau" style="display: none;">
+                <div class="form-group">
+                    <label>Hoá Đơn: <a>HD{{hoaDonSelected.id}}</a></label>
+                </div>
+
+                <div class="form-group">
+                    <label for="nguoiThucHien">Chọn nhân viên:</label>
+                    <select id="nguoiThucHien" name="nguoiThucHien" ng-model="yeuCau.nguoiThucHien">
+                        <option ng-repeat="nhanVien in danhSachNhanVien" value="{{nhanVien.id}}">{{nhanVien.ten}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="loaiYeuCau">Loại Yêu Cầu:</label>
+                    <select id="loaiYeuCau" name="loaiYeuCau" ng-model="yeuCau.loaiYeuCau">
+                        <option value="1">Yêu Cầu Đổi</option>
+                        <option value="2">Yêu Cầu Trả</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="trangThai">Trạng Thái:</label>
+                    <select id="trangThai" name="trangThai" ng-model="yeuCau.trangThai">
+                        <option value="1">Chờ Xét Duyệt</option>
+                        <option value="2">Đã Xét Duyệt</option>
+                        <option value="3">Đã Hoàn Thành</option>
+                        <option value="4">Bị Hủy</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="ghiChu">Ghi Chú:</label>
+                    <textarea class="form-control" id="ghiChu" name="ghiChu" rows="3" ng-model="yeuCau.ghiChu"
+                              ng-change="change(addYeuCauForm.ghiChu)"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Tạo mới</button>
+                <button type="button" class="btn btn-primary" ng-click="combineMaps()">Hợp Nhât</button>
+                <button type="button" class="btn btn-primary" ng-click="test1()">TEST</button>
+            </div>
         </div>
-
-        <div class="form-group">
-            <label for="loaiYeuCau">Loại Yêu Cầu:</label>
-            <select id="loaiYeuCau" name="loaiYeuCau" ng-model="yeuCau.loaiYeuCau">
-                <option value="1">Yêu Cầu Đổi</option>
-                <option value="2">Yêu Cầu Trả</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="trangThai">Trạng Thái:</label>
-            <select id="trangThai" name="trangThai" ng-model="yeuCau.trangThai">
-                <option value="1">Chờ Xét Duyệt</option>
-                <option value="2">Đã Xét Duyệt</option>
-                <option value="3">Đã Hoàn Thành</option>
-                <option value="4">Bị Hủy</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="ghiChu">Ghi Chú:</label>
-            <textarea class="form-control" id="ghiChu" name="ghiChu" rows="3" ng-model="yeuCau.ghiChu" ng-change="change(addYeuCauForm.ghiChu)"></textarea>
-        </div>
-    </div>
-    <div>
-        <table class="table">
-            <tr>
-                <th>ID</th>
-                <th>Tên</th>
-                <th>Số Lượng Mua</th>
-                <th>Trạng Thái</th>
-            </tr>
-
-            <tr ng-repeat="bienTheGiay in listBienTheGiay">
-                <td>{{bienTheGiay.id}}</td>
-                <td>{{bienTheGiay.ten}}</td>
-                <td>{{bienTheGiay.soLuong}}</td>
-                <td>{{bienTheGiay.trangThai}}</td>
-            </tr>
-
-        </table>
-    </div>
-    <button type="submit" class="btn btn-primary">Tạo mới</button>
-</form>
+    </form>
+</div>

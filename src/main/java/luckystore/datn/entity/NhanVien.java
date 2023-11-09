@@ -59,5 +59,4 @@ public class NhanVien {
     @JoinColumn(name = "ID_TAI_KHOAN")
     private TaiKhoan taiKhoan;
 
-
 }

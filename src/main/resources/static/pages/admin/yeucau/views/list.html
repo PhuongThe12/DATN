@@ -1,17 +1,15 @@
-<div>
-    <label for="seachText">ID Hóa Đơn: </label><input id="seachText"  type="text" ng-model="searchText" placeholder="Nhập từ khóa">
-    <button ng-click="search()">Tìm kiếm</button>
-</div>
+<!--<div>-->
+<!--    <label for="seachText">ID Hóa Đơn: </label><input id="seachText"  type="text" ng-model="searchText" placeholder="Nhập từ khóa">-->
+<!--    <button ng-click="search()">Tìm kiếm</button>-->
+<!--</div>-->
 
 <div>
-   <label>Ngày bắt đầu: </label> <input id="ngayBatDau">
+    <label>Ngày bắt đầu: </label> <input id="ngayBatDau">
     <label>Ngày kết thúc: </label> <input id="ngayKetThuc">
-<!--    <button ng-click="searchByDate()">Tìm kiếm</button>-->
 </div>
 
 
-
-<a class="btn btn-primary" href="#/add">Thêm yêu cầu</a>
+<a class="btn btn-primary" href="#/hoa-don">Thêm yêu cầu</a>
 
 <h1>Danh sách yêu cầu</h1>
 
@@ -48,8 +46,8 @@
             <td>{{yeuCau.id}}</td>
             <td>{{yeuCau.hoaDon.id}}</td>
             <td>{{yeuCau.loaiYeuCau == 1?"Yêu Cầu Đổi":"Yêu Cầu Trả"}}</td>
-            <td>{{ formatDateView(yeuCau.ngayTao) }}</td>
-            <td>{{ formatDateView(yeuCau.ngaySua) }}</td>
+            <td>{{formatDateView(yeuCau.ngayTao) }}</td>
+            <td>{{formatDateView(yeuCau.ngaySua) }}</td>
             <td>{{yeuCau.trangThai==1?"Chờ Xét Duyệt":yeuCau.trangThai==2?"Đã Xét Duyệt":yeuCau.trangThai==3?"Đã Hoàn Thành":"Bị Hủy"}}</td>
             <td>{{yeuCau.ghiChu}}</td>
             <td>
@@ -59,7 +57,9 @@
         </tr>
     </table>
 
+
     <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages" data-current-page="curPage" data-max-size="maxSize"
-        data-boundary-links="true">
+         data-boundary-links="true">
     </div>
+
 </div>

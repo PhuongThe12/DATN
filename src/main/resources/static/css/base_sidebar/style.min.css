@@ -515,7 +515,7 @@ ol, ul {
 }
 
 body {
-    background-color: #f0f2fa
+    background-color: #f1f5f9;
 }
 
 .library-table-name span, .page-center, .page-flex, .sidebar-user-img picture, .users-table picture {
@@ -1482,6 +1482,7 @@ label {
 
 .sidebar {
     position: -webkit-sticky;
+    z-index: 2;
     position: sticky;
     top: 0;
     height: 100%;
@@ -1495,13 +1496,14 @@ label {
     -webkit-box-pack: justify;
     -ms-flex-pack: justify;
     justify-content: space-between;
-    background-color: #111c43 !important;
-    width: 253px;
+    background-color: white !important;
+    width: 289px;
     padding: 20px 15px 37px 20px;
     -webkit-transition: .5s all;
     -o-transition: .5s all;
     transition: .5s all;
-    min-height: 100vh
+    min-height: 100vh;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
 }
 
 .sidebar a:focus {
@@ -1520,8 +1522,8 @@ label {
     align-items: center;
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, .1)
+    border-bottom: 1px solid rgba(255, 255, 255, .1);
+    padding-bottom: 10px;
 }
 
 .sidebar-body {
@@ -1538,11 +1540,10 @@ label {
 
 .sidebar-body-menu a {
     position: relative;
-    padding: 8px 0;
-    opacity: .6;
-    color: #a3aed1;
+    padding: 8px;
+    color: #475569;
     font-weight: 500;
-    font-size: 13px;
+    font-size: 14px;
     line-height: 2.43
 }
 
@@ -1561,14 +1562,15 @@ label {
 }
 
 .cat-sub-menu.visible a:hover, .sidebar-body-menu a.active, .sidebar-body-menu a.active::after, .sidebar-body-menu a:hover, .sidebar-body-menu a:hover::after {
-    opacity: 1;
-    color: white;
+    color: black;
+    border-radius: 4px;
 }
 
 .sidebar-user {
     border-radius: 10px;
     padding: 5px;
     background-color: rgba(255, 255, 255, .1)
+
 }
 
 .sidebar-body-menu a, .sidebar-user, .sidebar-user-img, .sidebar-user-info {
@@ -1596,7 +1598,9 @@ label {
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
-    flex-direction: column
+    flex-direction: column;
+    overflow: hidden;
+    width: 54%;
 }
 
 .sidebar-user__title {
@@ -1621,7 +1625,6 @@ label {
 .logo-text, .logo-wrapper {
     display: -webkit-box;
     display: -ms-flexbox;
-    display: flex
 }
 
 .logo-wrapper {
@@ -1637,7 +1640,7 @@ label {
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
     flex-direction: column;
-    color: #fff
+    color: black;
 }
 
 .logo-subtitle, .logo-title {
@@ -1689,12 +1692,13 @@ label {
     margin-bottom: 2px;
     text-transform: uppercase;
     font-size: 12px;
-    color: rgba(255, 255, 255, .5)
+    color: black;
 }
 
 .cat-sub-menu {
     padding-left: 34px;
-    height: 0
+    height: 0;
+    overflow: hidden;
 }
 
 .cat-sub-menu.visible {
@@ -1718,8 +1722,8 @@ label {
 }
 
 .main-nav {
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top: 18px;
+    padding-bottom: 18px;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -1730,7 +1734,8 @@ label {
     -ms-flex-pack: justify;
     justify-content: space-between;
     -ms-flex-wrap: wrap;
-    flex-wrap: wrap
+    flex-wrap: wrap;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
 }
 
 .main-nav a:focus {
@@ -1741,7 +1746,10 @@ label {
     -webkit-transition: .3s all;
     -o-transition: .3s all;
     transition: .3s all;
-    background-color: #fff
+    background-color: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 99;
 }
 
 .main-nav-end {
@@ -3223,7 +3231,7 @@ label {
         font-size: 0
     }
     .icon{
-        font-size: 18px !important;
+        font-size: 16px  !important;
     }
 
     .sidebar.hidden .sidebar-head {

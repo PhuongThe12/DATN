@@ -113,8 +113,3 @@ Timestamp: 2023-11-08 / 15:42:32
 Performer: phongtt35
 Action: Đăng nhập vào hệ thống
 Timestamp: 2023-11-08 / 15:46:21
-
-Performer: Guest
-Action: Thêm mới nhân viên
-Timestamp: 2023-11-09 / 11:09:54
-
