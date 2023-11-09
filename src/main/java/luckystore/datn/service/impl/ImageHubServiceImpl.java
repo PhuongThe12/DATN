@@ -22,6 +22,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ImageHubServiceImpl implements ImageHubService {
@@ -159,8 +160,14 @@ public class ImageHubServiceImpl implements ImageHubService {
             Files.delete(path);
             return "Tệp đã được xóa thành công.";
         } catch (IOException e) {
-            throw new FileException("Không thể xóa, lỗi truy cập");
+//            throw new FileException("Không thể xóa, lỗi truy cập");
+            return "";
         }
+    }
+
+    @Override
+    public void deleteFile(Set<String> files) {
+        files.forEach(this::deleteFile);
     }
 
 }
