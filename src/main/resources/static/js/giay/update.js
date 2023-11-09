@@ -408,7 +408,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
         giayRequest.chatLieuId = $scope.selectedChatLieu.id;
         giayRequest.dayGiayId = $scope.selectedDayGiay.id;
         giayRequest.deGiayId = $scope.selectedDeGiay.id;
-        giayRequest.trangThai = $scope.trangThai;
+        giayRequest.trangThai = $scope.giay.trangThai;
         giayRequest.moTa = $scope.giay.moTa;
         giayRequest.hashTagIds = $scope.selectedHashTag.filter(hashTag => hashTag.status === 'active').map(hashTag => hashTag.id);
         giayRequest.mauSacImages = {};
@@ -442,6 +442,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                 Promise.all($scope.selectedMauSacs.map(processMauSac))
                     .then(() => {
                         giayRequest.bienTheGiays = bienTheGiays;
+                        console.log(giayRequest);
                         $http.put(host + '/admin/rest/giay/update/' + id, JSON.stringify(giayRequest))
                             .then(function (response) {
                                 toastr["success"]("Cập nhật thành công");
