@@ -247,7 +247,6 @@ app.controller("addYeuCauController", function ($scope, $http, $location,$routeP
     $scope.mapSanPhamThayThe = new Map();
     $scope.arrayForRepeat1 = [];
 
-    $scope.listBienTheGiayDoi = [];
     $scope.listHoaDonChiTietDoi = [];
 
 
@@ -375,59 +374,10 @@ app.controller("addYeuCauController", function ($scope, $http, $location,$routeP
         },
     ];
 
-
-    $scope.listBienTheGiays = [{
-        "id": 1, "giay": [{
-            "id": 1, "ten": "Giày Vans"
-        }], "soLuong": 5, "soLuongLoi": 5, "kichThuoc": 28, "mauSac": "đỏ", "giaBan": 100000,
-    }, {
-        "id": 2, "giay": [{
-            "id": 1, "ten": "Giày Vans"
-        }], "soLuong": 5, "soLuongLoi": 5, "kichThuoc": 29, "mauSac": "Hồng", "giaBan": 100000,
-    }, {
-        "id": 3, "giay": [{
-            "id": 2, "ten": "Giày Nike"
-        }], "soLuong": 5, "soLuongLoi": 5, "kichThuoc": 30, "mauSac": "Bạc", "giaBan": 100000,
-    }, {
-        "id": 4, "giay": [{
-            "id": 2, "ten": "Giày Nike"
-        }], "soLuong": 5, "soLuongLoi": 5, "kichThuoc": 42, "mauSac": "Cam", "giaBan": 100000,
-    },];
-
     function getAllListGiay(){
         $http.get(host + '/admin/rest/giay/get-all-active')
             .then(function (response) {
                 $scope.listGiay = response.data;
-                $scope.listGiay.forEach(function (giay){
-                    giay.listMauSac = [];
-                    giay.listKichThuoc = [];
-                    giay.lstBienTheGiay.forEach(function (bienThe){
-                        giay.listKichThuoc.push(bienThe.kichThuoc);
-                        giay.listMauSac.push(bienThe.mauSac);
-                    })
-                })
-
-                console.log(response.data);
-            }).catch(function (error) {
-            toastr["error"]("Lấy dữ liệu thất bại");
-            $location.path("/list");
-        });
-    }
-
-    function getOneGiay(giay){
-        $http.get(host + '/admin/rest/giay/get-giay-contains')
-            .then(function (response) {
-                $scope.listGiay = response.data;
-                $scope.listGiay.forEach(function (giay){
-                    giay.listMauSac = [];
-                    giay.listKichThuoc = [];
-                    giay.lstBienTheGiay.forEach(function (bienThe){
-                        giay.listKichThuoc.push(bienThe.kichThuoc);
-                        giay.listMauSac.push(bienThe.mauSac);
-                    })
-                })
-
-                console.log(response.data);
             }).catch(function (error) {
             toastr["error"]("Lấy dữ liệu thất bại");
             $location.path("/list");
@@ -475,26 +425,8 @@ app.controller("addYeuCauController", function ($scope, $http, $location,$routeP
     };
 
 
-
-    $scope.updateGiayInfo = function(selectedGiay) {
-        if(selectedGiay.selectedMauSac && selectedGiay.selectedKichThuoc) {
-            // console.log(selectedGiay.selectedMauSac)
-            // console.log(selectedGiay.selectedKichThuoc)
-            console.log(selectedGiay.lstBienTheGiay);
-
-        }
-    };
-
-    $scope.getMauSac= function(selectedGiay){
-        $scope.selectedMauSac
-        selectedGiay.lstBienTheGiay
-    } ;
-    $scope.getKichThuoc= function(selectedGiay){
-
-    };
-
-
-    $scope.chonSanPham = function () {
+    $scope.chonSanPham = function (key) {
+        $scope.keyGiayTra = key;
         formSanPhamThayThe.style.display = "none";
         formYeuCau.style.display = "none";
         formChonSanPhamThayThe.style.display = "block";
@@ -502,23 +434,94 @@ app.controller("addYeuCauController", function ($scope, $http, $location,$routeP
     };
 
     $scope.chonGiayDoi = function (giay) {
+        $scope.giayDoi = giay;
+        $scope.updateFilteredResults();
+        var listMauSac = [];
+        var listKichThuoc = [];
 
+        giay.lstBienTheGiay.forEach(function(bienTheGiay) {
+            // Kiểm tra màu sắc
+            if (bienTheGiay.mauSac) {
+                // Tìm xem màu sắc đã tồn tại trong mảng hay chưa
+                var existingMauSac = listMauSac.find(function(m) {
+                    return m.id === bienTheGiay.mauSac.id;
+                });
+                // Nếu chưa tồn tại, thêm vào mảng
+                if (!existingMauSac) {
+                    listMauSac.push(bienTheGiay.mauSac);
+                }
+            }
+
+            // Kiểm tra kích thước
+            if (bienTheGiay.kichthuoc) {
+                // Tìm xem kích thước đã tồn tại trong mảng hay chưa
+                var existingKichThuoc = listKichThuoc.find(function(k) {
+                    return k.id === bienTheGiay.kichthuoc.id;
+                });
+                // Nếu chưa tồn tại, thêm vào mảng
+                if (!existingKichThuoc) {
+                    listKichThuoc.push(bienTheGiay.kichthuoc);
+                }
+            }
+        });
+
+
+        $scope.listMauSac = listMauSac;
+        $scope.listKichThuoc = listKichThuoc;
+
+        console.log(listMauSac);
+        console.log(listKichThuoc);
         // // Ẩn và hiển thị các form phù hợp
         formChonSanPhamThayThe.style.display = "none";
         formBienTheGiay.style.display = "block";
 
     };
 
-    $scope.chonBienTheGiayDoiDoi = function (bienTheGiay) {
 
+    $scope.updateFilteredResults = function() {
+        // Khởi tạo danh sách lọc với tất cả các biến thể
+        var filteredList = $scope.giayDoi.lstBienTheGiay;
+
+        // Nếu người dùng đã chọn màu sắc, lọc theo màu sắc
+        if ($scope.selectedMauSac) {
+            filteredList = filteredList.filter(function(bienTheGiay) {
+                return bienTheGiay.mauSac.id === $scope.selectedMauSac.id;
+            });
+        }
+
+        // Nếu người dùng đã chọn kích thước, lọc theo kích thước
+        if ($scope.selectedKichThuoc) {
+            filteredList = filteredList.filter(function(bienTheGiay) {
+                return bienTheGiay.kichthuoc.id === $scope.selectedKichThuoc.id;
+            });
+        }
+
+        // Cập nhật danh sách biến thể giày được lọc
+        $scope.filteredBienTheGiay = filteredList;
+    };
+
+    $scope.getMauSac = function() {
+        // Cập nhật danh sách lọc
+        $scope.updateFilteredResults();
+    };
+
+
+    $scope.getKichThuoc = function() {
+        // Cập nhật danh sách lọc
+        $scope.updateFilteredResults();
+    };
+
+
+    $scope.chonBienTheGiayDoi = function (bienTheGiayDoi) {
         // // Ẩn và hiển thị các form phù hợp
-        formChonSanPhamThayThe.style.display = "none";
-        formBienTheGiay.style.display = "block";
-
-        // // Thêm sản phẩm thay thế vào map với id của sản phẩm đang đổi
-        // // và cập nhật array cho ng-repeat
-        // $scope.mapSanPhamThayThe.set($scope.hoaDonChiTietHienTai, bienTheGiay);
-        // $scope.arrayForRepeat1 = Array.from($scope.mapSanPhamThayThe, ([key, value]) => ({key, value}));
+        formBienTheGiay.style.display = "none";
+        formSanPhamThayThe.style.display = "block";
+        formYeuCau.style.display = "block";
+        console.log(bienTheGiayDoi)
+        // Thêm sản phẩm thay thế vào map với id của sản phẩm đang đổi
+        // và cập nhật array cho ng-repeat
+        $scope.mapSanPhamThayThe.set($scope.keyGiayTra, bienTheGiayDoi);
+        $scope.arrayForRepeat1 = Array.from($scope.mapSanPhamThayThe, ([key, value]) => ({key, value}));
     };
 
 
@@ -604,45 +607,6 @@ app.controller("addYeuCauController", function ($scope, $http, $location,$routeP
         $scope.arrayForRepeat = Array.from($scope.mapYeuCauChiTiet, ([key, value]) => ({key, value}));
         console.log($scope.arrayForRepeat)
     };
-
-
-    $scope.mapYeuCauChiTietAdd = new Map();
-
-    $scope.createMapYeuCauChiTietAdd = function (value1) {
-        // Gỉa sử key chỉ là một chuỗi kết hợp giữa id và một số chỉ mục tự tăng
-        var baseId = "key_"; // Căn cứ để tạo key
-        var index = 0; // Một biến đếm để tạo key duy nhất
-
-        $scope.mapYeuCauChiTiet.forEach((value, key) => {
-            index++; // Tăng chỉ mục mỗi lần lặp
-            var newKey = baseId + index; // Tạo key mới
-
-            // Lấy value4 từ formSanPhamThayThe dựa vào key hiện tại
-            var lyDo = $scope.arrayForRepeat.find(item => item.key === key)?.lyDo;
-
-            // Lấy soLuongDoi từ mapSanPhamThayThe
-            var soLuongDoi = $scope.mapSanPhamThayThe.get(key)?.soLuongDoi || 0;
-
-            // Tạo đối tượng mới với 7 giá trị yêu cầu
-            var newValue = {
-                value1: angular.copy(value1), // Sử dụng angular.copy để không thay đổi giá trị gốc
-                value2: value[0], // Giả sử đây là value1 từ mapYeuCauChiTiet
-                value3: value[1], // Giả sử đây là value2 từ mapYeuCauChiTiet
-                value4: lyDo, // LyDo từ formSanPhamThayThe
-                value5: soLuongDoi, // SoLuongDoi từ mapSanPhamThayThe
-                value6: 1, // Mặc định là 1
-                value7: null // Mặc định là null
-            };
-
-            // Thêm cặp key-value mới vào map
-            $scope.mapYeuCauChiTietAdd.set(newKey, newValue);
-        });
-    };
-
-
-    $scope.test1 = function () {
-        console.log($scope.createMapYeuCauChiTietAdd(null))
-    }
 
 
     $scope.yeuCauCho = {};
