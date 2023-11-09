@@ -1,7 +1,5 @@
 package luckystore.datn.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import luckystore.datn.entity.BienTheGiay;
@@ -49,11 +47,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -195,7 +191,7 @@ public class GiayServiceImpl implements GiayService {
     }
 
     @Override
-    public GiayResponse updateGia(GiayRequest giayRequest){
+    public GiayResponse updateGia(GiayRequest giayRequest) {
 
         Giay giay = giayRepository.findById(giayRequest.getId()).orElseThrow(() -> new InvalidIdException(JsonString.stringToJson(
                 JsonString.errorToJsonObject("giay", "Không tồn tại giày này"))));
@@ -213,7 +209,7 @@ public class GiayServiceImpl implements GiayService {
     }
 
     @Override
-    public GiayResponse updateGiay(Long id, GiayRequest giayRequest){
+    public GiayResponse updateGiay(Long id, GiayRequest giayRequest) {
 
         Giay giay = giayRepository.findById(id).orElseThrow(() -> new NotFoundException("Không tìm thấy"));
 
@@ -239,7 +235,7 @@ public class GiayServiceImpl implements GiayService {
                     break;
                 }
             }
-            if(!finded) {
+            if (!finded) {
                 hinhAnhs.add(HinhAnh.builder().giay(giay).link(file).uuTien(1).build());
             }
         }
@@ -256,7 +252,7 @@ public class GiayServiceImpl implements GiayService {
                     break;
                 }
             }
-            if(!finded) {
+            if (!finded) {
                 hinhAnhs.add(HinhAnh.builder().giay(giay).link(file).uuTien(2).build());
             }
         }
@@ -272,7 +268,7 @@ public class GiayServiceImpl implements GiayService {
                     break;
                 }
             }
-            if(!finded) {
+            if (!finded) {
                 hinhAnhs.add(HinhAnh.builder().giay(giay).link(file).uuTien(3).build());
             }
         }
@@ -287,7 +283,7 @@ public class GiayServiceImpl implements GiayService {
                     break;
                 }
             }
-            if(!finded) {
+            if (!finded) {
                 hinhAnhs.add(HinhAnh.builder().giay(giay).link(file).uuTien(4).build());
             }
         }
@@ -302,7 +298,7 @@ public class GiayServiceImpl implements GiayService {
                     break;
                 }
             }
-            if(!finded) {
+            if (!finded) {
                 hinhAnhs.add(HinhAnh.builder().giay(giay).link(file).uuTien(5).build());
             }
         }
