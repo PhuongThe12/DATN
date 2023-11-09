@@ -51,28 +51,17 @@ app.controller("addHangKhachHangController", function ($scope, $http, $location)
 });
 
 
-app.controller("detailHangKhachHangController", function ($scope, $http, $location, $routeParams) {
-    const id = $routeParams.id;
-    $http.get(host + '/admin/rest/hang-khach-hang/' + id)
-        .then(function (response) {
-            $scope.hangKhachHang = response.data;
-        }).catch(function (error) {
-        toastr["error"]("Lấy dữ liệu thất bại");
-        $location.path("/danhsach");
-    });
 
-});
 
 app.controller("hangKhachHangListController", function ($scope, $http, $window, $location) {
 
     $scope.curPage = 1,
-        $scope.itemsPerPage = 5,
+        $scope.itemsPerPage = 3,
         $scope.maxSize = 5;
-
     let searchText;
 
     $scope.search = function () {
-        if(!$scope.searchText) {
+        if (!$scope.searchText) {
             toastr["error"]("Vui lòng nhập tên muốn tìm kiếm");
             return;
         }
@@ -91,10 +80,14 @@ app.controller("hangKhachHangListController", function ($scope, $http, $window, 
             apiUrl += '&search=' + searchText;
         }
 
-        if($scope.status == 0) {
+        if ($scope.status == 0) {
             apiUrl += '&status=' + 0;
-        } else if($scope.status == 1) {
+        } else if ($scope.status == 1) {
             apiUrl += '&status=' + 1;
+        } else if ($scope.status == 2) {
+            apiUrl += '&chucVu=' + 1;
+        } else if ($scope.status == 3) {
+            apiUrl += '&chucVu=' + 2;
         }
 
         console.log(apiUrl);
@@ -107,6 +100,21 @@ app.controller("hangKhachHangListController", function ($scope, $http, $window, 
             .catch(function (error) {
                 toastr["error"]("Lấy dữ liệu thất bại");
                 // window.location.href = feHost + '/trang-chu';
+            });
+    }
+
+    $scope.detailHangKhachHang = function (val) {
+        var id = val;
+        $http.get(host + '/admin/rest/hang-khach-hang/' + id)
+            .then(function (response) {
+                $scope.HangKhachHangDetail = response.data;
+                const button = document.querySelector('[data-bs-target="#showHangKhachHang"]');
+                if (button) {
+                    button.click();
+                }
+            })
+            .catch(function (error) {
+                toastr["error"]("Lấy dữ liệu thất bại");
             });
     }
 
