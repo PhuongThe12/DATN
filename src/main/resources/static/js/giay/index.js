@@ -997,9 +997,6 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
 
 });
 
-app.controller('detailGiayController', function ($scope) {
-
-});
 
 //combobox chung
 app.directive('customSelect', function ($injector) {

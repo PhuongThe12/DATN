@@ -3,6 +3,7 @@
         <div class="form-select" id="{{inputId}}" style="padding: 0; min-height: 38px;">
             <div class="selected-tags d-flex flex-wrap justify-content-start align-items-center" style="padding-left: 12px; height: 38px;">
                 <option ng-show="selectType == 'hashtag'">{{selectedTags.length == 0? "Chọn hashtags" : ""}}</i></option>
+                <option ng-show="selectType == 'thuonghieu'">{{selectedTags.length == 0? "Chọn thương hiệu" : ""}}</i></option>
                 <option ng-show="selectType == 'mausac'">{{selectedTags.length == 0? "Chọn màu sắc" : ""}}</i></option>
                 <option ng-show="selectType == 'kichthuoc'">{{selectedTags.length == 0? "Chọn kích thước" : ""}}</i></option>
                 <div class="tag d-flex justify-content-between" ng-repeat="tag in selectedTags | filter: { status: 'active' }" style="padding: 4px;">
@@ -13,6 +14,7 @@
                                 class="fas fa-square fa-lg"></i></span>
                             {{tag.ten}}</span>
                         <span style="padding-right: 5px;" ng-show="selectType == 'kichthuoc'">{{tag.ten}}</span>
+                        <span style="padding-right: 5px;" ng-show="selectType == 'thuonghieu'">{{tag.ten}}</span>
 
                         <span class="rounded-circle tag-remove-icon" ng-click="removeTag(tag)"><i class="fas fa-times"></i></span>
                     </div>
@@ -33,8 +35,9 @@
                 </span>
                 <span ng-show="selectType == 'kichthuoc'">{{item.ten}} <small>(Chiều dài: {{item.chieuDai}}, Chiều rộng:
                         {{item.chieuRong}})</small></span>
+                <span ng-show="selectType == 'thuonghieu'">{{item.ten}}</span>
             </li>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#{{modalId}}">
+            <button type="button" ng-hide="selectType == 'thuonghieu'" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#{{modalId}}">
                 Thêm {{title}}
             </button>
         </ul>

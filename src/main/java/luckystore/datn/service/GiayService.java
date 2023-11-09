@@ -1,5 +1,6 @@
 package luckystore.datn.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import luckystore.datn.model.request.GiayRequest;
 import luckystore.datn.model.request.GiaySearch;
 import luckystore.datn.model.response.GiayResponse;
@@ -11,7 +12,7 @@ import java.util.List;
 @Service
 public interface GiayService {
 
-    List<GiayResponse> getAllActive();
+    Page<GiayResponse> getAllActive(GiaySearch giaySearch);
 
     List<GiayResponse> getAllContains(List<Long> ids);
 

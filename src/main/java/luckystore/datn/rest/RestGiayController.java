@@ -1,5 +1,6 @@
 package luckystore.datn.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import luckystore.datn.model.request.GiayRequest;
 import luckystore.datn.model.request.GiaySearch;
 import luckystore.datn.service.GiayService;
@@ -53,8 +54,8 @@ public class RestGiayController {
     }
 
     @PostMapping("/get-all-active")
-    public ResponseEntity<?> getAllActive() {
-        return new ResponseEntity<>(giayService.getAllActive(), HttpStatus.OK);
+    public ResponseEntity<?> getAllActive(@RequestBody GiaySearch giaySearch) {
+        return new ResponseEntity<>(giayService.getAllActive(giaySearch), HttpStatus.OK);
     }
 
     @PostMapping("/get-all-giay")
@@ -78,7 +79,7 @@ public class RestGiayController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateGiay(@PathVariable("id") Long id,
-                                        @Validated({UpdateGiaGroup.class}) @RequestBody GiayRequest giayRequest, BindingResult result) {
+                                        @Validated({UpdateGiaGroup.class}) @RequestBody GiayRequest giayRequest, BindingResult result){
         ResponseEntity<?> errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 

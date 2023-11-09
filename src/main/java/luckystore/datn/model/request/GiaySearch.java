@@ -25,7 +25,7 @@ public class GiaySearch {
 
     private String tenThuongHieu;
 
-    private Integer currentPage = 0;
+    private Integer currentPage = 1;
 
     private Integer pageSize = 5;
 

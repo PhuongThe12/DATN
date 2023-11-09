@@ -88,9 +88,9 @@ app.controller("coGiayListController", function ($scope, $http, $window, $locati
             apiUrl += '&search=' + searchText;
         }
 
-        if($scope.status == 0) {
+        if($scope.status === 0) {
             apiUrl += '&status=' + 0;
-        } else if($scope.status == 1) {
+        } else if($scope.status === 1) {
             apiUrl += '&status=' + 1;
         }
 

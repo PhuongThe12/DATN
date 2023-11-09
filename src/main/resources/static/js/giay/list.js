@@ -1,17 +1,94 @@
 app.controller('giayListController', function ($scope, $http, $location) {
 
     $scope.giays = [];
+    $scope.thuongHieus = [];
 
-    $http.post(host + '/admin/rest/giay/get-all-giay', {})
+    $http.get(host + '/admin/rest/thuong-hieu/get-all')
         .then(function (response) {
-            $scope.giays = response.data.content;
-            $scope.numOfPages = response.data.totalPages;
+            $scope.thuongHieus = response.data;
         })
         .catch(function (error) {
-            console.log(error);
             toastr["error"]("Lấy dữ liệu thất bại");
             // window.location.href = feHost + '/trang-chu';
         });
+
+    $scope.curPage = 1,
+        $scope.itemsPerPage = 5,
+        $scope.maxSize = 5;
+
+    let giaySearch = {};
+
+    $scope.search = function () {
+        getData(1);
+    };
+
+    $scope.changeRadio = function (status) {
+        $scope.status = status;
+        getData(1);
+    }
+
+    function getData(currentPage) {
+        let apiUrl = host + '/admin/rest/giay/get-all-giay';
+
+        if ($scope.searchText) {
+            giaySearch.ten = ($scope.searchText + "").trim();
+        }
+
+        if ($scope.status === 0) {
+            giaySearch.trangThai = 0;
+        } else if ($scope.status === 1) {
+            giaySearch.trangThai = 1;
+        } else {
+            giaySearch.trangThai = null;
+        }
+
+
+        if (!isNaN($scope.giaNhapSearch)) {
+            giaySearch.giaNhap = $scope.giaNhapSearch;
+        }
+
+        if (!isNaN($scope.giaBanSearch)) {
+            giaySearch.giaBan = $scope.giaBanSearch;
+        }
+
+        if ($scope.selectedThuongHieu) {
+            giaySearch.thuongHieuIds = $scope.selectedThuongHieu.filter(
+                thuongHieu => thuongHieu.status === 'active'
+            ).map(th => th.id);
+        }
+
+        giaySearch.currentPage = currentPage;
+        giaySearch.pageSize = $scope.itemsPerPage;
+
+        $http.post(apiUrl, giaySearch)
+            .then(function (response) {
+                $scope.giays = response.data.content;
+                $scope.numOfPages = response.data.totalPages;
+            })
+            .catch(function (error) {
+                console.log(error);
+                toastr["error"]("Lấy dữ liệu thất bại");
+                // window.location.href = feHost + '/trang-chu';
+            });
+    }
+
+    $scope.resetSearch = function () {
+        searchText = '';
+        $scope.searchText = '';
+        $scope.status = -1;
+        $scope.giaNhapSearch = null;
+        $scope.giaBanSearch = null;
+        if ($scope.selectedThuongHieu) {
+            $scope.selectedThuongHieu.forEach(thuongHieu => thuongHieu.status = 'disabled');
+        }
+        getData(1);
+    }
+
+    getData(1);
+
+    $scope.$watch('curPage + numPerPage', function () {
+        getData($scope.curPage);
+    });
 
     $scope.showVarients = {};
     $scope.toggleVarients = function (index) {
@@ -143,14 +220,14 @@ app.controller('giayListController', function ($scope, $http, $location) {
     }
 
     $scope.blurGiaInput = function (index, modal) {
-        if(modal === 'giaBan') {
-            if($scope.giaGiayModal.lstBienTheGiay[index].giaBan && $scope.giaGiayModal.lstBienTheGiay[index].giaNhap &&
+        if (modal === 'giaBan') {
+            if ($scope.giaGiayModal.lstBienTheGiay[index].giaBan && $scope.giaGiayModal.lstBienTheGiay[index].giaNhap &&
                 $scope.giaGiayModal.lstBienTheGiay[index].giaBan < $scope.giaGiayModal.lstBienTheGiay[index].giaNhap) {
                 $scope.giaGiayModal.lstBienTheGiay[index].giaBan = null;
                 $scope.giaGiayModal.lstBienTheGiay[index].errors.giaBan = 'Giá bán không được nhỏ hơn giá nhập';
             }
-        } else if(modal === 'giaNhap') {
-            if($scope.giaGiayModal.lstBienTheGiay[index].giaBan && $scope.giaGiayModal.lstBienTheGiay[index].giaNhap &&
+        } else if (modal === 'giaNhap') {
+            if ($scope.giaGiayModal.lstBienTheGiay[index].giaBan && $scope.giaGiayModal.lstBienTheGiay[index].giaNhap &&
                 $scope.giaGiayModal.lstBienTheGiay[index].giaBan < $scope.giaGiayModal.lstBienTheGiay[index].giaNhap) {
                 $scope.giaGiayModal.lstBienTheGiay[index].giaNhap = null;
                 $scope.giaGiayModal.lstBienTheGiay[index].errors.giaNhap = 'Giá bán không được nhỏ hơn giá nhập';
@@ -253,5 +330,6 @@ app.controller('giayListController', function ($scope, $http, $location) {
                 toastr["error"]("Cập nhật thất bại! Lỗi đọc dữ liệu");
             });
     }
+
 
 });

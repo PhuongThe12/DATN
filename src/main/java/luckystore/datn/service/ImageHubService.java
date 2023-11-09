@@ -6,6 +6,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public interface ImageHubService {
@@ -19,6 +21,8 @@ public interface ImageHubService {
     public String base64ToFile(String base64Data);
 
     String deleteFile(String name);
+
+    void deleteFile(Set<String> files);
 
     String getImage(String filename);
 }

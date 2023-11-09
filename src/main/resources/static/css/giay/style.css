@@ -301,5 +301,5 @@ table tbody:hover tr td[rowspan]:hover {
 }
 
 .nowrap-column {
-    white-space: nowrap;
+    /*white-space: nowrap;*/
 }
