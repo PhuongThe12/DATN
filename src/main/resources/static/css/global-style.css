@@ -259,8 +259,17 @@ input:focus{
     color: gray;
 }
 
+.font-size-12 {
+    font-size: 12px;
+    color: gray;
+}
+
 .font-size-14-ncl {
     font-size: 14px;
+}
+
+.font-size-12-ncl {
+    font-size: 12px;
 }
 
 .li-custom {
@@ -275,4 +284,19 @@ input:focus{
 
 .w-133px {
     width: 133px;
+}
+.bg-warning-gradient{
+    background: linear-gradient(to left,#efa65f,#f76a2d)!important;
+}
+
+.bg-success-gradient{
+    background: linear-gradient(to left,#48d6a8 0,#029666 100%)!important;
+}
+
+.bg-danger-gradient{
+    background: linear-gradient(45deg,#f93a5a,#f7778c)!important;
+}
+
+.bg-primary-gradient{
+    background: linear-gradient(to right,#0162e8 0,#0162e8 100%)!important;
 }
