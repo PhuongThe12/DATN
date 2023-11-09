@@ -1,6 +1,7 @@
 package luckystore.datn.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,6 +17,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "Giay")
@@ -35,9 +37,6 @@ public class Giay {
 
     @Column(name = "NAM_SX")
     private Integer namSX;
-
-    @Column(name = "HINH_ANH")
-    private String hinhAnh;
 
     @Column(name = "TRANG_THAI")
     private Integer trangThai;
@@ -73,12 +72,16 @@ public class Giay {
     @JoinColumn(name = "ID_DAY_GIAY")
     private DayGiay dayGiay;
 
-    @OneToMany(mappedBy = "giay")
+    @OneToMany(mappedBy = "giay", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<BienTheGiay> lstBienTheGiay;
 
-    @OneToMany(mappedBy = "giay")
+    @OneToMany(mappedBy = "giay", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<HinhAnh> lstAnh;
+
+    @OneToMany(mappedBy = "giay", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<HashTagChiTiet> hashTagChiTiets;
 
 }

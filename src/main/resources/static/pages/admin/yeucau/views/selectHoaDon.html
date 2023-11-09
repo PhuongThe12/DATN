@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <div class="container">
+        <form name="listHoaDonSelected">
+            <h2 style="text-align: center">Danh Sách Hóa Đơn</h2>
+
+            <table class="table">
+                <tr>
+                    <th>Mã Hóa đơn</th>
+                    <th>Khách Hàng</th>
+                    <th>Nhân Viên</th>
+                    <th>Kênh Bán</th>
+                    <th>Loại Hóa Đơn</th>
+                    <th>Tổng Tiền</th>
+                    <th>Trạng Thái</th>
+                    <th>Chọn</th>
+                </tr>
+
+                <tr ng-repeat="hoaDon in listHoaDon">
+                    <td>{{hoaDon.id}}</td>
+                    <td>{{hoaDon.khachHang}}</td>
+                    <td>{{hoaDon.nhanVien}}</td>
+                    <td>{{hoaDon.kenhBan ==1?"online":"Tại Quầy"}}</td>
+                    <td>{{hoaDon.loaiHoaDon==1?"Hóa Đơn Mua":hoaDon.loaiHoaDon==2?"Hóa Đơn
+                        Đổi":hoaDon.loaiHoaDon==3?"Hóa
+                        Đơn Trả Hàng - Hòa Tiền":"Hóa Đơn Trả Hàng - Đổi Mới"}}
+                    </td>
+                    <td>{{hoaDon.tongTien}}</td>
+                    <td>{{hoaDon.trangThai==1?"Đã Hoàn Thành":hoaDon.trangThai==2?"Đã Xét Duyệt":hoaDon.trangThai==3?"Đã
+                        Hoàn Thành":"Bị Hủy"}}
+                    </td>
+                    <td><input type="radio" name="hoaDonGroup" ng-click="chonHoaDon(hoaDon)"></td>
+                </tr>
+            </table>
+            <button class="btn btn-primary" type="button" ng-click="taoYeuCau()">Tạo Yêu Cầu</button>
+        </form>
+    </div>
+
+</body>
+</html>

@@ -89,9 +89,9 @@ app.controller("deGiayListController", function ($scope, $http, $window, $locati
             apiUrl += '&search=' + searchText;
         }
 
-        if($scope.status == 0) {
+        if($scope.status === 0) {
             apiUrl += '&status=' + 0;
-        } else if($scope.status == 1) {
+        } else if($scope.status === 1) {
             apiUrl += '&status=' + 1;
         }
 
@@ -104,6 +104,13 @@ app.controller("deGiayListController", function ($scope, $http, $window, $locati
                 toastr["error"]("Lấy dữ liệu thất bại");
                 // window.location.href = feHost + '/trang-chu';
             });
+    }
+
+    $scope.resetSearch = function () {
+        searchText = null;
+        $scope.searchText = '';
+        $scope.status = -1;
+        getData(1);
     }
 
     $scope.detailDeGiay = function (val) {

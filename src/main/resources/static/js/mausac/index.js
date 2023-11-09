@@ -106,12 +106,18 @@ app.controller("mauSacListController", function ($scope, $http, $window, $locati
             });
     }
 
+    $scope.resetSearch = function () {
+        searchText = null;
+        $scope.searchText = '';
+        $scope.status = -1;
+        getData(1);
+    }
+
     $scope.detailMauSac = function (val) {
         const id = val;
-
         if (!isNaN(id)) {
             $scope.mauSacDetail = $scope.mauSacs.find(function(mauSac) {
-                return mauSac.id == id;
+                return mauSac.id === id;
             });
         } else {
             toastr["error"]("Lấy dữ liệu thất bại");

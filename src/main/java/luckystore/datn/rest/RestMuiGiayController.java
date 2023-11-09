@@ -30,39 +30,39 @@ public class RestMuiGiayController {
     private MuiGiayService muiGiayService;
 
     @PostMapping
-    public ResponseEntity addMuiGiay(@Valid @RequestBody MuiGiayRequest muiGiayRequest, BindingResult result) {
-        ResponseEntity errorJson = getErrorJson(result);
+    public ResponseEntity<?> addMuiGiay(@Valid @RequestBody MuiGiayRequest muiGiayRequest, BindingResult result) {
+        ResponseEntity<?> errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
-        return new ResponseEntity(muiGiayService.addMuiGiay(muiGiayRequest), HttpStatus.OK);
+        return new ResponseEntity<>(muiGiayService.addMuiGiay(muiGiayRequest), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateMuiGiay(@PathVariable("id") Long id, @Valid @RequestBody MuiGiayRequest muiGiayRequest, BindingResult result) {
-        ResponseEntity errorJson = getErrorJson(result);
+    public ResponseEntity<?> updateMuiGiay(@PathVariable("id") Long id, @Valid @RequestBody MuiGiayRequest muiGiayRequest, BindingResult result) {
+        ResponseEntity<?> errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
-        return new ResponseEntity(muiGiayService.updateMuiGiay(id, muiGiayRequest), HttpStatus.OK);
+        return new ResponseEntity<>(muiGiayService.updateMuiGiay(id, muiGiayRequest), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getMuiGiay(@PathVariable("id") Long id) {
-        return new ResponseEntity(muiGiayService.findById(id), HttpStatus.OK);
+    public ResponseEntity<?> getMuiGiay(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(muiGiayService.findById(id), HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity getMuiGiayPage(@RequestParam(value = "page", defaultValue = "1") Integer page,
+    public ResponseEntity<?> getMuiGiayPage(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                         @RequestParam(value = "search", required = false) String searchText,
                                         @RequestParam(value = "status", required = false) Integer status) {
-        return new ResponseEntity(muiGiayService.getPage(page, searchText, status), HttpStatus.OK);
+        return new ResponseEntity<>(muiGiayService.getPage(page, searchText, status), HttpStatus.OK);
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity getAll() {
-        return new ResponseEntity(muiGiayService.getAll(), HttpStatus.OK);
+    public ResponseEntity<?> getAll() {
+        return new ResponseEntity<>(muiGiayService.getAll(), HttpStatus.OK);
     }
 
-    private ResponseEntity getErrorJson(BindingResult result) {
+    private ResponseEntity<?> getErrorJson(BindingResult result) {
         if (result.hasErrors()) {
             List<String> fieldErrors = new ArrayList<>();
             for (FieldError fieldError : result.getFieldErrors()) {
@@ -70,7 +70,7 @@ public class RestMuiGiayController {
                 fieldErrors.add(errorMessage);
             }
             String errorJson = JsonString.stringToJson(String.join(",", fieldErrors));
-            return new ResponseEntity(errorJson, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(errorJson, HttpStatus.BAD_REQUEST);
         }
         return null;
     }

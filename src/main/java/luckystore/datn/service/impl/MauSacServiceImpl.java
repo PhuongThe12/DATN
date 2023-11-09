@@ -25,7 +25,7 @@ public class MauSacServiceImpl implements MauSacService {
 
     @Override
     public List<MauSacResponse> getAll() {
-        return mauSacRepo.findAllResponse();
+        return mauSacRepo.findAllActive();
     }
 
     @Override
@@ -73,7 +73,10 @@ public class MauSacServiceImpl implements MauSacService {
              error += JsonString.errorToJsonObject("ten", "Tên đã tồn tại");
         }
         if(mauSacRepo.existsByMaMau(mauSacRequest.getMaMau())) {
-            error += ", " + JsonString.errorToJsonObject("maMau", "Màu sắc đã tồn tại");
+            if(!error.isBlank()) {
+                error += ", ";
+            }
+            error += JsonString.errorToJsonObject("maMau", "Màu sắc đã tồn tại");
         }
         if(!error.isBlank()) {
             throw new DuplicateException(JsonString.stringToJson(error));
@@ -87,7 +90,10 @@ public class MauSacServiceImpl implements MauSacService {
             error += JsonString.errorToJsonObject("ten", "Tên đã tồn tại");
         }
         if(mauSacRepo.existsByMaMauAndIdNot(mauSacRequest.getMaMau(), mauSacRequest.getId())) {
-            error += ", " + JsonString.errorToJsonObject("maMau", "Màu sắc đã tồn tại");
+            if(!error.isBlank()) {
+                error += ", ";
+            }
+             error += JsonString.errorToJsonObject("maMau", "Màu sắc đã tồn tại");
         }
         if(!error.isBlank()) {
             throw new DuplicateException(JsonString.stringToJson(error));

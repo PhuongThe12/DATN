@@ -7,6 +7,7 @@
                 <input id="seachText" class="form-control" type="text" ng-model="searchText"
                        placeholder="Nhập từ khóa">
                 <button class="btn btn-custom " ng-click="search()">Tìm kiếm</button>
+                <button class="btn btn-custom mx-2" ng-click="resetSearch()">Nhập lại</button>
             </div>
             <a class="btn btn-primary" href="#/add">Thêm lót giày</a>
         </div>
@@ -22,13 +23,13 @@
             <div class="custom-radio">
                 <input type="radio" id="active" name="status" ng-model="status" value="1" ng-checked="status == 1"
                        ng-change="changeRadio(1)">
-                <label class="radio-label" for="active">Đang kinh doanh</label>
+                <label class="radio-label" for="active">Hiển thị</label>
             </div>
 
             <div class="custom-radio">
                 <input type="radio" id="disable" name="status" ng-model="status" value="0" ng-checked="status == 0"
                        ng-change="changeRadio(0)">
-                <label class="radio-label" for="disable">Ngừng kinh doanh</label>
+                <label class="radio-label" for="disable">Đã ẩn</label>
             </div>
         </div>
 
@@ -45,13 +46,13 @@
                     <td>
                         <h5>
                 <span ng-class="{'badge bd-success-custom': lotGiay.trangThai == 1, 'badge bd-danger-custom': lotGiay.trangThai != 1}">
-                    {{lotGiay.trangThai == 1? "Đang kinh doanh" : "Ngừng khinh doanh"}}
+                    {{lotGiay.trangThai == 1? "Hiển thị" : "Ngừng khinh doanh"}}
                 </span>
                         </h5>
                     </td>
                     <td>
                         <div class="d-sm-inline-flex">
-                            <button class="btn btn-custom" ng-click="detailMauSac(lotGiay.id)" data-bs-toggle="modal" data-bs-target="#showMauSac">
+                            <button class="btn btn-custom" ng-click="detailLotGiay(lotGiay.id)" data-bs-toggle="modal" data-bs-target="#showLotGiay">
                                 <i class="fas fa-eye"></i>
                             </button>
                             <a class="btn btn-custom" ng-href="#/update/{{lotGiay.id}}"><i class="far fa-edit"></i></a>
@@ -71,12 +72,12 @@
 </div>
 
 <!-- Modal Detail-->
-<div class="modal fade" id="showMauSac" tabindex="-1" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="showLotGiay" tabindex="-1" aria-labelledby="exampleModalLabel"
      aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Chi Tiết Màu Sắc</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Chi Tiết Lót Giày</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -99,7 +100,7 @@
                         <th>
                             <h5>
                 <span ng-class="{'badge bd-success-custom': lotGiayDetail.trangThai == 1, 'badge bd-danger-custom': lotGiayDetail.trangThai != 1}">
-                    {{lotGiayDetail.trangThai == 1? "Đang kinh doanh" : "Ngừng khinh doanh"}}
+                    {{lotGiayDetail.trangThai == 1? "Hiển thị" : "Ngừng khinh doanh"}}
                 </span>
                             </h5>
                         </th>

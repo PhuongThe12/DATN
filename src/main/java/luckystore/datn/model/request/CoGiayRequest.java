@@ -16,7 +16,7 @@ public class CoGiayRequest {
     private Long id;
 
     @NotNull(message = "Không được để trống tên")
-    @Length(message = "Tên không được vượt quá 50 ký tự", max = 50)
+    @Length(message = "Tên không được vượt quá 100 ký tự", max = 100)
     private String ten;
 
     @NotNull(message = "Không được để trống mô tả")

@@ -26,7 +26,7 @@ public class LotGiayServiceImpl implements LotGiayService {
 
     @Override
     public List<LotGiayResponse> getAll() {
-        return lotGiayRepo.findAllResponse();
+        return lotGiayRepo.findAllActive();
     }
 
     @Override

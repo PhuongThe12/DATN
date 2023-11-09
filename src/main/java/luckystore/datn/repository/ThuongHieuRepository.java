@@ -20,6 +20,12 @@ public interface ThuongHieuRepository extends JpaRepository<ThuongHieu, Long> {
             "WHERE (:searchText IS NULL OR th.ten LIKE %:searchText%) AND (:status IS NULL OR th.trangThai = :status)")
     Page<ThuongHieuResponse> getPageResponse(String searchText, Integer status, Pageable pageable);
 
+
+    @Query("select new luckystore.datn.model.response.ThuongHieuResponse(th) from ThuongHieu th " +
+            "where th.trangThai = 1 order by th.id desc ")
+    List<ThuongHieuResponse> findAllActive();
+
+
     Boolean existsByTen(String ten);
 
     Boolean existsByTenAndIdNot(String ten, Long id);

@@ -7,6 +7,7 @@
                 <input id="seachText" class="form-control" type="text" ng-model="searchText"
                        placeholder="Nhập từ khóa">
                 <button class="btn btn-custom " ng-click="search()">Tìm kiếm</button>
+                <button class="btn btn-custom mx-2" ng-click="resetSearch()">Nhập lại</button>
             </div>
             <a class="btn btn-primary" href="#/add">Thêm dây giày</a>
         </div>
@@ -22,13 +23,13 @@
             <div class="custom-radio">
                 <input type="radio" id="active" name="status" ng-model="status" value="1" ng-checked="status == 1"
                        ng-change="changeRadio(1)">
-                <label class="radio-label" for="active">Đang kinh doanh</label>
+                <label class="radio-label" for="active">Hiển thị</label>
             </div>
 
             <div class="custom-radio">
                 <input type="radio" id="disable" name="status" ng-model="status" value="0" ng-checked="status == 0"
                        ng-change="changeRadio(0)">
-                <label class="radio-label" for="disable">Ngừng kinh doanh</label>
+                <label class="radio-label" for="disable">Đã ẩn</label>
             </div>
         </div>
 
@@ -36,18 +37,16 @@
             <table class="table align-middle text-center" border="1">
                 <tr>
                     <th>Tên</th>
-                    <th>Màu sắc</th>
                     <th>Trạng thái</th>
                     <th></th>
                 </tr>
 
                 <tr ng-repeat="dayGiay in dayGiays">
                     <td>{{dayGiay.ten}}</td>
-                    <td>{{dayGiay.mauSac}}</td>
                     <td>
                         <h5>
                 <span ng-class="{'badge bd-success-custom': dayGiay.trangThai == 1, 'badge bd-danger-custom': dayGiay.trangThai != 1}">
-                    {{dayGiay.trangThai == 1? "Đang kinh doanh" : "Ngừng khinh doanh"}}
+                    {{dayGiay.trangThai == 1? "Hiển thị" : "Đã ẩn"}}
                 </span>
                         </h5>
                     </td>
@@ -78,7 +77,7 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Chi Tiết Màu Sắc</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Chi Tiết Chất Liệu</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -97,11 +96,11 @@
                     </tr>
 
                     <tr>
-                        <td>Trạng thái:</td>
+                        <td>Mô tả :</td>
                         <th>
                             <h5>
                 <span ng-class="{'badge bd-success-custom': dayGiayDetail.trangThai == 1, 'badge bd-danger-custom': dayGiayDetail.trangThai != 1}">
-                    {{dayGiayDetail.trangThai == 1? "Đang kinh doanh" : "Ngừng khinh doanh"}}
+                    {{dayGiayDetail.trangThai == 1? "Hiển thị" : "Đã ẩn"}}
                 </span>
                             </h5>
                         </th>
