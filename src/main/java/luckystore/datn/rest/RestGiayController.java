@@ -54,8 +54,8 @@ public class RestGiayController {
     }
 
     @PostMapping("/get-all-active")
-    public ResponseEntity<?> getAllActive() {
-        return new ResponseEntity<>(giayService.getAllActive(), HttpStatus.OK);
+    public ResponseEntity<?> getAllActive(@RequestBody GiaySearch giaySearch) {
+        return new ResponseEntity<>(giayService.getAllActive(giaySearch), HttpStatus.OK);
     }
 
     @PostMapping("/get-all-giay")

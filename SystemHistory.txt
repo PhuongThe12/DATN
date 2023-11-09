@@ -1,0 +1,120 @@
+Performer: quanvdmph19717
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-06 / 16:12:43
+
+Performer: quanvdmph19717
+Action: Cập nhật thông tin cá nhân
+Timestamp: 2023-11-06 / 16:12:52
+
+Performer: phongtt35
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-06 / 16:13:01
+
+Performer: phongtt35
+Action: Thêm mới nhân viên
+Timestamp: 2023-11-06 / 16:13:36
+
+Performer: phongtt35
+Action: Cập nhật nhân viên
+Timestamp: 2023-11-06 / 16:13:50
+
+Performer: phongtt35
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-06 / 19:24:22
+
+Performer: quanvdmph19717
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-07 / 12:52:11
+
+Performer: phongtt35
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-07 / 12:52:20
+
+Performer: phongtt35
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-07 / 12:53:42
+
+Performer: phongtt35
+Action: Thêm mới nhân viên
+Timestamp: 2023-11-07 / 12:54:07
+
+Performer: abc123
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-07 / 12:54:29
+
+Performer: quanvdmph19717
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-07 / 12:54:38
+
+Performer: phongtt35
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-07 / 12:54:43
+
+Performer: phongtt35
+Action: Cập nhật nhân viên
+Timestamp: 2023-11-07 / 12:56:26
+
+Performer: phongtt35
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-07 / 13:01:37
+
+Performer: phongtt35
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-07 / 13:02:21
+
+Performer: phongtt35
+Action: Thêm mới nhân viên
+Timestamp: 2023-11-07 / 13:03:49
+
+Performer: phongtt35
+Action: Cập nhật thông tin cá nhân
+Timestamp: 2023-11-07 / 13:04:37
+
+Performer: phongtt35
+Action: Cập nhật nhân viên
+Timestamp: 2023-11-07 / 13:04:54
+
+Performer: quanvdmph19717
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-07 / 13:07:26
+
+Performer: phongtt35
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-08 / 10:02:27
+
+Performer: quanvdmph19717
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-08 / 13:50:06
+
+Performer: phongtt35
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-08 / 13:55:27
+
+Performer: phongtt35
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-08 / 14:20:40
+
+Performer: phongtt35
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-08 / 14:48:43
+
+Performer: phongtt35
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-08 / 14:51:25
+
+Performer: phongtt35
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-08 / 15:23:19
+
+Performer: phongtt35
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-08 / 15:42:32
+
+Performer: phongtt35
+Action: Đăng nhập vào hệ thống
+Timestamp: 2023-11-08 / 15:46:21
+
+Performer: Guest
+Action: Thêm mới nhân viên
+Timestamp: 2023-11-09 / 11:09:54
+

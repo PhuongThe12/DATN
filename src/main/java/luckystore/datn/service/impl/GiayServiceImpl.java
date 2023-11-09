@@ -76,8 +76,9 @@ public class GiayServiceImpl implements GiayService {
     private final HinhAnhRepository hinhAnhRepository;
 
     @Override
-    public List<GiayResponse> getAllActive() {
-        return giayRepository.findAllGiay();
+    public Page<GiayResponse> getAllActive(GiaySearch giaySearch) {
+        Pageable pageable = PageRequest.of(giaySearch.getCurrentPage() - 1, giaySearch.getPageSize());
+        return giayRepository.findPageForList(giaySearch, pageable);
     }
 
     @Override

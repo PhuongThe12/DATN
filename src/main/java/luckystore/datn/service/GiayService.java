@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public interface GiayService {
 
-    List<GiayResponse> getAllActive();
+    Page<GiayResponse> getAllActive(GiaySearch giaySearch);
 
     List<GiayResponse> getAllContains(List<Long> ids);
 
