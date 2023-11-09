@@ -133,6 +133,9 @@ app.controller("updateKhachHangController", function ($scope, $http, $routeParam
     $http.get(host + '/admin/rest/khach-hang/' + id)
         .then(function (response) {
             $scope.khachHang = response.data;
+            var ngaySinh = $scope.khachHang.ngaySinh;
+            var object = new Date(ngaySinh);
+            $scope.khachHang.ngaySinh=object;
             console.log(response.data);
         }).catch(function (error) {
         toastr["error"]("Lấy dữ liệu thất bại");
@@ -167,7 +170,6 @@ app.controller("updateKhachHangController", function ($scope, $http, $routeParam
             console.log(error);
             toastr["error"]("Cập nhật thất bại");
             if (error.status === 400) {
-
                 $scope.khachHangForm.hoTen.$dirty=false;
                 $scope.khachHangForm.gioiTinh.$dirty = false;
                 $scope.khachHangForm.ngaySinh.$dirty = false;

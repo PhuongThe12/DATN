@@ -6,13 +6,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import luckystore.datn.entity.HangKhachHang;
 import luckystore.datn.entity.KhachHang;
+import luckystore.datn.entity.TaiKhoan;
 
-import java.util.Date;
+import java.sql.Date;
+
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class KhachHangRestponse {
+public class KhachHangResponse {
     private Long id;
 
     private String hoTen;
@@ -31,7 +34,9 @@ public class KhachHangRestponse {
 
     private HangKhachHang hangKhachHang;
 
-    public KhachHangRestponse(KhachHang khachHang) {
+    private TaiKhoan taiKhoan;
+
+    public KhachHangResponse(KhachHang khachHang) {
         if (khachHang != null) {
             this.id = khachHang.getId();
             this.hoTen = khachHang.getHoTen();
@@ -42,6 +47,7 @@ public class KhachHangRestponse {
             this.diemTichLuy = khachHang.getDiemTichLuy();
             this.trangThai = khachHang.getTrangThai();
             this.hangKhachHang=khachHang.getHangKhachHang();
+            this.taiKhoan = khachHang.getTaiKhoan();
         }
     }
 }
