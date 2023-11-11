@@ -47,7 +47,4 @@ public class MauSac {
     @Column(name = "MA_MAU", length = 20)
     private String maMau;
 
-    @Column(name = "NGAY_TAO")
-    private LocalDateTime ngayTao;
-
 }

@@ -42,9 +42,6 @@ public class BienTheGiay {
     @Column(name = "GIA_BAN")
     private BigDecimal giaBan;
 
-    @Column(name = "GIA_NHAP")
-    private BigDecimal giaNhap;
-
     @Column(name = "HINH_ANH")
     private String hinhAnh;
 
@@ -69,8 +66,5 @@ public class BienTheGiay {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_MAU_SAC")
     private MauSac mauSac;
-
-    @Column(name = "NGAY_TAO")
-    private LocalDateTime ngayTao;
 
 }

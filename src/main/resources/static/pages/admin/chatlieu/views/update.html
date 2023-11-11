@@ -15,7 +15,7 @@
         </div>
     </div>
 </div>
-<button class="ms-4 mb-3 btn btn-primary" ng-click="backToList()">Back</button>
+<button class="ms-4 mb-3 btn btn-primary" ng-click="backToList()"><i class="fas fa-chevron-left"></i>Danh sách</button>
 <div class="card rounded bg-white ms-4 mx-4">
     <div class="card-header bg-white">
         <h5 class="card-title p-2 mt-2">
@@ -25,7 +25,7 @@
     <div class="card-body">
         <div class="p-3">
 
-            <form name="chatLieuForm" ng-submit="updateChatLieu()">
+            <form name="chatLieuForm" ng-submit="comfirmUpdate()">
                 <div class="form-group">
                     <label for="chatLieuTen">Tên: </label>
                     <input type="text" class="form-control" id="chatLieuTen" name="ten" ng-model="chatLieu.ten" ng-maxlength="100" ng-required="true"

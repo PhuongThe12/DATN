@@ -1,92 +1,125 @@
-<h1>Cập nhật kích thước</h1>
-
-<form name="kichThuocForm" ng-submit="updateKichThuoc()" class="row g-3">
-    <div class="row">
-        <div class="col-12">
-            <label for="kichThuocTen">Tên: </label>
-            <input type="text" class="form-control" id="kichThuocTen" name="ten" ng-model="kichThuoc.ten"
-                   ng-maxlength="100"
-                   ng-required="true"
-                   ng-change="change(kichThuocForm.ten)">
-            <small class="text-danger"
-                   ng-show="(kichThuocForm.ten.$dirty || kichThuocForm.ten.$touched) && kichThuocForm.ten.$error.required">Không
-                được để trống tên</small>
-            <small class="text-danger"
-                   ng-show="(kichThuocForm.ten.$dirty || kichThuocForm.ten.$touched) && kichThuocForm.ten.$error.maxlength">Tên
-                không được
-                vượt quá 100 ký tự</small>
-            <small class="text-danger" ng-show="errors.ten && !kichThuocForm.ten.$dirty">{{errors.ten}}</small>
+<div ng-show="isLoading" class="loading-spinner">
+    <div class="text-center" style="  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Màu nền đục để làm mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; ">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
         </div>
     </div>
+</div>
+<button class="ms-4 mb-3 btn btn-primary" ng-click="backToList()"><i class="fas fa-chevron-left"></i>Danh sách</button>
+<div class="card rounded bg-white ms-4 mx-4">
+    <div class="card-header bg-white">
+        <h5 class="card-title p-2 mt-2">
+            Cập nhật kích thước
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="p-3">
 
-    <div class="row">
-        <div class="col-6">
-            <label for="kichThuocChieuDai">Chiều dài: </label>
-            <div class="input-group">
-                <input type="number" class="form-control" id="kichThuocChieuDai" aria-describedby="chieuDai"
-                       name="chieuDai" ng-model="kichThuoc.chieuDai" step="0.1" max="200" min="0" ng-required="true"
-                       ng-change="change(kichThuocForm.chieuDai)">
-                <span class="input-group-text" id="chieuDai">cm</span>
-            </div>
-            <small class="text-danger m-0"
-                   ng-show="(kichThuocForm.chieuDai.$dirty || kichThuocForm.chieuDai.$touched) && kichThuocForm.chieuDai.$error.required">Không
-                được để trống chiều dài</small>
-            <small class="text-danger  m-0"
-                   ng-show="(kichThuocForm.chieuDai.$dirty || kichThuocForm.chieuDai.$touched) && kichThuocForm.chieuDai.$error.max">Chiều
-                dài không được vượt quá 200</small>
-            <small class="text-danger  m-0"
-                   ng-show="(kichThuocForm.chieuDai.$dirty || kichThuocForm.chieuDai.$touched) && kichThuocForm.chieuDai.$error.min">Chiều
-                dài không được âm</small>
-            <small class="text-danger  m-0"
-                   ng-show="errors.chieuDai && !kichThuocForm.chieuDai.$dirty">{{errors.chieuDai}}</small>
+            <form name="kichThuocForm" ng-submit="updateKichThuoc()" class="row g-3">
+                <div class="row">
+                    <div class="col-12">
+                        <label for="kichThuocTen">Tên: </label>
+                        <input type="text" class="form-control" id="kichThuocTen" name="ten" ng-model="kichThuoc.ten"
+                               ng-maxlength="100"
+                               ng-required="true"
+                               ng-change="change(kichThuocForm.ten)">
+                        <small class="text-danger"
+                               ng-show="(kichThuocForm.ten.$dirty || kichThuocForm.ten.$touched) && kichThuocForm.ten.$error.required">Không
+                            được để trống tên</small>
+                        <small class="text-danger"
+                               ng-show="(kichThuocForm.ten.$dirty || kichThuocForm.ten.$touched) && kichThuocForm.ten.$error.maxlength">Tên
+                            không được
+                            vượt quá 100 ký tự</small>
+                        <small class="text-danger"
+                               ng-show="errors.ten && !kichThuocForm.ten.$dirty">{{errors.ten}}</small>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-6">
+                        <label for="kichThuocChieuDai">Chiều dài: </label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="kichThuocChieuDai" aria-describedby="chieuDai"
+                                   name="chieuDai" ng-model="kichThuoc.chieuDai" step="0.1" max="200" min="0"
+                                   ng-required="true"
+                                   ng-change="change(kichThuocForm.chieuDai)">
+                            <span class="input-group-text" id="chieuDai">cm</span>
+                        </div>
+                        <small class="text-danger m-0"
+                               ng-show="(kichThuocForm.chieuDai.$dirty || kichThuocForm.chieuDai.$touched) && kichThuocForm.chieuDai.$error.required">Không
+                            được để trống chiều dài</small>
+                        <small class="text-danger  m-0"
+                               ng-show="(kichThuocForm.chieuDai.$dirty || kichThuocForm.chieuDai.$touched) && kichThuocForm.chieuDai.$error.max">Chiều
+                            dài không được vượt quá 200</small>
+                        <small class="text-danger  m-0"
+                               ng-show="(kichThuocForm.chieuDai.$dirty || kichThuocForm.chieuDai.$touched) && kichThuocForm.chieuDai.$error.min">Chiều
+                            dài không được âm</small>
+                        <small class="text-danger  m-0"
+                               ng-show="errors.chieuDai && !kichThuocForm.chieuDai.$dirty">{{errors.chieuDai}}</small>
+
+                    </div>
+
+                    <div class="col-6">
+                        <label for="kichThuocChieuRong">Chiều rộng: </label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="kichThuocChieuRong"
+                                   aria-describedby="chieuRong"
+                                   name="chieuRong" ng-model="kichThuoc.chieuRong" max="200" step="0.1" min="0"
+                                   ng-required="true"
+                                   ng-change="change(kichThuocForm.chieuRong)">
+                            <span class="input-group-text" id="chieuRong">cm</span>
+                        </div>
+                        <small class="text-danger m-0"
+                               ng-show="(kichThuocForm.chieuRong.$dirty || kichThuocForm.chieuRong.$touched) && kichThuocForm.chieuRong.$error.required">Không
+                            được để trống chiều rộng</small>
+                        <small class="text-danger m-0"
+                               ng-show="(kichThuocForm.chieuRong.$dirty || kichThuocForm.chieuRong.$touched) && kichThuocForm.chieuRong.$error.max">Chiều
+                            rộng không được vượt quá 200</small>
+                        <small class="text-danger m-0"
+                               ng-show="(kichThuocForm.chieuRong.$dirty || kichThuocForm.chieuRong.$touched) && kichThuocForm.chieuRong.$error.min">Chiều
+                            rộng không được âm</small>
+                        <small class="text-danger m-0" ng-show="errors.chieuRong && !kichThuocForm.chieuRong.$dirty">{{errors.chieuRong}}</small>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <label for="kichThuocMoTa">Mô tả: </label>
+                        <textarea class="form-control" id="kichThuocMoTa" name="moTa" rows="3" ng-model="kichThuoc.moTa"
+                                  ng-change="change(kichThuocForm.moTa)"></textarea>
+                        <small class="text-danger"
+                               ng-show="errors.moTa && !kichThuocForm.moTa.$dirty">{{errors.moTa}}</small>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <label>Trạng thái: </label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="kichThuocTrangThai" name="trangThai"
+                                   ng-model="kichThuoc.trangThai" ng-true-value="1"
+                                   ng-false-value="0" ng-init="kichThuoc.trangThai = 1">
+                            <label class="form-check-label" for="kichThuocTrangThai">Hiển thị</label>
+                        </div>
+                        <small class="text-danger"
+                               ng-show="errors.trangThai && !kichThuocForm.trangThai.$dirty">{{errors.trangThai}}</small>
+
+                    </div>
+                </div>
+                <div class="col-10">
+                    <button type="submit" class="btn btn-primary">Cập nhật</button>
+                </div>
+            </form>
 
         </div>
-
-        <div class="col-6">
-            <label for="kichThuocChieuRong">Chiều rộng: </label>
-            <div class="input-group">
-                <input type="number" class="form-control" id="kichThuocChieuRong" aria-describedby="chieuRong"
-                       name="chieuRong" ng-model="kichThuoc.chieuRong" max="200" step="0.1" min="0" ng-required="true"
-                       ng-change="change(kichThuocForm.chieuRong)">
-                <span class="input-group-text" id="chieuRong">cm</span>
-            </div>
-            <small class="text-danger m-0"
-                   ng-show="(kichThuocForm.chieuRong.$dirty || kichThuocForm.chieuRong.$touched) && kichThuocForm.chieuRong.$error.required">Không
-                được để trống chiều rộng</small>
-            <small class="text-danger m-0"
-                   ng-show="(kichThuocForm.chieuRong.$dirty || kichThuocForm.chieuRong.$touched) && kichThuocForm.chieuRong.$error.max">Chiều
-                rộng không được vượt quá 200</small>
-            <small class="text-danger m-0"
-                   ng-show="(kichThuocForm.chieuRong.$dirty || kichThuocForm.chieuRong.$touched) && kichThuocForm.chieuRong.$error.min">Chiều
-                rộng không được âm</small>
-            <small class="text-danger m-0" ng-show="errors.chieuRong && !kichThuocForm.chieuRong.$dirty">{{errors.chieuRong}}</small>
-        </div>
     </div>
-
-    <div class="row">
-        <div class="col-12">
-            <label for="kichThuocMoTa">Mô tả: </label>
-            <textarea class="form-control" id="kichThuocMoTa" name="moTa" rows="3" ng-model="kichThuoc.moTa"
-                      ng-change="change(kichThuocForm.moTa)"></textarea>
-            <small class="text-danger" ng-show="errors.moTa && !kichThuocForm.moTa.$dirty">{{errors.moTa}}</small>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-12">
-            <label>Trạng thái: </label>
-            <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="kichThuocTrangThai" name="trangThai"
-                       ng-model="kichThuoc.trangThai" ng-true-value="1"
-                       ng-false-value="0" ng-init="kichThuoc.trangThai = 1">
-                <label class="form-check-label" for="kichThuocTrangThai">Hiển thị</label>
-            </div>
-            <small class="text-danger"
-                   ng-show="errors.trangThai && !kichThuocForm.trangThai.$dirty">{{errors.trangThai}}</small>
-
-        </div>
-    </div>
-    <div class="col-10">
-        <button type="submit" class="btn btn-primary">Cập nhật</button>
-    </div>
-</form>
+</div>

@@ -32,7 +32,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
 
     $scope.changeSelectedKichThuoc = function () {
         // Sao chép selectedMauSacs
-        let selectedMauSacsCopy = angular.copy($scope.selectedMauSacs);
+        let selectedMauSacsCopy = angular.copy($scope.selectedMauSacs.filter(mauSac => mauSac.status === 'active'));
         const length = $scope.selectedMauSacs.length;
         for (let i = 0; i < length; i++) {
             selectedMauSacsCopy[i].hinhAnh = $scope.selectedMauSacs[i].hinhAnh;
@@ -40,8 +40,8 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
 
         // Kiểm tra và cập nhật selectedMauSacs dựa trên selectedMauSac
         $scope.selectedMauSac.forEach(function (mauSac) {
-            var existingMauSac = selectedMauSacsCopy.find(function (ms) {
-                return ms.id === mauSac.id;
+            const existingMauSac = selectedMauSacsCopy.find(function (ms) {
+                return ms.id === mauSac.id && ms.status === 'active';
             });
 
             if (!existingMauSac) {
@@ -72,7 +72,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
         $scope.selectedKichThuoc.forEach(function (kichThuoc) {
             selectedMauSacsCopy.forEach(function (mauSac) {
                 var existingKichThuoc = mauSac.selectedKichThuocs.find(function (kt) {
-                    return kt.id === kichThuoc.id;
+                    return kt.id === kichThuoc.id && kt.status === 'active';
                 });
 
                 if (!existingKichThuoc) {
@@ -361,8 +361,10 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
     }
 
     $scope.submitData = function () {
+        $scope.isLoading = true;
 
         if (!isValid()) {
+            $scope.isLoading = false;
             return;
         }
 
@@ -410,7 +412,6 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
                 let bienTheGiay = {
                     mauSacId: mauSac.id,
                     kichThuocId: kichThuoc.id,
-                    giaNhap: kichThuoc.giaNhap,
                     soLuong: kichThuoc.soLuong,
                     giaBan: kichThuoc.giaBan,
                     trangThai: kichThuoc.trangThai === 0 ? 0 : 1,
@@ -459,11 +460,13 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
                                 $scope.addGiayForm.ten.$dirty = false;
                                 $scope.addGiayForm.moTa.$dirty = false;
                                 $scope.addGiayForm.namSX.$dirty = false;
+                                $scope.isLoading = false;
                                 // window.location.href = feHost + '/trang-chu';
                             });
                     })
                     .catch(error => {
                         console.error("Lỗi xử lý dữ liệu:", error);
+                        $scope.isLoading = false;
                     });
             });
 
@@ -524,25 +527,6 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
                         count++;
                     }
 
-                    if (isNaN(kichThuoc.giaNhap)) {
-                        kichThuoc.giaNhap = null;
-                        kichThuoc.errors.giaNhap = 'Giá nhập không được để trống';
-                        valid = false;
-                        count++;
-                    } else if (kichThuoc.giaNhap < 0) {
-                        kichThuoc.giaNhap = null;
-                        kichThuoc.errors.giaNhap = 'Giá nhập không được âm';
-                        valid = false;
-                        count++;
-                    }
-
-                    if (!isNaN(kichThuoc.giaNhap) && !isNaN(kichThuoc.giaBan) && kichThuoc.giaNhap > kichThuoc.giaBan) {
-                        kichThuoc.giaBan = null;
-                        kichThuoc.errors.giaBan = 'Giá bán không được nhỏ hơn giá nhập';
-                        valid = false;
-                        count++;
-                    }
-
                     if (isNaN(kichThuoc.soLuong)) {
                         kichThuoc.soLuong = null;
                         kichThuoc.errors.soLuong = 'Không được bỏ trống số lượng';
@@ -587,9 +571,6 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
     }
 
     $scope.changeInput = function (msIndex, ktIndex, model) {
-        if (model === 'giaNhap' && $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaNhap) {
-            $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaNhap = null;
-        }
 
         if (model === 'giaBan' && $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaBan) {
             $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaBan = null;
@@ -604,21 +585,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
     }
 
     $scope.blurInput = function (msIndex, ktIndex, model) {
-        if (model === 'giaNhap') {
-            if (isNaN($scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaNhap) || !$scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaNhap) {
-                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaNhap = 'Giá nhập không được để trống';
-                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaNhap = null;
-            } else if ($scope.selectedMauSacs[msIndex].selectedKichThuocs[0].giaNhap < 0) {
-                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaNhap = 'Giá nhập không được âm';
-                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaNhap = null;
-            } else if ($scope.selectedMauSacs[msIndex].selectedKichThuocs[0].giaBan && $scope.selectedMauSacs[msIndex].selectedKichThuocs[0].giaBan < $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaNhap) {
-                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaNhap = null;
-                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaNhap = 'Giá nhập không được lớn hơn giá bán';
-            } else {
-                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaNhap = null;
-            }
 
-        }
         if (model === 'giaBan') {
             if (isNaN($scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan) || !$scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan) {
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaBan = 'Giá bán không được để trống';
@@ -626,9 +593,6 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
             } else if ($scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan < 0) {
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaBan = 'Giá bán không được âm';
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan = null;
-            } else if ($scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaNhap && $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan < $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaNhap) {
-                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan = null;
-                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaBan = 'Giá nhập không được lớn hơn giá bán';
             } else {
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaBan = null;
             }
@@ -669,36 +633,11 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
     }
 
     $scope.updateForAll = function () {
-        if ($scope.giaNhapAll && !isNaN($scope.giaNhapAll) && $scope.giaBanAll && !isNaN($scope.giaBanAll)) {
-            if ($scope.giaNhapAll > $scope.giaBanAll) {
-                toastr["error"]("Giá nhập phải nhỏ hơn giá bán");
-                $scope.resetFormForAll();
-                return;
-            }
-        }
-
-        if ($scope.giaNhapAll && !isNaN($scope.giaNhapAll)) {
-            $scope.selectedMauSacs.forEach(mauSac => {
-                mauSac.selectedKichThuocs.forEach(kichThuoc => {
-                    if (!kichThuoc.giaBan || !isNaN(kichThuoc.giaNhap)) {
-                        kichThuoc.giaNhap = $scope.giaNhapAll;
-                    } else if (kichThuoc.giaBan && kichThuoc.giaBan < $scope.giaNhapAll) {
-                        kichThuoc.giaNhap = null;
-                        kichThuoc.errors.giaNhap = 'Giá nhập không được lớn hơn giá bán';
-                    }
-                })
-            })
-        }
 
         if ($scope.giaBanAll && !isNaN($scope.giaBanAll)) {
             $scope.selectedMauSacs.forEach(mauSac => {
                 mauSac.selectedKichThuocs.forEach(kichThuoc => {
-                    if (kichThuoc.giaNhap || !isNaN(kichThuoc.giaBan) && kichThuoc.giaBan < kichThuoc.giaNhap) {
-                        kichThuoc.giaBan = $scope.giaBanAll;
-                    } else if (kichThuoc.giaNhap && kichThuoc.giaNhap < $scope.giaBanAll) {
-                        kichThuoc.giaBan = null;
-                        kichThuoc.errors.giaBan = 'Giá bán không được nhỏ hơn giá nhập';
-                    }
+                    kichThuoc.giaBan = $scope.giaBanAll;
                 })
             })
         }
@@ -714,7 +653,6 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
         $scope.selectedMauSacs.forEach((ms, msIndex) => {
             ms.selectedKichThuocs.forEach((kt, ktIndex) => {
                 $scope.blurInput(msIndex, ktIndex, 'barcode');
-                $scope.blurInput(msIndex, ktIndex, 'giaNhap');
                 $scope.blurInput(msIndex, ktIndex, 'giaBan');
                 $scope.blurInput(msIndex, ktIndex, 'soLuong');
             })
@@ -726,7 +664,6 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
     $scope.resetFormForAll = function () {
         $scope.soLuongAll = '';
         $scope.giaBanAll = '';
-        $scope.giaNhapAll = '';
     }
 
     //////////////for modal
@@ -1116,14 +1053,17 @@ app.directive('customInput', function () {
                         }
 
                     }
+
                 };
                 $scope.$watchCollection('ngModel', function (newNgModel, oldNgModel) {
                     if (newNgModel !== oldNgModel) {
                         // Thực hiện các tác vụ tương ứng với sự thay đổi trong ngModel (danh sách)
                         newNgModel.forEach((element) => {
                             if (element) {
-                                var selectedItem = $scope.items.find((item) => item.id === element.id);
-                                $scope.selectItem(selectedItem);
+                                const selectedItem = $scope.items.find((item) => item.id === element.id && item.status === 'active');
+                                if (selectedItem) {
+                                    $scope.selectItem(selectedItem);
+                                }
                             }
                         });
                     }
