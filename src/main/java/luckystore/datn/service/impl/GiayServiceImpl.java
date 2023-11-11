@@ -140,7 +140,6 @@ public class GiayServiceImpl implements GiayService {
                     .barCode(bienTheGiayRequest.getBarcode())
                     .giay(giay)
                     .giaBan(bienTheGiayRequest.getGiaBan())
-                    .giaNhap(bienTheGiayRequest.getGiaNhap())
                     .mauSac(mauSac)
                     .kichThuoc(kichThuoc)
                     .hinhAnh(files.get(mauSac.getId()))
@@ -158,13 +157,13 @@ public class GiayServiceImpl implements GiayService {
     @Override
     public Page<GiayResponse> findAllForList(GiaySearch giaySearch) {
         Pageable pageable = PageRequest.of(giaySearch.getCurrentPage() - 1, giaySearch.getPageSize());
-
-        Page<GiayResponse> giayResponsePage = giayRepository.findPageForList(giaySearch, pageable);
-        giayResponsePage.stream().forEach(giayResponse -> {
-            giayResponse.setLstBienTheGiay(bienTheGiayRepository.getSimpleByIdGiay(giayResponse.getId()));
-            giayResponse.getLstAnh().add(imageHubService.getBase64FromFile(hinhAnhRepository.findThubmailByIdGiay(giayResponse.getId())));
-        });
-        return giayResponsePage;
+//
+//        Page<GiayResponse> giayResponsePage = giayRepository.findPageForList(giaySearch, pageable);
+//        giayResponsePage.stream().forEach(giayResponse -> {
+//            giayResponse.setLstBienTheGiay(bienTheGiayRepository.getSimpleByIdGiay(giayResponse.getId()));
+//            giayResponse.getLstAnh().add(imageHubService.getBase64FromFile(hinhAnhRepository.findThubmailByIdGiay(giayResponse.getId())));
+//        });
+        return giayRepository.findPageForList(giaySearch, pageable);
     }
 
     @Override
@@ -200,7 +199,6 @@ public class GiayServiceImpl implements GiayService {
             giayRequest.getBienTheGiays().forEach(bienTheRequest -> {
                 if (Objects.equals(bienTheRequest.getId(), bienTheGiay.getId())) {
                     bienTheGiay.setGiaBan(bienTheRequest.getGiaBan());
-                    bienTheGiay.setGiaNhap(bienTheRequest.getGiaNhap());
                 }
             });
         });
@@ -325,7 +323,6 @@ public class GiayServiceImpl implements GiayService {
                         errors.add(bienThe.getMauSac().getId() + ", "
                                 + bienThe.getKichThuoc().getId() + ": Barcode đã tồn tại");
                     }
-                    bienThe.setGiaNhap(bienTheGiayRequest.getGiaNhap());
                     bienThe.setGiaBan(bienTheGiayRequest.getGiaBan());
                     bienThe.setSoLuong(bienTheGiayRequest.getSoLuong());
                     bienThe.setTrangThai(bienTheGiayRequest.getTrangThai());
@@ -352,7 +349,6 @@ public class GiayServiceImpl implements GiayService {
                         .barCode(bienTheGiayRequest.getBarcode())
                         .giay(giay)
                         .giaBan(bienTheGiayRequest.getGiaBan())
-                        .giaNhap(bienTheGiayRequest.getGiaNhap())
                         .mauSac(mauSac)
                         .kichThuoc(kichThuoc)
                         .trangThai(bienTheGiayRequest.getTrangThai())
@@ -371,6 +367,11 @@ public class GiayServiceImpl implements GiayService {
 //        imageHubService.deleteFile(removeFiles); // xóa ảnh
 
         return new GiayResponse(giayRepository.save(giay));
+    }
+
+    @Override
+    public List<GiayResponse> findAllBySearch(GiaySearch giaySearch) {
+        return giayRepository.findAllBySearch(giaySearch);
     }
 
     @Override

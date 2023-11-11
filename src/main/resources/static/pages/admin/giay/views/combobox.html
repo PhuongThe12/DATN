@@ -12,7 +12,7 @@
     <div class="content" ng-show="isActive" style="z-index: 999; width: 94.5%;">
         <div class="search">
             <!-- <i class="uil uil-search"></i> -->
-            <input spellcheck="false" type="text" placeholder="Search" ng-model="searchKeyword">
+            <input spellcheck="false" type="text" placeholder="Search" ng-model="searchKeyword" style="background-color: unset">
         </div>
         <ul class="options">
             <li ng-repeat="item in items | filter: searchKeyword" ng-click="selectItem(item)" ng-class="{selected: item == selectedItem}"

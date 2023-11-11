@@ -1,5 +1,5 @@
 .border-botton-005 {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
 
 .edit-icon {
@@ -24,7 +24,7 @@
 }
 
 .select-btn,
-li {
+.options li {
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -183,7 +183,11 @@ li.selected {
 } */
 
 table tr {
-    height: 50px;
+    height: 50px !important;
+}
+
+.li-height-50 {
+    height: 50px !important;
 }
 
 td {

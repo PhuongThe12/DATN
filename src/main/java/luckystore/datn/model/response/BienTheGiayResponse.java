@@ -24,8 +24,6 @@ public class BienTheGiayResponse {
 
     private String hinhAnh;
 
-    private BigDecimal giaNhap;
-
     private BigDecimal giaBan;
 
     private String barCode;
@@ -42,7 +40,6 @@ public class BienTheGiayResponse {
             this.soLuong = bienTheGiay.getSoLuong();
             this.soLuongLoi = bienTheGiay.getSoLuongLoi();
             this.hinhAnh = bienTheGiay.getHinhAnh();
-            this.giaNhap = bienTheGiay.getGiaNhap();
             this.giaBan = bienTheGiay.getGiaBan();
             this.barCode = bienTheGiay.getBarCode();
             this.trangThai = bienTheGiay.getTrangThai();
@@ -51,10 +48,9 @@ public class BienTheGiayResponse {
         }
     }
 
-    public BienTheGiayResponse(Long id, String tenKT, String tenMS, Integer soLuong, BigDecimal giaBan, BigDecimal giaNhap) {
+    public BienTheGiayResponse(Long id, String tenKT, String tenMS, Integer soLuong, BigDecimal giaBan) {
         this.id = id;
         this.soLuong = soLuong;
-        this.giaNhap = giaNhap;
         this.giaBan = giaBan;
         this.mauSac = MauSacResponse.builder().ten(tenMS).build();
         this.kichThuoc = KichThuocResponse.builder().ten(tenKT).build();

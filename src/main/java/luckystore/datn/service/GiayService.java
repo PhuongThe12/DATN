@@ -29,4 +29,6 @@ public interface GiayService {
     GiayResponse updateGia(GiayRequest giayRequest);
 
     GiayResponse updateGiay(Long id, GiayRequest giayRequest);
+
+    List<GiayResponse> findAllBySearch(GiaySearch giaySearch);
 }

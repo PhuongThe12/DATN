@@ -1,76 +1,115 @@
-<h1>Thêm màu sắc</h1>
-
-<form name="mauSacForm" ng-submit="addMauSac()">
-    <div class="form-group">
-        <label for="mauSacMau">Màu sắc: </label>
-        <input type="color" class="form-control" style="width: 10%; height: 40px;" list="commonColors" id="mauSacMau" name="maMau" ng-model="mauSac.maMau" ng-required="true"
-            ng-change="change(mauSacForm.maMau)">
-        <datalist id="commonColors">
-            <option>#ff80ed</option>
-            <option>#065535</option>
-            <option>#000000</option>
-            <option>#133337</option>
-            <option>#ffc0cb</option>
-            <option>#ffffff</option>
-            <option>#ffe4e1</option>
-            <option>#008080</option>
-            <option>#ff0000</option>
-            <option>#e6e6fa</option>
-            <option>#ffd700</option>
-            <option>#00ffff</option>
-            <option>#ffa500</option>
-            <option>#0000ff</option>
-            <option>#ff7373</option>
-            <option>#c6e2ff</option>
-            <option>#40e0d0</option>
-            <option>#b0e0e6</option>
-            <option>#d3ffce</option>
-            <option>#f0f8ff</option>
-            <option>#666666</option>
-            <option>#faebd7</option>
-            <option>#bada55</option>
-            <option>#fa8072</option>
-            <option>#003366</option>
-            <option>#ffb6c1</option>
-            <option>#c0c0c0</option>
-            <option>#ffff00</option>
-            <option>#800000</option>
-            <option>#c39797</option>
-            <option>#800080</option>
-            <option>#00ff00</option>
-            <option>#fff68f</option>
-            <option>#7fffd4</option>
-            <option>#cccccc</option>
-        </datalist>
-        <small class="text-danger" ng-show="(mauSacForm.maMau.$dirty || mauSacForm.maMau.$touched) && mauSacForm.maMau.$error.required">Không được để
-            trống màu sắc</small>
-        <small class="text-danger" ng-show="errors.maMau && !mauSacForm.maMau.$dirty">{{errors.maMau}}</small>
-    </div>
-
-    <div class="form-group">
-        <label for="mauSacTen">Tên: </label>
-        <input type="text" class="form-control" id="mauSacTen" name="ten" ng-model="mauSac.ten" ng-maxlength="100" ng-required="true"
-            ng-change="change(mauSacForm.ten)">
-        <small class="text-danger" ng-show="(mauSacForm.ten.$dirty || mauSacForm.ten.$touched) && mauSacForm.ten.$error.required">Không được để
-            trống tên</small>
-        <small class="text-danger" ng-show="(mauSacForm.ten.$dirty || mauSacForm.ten.$touched) && mauSacForm.ten.$error.maxlength">Tên không được
-            vượt quá 100 ký tự</small>
-        <small class="text-danger" ng-show="errors.ten && !mauSacForm.ten.$dirty">{{errors.ten}}</small>
-    </div>
-    <div class="form-group">
-        <label for="mauSacMoTa">Mô tả: </label>
-        <textarea class="form-control" id="mauSacMoTa" name="moTa" rows="3" ng-model="mauSac.moTa" ng-change="change(mauSacForm.moTa)"></textarea>
-        <small class="text-danger" ng-show="errors.moTa && !mauSacForm.moTa.$dirty">{{errors.moTa}}</small>
-    </div>
-
-    <div class="form-group">
-        <label>Trạng thái: </label>
-        <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="mauSacTrangThai" name="trangThai" ng-model="mauSac.trangThai" ng-true-value="1"
-                   ng-false-value="0" ng-init="mauSac.trangThai = 1">
-            <label class="form-check-label" for="mauSacTrangThai">Hiển thị</label>
+<div ng-show="isLoading" class="loading-spinner">
+    <div class="text-center" style="  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Màu nền đục để làm mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; ">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
         </div>
-        <small class="text-danger" ng-show="errors.trangThai && !mauSacForm.trangThai.$dirty">{{errors.trangThai}}</small>
     </div>
-    <button type="submit" class="btn btn-primary">Tạo mới</button>
-</form>
+</div>
+<button class="ms-4 mb-3 btn btn-primary" ng-click="backToList()"><i class="fas fa-chevron-left"></i>Danh sách</button>
+<div class="card rounded bg-white ms-4 mx-4">
+    <div class="card-header bg-white">
+        <h5 class="card-title p-2 mt-2">
+            Thêm Màu Sắc
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="p-3">
+
+            <form name="mauSacForm" ng-submit="addMauSac()">
+                <div class="form-group">
+                    <label for="mauSacMau">Màu sắc: </label>
+                    <input type="color" class="form-control" style="width: 10%; height: 40px;" list="commonColors"
+                           id="mauSacMau" name="maMau" ng-model="mauSac.maMau" ng-required="true"
+                           ng-change="change(mauSacForm.maMau)">
+                    <datalist id="commonColors">
+                        <option>#ff80ed</option>
+                        <option>#065535</option>
+                        <option>#000000</option>
+                        <option>#133337</option>
+                        <option>#ffc0cb</option>
+                        <option>#ffffff</option>
+                        <option>#ffe4e1</option>
+                        <option>#008080</option>
+                        <option>#ff0000</option>
+                        <option>#e6e6fa</option>
+                        <option>#ffd700</option>
+                        <option>#00ffff</option>
+                        <option>#ffa500</option>
+                        <option>#0000ff</option>
+                        <option>#ff7373</option>
+                        <option>#c6e2ff</option>
+                        <option>#40e0d0</option>
+                        <option>#b0e0e6</option>
+                        <option>#d3ffce</option>
+                        <option>#f0f8ff</option>
+                        <option>#666666</option>
+                        <option>#faebd7</option>
+                        <option>#bada55</option>
+                        <option>#fa8072</option>
+                        <option>#003366</option>
+                        <option>#ffb6c1</option>
+                        <option>#c0c0c0</option>
+                        <option>#ffff00</option>
+                        <option>#800000</option>
+                        <option>#c39797</option>
+                        <option>#800080</option>
+                        <option>#00ff00</option>
+                        <option>#fff68f</option>
+                        <option>#7fffd4</option>
+                        <option>#cccccc</option>
+                    </datalist>
+                    <small class="text-danger"
+                           ng-show="(mauSacForm.maMau.$dirty || mauSacForm.maMau.$touched) && mauSacForm.maMau.$error.required">Không
+                        được để
+                        trống màu sắc</small>
+                    <small class="text-danger"
+                           ng-show="errors.maMau && !mauSacForm.maMau.$dirty">{{errors.maMau}}</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="mauSacTen">Tên: </label>
+                    <input type="text" class="form-control" id="mauSacTen" name="ten" ng-model="mauSac.ten"
+                           ng-maxlength="100" ng-required="true"
+                           ng-change="change(mauSacForm.ten)">
+                    <small class="text-danger"
+                           ng-show="(mauSacForm.ten.$dirty || mauSacForm.ten.$touched) && mauSacForm.ten.$error.required">Không
+                        được để
+                        trống tên</small>
+                    <small class="text-danger"
+                           ng-show="(mauSacForm.ten.$dirty || mauSacForm.ten.$touched) && mauSacForm.ten.$error.maxlength">Tên
+                        không được
+                        vượt quá 100 ký tự</small>
+                    <small class="text-danger" ng-show="errors.ten && !mauSacForm.ten.$dirty">{{errors.ten}}</small>
+                </div>
+                <div class="form-group">
+                    <label for="mauSacMoTa">Mô tả: </label>
+                    <textarea class="form-control" id="mauSacMoTa" name="moTa" rows="3" ng-model="mauSac.moTa"
+                              ng-change="change(mauSacForm.moTa)"></textarea>
+                    <small class="text-danger" ng-show="errors.moTa && !mauSacForm.moTa.$dirty">{{errors.moTa}}</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Trạng thái: </label>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="mauSacTrangThai" name="trangThai"
+                               ng-model="mauSac.trangThai" ng-true-value="1"
+                               ng-false-value="0" ng-init="mauSac.trangThai = 1">
+                        <label class="form-check-label" for="mauSacTrangThai">Hiển thị</label>
+                    </div>
+                    <small class="text-danger" ng-show="errors.trangThai && !mauSacForm.trangThai.$dirty">{{errors.trangThai}}</small>
+                </div>
+                <button type="submit" class="btn btn-primary">Tạo mới</button>
+            </form>
+
+        </div>
+    </div>
+</div>

@@ -38,7 +38,4 @@ public class HashTagChiTiet {
     @JoinColumn(name = "ID_HASHTAG")
     private HashTag hashTag;
 
-    @Column(name = "NGAY_TAO")
-    private LocalDateTime ngayTao;
-
 }
