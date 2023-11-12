@@ -1,15 +1,40 @@
+
+<div ng-show="isLoading" class="loading-spinner">
+    <div class="text-center" style="  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Màu nền đục để làm mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; ">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<div class="title-page">
+    <h5>Dây giày</h5>
+    <div class="d-flex">
+        <p class="text-secondary m-0">Trang chủ - Quản Lý Dây Giày - Danh Sách</p>
+    </div>
+</div>
 <div class="card" style="margin: 20px">
-    <h5>Danh sách dây giày</h5>
     <div class="card-body">
         <div class="d-flex add-search-custom">
-            <div class="input-group w-25">
+            <div class="input-group w-50">
                 <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
                 <input id="seachText" class="form-control" type="text" ng-model="searchText"
                        placeholder="Nhập từ khóa">
                 <button class="btn btn-custom " ng-click="search()">Tìm kiếm</button>
+                <button class="btn btn-custom mx-2" ng-click="resetSearch()">Nhập lại</button>
             </div>
-            <a class="btn btn-primary" href="#/add">Thêm dây giày</a>
+            <a class="btn btn-primary" href="#/add"><i class="fas fa-plus px-2 small"></i>Thêm chất liệu</a>
         </div>
+
 
         <div class="d-flex justify-content-start radio-filter">
             <div class="custom-radio">
@@ -28,7 +53,7 @@
             <div class="custom-radio">
                 <input type="radio" id="disable" name="status" ng-model="status" value="0" ng-checked="status == 0"
                        ng-change="changeRadio(0)">
-                <label class="radio-label" for="disable">Ngừng kinh doanh</label>
+                <label class="radio-label" for="disable">Đã ẩn</label>
             </div>
         </div>
 
@@ -36,14 +61,12 @@
             <table class="table align-middle text-center" border="1">
                 <tr>
                     <th>Tên</th>
-                    <th>Màu sắc</th>
                     <th>Trạng thái</th>
                     <th></th>
                 </tr>
 
                 <tr ng-repeat="dayGiay in dayGiays">
                     <td>{{dayGiay.ten}}</td>
-                    <td>{{dayGiay.mauSac}}</td>
                     <td>
                         <h5>
                 <span ng-class="{'badge bd-success-custom': dayGiay.trangThai == 1, 'badge bd-danger-custom': dayGiay.trangThai != 1}">
@@ -78,7 +101,7 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Chi Tiết Màu Sắc</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Chi Tiết Chất Liệu</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -97,7 +120,7 @@
                     </tr>
 
                     <tr>
-                        <td>Trạng thái:</td>
+                        <td>Mô tả :</td>
                         <th>
                             <h5>
                 <span ng-class="{'badge bd-success-custom': dayGiayDetail.trangThai == 1, 'badge bd-danger-custom': dayGiayDetail.trangThai != 1}">

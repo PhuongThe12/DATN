@@ -23,10 +23,8 @@ public class RestTaiKhoanController {
 
     @PostMapping("/detail")
     public ResponseEntity<?> detail(@RequestBody TaiKhoanRequest taiKhoanRequest) {
-        System.out.println(taiKhoanRequest);
 //        ResponseEntity errorJson = getErrorJson(bindingResult);
 //        if (errorJson != null) return errorJson;
-        System.out.println("Data " + taiKhoanService.login(taiKhoanRequest));
         return new ResponseEntity(taiKhoanService.login(taiKhoanRequest), HttpStatus.OK);
     }
 

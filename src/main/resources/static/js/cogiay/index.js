@@ -5,17 +5,16 @@ app.config(function ($routeProvider, $locationProvider) {
         .when("/list", {
             templateUrl: '/pages/admin/cogiay/views/list.html',
             controller: 'coGiayListController'
-        }).when("/detail/:id", {
-        templateUrl: '/pages/admin/cogiay/views/detail.html',
-        controller: 'detailCoGiayController'
-    }).when("/update/:id", {
-        templateUrl: '/pages/admin/cogiay/views/update.html',
-        controller: 'updateCoGiayController'
-    }).when("/add", {
-        templateUrl: '/pages/admin/cogiay/views/add.html',
-        controller: 'addCoGiayController'
-    })
-        .otherwise({ redirectTo: '/list' });
+        })
+        .when("/update/:id", {
+            templateUrl: '/pages/admin/cogiay/views/update.html',
+            controller: 'updateCoGiayController'
+        })
+        .when("/add", {
+            templateUrl: '/pages/admin/cogiay/views/add.html',
+            controller: 'addCoGiayController'
+        })
+        .otherwise({redirectTo: '/list'});
 });
 
 app.controller("addCoGiayController", function ($scope, $http, $location) {
@@ -24,10 +23,30 @@ app.controller("addCoGiayController", function ($scope, $http, $location) {
         input.$dirty = true;
     }
 
+    $scope.comfirmAdd = function () {
+        Swal.fire({
+            text: "Xác nhận thêm?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $scope.addCoGiay();
+            }
+
+        });
+    }
+
     $scope.addCoGiay = function () {
+        $scope.isLoading = true;
         if ($scope.coGiayForm.$invalid) {
+            $scope.isLoading = false;
             return;
         }
+
         $http.post(host + '/admin/rest/co-giay', $scope.coGiay)
             .then(function (response) {
                 if (response.status === 200) {
@@ -41,22 +60,10 @@ app.controller("addCoGiayController", function ($scope, $http, $location) {
                     $scope.coGiayForm.ten.$dirty = false;
                     $scope.coGiayForm.moTa.$dirty = false;
                     $scope.errors = error.data;
+                    $scope.isLoading = false;
                 }
             });
     }
-
-});
-
-
-app.controller("detailCoGiayController", function ($scope, $http, $location, $routeParams) {
-    const id = $routeParams.id;
-    $http.get(host + '/admin/rest/co-giay/' + id)
-        .then(function (response) {
-            $scope.coGiay = response.data;
-        }).catch(function (error) {
-        toastr["error"]("Lấy dữ liệu thất bại");
-        $location.path("/list");
-    });
 
 });
 
@@ -69,7 +76,7 @@ app.controller("coGiayListController", function ($scope, $http, $window, $locati
     let searchText;
 
     $scope.search = function () {
-        if(!$scope.searchText) {
+        if (!$scope.searchText) {
             toastr["error"]("Vui lòng nhập tên muốn tìm kiếm");
             return;
         }
@@ -83,14 +90,15 @@ app.controller("coGiayListController", function ($scope, $http, $window, $locati
     }
 
     function getData(currentPage) {
+        $scope.isLoading = true;
         let apiUrl = host + '/admin/rest/co-giay?page=' + currentPage;
         if (searchText) {
             apiUrl += '&search=' + searchText;
         }
 
-        if($scope.status == 0) {
+        if ($scope.status === 0) {
             apiUrl += '&status=' + 0;
-        } else if($scope.status == 1) {
+        } else if ($scope.status === 1) {
             apiUrl += '&status=' + 1;
         }
 
@@ -98,11 +106,30 @@ app.controller("coGiayListController", function ($scope, $http, $window, $locati
             .then(function (response) {
                 $scope.coGiays = response.data.content;
                 $scope.numOfPages = response.data.totalPages;
+                $scope.isLoading = false;
             })
             .catch(function (error) {
                 toastr["error"]("Lấy dữ liệu thất bại");
                 // window.location.href = feHost + '/trang-chu';
             });
+    }
+
+    $scope.resetSearch = function () {
+        searchText = null;
+        $scope.searchText = '';
+        $scope.status = -1;
+        getData(1);
+    }
+
+    $scope.detailCoGiay = function (val) {
+        const id = val;
+        if (!isNaN(id)) {
+            $scope.coGiayDetail = $scope.coGiays.find(function (coGiay) {
+                return coGiay.id === id;
+            });
+        } else {
+            toastr["error"]("Lấy dữ liệu thất bại");
+        }
     }
 
     $scope.$watch('curPage + numPerPage', function () {
@@ -116,21 +143,41 @@ app.controller("updateCoGiayController", function ($scope, $http, $routeParams, 
     $scope.change = function (input) {
         input.$dirty = true;
     }
+
+    $scope.isLoading = true;
     $http.get(host + '/admin/rest/co-giay/' + id)
         .then(function (response) {
             $scope.coGiay = response.data;
+            $scope.isLoading = false;
         }).catch(function (error) {
         toastr["error"]("Lấy dữ liệu thất bại");
         $location.path("/list");
     });
 
+    $scope.comfirmUpdate = function () {
+        Swal.fire({
+            text: "Xác nhận cập nhật?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $scope.updateCoGiay();
+            }
+        });
+    }
     $scope.updateCoGiay = function () {
+        $scope.isLoading = true;
         if ($scope.coGiayForm.$invalid) {
+            $scope.isLoading = false;
             return;
         }
         $http.put(host + '/admin/rest/co-giay/' + id, $scope.coGiay)
             .then(function (response) {
-                if (response.status == 200) {
+                if (response.status === 200) {
                     toastr["success"]("Cập nhật thành công")
                 } else {
                     toastr["error"]("Cập nhât thất bại. Lỗi bất định")
@@ -142,6 +189,7 @@ app.controller("updateCoGiayController", function ($scope, $http, $routeParams, 
                 $scope.coGiayForm.ten.$dirty = false;
                 $scope.coGiayForm.moTa.$dirty = false;
                 $scope.errors = error.data;
+                $scope.isLoading = false;
             }
         })
     };

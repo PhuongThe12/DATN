@@ -1,0 +1,16 @@
+<h1>Hoạt động gần đây</h1>
+
+<div class="col-md-5" style="overflow-y: auto;height: 327px;">
+    <table class="table">
+        <tr>
+            <td>Người Thực Hiện</td>
+            <td>Hành Động</td>
+            <td>Thời Gian</td>
+        </tr>
+        <tr ng-repeat="hanhDong in listHanhDong">
+            <th>{{hanhDong.performerName}}</th>
+            <th>{{hanhDong.actionDescription}}</th>
+            <th>{{hanhDong.timestamp}}</th>
+        </tr>
+    </table>
+</div>

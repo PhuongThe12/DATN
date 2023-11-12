@@ -1,0 +1,146 @@
+<div ng-show="isLoading" class="loading-spinner">
+    <div class="text-center" style="  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Màu nền đục để làm mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; ">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<div class="title-page">
+    <h5>Nhân Viên</h5>
+    <div class="d-flex">
+        <p class="text-secondary m-0">Trang chủ - Quản Lý Nhân Viên - Danh Sách</p>
+    </div>
+</div>
+<div class="box-shadow-page" style="margin: 20px">
+    <div class="card-body">
+        <div class="d-flex add-search-custom">
+            <div class="">
+                <a class="btn btn-primary" href="#/add">Thêm Nhân Viên</a>
+            </div>
+        </div>
+        <div>
+            <div class="card rounded-md bg-white">
+                <main class="card-body p-6">
+                    <div class="d-md-flex justify-content-between align-items-center mb-6">
+
+                        <div>
+                            <h4 class="card-title fw-bold">
+                                Danh Sách Nhân Viên
+                            </h4>
+                            <div class="d-flex justify-content-start radio-filter">
+                                <div class="custom-radio">
+                                    <input type="radio" id="all" name="status" ng-model="status" value="-1"
+                                           ng-checked="status != 1 && status != 2"
+                                           ng-change="changeRadio(-1)">
+                                    <label class="radio-label" for="all">Tất cả</label>
+                                </div>
+
+                                <div class="custom-radio">
+                                    <input type="radio" id="choThanhToan" name="status" ng-model="status" value="1"
+                                           ng-checked="status == 1"
+                                           ng-change="changeRadio(1)">
+                                    <label class="radio-label" for="choThanhToan">Chờ thanh toán</label>
+                                </div>
+
+                                <div class="custom-radio">
+                                    <input type="radio" id="daThanhToan" name="status" ng-model="status" value="2"
+                                           ng-checked="status == 2"
+                                           ng-change="changeRadio(2)">
+                                    <label class="radio-label" for="daThanhToan">Đã thanh toán</label>
+                                </div>
+                                <div class="custom-radio">
+                                    <input type="radio" id="choDongGoi" name="status" ng-model="status" value="3"
+                                           ng-checked="status == 3"
+                                           ng-change="changeRadio(3)">
+                                    <label class="radio-label" for="choDongGoi">Chờ đóng gói</label>
+                                </div>
+                                <div class="custom-radio">
+                                    <input type="radio" id="choGiaoHang" name="status" ng-model="status" value="4"
+                                           ng-checked="status == 4"
+                                           ng-change="changeRadio(4)">
+                                    <label class="radio-label" for="choGiaoHang">Chờ giao hàng</label>
+                                </div>
+                                <div class="custom-radio">
+                                    <input type="radio" id="dangGiaoHang" name="status" ng-model="status" value="5"
+                                           ng-checked="status == 5"
+                                           ng-change="changeRadio(5)">
+                                    <label class="radio-label" for="dangGiaoHang">Đang giao hành</label>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <div class="form-group">
+                                    <input type="text" ng-model="searchText" ng-change="search()"
+                                           placeholder="search..." class="form-control py-2">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <table class="table align-middle table-borderless text-center mw-100" border="1">
+                            <tr>
+                                <th>Mã Hóa Đơn</th>
+                                <th>Ngày Tạo Đơn</th>
+                                <th>Tên Khách Hàng</th>
+                                <th>Người Tạo</th>
+                                <th>Trạng Thái Đơn Hàng</th>
+                                <th>Khách Phải Trả</th>
+                                <th>Action</th>
+                            </tr>
+
+                            <tr ng-repeat="hoaDon in hoaDons">
+                                <td>{{hoaDon.id}}</td>
+                                <td>{{hoaDon.ngayTao}}</td>
+                                <td>{{hoaDon.khachHang.hoTen}}</td>
+                                <td>{{hoaDon.nhanVien.hoTen}}</td>
+                                <td><h5>
+               <span ng-class="{
+                  'badge bd-warning-custom': hoaDon.trangThai == 1,
+                  'badge bd-success-custom': hoaDon.trangThai == 2,
+                  'badge bd-info-custom': hoaDon.trangThai == 3,
+                  'badge bd-redOrange-custom': hoaDon.trangThai == 4,
+                  'badge bd-blueDark-custom': hoaDon.trangThai == 5
+                }">
+              <span ng-if="hoaDon.trangThai == 1">Chờ thanh toán</span>
+              <span ng-if="hoaDon.trangThai == 2">Đã thanh toán</span>
+              <span ng-if="hoaDon.trangThai == 3">Chờ đóng gói</span>
+              <span ng-if="hoaDon.trangThai == 4">Chờ giao hàng</span>
+              <span ng-if="hoaDon.trangThai == 5">Đang giao hàng</span>
+</span>
+                                </h5></td>
+                                <td>
+                                    {{hoaDon.tongTien == null ? "NaN" : hoaDon.tongTien}}
+                                </td>
+                                <td>
+                                    <div class="d-sm-inline-flex">
+                                        <a class="btn btn-custom" ng-href="#/detail/{{hoaDon.id}}"
+                                           data-bs-placement="top"
+                                           title="Chi Tiết"><i class="far fa-edit"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </main>
+            </div>
+            <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages" data-current-page="curPage"
+                 data-max-size="maxSize"
+                 data-boundary-links="true">
+            </div>
+
+
+        </div>
+    </div>
+</div>

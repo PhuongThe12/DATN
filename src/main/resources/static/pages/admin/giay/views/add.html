@@ -1,3 +1,20 @@
+<div ng-show="isLoading" class="loading-spinner">
+    <div class="text-center" style="  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Màu nền đục để làm mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; ">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
+
 <img src="{{image}}" alt="">
 <h1>Thêm giày</h1>
 <form name="addGiayForm" novalidate>
@@ -17,7 +34,7 @@
     </div>
 
     <!-- Hình ảnh -->
-    <div class="px-3">
+    <div class="p-3">
         <label>Hình ảnh <sup class="text-danger">(cần ít nhất một ảnh)</sup></label>
         <div class="imageContainer d-flex flex-row">
 
@@ -120,16 +137,17 @@
                 </div>
             </div>
         </div>
+        <div><small class="text-danger" ng-show="errors.anh">Phải chọn ít nhất một ảnh</small></div>
     </div>
 
     <!-- combobox -->
     <!-- Lót giày, Mũi giày -->
-    <div class="row g-3">
+    <div class="row g-3 py-2">
         <div class="col-md-4 position-relative">
             <div class="wrapper px-3 py-2">
                 <label for="lotGiay">Lót giày <sup class="text-danger">(*)</sup></label>
                 <custom-select id="lotGiay" title="lót giày" items="lotGiays" ng-model="selectedLotGiay"
-                               modal-id="{{modalLotGiay}}"></custom-select>
+                               modal-id="modalLotGiay"></custom-select>
             </div>
         </div>
 
@@ -137,7 +155,7 @@
             <div class="wrapper px-3 py-2">
                 <label for="muiGiay">Mũi giày <sup class="text-danger">(*)</sup></label>
                 <custom-select id="muiGiay" title="mũi giày" items="muiGiays" ng-model="selectedMuiGiay"
-                               modal-id="{{modalMuiGiay}}"></custom-select>
+                               modal-id="modalMuiGiay"></custom-select>
             </div>
         </div>
 
@@ -145,18 +163,18 @@
             <div class="wrapper px-3 py-2">
                 <label for="coGiay">Cổ giày <sup class="text-danger">(*)</sup></label>
                 <custom-select id="coGiay" title="cổ giày" items="coGiays" ng-model="selectedCoGiay"
-                               modal-id="{{modalCoGiay}}"></custom-select>
+                               modal-id="modalCoGiay"></custom-select>
             </div>
         </div>
     </div>
 
-    <div class="row g-3">
+    <div class="row g-3 py-2">
 
         <div class="col-md-4 position-relative">
             <div class="wrapper px-3 py-2">
                 <label for="thuongHieu">Thương hiệu <sup class="text-danger">(*)</sup></label>
                 <custom-select id="thuongHieu" title="mũi giày" items="thuongHieus" ng-model="selectedThuongHieu"
-                               modal-id="{{modalThuongHieu}}"></custom-select>
+                               modal-id="modalThuongHieu"></custom-select>
             </div>
         </div>
 
@@ -164,24 +182,24 @@
             <div class="wrapper px-3 py-2">
                 <label for="chatLieu">Chất liệu <sup class="text-danger">(*)</sup></label>
                 <custom-select id="chatLieu" title="chất liệu" items="chatLieus" ng-model="selectedChatLieu"
-                               modal-id="{{modalChatLieu}}"></custom-select>
+                               modal-id="modalChatLieu"></custom-select>
             </div>
         </div>
         <div class="col-md-4 position-relative">
             <div class="wrapper px-3 py-2">
                 <label for="dayGiay">Đây giày <sup class="text-danger">(*)</sup></label>
                 <custom-select id="dayGiay" title="dây giày" items="dayGiays" ng-model="selectedDayGiay"
-                               modal-id="{{modalDayGiay}}"></custom-select>
+                               modal-id="modalDayGiay"></custom-select>
             </div>
         </div>
     </div>
 
-    <div class="row g-3">
+    <div class="row g-3 py-2">
         <div class="col-md-4 position-relative">
             <div class="wrapper px-3 py-2">
                 <label for="deGiay">Đế giày <sup class="text-danger">(*)</sup></label>
                 <custom-select id="deGiay" title="Đế giày" items="deGiays" ng-model="selectedDeGiay"
-                               modal-id="{{modalDeGiay}}"></custom-select>
+                               modal-id="modalDeGiay"></custom-select>
             </div>
         </div>
 
@@ -190,7 +208,7 @@
                 <label for="hashTag">Hashtag </label>
                 <custom-input select-type="hashtag" id="hashTag" title="hashtag" items="hashTags"
                               ng-model="selectedHashTag"
-                              modal-id="{{modalHashTag}}"></custom-input>
+                              modal-id="modalHashTag"></custom-input>
             </div>
         </div>
 
@@ -199,26 +217,26 @@
                 <label for="kichThuoc">Kích thước <sup class="text-danger">(*)</sup></label>
                 <custom-input select-type="kichthuoc" id="kichThuoc" title="kích thước" items="kichThuocs"
                               ng-model="selectedKichThuoc"
-                              modal-id="{{modalKichThuoc}}"></custom-input>
+                              modal-id="modalKichThuoc"></custom-input>
                 <label type="button" id="inputChangeKichThuoc" hidden ng-click="changeSelectedKichThuoc()"></label>
             </div>
         </div>
     </div>
     <!-- màu sắc, kích thước -->
-    <div class="row g-3">
+    <div class="row g-3 py-2">
 
         <div class="col-md-4 position-relative">
             <div class="wrapper px-3 py-2">
                 <label for="mauSac">Màu sắc <sup class="text-danger">(*)</sup></label>
                 <custom-input select-type="mausac" id="mauSac" title="màu sắc" items="mauSacs" ng-model="selectedMauSac"
-                              modal-id="{{modalMauSac}}"></custom-input>
+                              modal-id="modalMauSac"></custom-input>
                 <label type="button" hidden id="inputChangeMauSac" ng-click="changeSelectedKichThuoc()"></label>
             </div>
         </div>
 
         <div class="col-md-4 position-relative">
             <div class="wrapper px-3 py-2">
-                <label for="namSX" class="form-label">Năm sản xuất <sup class="text-danger">(*)</sup></label>
+                <label for="namSX">Năm sản xuất <sup class="text-danger">(*)</sup></label>
                 <input type="number" step="1" class="form-control" id="namSX" name="namSX" ng-model="namSX" min="1000"
                        ng-init="namSX = 2020" max="9999" ng-required="true">
                 <small class="text-danger"
@@ -230,7 +248,7 @@
 
         <div class="col-md-4 position-relative">
             <div class="wrapper px-3 py-2">
-                <label for="mauSac">Trạng thái <sup class="text-danger">(*)</sup></label>
+                <label>Trạng thái <sup class="text-danger">(*)</sup></label>
                 <div class="w-100 form-switch">
                     <input class="form-check-input" type="checkbox" id="trangThaiGiay" name="trangThai"
                            style="cursor: pointer;"
@@ -262,32 +280,33 @@
 
     <!-- Biến thể -->
 
-    <div ng-show="selectedMauSac.length > 0 && selectedKichThuoc.length > 0">
-        <div class="input-group mb-3 row g-3 d-flex align-items-center justify-content-center">
+    <div class="wrapper px-3 py-2" ng-show="selectedMauSac.length > 0 && selectedKichThuoc.length > 0">
+        <div class="input-group mb-3 row g-3 py-2 d-flex align-items-center justify-content-center">
             <span class=" col col-2">Chỉnh sửa cho toàn bộ</span>
+
             <div class="col col-3">
                 <div class="input-group mb-3 px-3 py-2" style="margin-bottom: 0 !important;">
-                    <span class="input-group-text text-black-50" id="giaNhapAll">Giá nhập ₫</span>
-                    <input type="number" class="form-control" ng-model="giaNhapAll" aria-label="Giá nhập"
-                           aria-describedby="labelGiaNhapAll">
-                </div>
-            </div>
-            <div class="col col-3">
-                <div class="input-group mb-3 px-3 py-2" style="margin-bottom: 0 !important;">
-                    <span class="input-group-text text-black-50" id="labelGiaBanAll">Giá bán ₫</span>
+                    <span class="input-group-text text-black-50" id="labelGiaBanAll">Giá bán</span>
                     <input type="number" class="form-control" ng-model="giaBanAll" aria-label="Giá bán"
                            aria-describedby="labelGiaBanAll">
                 </div>
             </div>
-            <button type="button" class="btn btn-primary col col-3">Cập nhật cho toàn bộ</button>
+            <div class="col col-3">
+                <div class="input-group mb-3 px-3 py-2" style="margin-bottom: 0 !important;">
+                    <span class="input-group-text text-black-50" id="labelSoLuongAll">Số lượng</span>
+                    <input type="number" class="form-control" ng-model="soLuongAll" aria-label="Số lượng"
+                           aria-describedby="labelSoLuongAll">
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary col col-2" ng-click="updateForAll()">Cập nhật cho toàn bộ
+            </button>
         </div>
 
         <!-- Bảng phân loại -->
         <table class="table table-bordered align-middle text-center">
-            <thead class="">
+            <thead  style="border: 1px solid rgba(0, 0, 0, 0.1);">
             <th>Màu sắc</th>
             <th>Kích thước</th>
-            <th>Giá nhập</th>
             <th>Giá bán</th>
             <th>Số lượng</th>
             <th>Trạng thái</th>
@@ -295,7 +314,7 @@
             </thead>
 
             <tbody ng-repeat="(msIndex, mauSac) in selectedMauSacs">
-            <tr ng-repeat="(ktIndex, kichThuoc) in mauSac.selectedKichThuocs">
+            <tr ng-repeat="(ktIndex, kichThuoc) in mauSac.selectedKichThuocs" style="border: 1px solid rgba(0, 0, 0, 0.1);">
                 <td ng-if="$first" rowspan="{{mauSac.selectedKichThuocs.length}}">
                     <div class="imageContainer d-flex flex-column justify-content-center">
                                 <span><span ng-style="{'color': mauSac.maMau}" class="px-1"><i
@@ -317,7 +336,7 @@
                                     <small class="imageText">Thêm ảnh</small>
                                 </div>
                             </label>
-                            <div class="remove-icon text-center" style="display: none; right: 20%; top: -5px;"
+                            <div class="remove-icon text-center" style="display: none; right: 12%; top: -5px;"
                                  ng-click="removeImageColor($event, mauSac.id, msIndex, ktIndex)"><i
                                     class="fas fa-times"></i>
                             </div>
@@ -325,59 +344,46 @@
                     </div>
                 </td>
                 <td>{{kichThuoc.ten}}</td>
-                <td>
-                    <div class="input-group mb-3 px-3 d-flex flex-column" style="margin-bottom: 0 !important;">
-                        <div class="d-flex flex-row">
-                            <span class="input-group-text text-black-50" id="labelGiaBan{{msIndex}}{{ktIndex}}">₫</span>
-                            <input type="number" class="form-control" ng-model="kichThuoc.giaNhap" placeholder="Giá nhập"
-                                   aria-label="Giá nhập" ng-required="true" min="0" ng-change="changeInput(msIndex, ktIndex, 'giaNhap')"
-                                   ng-blur="blurInput(msIndex, ktIndex, 'giaNhap')" name="giaNhap" onkeypress="nextInput(event)"
-                                   aria-describedby="labelGiaNhap{{msIndex}}{{ktIndex}}">
-                        </div>
-                        <div>
-                            <small class="text-danger"
-                                   ng-show="kichThuoc.errors.giaNhap">{{kichThuoc.errors.giaNhap}}</small></div>
-                        <div>
-                    </div>
 
-                </td>
                 <td>
                     <div class="input-group mb-3 px-3 d-flex flex-column" style="margin-bottom: 0 !important;">
                         <div class="d-flex flex-row">
                             <span class="input-group-text text-black-50" id="labelGiaBan{{msIndex}}{{ktIndex}}">₫</span>
-                            <input type="number" class="form-control" ng-model="kichThuoc.giaBan" placeholder="Giá bán"
+                            <input type="number" class="form-control" ng-model="kichThuoc.giaBan"
+                                   placeholder="Giá bán"  id="giaBan{{msIndex}}{{ktIndex}}"
                                    aria-label="Giá bán" ng-required="true" min="0"
+                                   ng-change="changeInput(msIndex, ktIndex, 'giaBan')"
+                                   ng-blur="blurInput(msIndex, ktIndex, 'giaBan')" name="giaBan"
+                                   onkeypress="nextInput(event)"
                                    aria-describedby="labelGiaBan{{msIndex}}{{ktIndex}}">
                         </div>
                         <div>
                             <small class="text-danger"
-                                   ng-show="(addGiayForm.kichThuoc.giaBan.$dirty || addGiayForm.kichThuoc.giaBan.$touched) && addGiayForm.kichThuoc.giaBan.$error.required">Không
-                                được để trống</small></div>
-                        <div><small class="text-danger"
-                                    ng-show="(addGiayForm.kichThuoc.giaBan.$dirty || addGiayForm.kichThuoc.giaBan.$touched) && addGiayForm.kichThuoc.giaBan.$error.min">Số
-                            lượng không được âm</small></div>
+                                   ng-show="kichThuoc.errors.giaBan">{{kichThuoc.errors.giaBan}}</small>
+                        </div>
                     </div>
-
                 </td>
                 <td>
                     <div class="input-group mb-3 px-3 d-flex flex-column" style="margin-bottom: 0 !important;">
                         <div class="d-flex flex-row">
                             <input type="number" step="1" class="form-control" ng-model="kichThuoc.soLuong"
-                                   placeholder="Số lượng" ng-required="true" min="0" ng-init="kichThuoc.soLuong = 0">
+                                   placeholder="Số lượng" ng-required="true" min="0" id="soLuong{{msIndex}}{{ktIndex}}"
+                                   ng-change="changeInput(msIndex, ktIndex, 'soLuong')"
+                                   ng-blur="blurInput(msIndex, ktIndex, 'soLuong')" name="soLuong"
+                                   onkeypress="nextInput(event)"
+                                   ng-init="kichThuoc.soLuong = 0">
                         </div>
                         <div>
                             <small class="text-danger"
-                                   ng-show="(addGiayForm.kichThuoc.soLuong.$dirty || addGiayForm.kichThuoc.soLuong.$touched) && addGiayForm.kichThuoc.soLuong.$error.required">Không
-                                được để trống</small></div>
-                        <div><small class="text-danger"
-                                    ng-show="(addGiayForm.kichThuoc.soLuong.$dirty || addGiayForm.kichThuoc.soLuong.$touched) && addGiayForm.kichThuoc.soLuong.$error.min">Số
-                            lượng không được âm</small></div>
+                                   ng-show="kichThuoc.errors.soLuong">{{kichThuoc.errors.soLuong}}</small>
+                        </div>
+
                     </div>
                 </td>
                 <td>
                     <div class="w-100 form-switch">
                         <input class="form-check-input" type="checkbox" id="kichThuocTrangThai" name="trangThai"
-                               style="cursor: pointer;" ng-required="true"
+                               style="cursor: pointer;"
                                ng-model="kichThuoc.trangThai" ng-true-value="1" ng-false-value="0"
                                ng-init="kichThuoc.trangThai = 1">
                     </div>
@@ -386,14 +392,19 @@
                     <div class="input-group mb-3 px-3 d-flex flex-column">
                         <div class="d-flex flex-row">
                             <input type="text" class="form-control" ng-model="kichThuoc.barcode" name="barcode"
-                                   id="barcode{{msIndex}}{{ktIndex}}" placeholder="Barcode" ng-required="true">
+                                   id="barcode{{msIndex}}{{ktIndex}}" placeholder="Barcode"
+                                   ng-change="changeInput(msIndex, ktIndex, 'barcode')"
+                                   ng-blur="blurInput(msIndex, ktIndex, 'barcode')" name="barcode"
+                                   onkeypress="nextInput(event)"
+                                   ng-required="true">
                             <button type="button" role="button" class="input-group-text"
                                     ng-click="setBarcode(msIndex, ktIndex)"><i class="fas fa-qrcode"></i>
                             </button>
                         </div>
-                        <div><small class="text-danger"
-                                    ng-show="(addGiayForm.barcode.$dirty || addGiayForm.barcode.$touched) && addGiayForm.barcode.$error.required">Không
-                            được để trống</small></div>
+                        <div>
+                            <small class="text-danger"
+                                   ng-show="kichThuoc.errors.barcode">{{kichThuoc.errors.barcode}}</small>
+                        </div>
                     </div>
                 </td>
             </tr>
@@ -479,3 +490,607 @@
     </div>
 
 </form>
+
+<!-- Modal Chất liệu -->
+<div class="modal fade" onclick="event.stopPropagation()" id="modalChatLieu" tabindex="-1"
+     aria-labelledby="modalChatLieuLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalChatLieuLabel">Thêm chất liệu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <form name="chatLieuForm" ng-submit="addChatLieu()">
+                    <div class="form-group">
+                        <label for="chatLieuTen">Tên: </label>
+                        <input type="text" class="form-control" id="chatLieuTen" name="ten" ng-model="chatLieu.ten" ng-maxlength="100" ng-required="true"
+                               ng-change="change(chatLieuForm.ten)">
+                        <small class="text-danger" ng-show="(chatLieuForm.ten.$dirty || chatLieuForm.ten.$touched) && chatLieuForm.ten.$error.required">Không được để
+                            trống tên</small>
+                        <small class="text-danger" ng-show="(chatLieuForm.ten.$dirty || chatLieuForm.ten.$touched) && chatLieuForm.ten.$error.maxlength">Tên không được
+                            vượt quá 100 ký tự</small>
+                        <small class="text-danger" ng-show="errors.ten && !chatLieuForm.ten.$dirty">{{errors.ten}}</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="chatLieuMoTa">Mô tả: </label>
+                        <textarea class="form-control" id="chatLieuMoTa" name="moTa" rows="3" ng-model="chatLieu.moTa" ng-minlength="3" ng-maxlength="3000" ng-required="true" ng-change="change(chatLieuForm.moTa)"></textarea>
+                        <small class="text-danger" ng-show="(chatLieuForm.moTa.$dirty || chatLieuForm.moTa.$touched) && chatLieuForm.moTa.$error.required">Không được để
+                            trống mô tả</small>
+                        <small class="text-danger" ng-show="(chatLieuForm.moTa.$dirty || chatLieuForm.moTa.$touched) && chatLieuForm.moTa.$error.minlength">Mô tả không được quá ngắn</small>
+                        <small class="text-danger" ng-show="(chatLieuForm.moTa.$dirty || chatLieuForm.moTa.$touched) && chatLieuForm.moTa.$error.maxlength">Mô tả không được quá 3000 ký tự</small>
+                        <small class="text-danger" ng-show="errors.moTa && !chatLieuForm.moTa.$dirty">{{errors.moTa}}</small>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="chatLieuMoTa">Trạng thái: </label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="chatLieuTrangThai" name="trangThai" ng-model="chatLieu.trangThai" ng-true-value="1"
+                                   ng-false-value="0" ng-init="chatLieu.trangThai = 1">
+                            <label class="form-check-label" for="chatLieuTrangThai">Hiển thị</label>
+                        </div>
+                        <small class="text-danger" ng-show="errors.trangThai && !chatLieuForm.trangThai.$dirty">{{errors.trangThai}}</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Tạo mới</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Lót giày -->
+<div class="modal fade" onclick="event.stopPropagation()" id="modalLotGiay" tabindex="-1"
+     aria-labelledby="modalLotGiayLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLotGiayLabel">Thêm lót giày</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <form name="lotGiayForm" ng-submit="addLotGiay()">
+                    <div class="form-group">
+                        <label for="lotGiayTen">Tên: </label>
+                        <input type="text" class="form-control" id="lotGiayTen" name="ten" ng-model="lotGiay.ten" ng-maxlength="100" ng-required="true"
+                               ng-change="change(lotGiayForm.ten)">
+                        <small class="text-danger" ng-show="(lotGiayForm.ten.$dirty || lotGiayForm.ten.$touched) && lotGiayForm.ten.$error.required">Không được để
+                            trống tên</small>
+                        <small class="text-danger" ng-show="(lotGiayForm.ten.$dirty || lotGiayForm.ten.$touched) && lotGiayForm.ten.$error.maxlength">Tên không được
+                            vượt quá 100 ký tự</small>
+                        <small class="text-danger" ng-show="errors.ten && !lotGiayForm.ten.$dirty">{{errors.ten}}</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="lotGiayMoTa">Mô tả: </label>
+                        <textarea class="form-control" id="lotGiayMoTa" name="moTa" rows="3" ng-model="lotGiay.moTa" ng-minlength="3" ng-maxlength="3000" ng-required="true" ng-change="change(lotGiayForm.moTa)"></textarea>
+                        <small class="text-danger" ng-show="(lotGiayForm.moTa.$dirty || lotGiayForm.moTa.$touched) && lotGiayForm.moTa.$error.required">Không được để
+                            trống mô tả</small>
+                        <small class="text-danger" ng-show="(lotGiayForm.moTa.$dirty || lotGiayForm.moTa.$touched) && lotGiayForm.moTa.$error.minlength">Mô tả không được quá ngắn</small>
+                        <small class="text-danger" ng-show="(lotGiayForm.moTa.$dirty || lotGiayForm.moTa.$touched) && lotGiayForm.moTa.$error.maxlength">Mô tả không được quá 3000 ký tự</small>
+                        <small class="text-danger" ng-show="errors.moTa && !lotGiayForm.moTa.$dirty">{{errors.moTa}}</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Trạng thái: </label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="lotGiayTrangThai" name="trangThai" ng-model="lotGiay.trangThai" ng-true-value="1"
+                                   ng-false-value="0" ng-init="lotGiay.trangThai = 1">
+                            <label class="form-check-label" for="lotGiayTrangThai">Hiển thị</label>
+                        </div>
+                        <small class="text-danger" ng-show="errors.trangThai && !lotGiayForm.trangThai.$dirty">{{errors.trangThai}}</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Tạo mới</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Mũi giày -->
+<div class="modal fade" onclick="event.stopPropagation()" id="modalMuiGiay" tabindex="-1"
+     aria-labelledby="modalMuiGiayLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalMuiGiayLabel">Thêm mũi giày</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <form name="muiGiayForm" ng-submit="addMuiGiay()">
+                    <div class="form-group">
+                        <label for="muiGiayTen">Tên: </label>
+                        <input type="text" class="form-control" id="muiGiayTen" name="ten" ng-model="muiGiay.ten" ng-maxlength="100" ng-required="true"
+                               ng-change="change(muiGiayForm.ten)">
+                        <small class="text-danger" ng-show="(muiGiayForm.ten.$dirty || muiGiayForm.ten.$touched) && muiGiayForm.ten.$error.required">Không được để
+                            trống tên</small>
+                        <small class="text-danger" ng-show="(muiGiayForm.ten.$dirty || muiGiayForm.ten.$touched) && muiGiayForm.ten.$error.maxlength">Tên không được
+                            vượt quá 100 ký tự</small>
+                        <small class="text-danger" ng-show="errors.ten && !muiGiayForm.ten.$dirty">{{errors.ten}}</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="muiGiayMoTa">Mô tả: </label>
+                        <textarea class="form-control" id="muiGiayMoTa" name="moTa" rows="3" ng-model="muiGiay.moTa" ng-minlength="3" ng-maxlength="3000" ng-required="true" ng-change="change(muiGiayForm.moTa)"></textarea>
+                        <small class="text-danger" ng-show="(muiGiayForm.moTa.$dirty || muiGiayForm.moTa.$touched) && muiGiayForm.moTa.$error.required">Không được để
+                            trống mô tả</small>
+                        <small class="text-danger" ng-show="(muiGiayForm.moTa.$dirty || muiGiayForm.moTa.$touched) && muiGiayForm.moTa.$error.minlength">Mô tả không được quá ngắn</small>
+                        <small class="text-danger" ng-show="(muiGiayForm.moTa.$dirty || muiGiayForm.moTa.$touched) && muiGiayForm.moTa.$error.maxlength">Mô tả không được quá 3000 ký tự</small>
+                        <small class="text-danger" ng-show="errors.moTa && !muiGiayForm.moTa.$dirty">{{errors.moTa}}</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Trạng thái: </label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="muiGiayTrangThai" name="trangThai" ng-model="muiGiay.trangThai" ng-true-value="1"
+                                   ng-false-value="0" ng-init="muiGiay.trangThai = 1">
+                            <label class="form-check-label" for="muiGiayTrangThai">Hiển thị</label>
+                        </div>
+                        <small class="text-danger" ng-show="errors.trangThai && !muiGiayForm.trangThai.$dirty">{{errors.trangThai}}</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Tạo mới</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Cổ giày -->
+<div class="modal fade" onclick="event.stopPropagation()" id="modalCoGiay" tabindex="-1"
+     aria-labelledby="modalCoGiayLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalCoGiayLabel">Thêm cổ giày</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <form name="coGiayForm" ng-submit="addCoGiay()">
+                    <div class="form-group">
+                        <label for="coGiayTen">Tên: </label>
+                        <input type="text" class="form-control" id="coGiayTen" name="ten" ng-model="coGiay.ten" ng-maxlength="100" ng-required="true"
+                               ng-change="change(coGiayForm.ten)">
+                        <small class="text-danger" ng-show="(coGiayForm.ten.$dirty || coGiayForm.ten.$touched) && coGiayForm.ten.$error.required">Không được để
+                            trống tên</small>
+                        <small class="text-danger" ng-show="(coGiayForm.ten.$dirty || coGiayForm.ten.$touched) && coGiayForm.ten.$error.maxlength">Tên không được
+                            vượt quá 100 ký tự</small>
+                        <small class="text-danger" ng-show="errors.ten && !coGiayForm.ten.$dirty">{{errors.ten}}</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="coGiayMoTa">Mô tả: </label>
+                        <textarea class="form-control" id="coGiayMoTa" name="moTa" rows="3" ng-model="coGiay.moTa" ng-minlength="3" ng-maxlength="3000" ng-required="true" ng-change="change(coGiayForm.moTa)"></textarea>
+                        <small class="text-danger" ng-show="(coGiayForm.moTa.$dirty || coGiayForm.moTa.$touched) && coGiayForm.moTa.$error.required">Không được để
+                            trống mô tả</small>
+                        <small class="text-danger" ng-show="(coGiayForm.moTa.$dirty || coGiayForm.moTa.$touched) && coGiayForm.moTa.$error.minlength">Mô tả không được quá ngắn</small>
+                        <small class="text-danger" ng-show="(coGiayForm.moTa.$dirty || coGiayForm.moTa.$touched) && coGiayForm.moTa.$error.maxlength">Mô tả không được quá 3000 ký tự</small>
+                        <small class="text-danger" ng-show="errors.moTa && !coGiayForm.moTa.$dirty">{{errors.moTa}}</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Trạng thái: </label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="coGiayTrangThai" name="trangThai" ng-model="coGiay.trangThai" ng-true-value="1"
+                                   ng-false-value="0" ng-init="coGiay.trangThai = 1">
+                            <label class="form-check-label" for="coGiayTrangThai">Hiển thị</label>
+                        </div>
+                        <small class="text-danger" ng-show="errors.trangThai && !coGiayForm.trangThai.$dirty">{{errors.trangThai}}</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Tạo mới</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Thương hiệu-->
+<div class="modal fade" onclick="event.stopPropagation()" id="modalThuongHieu" tabindex="-1"
+     aria-labelledby="modalThuongHieuLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalThuongHieuLabel">Thêm thương hiệu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+
+                <form name="thuongHieuForm" ng-submit="addChatLieu()">
+                    <div class="form-group">
+                        <label for="thuongHieuTen">Tên: </label>
+                        <input type="text" class="form-control" id="thuongHieuTen" name="ten" ng-model="thuongHieu.ten" ng-maxlength="100" ng-required="true"
+                               ng-change="change(thuongHieuForm.ten)">
+                        <small class="text-danger" ng-show="(thuongHieuForm.ten.$dirty || thuongHieuForm.ten.$touched) && thuongHieuForm.ten.$error.required">Không được để
+                            trống tên</small>
+                        <small class="text-danger" ng-show="(thuongHieuForm.ten.$dirty || thuongHieuForm.ten.$touched) && thuongHieuForm.ten.$error.maxlength">Tên không được
+                            vượt quá 100 ký tự</small>
+                        <small class="text-danger" ng-show="errors.ten && !thuongHieuForm.ten.$dirty">{{errors.ten}}</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="thuongHieuMoTa">Mô tả: </label>
+                        <textarea class="form-control" id="thuongHieuMoTa" name="moTa" rows="3" ng-model="thuongHieu.moTa" ng-minlength="3" ng-maxlength="3000" ng-required="true" ng-change="change(thuongHieuForm.moTa)"></textarea>
+                        <small class="text-danger" ng-show="(thuongHieuForm.moTa.$dirty || thuongHieuForm.moTa.$touched) && thuongHieuForm.moTa.$error.required">Không được để
+                            trống mô tả</small>
+                        <small class="text-danger" ng-show="(thuongHieuForm.moTa.$dirty || thuongHieuForm.moTa.$touched) && thuongHieuForm.moTa.$error.minlength">Mô tả không được quá ngắn</small>
+                        <small class="text-danger" ng-show="(thuongHieuForm.moTa.$dirty || thuongHieuForm.moTa.$touched) && thuongHieuForm.moTa.$error.maxlength">Mô tả không được quá 3000 ký tự</small>
+                        <small class="text-danger" ng-show="errors.moTa && !thuongHieuForm.moTa.$dirty">{{errors.moTa}}</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Trạng thái: </label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="thuongHieuTrangThai" name="trangThai" ng-model="thuongHieu.trangThai" ng-true-value="1"
+                                   ng-false-value="0" ng-init="thuongHieu.trangThai = 1">
+                            <label class="form-check-label" for="thuongHieuTrangThai">Hiển thị</label>
+                        </div>
+                        <small class="text-danger" ng-show="errors.trangThai && !thuongHieuForm.trangThai.$dirty">{{errors.trangThai}}</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Tạo mới</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal dây giày-->
+<div class="modal fade" onclick="event.stopPropagation()" id="modalDayGiay" tabindex="-1"
+     aria-labelledby="modalDayGiayLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalDayGiayLabel">Thêm dây giày</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <form name="dayGiayForm" ng-submit="addDayGiay()">
+                    <div class="form-group">
+                        <label for="dayGiayTen">Tên: </label>
+                        <input type="text" class="form-control" id="dayGiayTen" name="ten" ng-model="dayGiay.ten" ng-maxlength="100" ng-required="true"
+                               ng-change="change(dayGiayForm.ten)">
+                        <small class="text-danger" ng-show="(dayGiayForm.ten.$dirty || dayGiayForm.ten.$touched) && dayGiayForm.ten.$error.required">Không được để
+                            trống tên</small>
+                        <small class="text-danger" ng-show="(dayGiayForm.ten.$dirty || dayGiayForm.ten.$touched) && dayGiayForm.ten.$error.maxlength">Tên không được
+                            vượt quá 50 ký tự</small>
+                        <small class="text-danger" ng-show="errors.ten && !dayGiayForm.ten.$dirty">{{errors.ten}}</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dayGiayDayGiay">Màu sắc: </label>
+                        <input type="text" class="form-control" id="dayGiayDayGiay" name="mauSac" ng-model="dayGiay.mauSac" ng-maxlength="50" ng-required="true"
+                               ng-change="change(dayGiayForm.mauSac)">
+                        <small class="text-danger" ng-show="(dayGiayForm.mauSac.$dirty || dayGiayForm.mauSac.$touched) && dayGiayForm.mauSac.$error.required">Không được để
+                            trống màu sắc</small>
+                        <small class="text-danger" ng-show="(dayGiayForm.mauSac.$dirty || dayGiayForm.mauSac.$touched) && dayGiayForm.mauSac.$error.maxlength">Màu sắc không được
+                            vượt quá 100 ký tự</small>
+                        <small class="text-danger" ng-show="errors.mauSac && !dayGiayForm.mauSac.$dirty">{{errors.mauSac}}</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dayGiayMoTa">Mô tả: </label>
+                        <textarea class="form-control" id="dayGiayMoTa" name="moTa" rows="3" ng-model="dayGiay.moTa" ng-change="change(dayGiayForm.moTa)"></textarea>
+                        <small class="text-danger" ng-show="errors.moTa && !dayGiayForm.moTa.$dirty">{{errors.moTa}}</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Trạng thái: </label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="dayGiayTrangThai" name="trangThai" ng-model="dayGiay.trangThai" ng-true-value="1"
+                                   ng-false-value="0" ng-init="dayGiay.trangThai = 1">
+                            <label class="form-check-label" for="dayGiayTrangThai">Hiển thị</label>
+                        </div>
+                        <small class="text-danger" ng-show="errors.trangThai && !dayGiayForm.trangThai.$dirty">{{errors.trangThai}}</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Tạo mới</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal đế giày-->
+<div class="modal fade" onclick="event.stopPropagation()" id="modalDeGiay" tabindex="-1"
+     aria-labelledby="modalDeGiayLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalDeGiayLabel">Thêm đế giày</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <form name="deGiayForm" ng-submit="addDeGiay()">
+                    <div class="form-group">
+                        <label for="deGiayTen">Tên: </label>
+                        <input type="text" class="form-control" id="deGiayTen" name="ten" ng-model="deGiay.ten" ng-maxlength="50" ng-required="true"
+                               ng-change="change(deGiayForm.ten)">
+                        <small class="text-danger" ng-show="(deGiayForm.ten.$dirty || deGiayForm.ten.$touched) && deGiayForm.ten.$error.required">Không được để
+                            trống tên</small>
+                        <small class="text-danger" ng-show="(deGiayForm.ten.$dirty || deGiayForm.ten.$touched) && deGiayForm.ten.$error.maxlength">Tên không được
+                            vượt quá 100 ký tự</small>
+                        <small class="text-danger" ng-show="errors.ten && !deGiayForm.ten.$dirty">{{errors.ten}}</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="deGiayDeGiay">Chất liệu: </label>
+                        <input type="text" class="form-control" id="deGiayDeGiay" name="chatLieu" ng-model="deGiay.chatLieu" ng-maxlength="100" ng-required="true"
+                               ng-change="change(deGiayForm.chatLieu)">
+                        <small class="text-danger" ng-show="(deGiayForm.chatLieu.$dirty || deGiayForm.chatLieu.$touched) && deGiayForm.chatLieu.$error.required">Không được để
+                            trống chất liệu</small>
+                        <small class="text-danger" ng-show="(deGiayForm.chatLieu.$dirty || deGiayForm.chatLieu.$touched) && deGiayForm.chatLieu.$error.maxlength">Chất liệu không được
+                            vượt quá 50 ký tự</small>
+                        <small class="text-danger" ng-show="errors.chatLieu && !deGiayForm.chatLieu.$dirty">{{errors.chatLieu}}</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="deGiayMoTa">Mô tả: </label>
+                        <textarea class="form-control" id="deGiayMoTa" name="moTa" rows="3" ng-model="deGiay.moTa" ng-change="change(deGiayForm.moTa)"></textarea>
+                        <small class="text-danger" ng-show="errors.moTa && !deGiayForm.moTa.$dirty">{{errors.moTa}}</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Trạng thái: </label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="deGiayTrangThai" name="trangThai" ng-model="deGiay.trangThai" ng-true-value="1"
+                                   ng-false-value="0" ng-init="deGiay.trangThai = 1">
+                            <label class="form-check-label" for="deGiayTrangThai">Hiển thị</label>
+                        </div>
+                        <small class="text-danger" ng-show="errors.trangThai && !deGiayForm.trangThai.$dirty">{{errors.trangThai}}</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Tạo mới</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal hashtag-->
+<div class="modal fade" onclick="event.stopPropagation()" id="modalHashTag" tabindex="-1"
+     aria-labelledby="modalHashTagLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalHashTagLabel">Thêm hashtag</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <form name="hashTagForm" ng-submit="addHashTag()">
+                    <div class="form-group">
+                        <label for="hashTagTen">Tên: </label>
+                        <input type="text" class="form-control" id="hashTagTen" name="ten" ng-model="hashTag.ten" ng-maxlength="100" ng-required="true"
+                               ng-change="change(hashTagForm.ten)">
+                        <small class="text-danger" ng-show="(hashTagForm.ten.$dirty || hashTagForm.ten.$touched) && hashTagForm.ten.$error.required">Không được để
+                            trống tên</small>
+                        <small class="text-danger" ng-show="(hashTagForm.ten.$dirty || hashTagForm.ten.$touched) && hashTagForm.ten.$error.maxlength">Tên không được
+                            vượt quá 100 ký tự</small>
+                        <small class="text-danger" ng-show="errors.ten && !hashTagForm.ten.$dirty">{{errors.ten}}</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="hashTagMoTa">Mô tả: </label>
+                        <textarea class="form-control" id="hashTagMoTa" name="moTa" rows="3" ng-model="hashTag.moTa" ng-change="change(hashTagForm.moTa)"></textarea>
+                        <small class="text-danger" ng-show="errors.moTa && !hashTagForm.moTa.$dirty">{{errors.moTa}}</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Trạng thái: </label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="hashTagTrangThai" name="trangThai" ng-model="hashTag.trangThai" ng-true-value="1"
+                                   ng-false-value="0" ng-init="hashTag.trangThai = 1">
+                            <label class="form-check-label" for="hashTagTrangThai">Hiển thị</label>
+                        </div>
+                        <small class="text-danger" ng-show="errors.trangThai && !hashTagForm.trangThai.$dirty">{{errors.trangThai}}</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Tạo mới</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal kích thước-->
+<div class="modal fade" onclick="event.stopPropagation()" id="modalKichThuoc" tabindex="-1"
+     aria-labelledby="modalKichThuocLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalKichThuocLabel">Thêm kích thước</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <form name="kichThuocForm" ng-submit="addKichThuoc()" class="row g-3 py-2">
+                    <div class="row">
+                        <div class="col-12">
+                            <label for="kichThuocTen">Tên: </label>
+                            <input type="text" class="form-control" id="kichThuocTen" name="ten" ng-model="kichThuoc.ten"
+                                   ng-maxlength="100"
+                                   ng-required="true"
+                                   ng-change="change(kichThuocForm.ten)">
+                            <small class="text-danger"
+                                   ng-show="(kichThuocForm.ten.$dirty || kichThuocForm.ten.$touched) && kichThuocForm.ten.$error.required">Không
+                                được để trống tên</small>
+                            <small class="text-danger"
+                                   ng-show="(kichThuocForm.ten.$dirty || kichThuocForm.ten.$touched) && kichThuocForm.ten.$error.maxlength">Tên
+                                không được vượt quá 100 ký tự</small>
+                            <small class="text-danger" ng-show="errors.ten && !kichThuocForm.ten.$dirty">{{errors.ten}}</small>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="kichThuocChieuDai">Chiều dài: </label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="kichThuocChieuDai" aria-describedby="chieuDai"
+                                       name="chieuDai" ng-model="kichThuoc.chieuDai" max="200" min="0" ng-required="true"
+                                       ng-change="change(kichThuocForm.chieuDai)">
+                                <span class="input-group-text" id="chieuDai">cm</span>
+                            </div>
+                            <small class="text-danger m-0"
+                                   ng-show="(kichThuocForm.chieuDai.$dirty || kichThuocForm.chieuDai.$touched) && kichThuocForm.chieuDai.$error.required">Không
+                                được để trống chiều dài</small>
+                            <small class="text-danger  m-0"
+                                   ng-show="(kichThuocForm.chieuDai.$dirty || kichThuocForm.chieuDai.$touched) && kichThuocForm.chieuDai.$error.max">Chiều
+                                dài không được vượt quá 200</small>
+                            <small class="text-danger  m-0"
+                                   ng-show="(kichThuocForm.chieuDai.$dirty || kichThuocForm.chieuDai.$touched) && kichThuocForm.chieuDai.$error.min">Chiều
+                                dài không được âm</small>
+                            <small class="text-danger  m-0"
+                                   ng-show="errors.chieuDai && !kichThuocForm.chieuDai.$dirty">{{errors.chieuDai}}</small>
+
+                        </div>
+
+                        <div class="col-6">
+                            <label for="kichThuocChieuRong">Chiều rộng: </label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="kichThuocChieuRong" aria-describedby="chieuRong"
+                                       name="chieuRong" ng-model="kichThuoc.chieuRong" max="200" min="0" ng-required="true"
+                                       ng-change="change(kichThuocForm.chieuRong)">
+                                <span class="input-group-text" id="chieuRong">cm</span>
+                            </div>
+                            <small class="text-danger m-0"
+                                   ng-show="(kichThuocForm.chieuRong.$dirty || kichThuocForm.chieuRong.$touched) && kichThuocForm.chieuRong.$error.required">Không
+                                được để trống chiều rộng</small>
+                            <small class="text-danger m-0"
+                                   ng-show="(kichThuocForm.chieuRong.$dirty || kichThuocForm.chieuRong.$touched) && kichThuocForm.chieuRong.$error.max">Chiều
+                                rộng không được vượt quá 200</small>
+                            <small class="text-danger m-0"
+                                   ng-show="(kichThuocForm.chieuRong.$dirty || kichThuocForm.chieuRong.$touched) && kichThuocForm.chieuRong.$error.min">Chiều
+                                rộng không được âm</small>
+                            <small class="text-danger m-0" ng-show="errors.chieuRong && !kichThuocForm.chieuRong.$dirty">{{errors.chieuRong}}</small>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <label for="kichThuocMoTa">Mô tả: </label>
+                            <textarea class="form-control" id="kichThuocMoTa" name="moTa" rows="3" ng-model="kichThuoc.moTa"
+                                      ng-change="change(kichThuocForm.moTa)"></textarea>
+                            <small class="text-danger" ng-show="errors.moTa && !kichThuocForm.moTa.$dirty">{{errors.moTa}}</small>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <label>Trạng thái: </label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="kichThuocTrangThai" name="trangThai"
+                                       ng-model="kichThuoc.trangThai" ng-true-value="1"
+                                       ng-false-value="0" ng-init="kichThuoc.trangThai = 1">
+                                <label class="form-check-label" for="kichThuocTrangThai">Hiển thị</label>
+                            </div>
+                            <small class="text-danger"
+                                   ng-show="errors.trangThai && !kichThuocForm.trangThai.$dirty">{{errors.trangThai}}</small>
+
+                        </div>
+                    </div>
+                    <div class="col-10">
+                        <button type="submit" class="btn btn-primary">Tạo mới</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal màu sắc-->
+<div class="modal fade" onclick="event.stopPropagation()" id="modalMauSac" tabindex="-1"
+     aria-labelledby="modalMauSacLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalMauSacLabel">Thêm màu sắc</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <form name="mauSacForm" ng-submit="addMauSac()">
+                    <div class="form-group">
+                        <label for="mauSacMau">Màu sắc: </label>
+                        <input type="color" class="form-control" style="width: 10%; height: 40px;" list="commonColors" id="mauSacMau" name="maMau" ng-model="mauSac.maMau" ng-required="true"
+                               ng-change="change(mauSacForm.maMau)">
+                        <datalist id="commonColors">
+                            <option>#ff80ed</option>
+                            <option>#065535</option>
+                            <option>#000000</option>
+                            <option>#133337</option>
+                            <option>#ffc0cb</option>
+                            <option>#ffffff</option>
+                            <option>#ffe4e1</option>
+                            <option>#008080</option>
+                            <option>#ff0000</option>
+                            <option>#e6e6fa</option>
+                            <option>#ffd700</option>
+                            <option>#00ffff</option>
+                            <option>#ffa500</option>
+                            <option>#0000ff</option>
+                            <option>#ff7373</option>
+                            <option>#c6e2ff</option>
+                            <option>#40e0d0</option>
+                            <option>#b0e0e6</option>
+                            <option>#d3ffce</option>
+                            <option>#f0f8ff</option>
+                            <option>#666666</option>
+                            <option>#faebd7</option>
+                            <option>#bada55</option>
+                            <option>#fa8072</option>
+                            <option>#003366</option>
+                            <option>#ffb6c1</option>
+                            <option>#c0c0c0</option>
+                            <option>#ffff00</option>
+                            <option>#800000</option>
+                            <option>#c39797</option>
+                            <option>#800080</option>
+                            <option>#00ff00</option>
+                            <option>#fff68f</option>
+                            <option>#7fffd4</option>
+                            <option>#cccccc</option>
+                        </datalist>
+                        <small class="text-danger" ng-show="(mauSacForm.maMau.$dirty || mauSacForm.maMau.$touched) && mauSacForm.maMau.$error.required">Không được để
+                            trống màu sắc</small>
+                        <small class="text-danger" ng-show="errors.maMau && !mauSacForm.maMau.$dirty">{{errors.maMau}}</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mauSacTen">Tên: </label>
+                        <input type="text" class="form-control" id="mauSacTen" name="ten" ng-model="mauSac.ten" ng-maxlength="100" ng-required="true"
+                               ng-change="change(mauSacForm.ten)">
+                        <small class="text-danger" ng-show="(mauSacForm.ten.$dirty || mauSacForm.ten.$touched) && mauSacForm.ten.$error.required">Không được để
+                            trống tên</small>
+                        <small class="text-danger" ng-show="(mauSacForm.ten.$dirty || mauSacForm.ten.$touched) && mauSacForm.ten.$error.maxlength">Tên không được
+                            vượt quá 100 ký tự</small>
+                        <small class="text-danger" ng-show="errors.ten && !mauSacForm.ten.$dirty">{{errors.ten}}</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="mauSacMoTa">Mô tả: </label>
+                        <textarea class="form-control" id="mauSacMoTa" name="moTa" rows="3" ng-model="mauSac.moTa" ng-change="change(mauSacForm.moTa)"></textarea>
+                        <small class="text-danger" ng-show="errors.moTa && !mauSacForm.moTa.$dirty">{{errors.moTa}}</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Trạng thái: </label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="mauSacTrangThai" name="trangThai" ng-model="mauSac.trangThai" ng-true-value="1"
+                                   ng-false-value="0" ng-init="mauSac.trangThai = 1">
+                            <label class="form-check-label" for="mauSacTrangThai">Hiển thị</label>
+                        </div>
+                        <small class="text-danger" ng-show="errors.trangThai && !mauSacForm.trangThai.$dirty">{{errors.trangThai}}</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Tạo mới</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

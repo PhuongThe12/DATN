@@ -25,17 +25,36 @@
         <!-- Icon -->
         <link rel="stylesheet" href="/icon/css/all.min.css">
 
+        <!--Sweet Alert -->
+        <link rel="stylesheet" href="/sweetalert2/dist/sweetalert2.min.css">
+
         <!-- Global -->
         <script src="/js/global.js"></script>
         <link rel="stylesheet" href="/css/global-style.css">
         <script src="/js/httpInterceptor.js" defer></script>
 
+        <link rel="stylesheet" href="/css/base_sidebar/style.min.css">
+
     </head>
 
     <body>
-        <div ng-view></div>
+    <div class="page-flex">
+        <div ng-include="'/pages/admin/nav/aside.html'"></div>
 
-        <script src="/js/mausac/index.js"></script>
+        <div class="main-wrapper">
+            <!-- ! Main nav -->
+            <div ng-include="'/pages/admin/nav/nav.html'"></div>
+
+            <main class="main">
+                <div ng-view></div>
+            </main>
+
+        </div>
+    </div>
+
+    <script src="/sweetalert2/dist/sweetalert2.min.js"></script>
+    <script src="/js/mausac/index.js"></script>
+    <script src="/js/feather.min.js"></script>
+    <script src="/js/angularAppNav.js"></script>
+
     </body>
-
-</html>

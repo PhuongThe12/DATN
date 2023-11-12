@@ -1,34 +1,75 @@
-<h1>Thêm lót giày</h1>
-
-<form name="lotGiayForm" ng-submit="addLotGiay()">
-    <div class="form-group">
-        <label for="lotGiayTen">Tên: </label>
-        <input type="text" class="form-control" id="lotGiayTen" name="ten" ng-model="lotGiay.ten" ng-maxlength="100" ng-required="true"
-            ng-change="change(lotGiayForm.ten)">
-        <small class="text-danger" ng-show="(lotGiayForm.ten.$dirty || lotGiayForm.ten.$touched) && lotGiayForm.ten.$error.required">Không được để
-            trống tên</small>
-        <small class="text-danger" ng-show="(lotGiayForm.ten.$dirty || lotGiayForm.ten.$touched) && lotGiayForm.ten.$error.maxlength">Tên không được
-            vượt quá 100 ký tự</small>
-        <small class="text-danger" ng-show="errors.ten && !lotGiayForm.ten.$dirty">{{errors.ten}}</small>
-    </div>
-    <div class="form-group">
-        <label for="lotGiayMoTa">Mô tả: </label>
-        <textarea class="form-control" id="lotGiayMoTa" name="moTa" rows="3" ng-model="lotGiay.moTa" ng-minlength="3" ng-maxlength="3000" ng-required="true" ng-change="change(lotGiayForm.moTa)"></textarea>
-        <small class="text-danger" ng-show="(lotGiayForm.moTa.$dirty || lotGiayForm.moTa.$touched) && lotGiayForm.moTa.$error.required">Không được để
-            trống mô tả</small>
-        <small class="text-danger" ng-show="(lotGiayForm.moTa.$dirty || lotGiayForm.moTa.$touched) && lotGiayForm.moTa.$error.minlength">Mô tả không được quá ngắn</small>
-        <small class="text-danger" ng-show="(lotGiayForm.moTa.$dirty || lotGiayForm.moTa.$touched) && lotGiayForm.moTa.$error.maxlength">Mô tả không được quá 3000 ký tự</small>
-        <small class="text-danger" ng-show="errors.moTa && !lotGiayForm.moTa.$dirty">{{errors.moTa}}</small>
-    </div>
-
-    <div class="form-group">
-        <label>Trạng thái: </label>
-        <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="lotGiayTrangThai" name="trangThai" ng-model="lotGiay.trangThai" ng-true-value="1"
-                   ng-false-value="0" ng-init="lotGiay.trangThai = 1">
-            <label class="form-check-label" for="lotGiayTrangThai">Hiển thị</label>
+<div ng-show="isLoading" class="loading-spinner">
+    <div class="text-center" style="  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Màu nền đục để làm mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; ">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
         </div>
-        <small class="text-danger" ng-show="errors.trangThai && !lotGiayForm.trangThai.$dirty">{{errors.trangThai}}</small>
     </div>
-    <button type="submit" class="btn btn-primary">Tạo mới</button>
-</form>
+</div>
+<button class="ms-4 mb-3 btn btn-primary" ng-click="backToList()"><i class="fas fa-chevron-left"></i>Danh sách</button>
+<div class="card rounded bg-white ms-4 mx-4">
+    <div class="card-header bg-white">
+        <h5 class="card-title p-2 mt-2">
+            Thêm Lót Giày
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="p-3">
+            <form name="lotGiayForm" ng-submit="addLotGiay()">
+                <div class="form-group">
+                    <label for="lotGiayTen">Tên: </label>
+                    <input type="text" class="form-control" id="lotGiayTen" name="ten" ng-model="lotGiay.ten"
+                           ng-maxlength="100" ng-required="true"
+                           ng-change="change(lotGiayForm.ten)">
+                    <small class="text-danger"
+                           ng-show="(lotGiayForm.ten.$dirty || lotGiayForm.ten.$touched) && lotGiayForm.ten.$error.required">Không
+                        được để
+                        trống tên</small>
+                    <small class="text-danger"
+                           ng-show="(lotGiayForm.ten.$dirty || lotGiayForm.ten.$touched) && lotGiayForm.ten.$error.maxlength">Tên
+                        không được
+                        vượt quá 100 ký tự</small>
+                    <small class="text-danger" ng-show="errors.ten && !lotGiayForm.ten.$dirty">{{errors.ten}}</small>
+                </div>
+                <div class="form-group">
+                    <label for="lotGiayMoTa">Mô tả: </label>
+                    <textarea class="form-control" id="lotGiayMoTa" name="moTa" rows="3" ng-model="lotGiay.moTa"
+                              ng-minlength="3" ng-maxlength="3000" ng-required="true"
+                              ng-change="change(lotGiayForm.moTa)"></textarea>
+                    <small class="text-danger"
+                           ng-show="(lotGiayForm.moTa.$dirty || lotGiayForm.moTa.$touched) && lotGiayForm.moTa.$error.required">Không
+                        được để
+                        trống mô tả</small>
+                    <small class="text-danger"
+                           ng-show="(lotGiayForm.moTa.$dirty || lotGiayForm.moTa.$touched) && lotGiayForm.moTa.$error.minlength">Mô
+                        tả không được quá ngắn</small>
+                    <small class="text-danger"
+                           ng-show="(lotGiayForm.moTa.$dirty || lotGiayForm.moTa.$touched) && lotGiayForm.moTa.$error.maxlength">Mô
+                        tả không được quá 3000 ký tự</small>
+                    <small class="text-danger" ng-show="errors.moTa && !lotGiayForm.moTa.$dirty">{{errors.moTa}}</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Trạng thái: </label>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="lotGiayTrangThai" name="trangThai"
+                               ng-model="lotGiay.trangThai" ng-true-value="1"
+                               ng-false-value="0" ng-init="lotGiay.trangThai = 1">
+                        <label class="form-check-label" for="lotGiayTrangThai">Hiển thị</label>
+                    </div>
+                    <small class="text-danger" ng-show="errors.trangThai && !lotGiayForm.trangThai.$dirty">{{errors.trangThai}}</small>
+                </div>
+                <button type="submit" class="btn btn-primary">Tạo mới</button>
+            </form>
+
+        </div>
+    </div>
+</div>

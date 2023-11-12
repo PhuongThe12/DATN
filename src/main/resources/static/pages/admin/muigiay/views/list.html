@@ -1,51 +1,139 @@
-<div>
-    <label for="seachText">Tên: </label><input id="seachText"  type="text" ng-model="searchText" placeholder="Nhập từ khóa">
-    <button ng-click="search()">Tìm kiếm</button>
-</div>
-
-<a class="btn btn-primary" href="#/add">Thêm mũi giày</a>
-
-<h1>Danh sách mũi giày</h1>
-
-<div class="d-flex justify-content-start">
-    <div class="custom-radio">
-        <input type="radio" id="all" name="status" ng-model="status" value="-1" ng-checked="status != 0 && status != 1" ng-change="changeRadio(-1)">
-        <label class="radio-label" for="all">Tất cả</label>
-    </div>
-
-    <div class="custom-radio">
-        <input type="radio" id="active" name="status" ng-model="status" value="1" ng-checked="status == 1" ng-change="changeRadio(1)">
-        <label class="radio-label" for="active">Hiển thị</label>
-    </div>
-
-    <div class="custom-radio">
-        <input type="radio" id="disable" name="status" ng-model="status" value="0" ng-checked="status == 0" ng-change="changeRadio(0)">
-        <label class="radio-label" for="disable">Đã ẩn</label>
+<div ng-show="isLoading" class="loading-spinner">
+    <div class="text-center" style="  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Màu nền đục để làm mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; ">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
     </div>
 </div>
 
-<div>
-    <table class="table align-middle text-center" border="1">
-        <tr>
-            <th>Tên</th>
-            <th>Trạng thái</th>
-            <th></th>
-        </tr>
+<div class="title-page">
+    <h5>Mũi giày</h5>
+    <div class="d-flex">
+        <p class="text-secondary m-0">Trang chủ - Quản Lý Mũi Giày - Danh Sách</p>
+    </div>
+</div>
 
-        <tr ng-repeat="muiGiay in muiGiays">
-            <td>{{muiGiay.ten}}</td>
-            <td>{{muiGiay.trangThai == 1? "Hiển thị" : "Ngừng khinh doanh"}}</td>
-            <td>
-                <a class="btn btn-info" ng-href="#/detail/{{muiGiay.id}}">Chi tiết</a>
-                <a class="btn btn-info" ng-href="#/update/{{muiGiay.id}}">Cập nhật</a>
-            </td>
-        </tr>
-    </table>
 
-    <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages" data-current-page="curPage" data-max-size="maxSize"
-        data-boundary-links="true">
+<div class="card" style="margin: 20px">
+    <div class="card-body">
+        <div class="d-flex add-search-custom">
+            <div class="input-group w-50">
+                <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
+                <input id="seachText" class="form-control" type="text" ng-model="searchText"
+                       placeholder="Nhập từ khóa">
+                <button class="btn btn-custom " ng-click="search()">Tìm kiếm</button>
+                <button class="btn btn-custom mx-2" ng-click="resetSearch()">Nhập lại</button>
+            </div>
+            <a class="btn btn-primary" href="#/add"><i class="fas fa-plus px-2 small"></i>Thêm chất liệu</a>
+        </div>
+
+        <div class="d-flex justify-content-start radio-filter">
+            <div class="custom-radio">
+                <input type="radio" id="all" name="status" ng-model="status" value="-1"
+                       ng-checked="status != 0 && status != 1"
+                       ng-change="changeRadio(-1)">
+                <label class="radio-label" for="all">Tất cả</label>
+            </div>
+
+            <div class="custom-radio">
+                <input type="radio" id="active" name="status" ng-model="status" value="1" ng-checked="status == 1"
+                       ng-change="changeRadio(1)">
+                <label class="radio-label" for="active">Hiển thị</label>
+            </div>
+
+            <div class="custom-radio">
+                <input type="radio" id="disable" name="status" ng-model="status" value="0" ng-checked="status == 0"
+                       ng-change="changeRadio(0)">
+                <label class="radio-label" for="disable">Đã ẩn</label>
+            </div>
+        </div>
+
+        <div>
+            <table class="table align-middle text-center" border="1">
+                <tr>
+                    <th>Tên</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+
+                <tr ng-repeat="muiGiay in muiGiays">
+                    <td>{{muiGiay.ten}}</td>
+                    <td>
+                        <h5>
+                <span ng-class="{'badge bd-success-custom': muiGiay.trangThai == 1, 'badge bd-danger-custom': muiGiay.trangThai != 1}">
+                    {{muiGiay.trangThai == 1? "Hiển thị" : "Đã ẩn"}}
+                </span>
+                        </h5>
+                    </td>
+                    <td>
+                        <div class="d-sm-inline-flex">
+                            <button class="btn btn-custom" ng-click="detailMuiGiay(muiGiay.id)" data-bs-toggle="modal" data-bs-target="#showMuiGiay">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <a class="btn btn-custom" ng-href="#/update/{{muiGiay.id}}"><i class="far fa-edit"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages" data-current-page="curPage"
+                 data-max-size="maxSize"
+                 data-boundary-links="true">
+            </div>
+
+        </div>
     </div>
 
+</div>
 
+<!-- Modal Detail-->
+<div class="modal fade" id="showMuiGiay" tabindex="-1" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Chi Tiết Chất Liệu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table>
+                    <tr>
+                        <td>ID :</td>
+                        <th>{{muiGiayDetail.id}}</th>
+                    </tr>
+                    <tr>
+                        <td>Tên :</td>
+                        <th>{{muiGiayDetail.ten}}</th>
+                    </tr>
+                    <tr>
+                        <td>Mô tả :</td>
+                        <th>{{muiGiayDetail.moTa}}</th>
+                    </tr>
 
+                    <tr>
+                        <td>Mô tả :</td>
+                        <th>
+                            <h5>
+                <span ng-class="{'badge bd-success-custom': muiGiayDetail.trangThai == 1, 'badge bd-danger-custom': muiGiayDetail.trangThai != 1}">
+                    {{muiGiayDetail.trangThai == 1? "Hiển thị" : "Đã ẩn"}}
+                </span>
+                            </h5>
+                        </th>
+                    </tr>
+
+                </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
 </div>

@@ -105,6 +105,24 @@ app.controller("muiGiayListController", function ($scope, $http, $window, $locat
             });
     }
 
+    $scope.resetSearch = function () {
+        searchText = null;
+        $scope.searchText = '';
+        $scope.status = -1;
+        getData(1);
+    }
+
+    $scope.detailMuiGiay = function (val) {
+        const id = val;
+        if (!isNaN(id)) {
+            $scope.muiGiayDetail = $scope.muiGiays.find(function(muiGiay) {
+                return muiGiay.id === id;
+            });
+        } else {
+            toastr["error"]("Lấy dữ liệu thất bại");
+        }
+    }
+
     $scope.$watch('curPage + numPerPage', function () {
         getData($scope.curPage);
     });

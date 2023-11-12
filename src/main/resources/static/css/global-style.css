@@ -5,7 +5,7 @@
 .custom-radio {
     display: inline-block;
     position: relative;
-    padding-left: 30px;
+    padding-right: 30px;
 }
 
 .custom-radio input {
@@ -49,7 +49,7 @@
 @font-face {
     font-family: 'rabilo';
     /* Đặt tên cho font chữ của bạn */
-    src: url('/font-text/Roboto-Medium.ttf') format('woff2');
+    src: url('/font-text/Inter-Medium.ttf') format('woff2');
     /* Đường dẫn đến tệp font */
     /* Nếu bạn có các phiên bản font khác, hãy thêm chúng ở đây */
 }
@@ -58,12 +58,22 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'rabilo';
 }
 
 body {
     background-color: #fcfcfc;
     overflow-x: hidden;
+    font-weight: 500;
+}
+
+.error-message {
+    color: red;
+    font-weight: bold;
+}
+
+.badge{
+    border-radius: 92px;
+    padding: 6px 26px;
 }
 
 .bd-success-custom {
@@ -73,32 +83,80 @@ body {
 }
 
 .bd-danger-custom {
-    background-color: #f1c3c8 !important;
-    color: darkred;
+    background-color: rgb(241 89 92 / 20%) !important;
+    color: rgb(241 89 92);
     font-weight: 500;
 }
+
+.bd-warning-custom {
+    background-color: #ffdf9b !important;
+    color: #e49c06;
+    font-weight: 500;
+}
+
+.bd-info-custom {
+    background-color: #abd3d9 !important;
+    color: #177787;
+    font-weight: 500;
+}
+
+.bd-primary-custom {
+    background-color: #17a2b8 !important;
+    color: white;
+    font-weight: 500;
+}
+
+.bd-warning2-custom{
+    background-color: #ffdf9b !important;
+    color: #e49c06;
+    font-weight: 500;
+}
+
+.bd-redOrange-custom{
+    background-color: #edb3a0 !important;
+    color: #c73c10;
+    font-weight: 500;
+}
+
+.bd-blueDark-custom{
+    background-color: #848cdf !important;
+    color: #000969;
+    font-weight: 500;
+}
+
 
 table {
     font-size: 14px;
     color: #686e7e !important;
+    border: transparent;
 }
 
 th {
+    font-size: 13px;
+    font-weight: 700;
     padding: 1rem 1rem 1rem 1rem !important;
+    border-top: 1px solid #ededed;
+    color: #5d5d5d;
 }
 
 td {
     word-break: break-all;
     padding: 1.8rem 0.8rem 0.8rem 0.8rem !important;
+    border-top: 1px solid #ededed;
 }
 
 table tr {
+border-style: none;
+}
 
+.table-size-fix{
+    margin-right: -0.95rem;
+    margin-left: -0.95rem;
 }
 
 .btn-custom {
     color: white;
-    background-color: #111c43;
+    background-color: #0f172a;
     font-size: 15px !important;
     margin: 0px 2px;
     transition: 0.3s ease-in-out;
@@ -110,10 +168,15 @@ table tr {
     opacity: 0.7;
 }
 
+.btn-primary{
+    color: #fff;
+    background-color: #4669fa !important;
+    border-color: #4669fa !important;
+}
+
 .radio-filter {
     align-items: center;
     justify-content: space-between;
-    border: 1px solid #dee2e6;
     padding: 15px 0px;
     border-radius: 0px 10px 0px 0px;
 }
@@ -121,7 +184,6 @@ table tr {
 .add-search-custom {
     align-items: center;
     justify-content: space-between;
-    border-top: 1px solid #dee2e6;
     padding: 21px 7px;
 }
 
@@ -146,7 +208,7 @@ table tr {
 }
 
 .box-shadow-page {
-    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
 }
 
 .title-page {
@@ -159,10 +221,58 @@ input.ng-invalid.ng-touched {
     border: 1px solid red;
 }
 
+input:focus{
+    box-shadow: none !important;
+    outline: 0;
+    border:1px solid black !important;
+}
+
 .form-label {
     color: #686e7e !important;
 }
-.card-body{
+
+.card-body {
     border-radius: 10px;
     background: white;
+}
+
+/* Đơn Hàng CSS */
+.hr-item {
+    border-bottom: 2px solid gray;
+    width: 150px;
+}
+
+.passed {
+    color: #0088FF;
+}
+
+.passed div {
+    border-bottom: 2px solid #0088FF;
+}
+
+.progess-outer p {
+    margin: 0px;
+}
+
+.font-size-14 {
+    font-size: 14px;
+    color: gray;
+}
+
+.font-size-14-ncl {
+    font-size: 14px;
+}
+
+.li-custom {
+    width: 10px;
+    height: 10px;
+    box-shadow: 0 0 0 2px #E6F4FF;
+    flex-shrink: 0;
+    margin-right: 12px;
+    border-radius: 100%;
+    background-color: #0088FF;
+}
+
+.w-133px {
+    width: 133px;
 }

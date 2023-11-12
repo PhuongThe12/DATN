@@ -107,6 +107,13 @@ app.controller("kichThuocListController", function ($scope, $http, $window, $loc
             });
     }
 
+    $scope.resetSearch = function () {
+        searchText = null;
+        $scope.searchText = '';
+        $scope.status = -1;
+        getData(1);
+    }
+
     $scope.detailKichThuoc = function (val) {
         const id = val;
 
