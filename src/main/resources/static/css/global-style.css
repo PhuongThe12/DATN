@@ -60,39 +60,57 @@
     box-sizing: border-box;
     font-family: 'rabilo';
 }
-.bd-success-custom{
+
+body {
+    background-color: #fcfcfc;
+    overflow-x: hidden;
+}
+
+.bd-success-custom {
     color: #2bd27f;
     background: #e7fbf0 !important;
     font-weight: 500;
 }
 
-.bd-danger-custom{
-    background-color: #f1c3c8!important;
+.bd-danger-custom {
+    background-color: #f1c3c8 !important;
     color: darkred;
     font-weight: 500;
 }
 
-table{
+table {
     font-size: 14px;
+    color: #686e7e !important;
 }
 
-table td{
-    word-break: break-all
+th {
+    padding: 1rem 1rem 1rem 1rem !important;
 }
 
-.btn-custom{
-    color: #0d6efd;
-    background-color: #dfecfe;
+td {
+    word-break: break-all;
+    padding: 1.8rem 0.8rem 0.8rem 0.8rem !important;
+}
+
+table tr {
+
+}
+
+.btn-custom {
+    color: white;
+    background-color: #111c43;
     font-size: 15px !important;
     margin: 0px 2px;
+    transition: 0.3s ease-in-out;
 }
 
-.btn-custom:hover{
-    color: #dfecfe;
-    background-color: #0d6efd;
+.btn-custom:hover {
+    color: white;
+    background-color: #111c43;
+    opacity: 0.7;
 }
 
-.radio-filter{
+.radio-filter {
     align-items: center;
     justify-content: space-between;
     border: 1px solid #dee2e6;
@@ -100,9 +118,51 @@ table td{
     border-radius: 0px 10px 0px 0px;
 }
 
-.add-search-custom{
+.add-search-custom {
     align-items: center;
     justify-content: space-between;
     border-top: 1px solid #dee2e6;
-    padding: 10px 7px;
+    padding: 21px 7px;
+}
+
+.select-basic {
+    color: #4b5675;
+    cursor: pointer;
+    border: none !important;
+    border-radius: 5px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #f1f1f2;
+}
+
+.select-basic:focus {
+    background-color: #e9e9ea;
+    outline: none !important;
+}
+
+.select-basic option {
+    cursor: pointer;
+    background-color: transparent;
+}
+
+.box-shadow-page {
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.title-page {
+    margin-top: 10px;
+    margin-left: 20px;
+
+}
+
+input.ng-invalid.ng-touched {
+    border: 1px solid red;
+}
+
+.form-label {
+    color: #686e7e !important;
+}
+.card-body{
+    border-radius: 10px;
+    background: white;
 }

@@ -42,15 +42,15 @@
 .pagination ul>.active>a,
 .pagination ul>.active>span {
     transition: 0.3s all;
-    background-color: #00d82c;
-    color: black;
+    background-color: #111c43;
+    color: white;
     cursor: pointer;
 }
 
 .pagination ul>.active>a,
 .pagination ul>.active>span {
     color: #fff!important;
-    background-color: #00d82c!important;
+    background-color: #111c43 !important;
     cursor: pointer;
 }
 

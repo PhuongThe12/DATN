@@ -25,7 +25,7 @@ public class DayGiayServiceImpl implements DayGiayService {
 
     @Override
     public List<DayGiayResponse> getAll() {
-        return dayGiayRepo.findAllResponse();
+        return dayGiayRepo.findAllActive();
     }
 
     @Override

@@ -3,22 +3,22 @@
 <form name="coGiayForm" ng-submit="updateCoGiay()">
     <div class="form-group">
         <label for="coGiayTen">Tên</label>
-        <input type="text" class="form-control" id="coGiayTen" name="ten" ng-model="coGiay.ten" ng-maxlength="50" ng-required="true"
+        <input type="text" class="form-control" id="coGiayTen" name="ten" ng-model="coGiay.ten" ng-maxlength="100" ng-required="true"
                ng-change="change(coGiayForm.ten)">
-        <small class="error-message" ng-show="(coGiayForm.ten.$dirty || coGiayForm.ten.$touched) && coGiayForm.ten.$error.required">Không được để
+        <small class="text-danger" ng-show="(coGiayForm.ten.$dirty || coGiayForm.ten.$touched) && coGiayForm.ten.$error.required">Không được để
             trống tên</small>
-        <small class="error-message" ng-show="(coGiayForm.ten.$dirty || coGiayForm.ten.$touched) && coGiayForm.ten.$error.maxlength">Tên không được
-            vượt quá 50 ký tự</small>
-        <small class="error-message" ng-show="errors.ten && !coGiayForm.ten.$dirty">{{errors.ten}}</small>
+        <small class="text-danger" ng-show="(coGiayForm.ten.$dirty || coGiayForm.ten.$touched) && coGiayForm.ten.$error.maxlength">Tên không được
+            vượt quá 100 ký tự</small>
+        <small class="text-danger" ng-show="errors.ten && !coGiayForm.ten.$dirty">{{errors.ten}}</small>
     </div>
     <div class="form-group">
         <label for="coGiayMoTa">Mô tả: </label>
         <textarea class="form-control" id="coGiayMoTa" name="moTa" rows="3" ng-model="coGiay.moTa" ng-minlength="3" ng-maxlength="3000" ng-required="true" ng-change="change(coGiayForm.moTa)"></textarea>
-        <small class="error-message" ng-show="(coGiayForm.moTa.$dirty || coGiayForm.moTa.$touched) && coGiayForm.moTa.$error.required">Không được để
+        <small class="text-danger" ng-show="(coGiayForm.moTa.$dirty || coGiayForm.moTa.$touched) && coGiayForm.moTa.$error.required">Không được để
             trống mô tả</small>
-        <small class="error-message" ng-show="(coGiayForm.moTa.$dirty || coGiayForm.moTa.$touched) && coGiayForm.moTa.$error.minlength">Mô tả không được quá ngắn</small>
-        <small class="error-message" ng-show="(coGiayForm.moTa.$dirty || coGiayForm.moTa.$touched) && coGiayForm.moTa.$error.maxlength">Mô tả không được quá 3000 ký tự</small>
-        <small class="error-message" ng-show="errors.moTa && !coGiayForm.moTa.$dirty">{{errors.moTa}}</small>
+        <small class="text-danger" ng-show="(coGiayForm.moTa.$dirty || coGiayForm.moTa.$touched) && coGiayForm.moTa.$error.minlength">Mô tả không được quá ngắn</small>
+        <small class="text-danger" ng-show="(coGiayForm.moTa.$dirty || coGiayForm.moTa.$touched) && coGiayForm.moTa.$error.maxlength">Mô tả không được quá 3000 ký tự</small>
+        <small class="text-danger" ng-show="errors.moTa && !coGiayForm.moTa.$dirty">{{errors.moTa}}</small>
     </div>
 
     <div class="form-group">
@@ -26,9 +26,9 @@
         <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" id="coGiayTrangThai" name="trangThai" ng-model="coGiay.trangThai" ng-true-value="1"
                    ng-false-value="0" ng-init="coGiay.trangThai = 1">
-            <label class="form-check-label" for="coGiayTrangThai">Đang kinh doanh</label>
+            <label class="form-check-label" for="coGiayTrangThai">Hiển thị</label>
         </div>
-        <small class="error-message" ng-show="errors.trangThai && !coGiayForm.trangThai.$dirty">{{errors.trangThai}}</small>
+        <small class="text-danger" ng-show="errors.trangThai && !coGiayForm.trangThai.$dirty">{{errors.trangThai}}</small>
     </div>
     <button type="submit" class="btn btn-primary">Cập nhật</button>
 </form>

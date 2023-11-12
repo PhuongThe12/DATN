@@ -20,6 +20,8 @@ public interface NhanVienRepository extends JpaRepository<NhanVien, Long> {
             "WHERE (:searchText IS NULL OR nv.hoTen LIKE %:searchText%) AND (:status IS NULL OR nv.trangThai = :status) AND(:chucVu IS NULL OR nv.chucVu = :chucVu)")
     Page<NhanVienResponse> getPageResponse(String searchText, Integer status, Integer chucVu, Pageable pageable);
 
+    @Query(value = "SELECT * FROM NhanVien WHERE ID_TAI_KHOAN = ?1",nativeQuery = true)
+    NhanVien findNhanVienByIdTaiKhoan(Long id);
     Boolean existsByHoTen(String ten);
 
     Boolean existsByHoTenAndIdNot(String ten, Long id);

@@ -2,7 +2,7 @@ var app = angular.module("app", ["ngRoute", "ui.bootstrap"]);
 app.config(function ($routeProvider, $locationProvider) {
     $locationProvider.hashPrefix('');
     $routeProvider
-        .when("/danhsach", {
+        .when("/list", {
             templateUrl: '/pages/admin/nhanvien/views/list.html',
             controller: 'nhanVienListController'
         }).when("/detail/:id", {
@@ -20,6 +20,15 @@ app.config(function ($routeProvider, $locationProvider) {
 
 
 app.controller("addNhanVienController", function ($scope, $http, $location) {
+
+    $scope.addTest = function (){
+        $http.post(host + '/admin/rest/test', $scope.ngayBatDau)
+            .then(function (response) {
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
     // $scope.nhanVien = {};
     $scope.change = function (input) {
         input.$dirty = true;
@@ -59,6 +68,7 @@ app.controller("nhanVienListController", function ($scope, $http, $window, $loca
         $scope.maxSize = 5;
     let searchText;
 
+
     $scope.search = function () {
         if (!$scope.searchText) {
             toastr["error"]("Vui lòng nhập tên muốn tìm kiếm");
@@ -90,31 +100,31 @@ app.controller("nhanVienListController", function ($scope, $http, $window, $loca
         }
 
         console.log(apiUrl);
-
-        $http.get(apiUrl)
-            .then(function (response) {
-                $scope.nhanViens = response.data.content;
-                $scope.numOfPages = response.data.totalPages;
-            })
-            .catch(function (error) {
-                toastr["error"]("Lấy dữ liệu thất bại");
-                // window.location.href = feHost + '/trang-chu';
-            });
+        $scope.isLoading = true;
+        setTimeout(function() {
+            $http.get(apiUrl)
+                .then(function (response) {
+                    $scope.nhanViens = response.data.content;
+                    $scope.numOfPages = response.data.totalPages;
+                    $scope.isLoading = false;
+                })
+                .catch(function (error) {
+                    toastr["error"]("Lấy dữ liệu thất bại");
+                    // window.location.href = feHost + '/trang-chu';
+                });
+        }, 400);
     }
 
     $scope.detailNhanVien = function (val) {
         var id = val;
-        $http.get(host + '/admin/rest/nhan-vien/' + id)
-            .then(function (response) {
-                $scope.nhanVienDetail = response.data;
-                const button = document.querySelector('[data-bs-target="#showNhanVien"]');
-                if (button) {
-                    button.click();
-                }
-            })
-            .catch(function (error) {
-                toastr["error"]("Lấy dữ liệu thất bại");
+        console.log(id);
+        if(!isNaN(id)){
+            $scope.nhanVienDetail = $scope.nhanViens.find(function (nhanVien){
+                return nhanVien.id == id;
             });
+        }else{
+            toastr["error"]("Lấy dữ liệu thất bại");
+        }
     }
 
     $scope.$watch('curPage + numPerPage', function () {

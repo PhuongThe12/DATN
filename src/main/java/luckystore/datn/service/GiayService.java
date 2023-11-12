@@ -1,6 +1,8 @@
 package luckystore.datn.service;
 
+import luckystore.datn.model.request.GiayRequest;
 import luckystore.datn.model.response.GiayResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,4 +14,9 @@ public interface GiayService {
 
     List<GiayResponse> getAllContains(List<Long> ids);
 
+    GiayResponse addGiay(GiayRequest giayRequest);
+
+    Page<GiayResponse> findAllForList();
+
+    Page<GiayResponse>  getPage();
 }

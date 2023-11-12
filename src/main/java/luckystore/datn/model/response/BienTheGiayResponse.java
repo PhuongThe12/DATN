@@ -32,7 +32,7 @@ public class BienTheGiayResponse {
 
     private MauSacResponse mauSac;
 
-    private KichThuocResponse kichthuoc;
+    private KichThuocResponse kichThuoc;
 
     public BienTheGiayResponse(BienTheGiay bienTheGiay) {
         if (bienTheGiay != null) {
@@ -45,8 +45,17 @@ public class BienTheGiayResponse {
             this.barCode = bienTheGiay.getBarCode();
             this.trangThai = bienTheGiay.getTrangThai();
             this.mauSac = new MauSacResponse(bienTheGiay.getMauSac());
-            this.kichthuoc = new KichThuocResponse(bienTheGiay.getKichthuoc());
+            this.kichThuoc = new KichThuocResponse(bienTheGiay.getKichThuoc());
         }
+    }
+
+    public BienTheGiayResponse(Long id, String tenKT, String tenMS, Integer soLuong, BigDecimal giaBan, BigDecimal giaNhap) {
+        this.id = id;
+        this.soLuong = soLuong;
+        this.giaNhap = giaNhap;
+        this.giaBan = giaBan;
+        this.mauSac = MauSacResponse.builder().ten(tenMS).build();
+        this.kichThuoc = KichThuocResponse.builder().ten(tenKT).build();
     }
 
 }
