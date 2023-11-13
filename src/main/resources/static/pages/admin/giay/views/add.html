@@ -1,3 +1,20 @@
+<div ng-show="isLoading" class="loading-spinner">
+    <div class="text-center" style="  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Màu nền đục để làm mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; ">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
+
 <img src="{{image}}" alt="">
 <h1>Thêm giày</h1>
 <form name="addGiayForm" novalidate>
@@ -17,7 +34,7 @@
     </div>
 
     <!-- Hình ảnh -->
-    <div class="px-3">
+    <div class="p-3">
         <label>Hình ảnh <sup class="text-danger">(cần ít nhất một ảnh)</sup></label>
         <div class="imageContainer d-flex flex-row">
 
@@ -125,7 +142,7 @@
 
     <!-- combobox -->
     <!-- Lót giày, Mũi giày -->
-    <div class="row g-3">
+    <div class="row g-3 py-2">
         <div class="col-md-4 position-relative">
             <div class="wrapper px-3 py-2">
                 <label for="lotGiay">Lót giày <sup class="text-danger">(*)</sup></label>
@@ -151,7 +168,7 @@
         </div>
     </div>
 
-    <div class="row g-3">
+    <div class="row g-3 py-2">
 
         <div class="col-md-4 position-relative">
             <div class="wrapper px-3 py-2">
@@ -177,7 +194,7 @@
         </div>
     </div>
 
-    <div class="row g-3">
+    <div class="row g-3 py-2">
         <div class="col-md-4 position-relative">
             <div class="wrapper px-3 py-2">
                 <label for="deGiay">Đế giày <sup class="text-danger">(*)</sup></label>
@@ -206,7 +223,7 @@
         </div>
     </div>
     <!-- màu sắc, kích thước -->
-    <div class="row g-3">
+    <div class="row g-3 py-2">
 
         <div class="col-md-4 position-relative">
             <div class="wrapper px-3 py-2">
@@ -219,7 +236,7 @@
 
         <div class="col-md-4 position-relative">
             <div class="wrapper px-3 py-2">
-                <label for="namSX" class="form-label">Năm sản xuất <sup class="text-danger">(*)</sup></label>
+                <label for="namSX">Năm sản xuất <sup class="text-danger">(*)</sup></label>
                 <input type="number" step="1" class="form-control" id="namSX" name="namSX" ng-model="namSX" min="1000"
                        ng-init="namSX = 2020" max="9999" ng-required="true">
                 <small class="text-danger"
@@ -231,7 +248,7 @@
 
         <div class="col-md-4 position-relative">
             <div class="wrapper px-3 py-2">
-                <label for="mauSac">Trạng thái <sup class="text-danger">(*)</sup></label>
+                <label>Trạng thái <sup class="text-danger">(*)</sup></label>
                 <div class="w-100 form-switch">
                     <input class="form-check-input" type="checkbox" id="trangThaiGiay" name="trangThai"
                            style="cursor: pointer;"
@@ -263,26 +280,20 @@
 
     <!-- Biến thể -->
 
-    <div ng-show="selectedMauSac.length > 0 && selectedKichThuoc.length > 0">
-        <div class="input-group mb-3 row g-3 d-flex align-items-center justify-content-center">
+    <div class="wrapper px-3 py-2" ng-show="selectedMauSac.length > 0 && selectedKichThuoc.length > 0">
+        <div class="input-group mb-3 row g-3 py-2 d-flex align-items-center justify-content-center">
             <span class=" col col-2">Chỉnh sửa cho toàn bộ</span>
-            <div class="col col-2">
-                <div class="input-group mb-3 px-3 py-2" style="margin-bottom: 0 !important;">
-                    <span class="input-group-text text-black-50" id="giaNhapAll">Giá nhập</span>
-                    <input type="number" class="form-control" ng-model="giaNhapAll" aria-label="Giá nhập"
-                           aria-describedby="labelGiaNhapAll">
-                </div>
-            </div>
-            <div class="col col-2">
+
+            <div class="col col-3">
                 <div class="input-group mb-3 px-3 py-2" style="margin-bottom: 0 !important;">
                     <span class="input-group-text text-black-50" id="labelGiaBanAll">Giá bán</span>
                     <input type="number" class="form-control" ng-model="giaBanAll" aria-label="Giá bán"
                            aria-describedby="labelGiaBanAll">
                 </div>
             </div>
-            <div class="col col-2">
+            <div class="col col-3">
                 <div class="input-group mb-3 px-3 py-2" style="margin-bottom: 0 !important;">
-                    <span class="input-group-text text-black-50" id="labelGiaBanAll">Số lượng</span>
+                    <span class="input-group-text text-black-50" id="labelSoLuongAll">Số lượng</span>
                     <input type="number" class="form-control" ng-model="soLuongAll" aria-label="Số lượng"
                            aria-describedby="labelSoLuongAll">
                 </div>
@@ -293,10 +304,9 @@
 
         <!-- Bảng phân loại -->
         <table class="table table-bordered align-middle text-center">
-            <thead class="">
+            <thead  style="border: 1px solid rgba(0, 0, 0, 0.1);">
             <th>Màu sắc</th>
             <th>Kích thước</th>
-            <th>Giá nhập</th>
             <th>Giá bán</th>
             <th>Số lượng</th>
             <th>Trạng thái</th>
@@ -304,7 +314,7 @@
             </thead>
 
             <tbody ng-repeat="(msIndex, mauSac) in selectedMauSacs">
-            <tr ng-repeat="(ktIndex, kichThuoc) in mauSac.selectedKichThuocs">
+            <tr ng-repeat="(ktIndex, kichThuoc) in mauSac.selectedKichThuocs" style="border: 1px solid rgba(0, 0, 0, 0.1);">
                 <td ng-if="$first" rowspan="{{mauSac.selectedKichThuocs.length}}">
                     <div class="imageContainer d-flex flex-column justify-content-center">
                                 <span><span ng-style="{'color': mauSac.maMau}" class="px-1"><i
@@ -334,24 +344,7 @@
                     </div>
                 </td>
                 <td>{{kichThuoc.ten}}</td>
-                <td>
-                    <div class="input-group mb-3 px-3 d-flex flex-column" style="margin-bottom: 0 !important;">
-                        <div class="d-flex flex-row">
-                            <span class="input-group-text text-black-50" id="labelGiaBan{{msIndex}}{{ktIndex}}">₫</span>
-                            <input type="number" class="form-control" ng-model="kichThuoc.giaNhap"
-                                   placeholder="Giá nhập"  id="giaNhap{{msIndex}}{{ktIndex}}"
-                                   aria-label="Giá nhập" ng-required="true" min="0"
-                                   ng-change="changeInput(msIndex, ktIndex, 'giaNhap')"
-                                   ng-blur="blurInput(msIndex, ktIndex, 'giaNhap')" name="giaNhap"
-                                   onkeypress="nextInput(event)"
-                                   aria-describedby="labelGiaNhap{{msIndex}}{{ktIndex}}">
-                        </div>
-                        <div>
-                            <small class="text-danger"
-                                   ng-show="kichThuoc.errors.giaNhap">{{kichThuoc.errors.giaNhap}}</small>
-                        </div>
-                    </div>
-                </td>
+
                 <td>
                     <div class="input-group mb-3 px-3 d-flex flex-column" style="margin-bottom: 0 !important;">
                         <div class="d-flex flex-row">
@@ -918,7 +911,7 @@
             </div>
             <div class="modal-body">
 
-                <form name="kichThuocForm" ng-submit="addKichThuoc()" class="row g-3">
+                <form name="kichThuocForm" ng-submit="addKichThuoc()" class="row g-3 py-2">
                     <div class="row">
                         <div class="col-12">
                             <label for="kichThuocTen">Tên: </label>

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import luckystore.datn.entity.BienTheGiay;
+import luckystore.datn.service.impl.ImageHubServiceImpl;
 
 import java.math.BigDecimal;
 
@@ -24,8 +25,6 @@ public class BienTheGiayResponse {
 
     private String hinhAnh;
 
-    private BigDecimal giaNhap;
-
     private BigDecimal giaBan;
 
     private String barCode;
@@ -36,25 +35,33 @@ public class BienTheGiayResponse {
 
     private KichThuocResponse kichThuoc;
 
-    public BienTheGiayResponse(BienTheGiay bienTheGiay) {
+    private GiayResponse giayResponse;
+
+    public BienTheGiayResponse(BienTheGiay bienTheGiay, int ...level) {
         if (bienTheGiay != null) {
             this.id = bienTheGiay.getId();
             this.soLuong = bienTheGiay.getSoLuong();
             this.soLuongLoi = bienTheGiay.getSoLuongLoi();
             this.hinhAnh = bienTheGiay.getHinhAnh();
-            this.giaNhap = bienTheGiay.getGiaNhap();
             this.giaBan = bienTheGiay.getGiaBan();
             this.barCode = bienTheGiay.getBarCode();
             this.trangThai = bienTheGiay.getTrangThai();
             this.mauSac = new MauSacResponse(bienTheGiay.getMauSac());
             this.kichThuoc = new KichThuocResponse(bienTheGiay.getKichThuoc());
+            if(bienTheGiay.getGiay() != null && level != null) {
+                giayResponse = new GiayResponse();
+                giayResponse.setId(bienTheGiay.getGiay().getId());
+                giayResponse.getLstAnh().add(bienTheGiay.getGiay().getLstAnh().isEmpty() ? null :
+                        ImageHubServiceImpl.getBase64FromFileStatic(bienTheGiay.getGiay().getLstAnh().get(0).getLink()));
+                giayResponse.setTen(bienTheGiay.getGiay().getTen());
+                giayResponse.setLstBienTheGiay(null);
+            }
         }
     }
 
-    public BienTheGiayResponse(Long id, String tenKT, String tenMS, Integer soLuong, BigDecimal giaBan, BigDecimal giaNhap) {
+    public BienTheGiayResponse(Long id, String tenKT, String tenMS, Integer soLuong, BigDecimal giaBan) {
         this.id = id;
         this.soLuong = soLuong;
-        this.giaNhap = giaNhap;
         this.giaBan = giaBan;
         this.mauSac = MauSacResponse.builder().ten(tenMS).build();
         this.kichThuoc = KichThuocResponse.builder().ten(tenKT).build();

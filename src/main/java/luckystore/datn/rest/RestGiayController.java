@@ -63,6 +63,11 @@ public class RestGiayController {
         return new ResponseEntity<>(giayService.findAllForList(giaySearch), HttpStatus.OK);
     }
 
+    @PostMapping("/find-all-by-search")
+    public ResponseEntity<?> findAllBySearch(@RequestBody GiaySearch giaySearch) {
+        return new ResponseEntity<>(giayService.findAllBySearch(giaySearch), HttpStatus.OK);
+    }
+
     @PostMapping("/get-giay-contains")
     public ResponseEntity<?> getAllContains(@RequestBody List<Long> ids) {
         return new ResponseEntity<>(giayService.getAllContains(ids), HttpStatus.OK);
