@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import luckystore.datn.entity.BienTheGiay;
 import luckystore.datn.entity.Giay;
-import luckystore.datn.entity.HashTagChiTiet;
 import luckystore.datn.entity.HinhAnh;
 import luckystore.datn.service.impl.ImageHubServiceImpl;
 
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -62,6 +60,10 @@ public class GiayResponse {
 
     private BigDecimal giaDen;
 
+    public GiayResponse(Long id) {
+        this.id = id;
+    }
+
     public GiayResponse(Giay giay) {
         if (giay != null) {
             this.id = giay.getId();
@@ -83,6 +85,23 @@ public class GiayResponse {
             this.lstHashTagChiTiet = (giay.getHashTagChiTiets().stream().map(HashTagChiTietResponse::new).collect(Collectors.toList()));
 
         }
+    }
+
+    public GiayResponse(Long id, String ten, List<HinhAnh> lstAnh, List<BienTheGiay> lstBienTheGiay) {
+        this.id = id;
+        this.ten = ten;
+        this.lstAnh = lstAnh.stream().sorted(Comparator.comparingInt(HinhAnh::getUuTien))
+                .map(anh -> ImageHubServiceImpl.getBase64FromFileStatic(anh.getLink())).collect(Collectors.toList());
+        this.lstBienTheGiay = lstBienTheGiay.stream().map(BienTheGiayResponse::new).collect(Collectors.toList());
+    }
+
+    public GiayResponse(Long id, String ten, BienTheGiay bienThe, String thumbnail) {
+        this.id = id;
+        this.ten = ten;
+        if (thumbnail != null) {
+            this.lstAnh.add(ImageHubServiceImpl.getBase64FromFileStatic(thumbnail));
+        }
+        this.lstBienTheGiay.add(new BienTheGiayResponse(bienThe));
     }
 
     public GiayResponse(Long id, String ten, String thumbnail) {
