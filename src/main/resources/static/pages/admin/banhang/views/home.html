@@ -77,14 +77,14 @@
                                 <td>1</td>
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <p class="font-size-16 fw-bold ps-2">{{giaySelect.ten}}</p>
+                                        <p class="font-size-16 fw-bold ps-2">{{giaySelect.ten}} ( {{giaySelect.kichThuoc.ten}} - {{giaySelect.mauSac.ten}} )</p>
                                     </div>
                                 </td>
                                 <td>
-                                    <input type="number" ng-model="giaySelect.soLuong" class="form-control w-25 m-auto">
+                                    <input type="number" ng-model="giaySelect.soLuongMua" class="form-control w-25 m-auto">
                                 </td>
-                                <td>430000</td>
-                                <td>430000</td>
+                                <td>{{giaySelect.giaBan}}</td>
+                                <td>{{giaySelect.giaBan * giaySelect.soLuongMua}}</td>
                                 <td>
                                     <button class="btn"><i class="fas text-danger font-size-16 fa-trash-alt"></i>
                                     </button>
@@ -155,7 +155,7 @@
                     <div class="col-md-6">
                         <div class="side-left">
                             <div class="title">
-                                <h5>{{giayDetail.ten}}</h5>
+                                <h5>{{giayDetail.ten}} </h5>
                                 <h5>Giá <span id="price-product">{{giayDetail.giaBan}}</span></h5>
                                 <h5>Số lượng : <span id="quantity">{{giayDetail.soLuong}}</span></h5>
                             </div>
@@ -171,7 +171,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Thêm vào giỏ hàng</button>
+                <button type="button" class="btn btn-primary" ng-click="addGiay()">Thêm vào giỏ hàng</button>
             </div>
         </div>
     </div>

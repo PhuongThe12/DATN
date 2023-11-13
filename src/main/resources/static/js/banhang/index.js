@@ -33,6 +33,8 @@ app.controller("homeController", function ($scope, $http, $location, $cookies) {
     let giaySearch = {};
     $scope.listGiaySelected = [];
 
+    $scope.giayChoosed = {};
+
     $scope.search = function () {
         getData(1);
     };
@@ -116,16 +118,6 @@ app.controller("homeController", function ($scope, $http, $location, $cookies) {
                 console.log(error);
                 $location.path("/home");
             });
-
-
-            // $scope.giaySeletect = $scope.giays.find(function (giay) {
-            //     return giay.id == id;
-            // });
-            // $scope.giaySeletect.soLuong = 1;
-            // console.log($scope.giaySeletect);
-            // $scope.listGiaySelected.push($scope.giaySeletect);
-            //
-            // $scope.totalPrice += $scope.giaySeletect.gia;
         } else {
             $scope.checkExits.soLuong++;
             $scope.totalPrice += $scope.checkExits.gia;
@@ -135,11 +127,11 @@ app.controller("homeController", function ($scope, $http, $location, $cookies) {
 
     function detailGiayChiTiet(productData) {
 
+
         $scope.giayDetail = productData;
         displayImages(productData.lstAnh);
 
         const mauSacImages = productData.mauSacImages;
-        console.log(mauSacImages);
         const lstBienTheGiay = productData.lstBienTheGiay;
 
         const buttonsContainer = document.getElementById('buttons-container');
@@ -193,6 +185,9 @@ app.controller("homeController", function ($scope, $http, $location, $cookies) {
                             sizeButton.addEventListener("click", () => {
                                 quantityDisplay.textContent = variant.soLuong;
                                 priceDisplay.textContent = variant.giaBan;
+                                $scope.giayChoosed = variant;
+                                $scope.giayChoosed.ten = productData.ten;
+                                console.log($scope.giayChoosed);
                             });
                             sizeButtons.appendChild(sizeButton);
                         }
@@ -213,6 +208,41 @@ app.controller("homeController", function ($scope, $http, $location, $cookies) {
                 outerDiv.className = "button_color";
                 buttonsContainer.appendChild(outerDiv);
             }
+        }
+    }
+
+    $scope.addGiay = function () {
+        var exists = $scope.listGiaySelected.some(function (item) {
+            // Kiểm tra điều kiện, ví dụ so sánh ID của đối tượng
+            return item.id === $scope.giayChoosed.id;
+        });
+
+        if (exists) {
+            Swal.fire({
+                text: "Đã tồn tại giày trong giỏ hàng",
+                icon: "error"
+            });
+        } else {
+            Swal.fire({
+                text: "Bạn có chắc chắn muốn thêm giày vào giỏ hàng",
+                icon: "info",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Đồng ý",
+                cancelButtonText:"Hủy"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        text: "Thêm thành công",
+                        icon: "success"
+                    });
+                    $scope.giayChoosed.soLuongMua = 1;
+                    $scope.listGiaySelected.push($scope.giayChoosed);
+                }
+
+            });
+
         }
     }
 
