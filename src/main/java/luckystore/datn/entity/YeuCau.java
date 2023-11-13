@@ -5,9 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import luckystore.datn.model.request.YeuCauRequest;
 
-import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,7 +15,7 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "YeuCau")
-public class YeuCau implements Serializable {
+public class YeuCau {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +25,7 @@ public class YeuCau implements Serializable {
     @Column(name = "ID_NGUOI_THUC_HIEN")
     private Long nguoiThucHien;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_HOA_DON")
     private HoaDon hoaDon;
 
@@ -48,16 +47,14 @@ public class YeuCau implements Serializable {
     @OneToMany(mappedBy = "yeuCau",fetch = FetchType.LAZY)
     @Column(nullable = true)
     @JsonManagedReference
-    private Set<YeuCauChiTiet> yeuCauChiTiets;
+    private List<YeuCauChiTiet> listYeuCauChiTiet;
 
-    public YeuCau(YeuCauRequest YeuCauRequest) {
+    public YeuCau(YeuCauRequest YeuCauRequest,HoaDon hoaDon) {
         if (YeuCauRequest != null) {
             this.nguoiThucHien = YeuCauRequest.getNguoiThucHien();
-            this.hoaDon = YeuCauRequest.getHoaDon();
+            this.hoaDon = hoaDon;
             this.loaiYeuCau = YeuCauRequest.getLoaiYeuCau();
             this.trangThai = YeuCauRequest.getTrangThai();
-            this.ngayTao = YeuCauRequest.getNgayTao();
-            this.ngaySua = YeuCauRequest.getNgaySua();
             this.ghiChu = YeuCauRequest.getGhiChu();
         }
     }

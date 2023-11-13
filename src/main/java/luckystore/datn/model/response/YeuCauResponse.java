@@ -39,4 +39,16 @@ public class YeuCauResponse {
         }
     }
 
+    public YeuCauResponse(YeuCauResponse responseByStatus) {
+        if(responseByStatus != null){
+            this.id = responseByStatus.getId();
+            this.nguoiThucHien = responseByStatus.getNguoiThucHien();
+            this.hoaDon = responseByStatus.getHoaDon();
+            this.loaiYeuCau = responseByStatus.getLoaiYeuCau();
+            this.trangThai = responseByStatus.getTrangThai();
+            this.ngayTao = responseByStatus.getNgayTao();
+            this.ngaySua = responseByStatus.getNgaySua();
+            this.ghiChu = responseByStatus.getGhiChu();
+        }
+    }
 }
