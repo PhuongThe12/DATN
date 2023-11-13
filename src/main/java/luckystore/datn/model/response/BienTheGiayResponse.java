@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import luckystore.datn.entity.BienTheGiay;
+import luckystore.datn.service.impl.ImageHubServiceImpl;
 
 import java.math.BigDecimal;
 
@@ -34,7 +35,9 @@ public class BienTheGiayResponse {
 
     private KichThuocResponse kichThuoc;
 
-    public BienTheGiayResponse(BienTheGiay bienTheGiay) {
+    private GiayResponse giayResponse;
+
+    public BienTheGiayResponse(BienTheGiay bienTheGiay, int ...level) {
         if (bienTheGiay != null) {
             this.id = bienTheGiay.getId();
             this.soLuong = bienTheGiay.getSoLuong();
@@ -45,6 +48,14 @@ public class BienTheGiayResponse {
             this.trangThai = bienTheGiay.getTrangThai();
             this.mauSac = new MauSacResponse(bienTheGiay.getMauSac());
             this.kichThuoc = new KichThuocResponse(bienTheGiay.getKichThuoc());
+            if(bienTheGiay.getGiay() != null && level != null) {
+                giayResponse = new GiayResponse();
+                giayResponse.setId(bienTheGiay.getGiay().getId());
+                giayResponse.getLstAnh().add(bienTheGiay.getGiay().getLstAnh().isEmpty() ? null :
+                        ImageHubServiceImpl.getBase64FromFileStatic(bienTheGiay.getGiay().getLstAnh().get(0).getLink()));
+                giayResponse.setTen(bienTheGiay.getGiay().getTen());
+                giayResponse.setLstBienTheGiay(null);
+            }
         }
     }
 
