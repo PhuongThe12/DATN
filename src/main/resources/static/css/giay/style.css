@@ -1,5 +1,5 @@
 .border-botton-005 {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
 
 .edit-icon {
@@ -24,7 +24,7 @@
 }
 
 .select-btn,
-li {
+.options li {
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -183,7 +183,11 @@ li.selected {
 } */
 
 table tr {
-    height: 50px;
+    height: 50px !important;
+}
+
+.li-height-50 {
+    height: 50px !important;
 }
 
 td {
@@ -302,4 +306,26 @@ table tbody:hover tr td[rowspan]:hover {
 
 .nowrap-column {
     /*white-space: nowrap;*/
+}
+
+.barcode-options {
+    display: none;
+    position: absolute;
+    top: 40px;
+    right: 100%;
+    transform: translateX(50%);
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 150px;
+    z-index: 12;
+}
+
+.barcodeButton {
+    position: relative;
+}
+
+.barcodeButton:hover>.barcode-options {
+    display: block;
 }

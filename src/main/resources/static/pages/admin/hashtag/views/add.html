@@ -1,30 +1,65 @@
-<h1>Thêm hash tag</h1>
-
-<form name="hashTagForm" ng-submit="addHashTag()">
-    <div class="form-group">
-        <label for="hashTagTen">Tên: </label>
-        <input type="text" class="form-control" id="hashTagTen" name="ten" ng-model="hashTag.ten" ng-maxlength="100" ng-required="true"
-            ng-change="change(hashTagForm.ten)">
-        <small class="text-danger" ng-show="(hashTagForm.ten.$dirty || hashTagForm.ten.$touched) && hashTagForm.ten.$error.required">Không được để
-            trống tên</small>
-        <small class="text-danger" ng-show="(hashTagForm.ten.$dirty || hashTagForm.ten.$touched) && hashTagForm.ten.$error.maxlength">Tên không được
-            vượt quá 100 ký tự</small>
-        <small class="text-danger" ng-show="errors.ten && !hashTagForm.ten.$dirty">{{errors.ten}}</small>
-    </div>
-    <div class="form-group">
-        <label for="hashTagMoTa">Mô tả: </label>
-        <textarea class="form-control" id="hashTagMoTa" name="moTa" rows="3" ng-model="hashTag.moTa" ng-change="change(hashTagForm.moTa)"></textarea>
-        <small class="text-danger" ng-show="errors.moTa && !hashTagForm.moTa.$dirty">{{errors.moTa}}</small>
-    </div>
-
-    <div class="form-group">
-        <label>Trạng thái: </label>
-        <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="hashTagTrangThai" name="trangThai" ng-model="hashTag.trangThai" ng-true-value="1"
-                   ng-false-value="0" ng-init="hashTag.trangThai = 1">
-            <label class="form-check-label" for="hashTagTrangThai">Hiển thị</label>
+<div ng-show="isLoading" class="loading-spinner">
+    <div class="text-center" style="  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Màu nền đục để làm mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; ">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
         </div>
-        <small class="text-danger" ng-show="errors.trangThai && !hashTagForm.trangThai.$dirty">{{errors.trangThai}}</small>
     </div>
-    <button type="submit" class="btn btn-primary">Tạo mới</button>
-</form>
+</div>
+<button class="ms-4 mb-3 btn btn-primary" ng-click="backToList()"><i class="fas fa-chevron-left"></i>Danh sách</button>
+<div class="card rounded bg-white ms-4 mx-4">
+    <div class="card-header bg-white">
+        <h5 class="card-title p-2 mt-2">
+            Thêm Hashtag
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="p-3">
+
+            <form name="hashTagForm" ng-submit="addHashTag()">
+                <div class="form-group">
+                    <label for="hashTagTen">Tên: </label>
+                    <input type="text" class="form-control" id="hashTagTen" name="ten" ng-model="hashTag.ten"
+                           ng-maxlength="100" ng-required="true"
+                           ng-change="change(hashTagForm.ten)">
+                    <small class="text-danger"
+                           ng-show="(hashTagForm.ten.$dirty || hashTagForm.ten.$touched) && hashTagForm.ten.$error.required">Không
+                        được để
+                        trống tên</small>
+                    <small class="text-danger"
+                           ng-show="(hashTagForm.ten.$dirty || hashTagForm.ten.$touched) && hashTagForm.ten.$error.maxlength">Tên
+                        không được
+                        vượt quá 100 ký tự</small>
+                    <small class="text-danger" ng-show="errors.ten && !hashTagForm.ten.$dirty">{{errors.ten}}</small>
+                </div>
+                <div class="form-group">
+                    <label for="hashTagMoTa">Mô tả: </label>
+                    <textarea class="form-control" id="hashTagMoTa" name="moTa" rows="3" ng-model="hashTag.moTa"
+                              ng-change="change(hashTagForm.moTa)"></textarea>
+                    <small class="text-danger" ng-show="errors.moTa && !hashTagForm.moTa.$dirty">{{errors.moTa}}</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Trạng thái: </label>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="hashTagTrangThai" name="trangThai"
+                               ng-model="hashTag.trangThai" ng-true-value="1"
+                               ng-false-value="0" ng-init="hashTag.trangThai = 1">
+                        <label class="form-check-label" for="hashTagTrangThai">Hiển thị</label>
+                    </div>
+                    <small class="text-danger" ng-show="errors.trangThai && !hashTagForm.trangThai.$dirty">{{errors.trangThai}}</small>
+                </div>
+                <button type="submit" class="btn btn-primary">Tạo mới</button>
+            </form>
+
+        </div>
+    </div>
+</div>

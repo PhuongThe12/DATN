@@ -1,4 +1,4 @@
-var app = angular.module("app", ["ngRoute", "ui.bootstrap"]);
+const app = angular.module("app", ["ngRoute", "ui.bootstrap"]);
 app.config(function ($routeProvider, $locationProvider) {
     $locationProvider.hashPrefix('');
     $routeProvider
@@ -25,8 +25,27 @@ app.controller("addChatLieuController", function ($scope, $http, $location) {
         $location.path("/list");
     }
 
+    $scope.comfirmAdd = function () {
+        Swal.fire({
+            text: "Xác nhận thêm?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $scope.addChatLieu();
+            }
+
+        });
+    }
+
     $scope.addChatLieu = function () {
+        $scope.isLoading = true;
         if ($scope.chatLieuForm.$invalid) {
+            $scope.isLoading = false;
             return;
         }
         $http.post(host + '/admin/rest/chat-lieu', $scope.chatLieu)
@@ -43,6 +62,7 @@ app.controller("addChatLieuController", function ($scope, $http, $location) {
                     $scope.chatLieuForm.moTa.$dirty = false;
                     $scope.errors = error.data;
                 }
+                $scope.isLoading = false;
             });
     }
 
@@ -134,17 +154,35 @@ app.controller("updateChatLieuController", function ($scope, $http, $routeParams
         .then(function (response) {
             $scope.chatLieu = response.data;
             $scope.isLoading = false;
-        }).catch(function (error) {
-        toastr["error"]("Lấy dữ liệu thất bại");
-        $location.path("/list");
-    });
+        })
+        .catch(function (error) {
+            toastr["error"]("Lấy dữ liệu thất bại");
+            $location.path("/list");
+        });
+
+    $scope.comfirmUpdate = function () {
+        Swal.fire({
+            text: "Xác nhận cập nhật?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $scope.updateChatLieu();
+            }
+        });
+    }
 
     $scope.updateChatLieu = function () {
+        $scope.isLoading = true;
         if ($scope.chatLieuForm.$invalid) {
+            $scope.isLoading = false;
             return;
         }
 
-        $scope.isLoading = true;
         $http.put(host + '/admin/rest/chat-lieu/' + id, $scope.chatLieu)
             .then(function (response) {
                 if (response.status === 200) {

@@ -1,4 +1,4 @@
-var app = angular.module("app", ["ngRoute", "ui.bootstrap"]);
+const app = angular.module("app", ["ngRoute", "ui.bootstrap"]);
 app.config(function ($routeProvider, $locationProvider) {
     $locationProvider.hashPrefix('');
     $routeProvider
@@ -32,7 +32,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
 
     $scope.changeSelectedKichThuoc = function () {
         // Sao chép selectedMauSacs
-        let selectedMauSacsCopy = angular.copy($scope.selectedMauSacs);
+        let selectedMauSacsCopy = angular.copy($scope.selectedMauSacs.filter(mauSac => mauSac.status === 'active'));
         const length = $scope.selectedMauSacs.length;
         for (let i = 0; i < length; i++) {
             selectedMauSacsCopy[i].hinhAnh = $scope.selectedMauSacs[i].hinhAnh;
@@ -40,8 +40,8 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
 
         // Kiểm tra và cập nhật selectedMauSacs dựa trên selectedMauSac
         $scope.selectedMauSac.forEach(function (mauSac) {
-            var existingMauSac = selectedMauSacsCopy.find(function (ms) {
-                return ms.id === mauSac.id;
+            const existingMauSac = selectedMauSacsCopy.find(function (ms) {
+                return ms.id === mauSac.id && ms.status === 'active';
             });
 
             if (!existingMauSac) {
@@ -72,7 +72,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
         $scope.selectedKichThuoc.forEach(function (kichThuoc) {
             selectedMauSacsCopy.forEach(function (mauSac) {
                 var existingKichThuoc = mauSac.selectedKichThuocs.find(function (kt) {
-                    return kt.id === kichThuoc.id;
+                    return kt.id === kichThuoc.id && kt.status === 'active';
                 });
 
                 if (!existingKichThuoc) {
@@ -142,24 +142,45 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
                     toastr["error"]("Chỉ cho phép định dạng jpg/png/jpeg");
                     return;
                 }
+
                 switch (image) {
                     case 2:
+                        if(file.size > 5 * 1024 * 1024){
+                            toastr["error"]("File không được vượt quá 5MB");
+                            break;
+                        }
                         $scope.image2 = file;
                         loadImage($scope.image2, 'selectedImage2');
                         break;
                     case 3:
+                        if(file.size > 5 * 1024 * 1024){
+                            toastr["error"]("File không được vượt quá 5MB");
+                            break;
+                        }
                         $scope.image3 = file;
                         loadImage($scope.image3, 'selectedImage3');
                         break;
                     case 4:
+                        if(file.size > 5 * 1024 * 1024){
+                            toastr["error"]("File không được vượt quá 5MB");
+                            break;
+                        }
                         $scope.image4 = file;
                         loadImage($scope.image4, 'selectedImage4');
                         break;
                     case 5:
+                        if(file.size > 5 * 1024 * 1024){
+                            toastr["error"]("File không được vượt quá 5MB");
+                            break;
+                        }
                         $scope.image5 = file;
                         loadImage($scope.image5, 'selectedImage5');
                         break;
                     default:
+                        if(file.size > 5 * 1024 * 1024) {
+                            toastr["error"]("File không được vượt quá 5MB");
+                            break;
+                        }
                         $scope.image1 = file;
                         $scope.errors.anh = null;
                         loadImage($scope.image1, 'selectedImage1');
@@ -355,14 +376,11 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
             });
     }, 0);
 
-    $scope.setBarcode = function (msIndex, ktIndex) {
-        $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].barcode = new Date().getTime();
-        $scope.blurInput(msIndex, ktIndex, 'barcode');
-    }
-
     $scope.submitData = function () {
+        $scope.isLoading = true;
 
         if (!isValid()) {
+            $scope.isLoading = false;
             return;
         }
 
@@ -410,7 +428,6 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
                 let bienTheGiay = {
                     mauSacId: mauSac.id,
                     kichThuocId: kichThuoc.id,
-                    giaNhap: kichThuoc.giaNhap,
                     soLuong: kichThuoc.soLuong,
                     giaBan: kichThuoc.giaBan,
                     trangThai: kichThuoc.trangThai === 0 ? 0 : 1,
@@ -459,11 +476,13 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
                                 $scope.addGiayForm.ten.$dirty = false;
                                 $scope.addGiayForm.moTa.$dirty = false;
                                 $scope.addGiayForm.namSX.$dirty = false;
+                                $scope.isLoading = false;
                                 // window.location.href = feHost + '/trang-chu';
                             });
                     })
                     .catch(error => {
                         console.error("Lỗi xử lý dữ liệu:", error);
+                        $scope.isLoading = false;
                     });
             });
 
@@ -524,25 +543,6 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
                         count++;
                     }
 
-                    if (isNaN(kichThuoc.giaNhap)) {
-                        kichThuoc.giaNhap = null;
-                        kichThuoc.errors.giaNhap = 'Giá nhập không được để trống';
-                        valid = false;
-                        count++;
-                    } else if (kichThuoc.giaNhap < 0) {
-                        kichThuoc.giaNhap = null;
-                        kichThuoc.errors.giaNhap = 'Giá nhập không được âm';
-                        valid = false;
-                        count++;
-                    }
-
-                    if (!isNaN(kichThuoc.giaNhap) && !isNaN(kichThuoc.giaBan) && kichThuoc.giaNhap > kichThuoc.giaBan) {
-                        kichThuoc.giaBan = null;
-                        kichThuoc.errors.giaBan = 'Giá bán không được nhỏ hơn giá nhập';
-                        valid = false;
-                        count++;
-                    }
-
                     if (isNaN(kichThuoc.soLuong)) {
                         kichThuoc.soLuong = null;
                         kichThuoc.errors.soLuong = 'Không được bỏ trống số lượng';
@@ -587,9 +587,6 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
     }
 
     $scope.changeInput = function (msIndex, ktIndex, model) {
-        if (model === 'giaNhap' && $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaNhap) {
-            $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaNhap = null;
-        }
 
         if (model === 'giaBan' && $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaBan) {
             $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaBan = null;
@@ -604,21 +601,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
     }
 
     $scope.blurInput = function (msIndex, ktIndex, model) {
-        if (model === 'giaNhap') {
-            if (isNaN($scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaNhap) || !$scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaNhap) {
-                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaNhap = 'Giá nhập không được để trống';
-                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaNhap = null;
-            } else if ($scope.selectedMauSacs[msIndex].selectedKichThuocs[0].giaNhap < 0) {
-                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaNhap = 'Giá nhập không được âm';
-                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaNhap = null;
-            } else if ($scope.selectedMauSacs[msIndex].selectedKichThuocs[0].giaBan && $scope.selectedMauSacs[msIndex].selectedKichThuocs[0].giaBan < $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaNhap) {
-                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaNhap = null;
-                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaNhap = 'Giá nhập không được lớn hơn giá bán';
-            } else {
-                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaNhap = null;
-            }
 
-        }
         if (model === 'giaBan') {
             if (isNaN($scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan) || !$scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan) {
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaBan = 'Giá bán không được để trống';
@@ -626,9 +609,6 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
             } else if ($scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan < 0) {
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaBan = 'Giá bán không được âm';
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan = null;
-            } else if ($scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaNhap && $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan < $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaNhap) {
-                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan = null;
-                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaBan = 'Giá nhập không được lớn hơn giá bán';
             } else {
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaBan = null;
             }
@@ -669,36 +649,11 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
     }
 
     $scope.updateForAll = function () {
-        if ($scope.giaNhapAll && !isNaN($scope.giaNhapAll) && $scope.giaBanAll && !isNaN($scope.giaBanAll)) {
-            if ($scope.giaNhapAll > $scope.giaBanAll) {
-                toastr["error"]("Giá nhập phải nhỏ hơn giá bán");
-                $scope.resetFormForAll();
-                return;
-            }
-        }
-
-        if ($scope.giaNhapAll && !isNaN($scope.giaNhapAll)) {
-            $scope.selectedMauSacs.forEach(mauSac => {
-                mauSac.selectedKichThuocs.forEach(kichThuoc => {
-                    if (!kichThuoc.giaBan || !isNaN(kichThuoc.giaNhap)) {
-                        kichThuoc.giaNhap = $scope.giaNhapAll;
-                    } else if (kichThuoc.giaBan && kichThuoc.giaBan < $scope.giaNhapAll) {
-                        kichThuoc.giaNhap = null;
-                        kichThuoc.errors.giaNhap = 'Giá nhập không được lớn hơn giá bán';
-                    }
-                })
-            })
-        }
 
         if ($scope.giaBanAll && !isNaN($scope.giaBanAll)) {
             $scope.selectedMauSacs.forEach(mauSac => {
                 mauSac.selectedKichThuocs.forEach(kichThuoc => {
-                    if (kichThuoc.giaNhap || !isNaN(kichThuoc.giaBan) && kichThuoc.giaBan < kichThuoc.giaNhap) {
-                        kichThuoc.giaBan = $scope.giaBanAll;
-                    } else if (kichThuoc.giaNhap && kichThuoc.giaNhap < $scope.giaBanAll) {
-                        kichThuoc.giaBan = null;
-                        kichThuoc.errors.giaBan = 'Giá bán không được nhỏ hơn giá nhập';
-                    }
+                    kichThuoc.giaBan = $scope.giaBanAll;
                 })
             })
         }
@@ -714,7 +669,6 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
         $scope.selectedMauSacs.forEach((ms, msIndex) => {
             ms.selectedKichThuocs.forEach((kt, ktIndex) => {
                 $scope.blurInput(msIndex, ktIndex, 'barcode');
-                $scope.blurInput(msIndex, ktIndex, 'giaNhap');
                 $scope.blurInput(msIndex, ktIndex, 'giaBan');
                 $scope.blurInput(msIndex, ktIndex, 'soLuong');
             })
@@ -726,7 +680,6 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
     $scope.resetFormForAll = function () {
         $scope.soLuongAll = '';
         $scope.giaBanAll = '';
-        $scope.giaNhapAll = '';
     }
 
     //////////////for modal
@@ -994,6 +947,161 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
             });
     }
 
+    $scope.setBarcode = function (msIndex, ktIndex) {
+        $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].barcode = new Date().getTime();
+        $scope.blurInput(msIndex, ktIndex, 'barcode');
+    }
+
+    $scope.scanQR =  function (e, element) {
+
+        const msIndex = parseInt(element.getAttribute("ms-index"));
+        const ktIndex = parseInt(element.getAttribute("kt-index"));
+        console.log(element.getAttribute("ms-index"), msIndex, element.getAttribute("kt-index"), ktIndex);
+        if(isNaN(msIndex) || isNaN(ktIndex)) {
+            toastr["error"]("Lỗi bất định!");
+            return;
+        }
+
+        if (e.target.files && e.target.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const image = new Image();
+                image.src = e.target.result;
+
+                image.onload = function () {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = image.width;
+                    canvas.height = image.height;
+                    const context = canvas.getContext('2d');
+                    context.drawImage(image, 0, 0, image.width, image.height);
+
+                    const imageData = context.getImageData(0, 0, image.width, image.height);
+                    const code = jsQR(imageData.data, image.width, image.height);
+
+                    if (code) {
+                        $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].barcode = code.data;
+                        $scope.blurInput(msIndex, ktIndex, 'barcode');
+                        document.getElementById('barcode' + msIndex + ktIndex).value = code.data;
+                    } else {
+                        Quagga.decodeSingle({
+                            src: e.target.result,
+                            numOfWorkers: 0,
+                            decoder: {
+                                readers: ['ean_reader', 'code_128_reader', 'code_39_reader']
+                            },
+                        }, function (result) {
+                            if (result && result.codeResult) {
+                                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].barcode = result.codeResult.code;
+                                $scope.blurInput(msIndex, ktIndex, 'barcode');
+                                document.getElementById('barcode' + msIndex + ktIndex).value = result.codeResult.code;
+                            } else {
+                                toastr["error"]("Không tìm thấy mã trong hình ảnh");
+                            }
+                        });
+                    }
+                };
+            };
+
+            reader.readAsDataURL(e.target.files[0]);
+        } else {
+            toastr["error"]("Không tìm thấy hình ảnh");
+        }
+    }
+
+    const video = document.getElementById('video');
+
+    let scanning = false;
+
+    $scope.startScanning =  function(msIndex, ktIndex) {
+        scanning = true;
+        if (scanning) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then((stream) => {
+                    video.srcObject = stream;
+                    video.play();
+
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+
+                    const interval = setInterval(() => {
+                        if (scanning) {
+                            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                            const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+                            if (code) {
+                                // Thực hiện các hành động với mã QR tại đây
+                                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].barcode =  code.data;
+                                $scope.blurInput(msIndex, ktIndex, 'barcode');
+                                document.getElementById('barcode' + msIndex + ktIndex).value = code.data;
+                                document.getElementById('closeModalCamera').click();
+                                clearInterval(interval);
+                            } else {
+                                Quagga.decodeSingle({
+                                    src: convertImageDataToBase64(imageData),
+                                    numOfWorkers: 0,
+                                    decoder: {
+                                        readers: ['ean_reader', 'code_128_reader', 'code_39_reader']
+                                    },
+                                }, function (result) {
+                                    if (result && result.codeResult) {
+                                        $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].barcode =  result.codeResult.code;
+                                        $scope.blurInput(msIndex, ktIndex, 'barcode');
+                                        document.getElementById('barcode' + msIndex + ktIndex).value = result.codeResult.code;
+                                        document.getElementById('closeModalCamera').click();
+                                        clearInterval(interval);
+                                    }
+                                });
+
+                            }
+
+                        }
+                    }, 500);
+                })
+                .catch((error) => {
+                    toastr["error"]('Không thể truy cập camera:');
+                });
+        } else {
+            $scope.stopScanning();
+        }
+    }
+
+    function convertImageDataToBase64(imageData) {
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.width = imageData.width;
+        canvas.height = imageData.height;
+        context.putImageData(imageData, 0, 0);
+
+        return canvas.toDataURL('image');
+    }
+
+
+    function updateVideoStream() {
+        navigator.mediaDevices.getUserMedia({
+            video: { deviceId: selectedCamera, width: 1920, height: 1080 }
+        })
+            .then((stream) => {
+                video.srcObject = stream;
+                video.play();
+            })
+            .catch((error) => {
+                console.error('Không thể cập nhật stream camera:', error);
+            });
+    }
+
+
+    $scope.stopScanning = function() {
+        video.pause();
+        video.srcObject.getTracks().forEach(track => track.stop());
+    }
+
+    $scope.closeModalCamera = function () {
+        scanning = false;
+        $scope.stopScanning();
+    }
+
 
 });
 
@@ -1116,14 +1224,17 @@ app.directive('customInput', function () {
                         }
 
                     }
+
                 };
                 $scope.$watchCollection('ngModel', function (newNgModel, oldNgModel) {
                     if (newNgModel !== oldNgModel) {
                         // Thực hiện các tác vụ tương ứng với sự thay đổi trong ngModel (danh sách)
                         newNgModel.forEach((element) => {
                             if (element) {
-                                var selectedItem = $scope.items.find((item) => item.id === element.id);
-                                $scope.selectItem(selectedItem);
+                                const selectedItem = $scope.items.find((item) => item.id === element.id && item.status === 'active');
+                                if (selectedItem) {
+                                    $scope.selectItem(selectedItem);
+                                }
                             }
                         });
                     }
