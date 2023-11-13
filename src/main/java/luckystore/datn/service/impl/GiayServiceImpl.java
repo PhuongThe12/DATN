@@ -233,14 +233,19 @@ public class GiayServiceImpl implements GiayService {
 
         List<HinhAnh> hinhAnhs = giay.getLstAnh();
 //        Set<String> removeFiles = new HashSet<>();  // rollback nên không cần xóa hình ảnh
-
-        if (!Objects.equals(giayRequest.getImage1(), "1")) {
+        if (giayRequest.getImage1() == null) {
+            for (int i = 0; i < hinhAnhs.size(); i++) {
+                if (hinhAnhs.get(i).getUuTien() == 1) {
+                    hinhAnhs.remove(i);
+                    break;
+                }
+            }
+        } else if (!Objects.equals(giayRequest.getImage1(), "1")) {
             boolean finded = false;
             String file = imageHubService.base64ToFile(giayRequest.getImage1());
             for (int i = 0; i < hinhAnhs.size(); i++) {
                 if (hinhAnhs.get(i).getUuTien() == 1) {
-//                    removeFiles.add(hinhAnhs.get(i).getLink()); // Không cần xoas hình ảnh
-                    hinhAnhs.add(i, HinhAnh.builder().giay(giay).link(file).uuTien(1).build());
+                    hinhAnhs.get(i).setLink(file);
                     finded = true;
                     break;
                 }
@@ -250,14 +255,21 @@ public class GiayServiceImpl implements GiayService {
             }
         }
 
-
-        if (!Objects.equals(giayRequest.getImage2(), "1")) {
+        if (giayRequest.getImage2() == null) {
+            for (int i = 0; i < hinhAnhs.size(); i++) {
+                if (hinhAnhs.get(i).getUuTien() == 2) {
+                    hinhAnhs.remove(i);
+                    break;
+                }
+            }
+        } else if (!Objects.equals(giayRequest.getImage2(), "1")) {
             boolean finded = false;
             String file = imageHubService.base64ToFile(giayRequest.getImage2());
             for (int i = 0; i < hinhAnhs.size(); i++) {
                 if (hinhAnhs.get(i).getUuTien() == 2) {
 //                    removeFiles.add(hinhAnhs.get(i).getLink());
-                    hinhAnhs.add(i, HinhAnh.builder().giay(giay).link(file).uuTien(2).build());
+//                    hinhAnhs.add(i, HinhAnh.builder().giay(giay).link(file).uuTien(2).build());
+                    hinhAnhs.get(i).setLink(file);
                     finded = true;
                     break;
                 }
@@ -267,13 +279,21 @@ public class GiayServiceImpl implements GiayService {
             }
         }
 
-        if (!Objects.equals(giayRequest.getImage3(), "1")) {
+        if (giayRequest.getImage3() == null) {
+            for (int i = 0; i < hinhAnhs.size(); i++) {
+                if (hinhAnhs.get(i).getUuTien() == 3) {
+                    hinhAnhs.remove(i);
+                    break;
+                }
+            }
+        } else if (!Objects.equals(giayRequest.getImage3(), "1")) {
             boolean finded = false;
             String file = imageHubService.base64ToFile(giayRequest.getImage3());
             for (int i = 0; i < hinhAnhs.size(); i++) {
                 if (hinhAnhs.get(i).getUuTien() == 3) {
 //                    removeFiles.add(hinhAnhs.get(i).getLink());
-                    hinhAnhs.add(i, HinhAnh.builder().giay(giay).link(file).uuTien(3).build());
+//                    hinhAnhs.add(i, HinhAnh.builder().giay(giay).link(file).uuTien(3).build());
+                    hinhAnhs.get(i).setLink(file);
                     finded = true;
                     break;
                 }
@@ -282,13 +302,21 @@ public class GiayServiceImpl implements GiayService {
                 hinhAnhs.add(HinhAnh.builder().giay(giay).link(file).uuTien(3).build());
             }
         }
-        if (!Objects.equals(giayRequest.getImage4(), "1")) {
+        if (giayRequest.getImage4() == null) {
+            for (int i = 0; i < hinhAnhs.size(); i++) {
+                if (hinhAnhs.get(i).getUuTien() == 4) {
+                    hinhAnhs.remove(i);
+                    break;
+                }
+            }
+        } else if (!Objects.equals(giayRequest.getImage4(), "1")) {
             boolean finded = false;
             String file = imageHubService.base64ToFile(giayRequest.getImage4());
             for (int i = 0; i < hinhAnhs.size(); i++) {
                 if (hinhAnhs.get(i).getUuTien() == 4) {
 //                    removeFiles.add(hinhAnhs.get(i).getLink());
-                    hinhAnhs.add(i, HinhAnh.builder().giay(giay).link(file).uuTien(4).build());
+                    hinhAnhs.get(i).setLink(file);
+//                    hinhAnhs.add(i, HinhAnh.builder().giay(giay).link(file).uuTien(4).build());
                     finded = true;
                     break;
                 }
@@ -297,7 +325,14 @@ public class GiayServiceImpl implements GiayService {
                 hinhAnhs.add(HinhAnh.builder().giay(giay).link(file).uuTien(4).build());
             }
         }
-        if (!Objects.equals(giayRequest.getImage5(), "1")) {
+        if (giayRequest.getImage5() == null) {
+            for (int i = 0; i < hinhAnhs.size(); i++) {
+                if (hinhAnhs.get(i).getUuTien() == 5) {
+                    hinhAnhs.remove(i);
+                    break;
+                }
+            }
+        } else if (!Objects.equals(giayRequest.getImage5(), "1")) {
             String file = imageHubService.base64ToFile(giayRequest.getImage5());
             boolean finded = false;
             for (int i = 0; i < hinhAnhs.size(); i++) {
@@ -317,7 +352,7 @@ public class GiayServiceImpl implements GiayService {
 
         Map<Long, String> files = new HashMap<>();
         for (Map.Entry<Long, String> mauSacImage : giayRequest.getMauSacImages().entrySet()) {
-            if (!Objects.equals(mauSacImage.getValue(), "1")) {
+            if (!Objects.equals(mauSacImage.getValue(), "1") && mauSacImage.getValue() != null) {
                 String file = imageHubService.base64ToFile(mauSacImage.getValue());
                 files.put(mauSacImage.getKey(), file);
             }
@@ -339,9 +374,8 @@ public class GiayServiceImpl implements GiayService {
                     bienThe.setSoLuong(bienTheGiayRequest.getSoLuong());
                     bienThe.setTrangThai(bienTheGiayRequest.getTrangThai());
                     bienThe.setBarCode(bienTheGiayRequest.getBarcode());
-                    if (files.containsKey(bienTheGiayRequest.getMauSacId())) {
-                        bienThe.setHinhAnh(files.get(bienTheGiayRequest.getMauSacId()));
-                    }
+
+                    bienThe.setHinhAnh(files.getOrDefault(bienThe.getMauSac().getId(), null));
                     exists = true;
                     break;
                 }
@@ -367,9 +401,7 @@ public class GiayServiceImpl implements GiayService {
                         .soLuong(bienTheGiayRequest.getSoLuong())
                         .build();
 
-                if (files.containsKey(bienTheGiay.getMauSac().getId())) {
-                    bienTheGiay.setHinhAnh(files.get(bienTheGiay.getMauSac().getId()));
-                }
+                bienTheGiay.setHinhAnh(files.getOrDefault(bienTheGiay.getMauSac().getId(), null));
 
                 giay.getLstBienTheGiay().add(bienTheGiay);
             }

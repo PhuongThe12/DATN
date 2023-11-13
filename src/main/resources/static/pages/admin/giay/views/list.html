@@ -14,8 +14,13 @@
         </div>
     </div>
 </div>
+
+<div class="title-page">
+    <div class="d-flex">
+        <p class="text-secondary m-0">Trang chủ - Quản Lý Giày - Danh Sách</p>
+    </div>
+</div>
 <div class="card" style="margin: 20px">
-    <h5>Danh sách giày</h5>
     <div class="card-body">
         <div class="py-3">
 
@@ -185,10 +190,11 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div class="col col-3">
+                            <div class="col col-3 d-flex justify-content-center align-items-center">
                                 <div class="d-flex flex-column">
-                                    <a class="btn btn-primary m-3" ng-href="#/update/{{giay.id}}">Cập nhật</a>
-                                    <a class="btn btn-primary m-3" ng-href="#/detail/{{giay.id}}">Xem chi tiết</a>
+                                    <a class="btn btn-primary mb-2" ng-href="#/update/{{giay.id}}">Cập nhật</a>
+                                    <a class="btn btn-primary mb-2" ng-href="#/detail/{{giay.id}}">Xem chi tiết</a>
+                                    <a class="btn btn-primary" >Lịch sử cập nhật</a>
                                 </div>
                             </div>
                             <div ng-show="giay.lstBienTheGiay.length > 5 && !looped" class="w-100 text-center">

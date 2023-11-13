@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+
+<head>
+    <meta charset="UTF-8">
+    <title>XLSX Processing with JavaScript</title>
+</head>
+
+<body ng-controller="controller">
+{{test}}
+
+<input type="file" id="fileInput" accept=".xlsx, .xls"/>
+<button ng-click="processExcel()">Process Excel</button>
+<button ng-click="send()">Send</button>
+
+<script src="/excel/xlsx.full.min.js"></script>
+<script src="/angular-1.8.2/angular.min.js"></script>
+
+<script>
+    const app = angular.module("app", []);
+    app.controller('controller', function ($scope, $http) {
+        let request = [];
+        $scope.test = "test";
+
+        $scope.send = function () {
+
+        }
+
+        $scope.processExcel = async function () {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please select an Excel file.');
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, {type: 'array'});
+
+                // Assume the first sheet is the one you want to process
+                const sheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[sheetName];
+
+                // Kiểm tra số dòng trong sheet
+                const range = XLSX.utils.decode_range(sheet['!ref']);
+                const rowCount = range.e.r - range.s.r + 1;
+
+                console.log(`Số dòng trong sheet: ${rowCount}`);
+
+                // Convert sheet data to JSON format
+                const jsonData = XLSX.utils.sheet_to_json(sheet, {header: 1});
+
+                // Process the JSON data as needed
+
+                // Duyệt qua từng dòng
+                for (let row = range.s.r; row <= range.e.r; row++) {
+                    const rowData = [];
+
+                    // Duyệt qua từng ô trong dòng
+                    for (let col = range.s.c; col <= range.e.c; col++) {
+                        const cellAddress = {r: row, c: col};
+                        const cellRef = XLSX.utils.encode_cell(cellAddress);
+                        const cell = sheet[cellRef];
+
+                        // Lưu giá trị của ô vào mảng dữ liệu của dòng
+                        rowData.push(cell ? cell.v : null);
+                    }
+
+                    // Kiểm tra nếu tất cả các ô trong dòng đều rỗng thì dừng lại
+                    if (!rowData.some(value => value !== null && value !== '')) {
+                        console.log('Dừng lại vì dòng đầy đủ trống.');
+                        break;
+                    }
+
+                    // Xử lý dữ liệu của dòng nếu cần
+                    // console.log(`Dữ liệu của dòng ${row + 1}:`, rowData);
+
+
+                }
+
+                processJsonData(jsonData);
+
+                const requests = [];
+                for (let i = 0; i < jsonData.length; i++) {
+                    requests.push(readImageFromURL(jsonData[i]));
+                }
+
+
+                console.log("Start send");
+                Promise.all(requests)
+                    .then(() => {
+                        let stringRequest = {};
+                        stringRequest.data = request;
+                        console.log("Size: ", Object.keys(stringRequest).length);
+                        let dataRequest = JSON.stringify(stringRequest);
+                        console.log("Sending");
+                        const start = new Date().getTime();
+                        $http.post("http://localhost:8080/admin/rest/giay/test", dataRequest)
+                            .then(function (response) {
+                                console.log(response.data)
+                                console.log("time: ", new Date().getTime() - start)
+                            })
+                            .catch(function (error) {
+                                console.log(error)
+                            });
+                    });
+
+                async function readImageFromURL(url) {
+                    return fetch(url)
+                        .then(response => response.blob())
+                        .then(blob => {
+                            return new Promise(resolve => {
+                                const reader = new FileReader();
+                                reader.onload = function () {
+                                    const imageDataURL = reader.result;
+                                    request.push(imageDataURL + "");
+                                    resolve(); // Giải quyết promise khi đã xong
+                                };
+                                reader.readAsDataURL(blob);
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error loading image:', error);
+                        });
+                }
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+
+        function processJsonData(jsonData) {
+            // Process the JSON data here
+            console.log('JSON Data:', jsonData);
+        }
+    });
+
+
+</script>
+
+</body>
+
+</html>
