@@ -14,8 +14,9 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @Entity
+@ToString
 @Table(name = "HoaDon")
-public class HoaDon implements Serializable {
+public class HoaDon {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

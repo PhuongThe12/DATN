@@ -11,14 +11,15 @@ import java.io.Serializable;
 @Setter
 @Builder
 @Entity
+@ToString
 @Table(name = "HoaDonChiTiet")
-public class HoaDonChiTiet implements Serializable {
+public class HoaDonChiTiet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "ID_HOA_DON")
     private HoaDon idHoaDon;
 

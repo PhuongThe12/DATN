@@ -61,9 +61,10 @@
 }
 
 body {
-    background-color: #fcfcfc;
+    background-color: white;
     overflow-x: hidden;
     font-weight: 500;
+    color: #344767;
 }
 
 .error-message {
@@ -208,7 +209,7 @@ border-style: none;
 }
 
 .box-shadow-page {
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
 }
 
 .title-page {
@@ -258,6 +259,10 @@ input:focus{
     font-size: 14px;
     color: gray;
 }
+.font-size-13 {
+    font-size: 13px;
+    color: gray;
+}
 
 .font-size-12 {
     font-size: 12px;
@@ -268,8 +273,19 @@ input:focus{
     font-size: 14px;
 }
 
+.font-size-13-ncl {
+    font-size: 13px;
+}
+
 .font-size-12-ncl {
     font-size: 12px;
+}
+
+.font-size-16{
+    font-size: 16px;
+}
+.font-size-16-ncl{
+    font-size: 16px;
 }
 
 .li-custom {
@@ -279,24 +295,81 @@ input:focus{
     flex-shrink: 0;
     margin-right: 12px;
     border-radius: 100%;
-    background-color: #0088FF;
+    background-color: #59ff00;
 }
 
 .w-133px {
     width: 133px;
 }
 .bg-warning-gradient{
-    background: linear-gradient(to left,#efa65f,#f76a2d)!important;
+    background: rgb(229, 255, 229);
 }
 
-.bg-success-gradient{
-    background: linear-gradient(to left,#48d6a8 0,#029666 100%)!important;
+.bg-purple{
+    background: rgb(234 229 255);
 }
 
-.bg-danger-gradient{
-    background: linear-gradient(45deg,#f93a5a,#f7778c)!important;
+.bg-orange{
+    background: rgb(255 237 229);
 }
 
-.bg-primary-gradient{
-    background: linear-gradient(to right,#0162e8 0,#0162e8 100%)!important;
+.bg-blue{
+    background: rgb(229 249 255);
+}
+.line{
+    margin-top: -46px;
+    margin-left: 4px;
+    background: #bfbfbf;
+    width: 1px;
+    height: 72px;
+}
+.li-status{
+    background: #4669fa;
+    padding: 6px;
+    font-size: 9px;
+    border-radius: 50%;
+    color: white;
+}
+
+.li-status-unactive{
+    background: #f1f1f1;
+    padding: 6px;
+    font-size: 9px;
+    border-radius: 50%;
+    color: #f1f1f1;
+}
+.line-status-unactive{
+    width: 2px;
+    background-color: #f1f1f1;
+    height: 33px;
+    margin: auto;
+}
+.line-status{
+    width: 2px;
+    background-color: #4669fa;
+    height: 33px;
+    margin: auto;
+}
+
+.mt-a4{
+    margin-top: -4px;
+}
+
+.font-item{
+    padding: 3px 61px;
+    color: white;
+    background: #333333;
+}
+.hover-item{
+    border-radius: 1rem ;
+    border: 1px solid #d5d5d5;
+}
+.hover-item:hover{
+    border: 1px solid #d5d5d5;
+    cursor: pointer;
+}
+
+.cart-table{
+    height:381px;
+    overflow: auto;
 }

@@ -1,8 +1,22 @@
-<div class="col-md-12">
-    <div class="content p-2">
-        <div class="header-page d-flex align-items-center justify-content-between">
-            <div class="title-hoaDon">
-                <h5>{{hoaDon.id}} <span ng-class="{
+<div style="margin: 20px">
+    <div class="header">
+        <div class="d-flex align-items-center justify-content-between">
+            <div>
+                <h4 class="fw-bold mb-2">Mã Hóa Đơn : <span>2</span></h4>
+                <p class="font-size-14">Bán trực tiếp</p>
+            </div>
+            <div>
+                <button class="btn btn-custom">Cập nhật đơn hàng</button>
+            </div>
+        </div>
+    </div>
+    <div class="body">
+        <hr>
+        <div class="d-flex align-items-center ">
+            <p class="font-size-14-ncl fw-bold text-black-50 pe-4">{{hoaDon.ngayTao}}</p>
+            <p class="font-size-14-ncl fw-bold text-black-50 pe-4">Số lượng 0</p>
+            <p class="font-size-14-ncl fw-bold text-black-50 pe-4">Tổng tiền 100.000 đ</p>
+            <h5 class="fw-bold text-black-50 pe-4"><span ng-class="{
                   'badge bd-warning-custom': hoaDon.trangThai == 1,
                   'badge bd-success-custom': hoaDon.trangThai == 2,
                   'badge bd-info-custom': hoaDon.trangThai == 3,
@@ -15,203 +29,360 @@
                   <span ng-if="hoaDon.trangThai == 4">Chờ giao hàng</span>
                   <span ng-if="hoaDon.trangThai == 5">Đang giao hàng</span>
                                 </span></h5>
-            </div>
-            <div class="progess-hoaDon">
-                <div class="progess d-flex align-items-center">
-                    <div class="progess-outer">
-                        <div class="d-flex  align-items-center " ng-class=" {'passed' : hoaDon.trangThai >= 1 || hoaDon.trangThai == 2} ">
-                            <i class="fas fa-check-circle"></i>
-                            <div class="hr-item"></div>
+        </div>
+        <hr>
+    </div>
+    <div class="row">
+        <div class="col-md-9">
+            <table class="table align-middle table-borderless text-center mw-100" border="1">
+                <tr>
+                    <th>Tên sản phẩm</th>
+                    <th>Số lượng</th>
+                    <th>Giá</th>
+                    <th>Đơn giá</th>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <img class="rounded-3 pe-3"
+                                 src="https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/786867c8-f1f7-4dfd-9a7e-039d92406715/air-jordan-1-low-shoes-6Q1tFM.png"
+                                 width="80px" alt="">
+                            <p>Giày 1</p>
                         </div>
-                        <p>Đặt hàng</p>
-                        <p class="font-size-14">{{hoaDon.ngayTao}}</p>
-                    </div>
-                    <div class="progess-outer">
-                        <div class="d-flex  align-items-center " ng-class=" {'passed' : hoaDon.trangThai >= 1 || hoaDon.trangThai == 2} ">
-                            <i class="fas fa-check-circle"></i>
-                            <div class="hr-item"></div>
+                    </td>
+                    <td>
+                        <p>1</p>
+                    </td>
+                    <td>
+                        <p>100.000 đ</p>
+                    </td>
+                    <td>
+                        <p>100.000 đ</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <img class="rounded-3 pe-3"
+                                 src="https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/786867c8-f1f7-4dfd-9a7e-039d92406715/air-jordan-1-low-shoes-6Q1tFM.png"
+                                 width="80px" alt="">
+                            <p>Giày 1</p>
                         </div>
-                        <p>Duyệt</p>
-                        <p class="font-size-14">{{hoaDon.ngayTao}}</p>
-                    </div>
-                    <div class="progess-outer">
-                        <div class="d-flex  align-items-center" ng-class=" {'passed' : hoaDon.trangThai >= 4 || hoaDon.trangThai == 2} ">
-                            <i class="fas fa-check-circle"></i>
-                            <div class="hr-item"></div>
+                    </td>
+                    <td>
+                        <p>1</p>
+                    </td>
+                    <td>
+                        <p>100.000 đ</p>
+                    </td>
+                    <td>
+                        <p>100.000 đ</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <img class="rounded-3 pe-3"
+                                 src="https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/786867c8-f1f7-4dfd-9a7e-039d92406715/air-jordan-1-low-shoes-6Q1tFM.png"
+                                 width="80px" alt="">
+                            <p>Giày 1</p>
                         </div>
-                        <p>Đóng gói</p>
-                        <p class="font-size-14">{{hoaDon.ngayTao}}</p>
-                    </div>
-                    <div class="progess-outer">
-                        <div class="d-flex  align-items-center" ng-class=" {'passed' : hoaDon.trangThai >= 5 || hoaDon.trangThai == 2} ">
-                            <i class="fas fa-check-circle"></i>
-                            <div class="hr-item"></div>
-                        </div>
-                        <p>Xuất kho</p>
-                        <p class="font-size-14">{{hoaDon.ngayShip}}</p>
-                    </div>
-                    <div class="progess-outer">
-                        <div class="d-flex  align-items-center" ng-class=" {'passed' : hoaDon.trangThai == 2} ">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                        <p>Hoàn thành</p>
-                        <p class="font-size-14">{{hoaDon.ngayNhan}}</p>
-                    </div>
-                </div>
+                    </td>
+                    <td>
+                        <p>1</p>
+                    </td>
+                    <td>
+                        <p>100.000 đ</p>
+                    </td>
+                    <td>
+                        <p>100.000 đ</p>
+                    </td>
+                </tr>
+            </table>
+            <hr>
+            <div class="d-flex box-shadow-page rounded-3 p-3 mb-3">
+                <div class="d-flex align-items-center justify-content-between"></div>
             </div>
         </div>
-        <div class="body-page">
-            <div class="row mb-3">
-                <div class="col-md-9">
-                    <div class="card mb-3 ">
-                        <div class="card-body">
-                            <h5>Thông tin khách hàng</h5>
-                            <h5>Khách lẻ</h5>
-                            <hr>
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div class="address-ship">
-                                    <p>ĐỊA CHỈ GIAO HÀNG</p>
-                                    <p class="font-size-14">Chưa có thông tin giao hàng</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card mb-3">
-                        <div class="card-header">
-                            <i class="fas fa-money-bill"></i> Đơn hàng đã thanh toán
-                        </div>
-                        <div class="px-4 pt-2 d-flex align-items-center justify-content-between">
-                            <div class="khach-phai-tra">
-                                <p class="font-size-14-ncl">Khách phải trả : <span
-                                        class="font-weight-bold">156.000</span></p>
-                            </div>
-                            <div class="da-thanh-toan">
-                                <p class="font-size-14-ncl">Đã thanh toán : <span
-                                        class="font-weight-bold">156.000</span></p>
-                            </div>
-                            <div class="con-phai-tra">
-                                <p class="font-size-14-ncl">Khách phải trả : <span
-                                        class="font-weight-bold text-danger">156.000</span>
-                                </p>
-                            </div>
-                        </div>
+        <div class="col-md-3">
 
-                        <div class="px-4 d-flex align-items-center justify-content-between">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <p class="font-size-14-ncl">
-                                <div class="li-custom"></div>
-                                Tiền mặt <span class="font-weight-bold mx-2">
-                                            600.000
-                                        </span>
-                                </p>
-                            </div>
-                            <div>
-                                <p class="font-size-14">
-                                    2003-11-11 15:05:06
-                                </p>
-                            </div>
+            <div class="box-shadow-page rounded-3 p-3 mb-3">
+                <h5 class="font-size-14-ncl fw-bold mb-3">Trạng thái đơn hàng</h5>
+                <hr>
+                <div>
+                    <div class="d-flex ">
+                        <div>
+                            <i class="fas fa-check li-status"></i>
+                            <div class="line-status"></div>
                         </div>
+                        <h5 class="font-size-14-ncl mt-2 ms-2">Chờ Xác nhận</h5>
                     </div>
-                    <div class=" card">
-                        <div class="card-header">
-                            <i class="fas fa-shipping-fast"></i> Đóng gói và giao hàng
-                        </div>
-                        <div class="card-body">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <p class="font-size-14-ncl">
-                                    <div class="li-custom"></div>
-                                    MaVanDon01
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card p-3 mb-3">
-                        <p class="font-weight-bold">Thông tin đơn hàng</p>
-                        <div class="d-flex align-items-center">
-                            <p class="w-133px d-flex justify-content-between font-size-14-ncl">Chính sách giá
-                                <span>:</span></p>
-                            <p class="ml-2 font-size-14-ncl">Giá bán lẻ</p>
-                        </div>
-                        <div class="d-flex align-items-center">
-                            <p class="w-133px d-flex justify-content-between font-size-14-ncl">Hẹn giao hàng
-                                <span>:</span></p>
-                            <p class="ml-2 font-size-14-ncl">06/11/2023 14:56</p>
-                        </div>
-                        <div class="d-flex align-items-center">
-                            <p class="w-133px d-flex justify-content-between font-size-14-ncl">Kênh Bán
-                                Hàng<span>:</span></p>
-                            <p class="ml-2 font-size-14-ncl">POS</p>
-                        </div>
-                        <div class="d-flex align-items-center">
-                            <p class="w-133px d-flex justify-content-between font-size-14-ncl">Ngày bán<span>:</span>
-                            </p>
-                            <p class="ml-2 font-size-14-ncl">06/11/2023 14:56</p>
-                        </div>
 
-                    </div>
-                    <div class="card p-3">
-                        <div class="tag">
-                            <p class="font-weight-bold">Ghi chú</p>
-                            <p class="font-size-14-ncl">Không có</p>
+                    <div class="d-flex mt-a4">
+                        <div>
+                            <i class="fas fa-check li-status"></i>
+                            <div class="line-status"></div>
                         </div>
+                        <h5 class="font-size-14-ncl mt-2 ms-2">Chờ đóng gói</h5>
+                    </div>
+                    <div class="d-flex mt-a4">
+                        <div>
+                            <i class="fas fa-check li-status"></i>
+                            <div class="line-status-unactive"></div>
+                        </div>
+                        <h5 class="font-size-14-ncl mt-2 ms-2">Chờ giao hàng</h5>
+                    </div>
+                    <div class="d-flex mt-a4">
+                        <div>
+                            <i class="fas fa-check li-status-unactive"></i>
+                            <div class="line-status-unactive"></div>
+                        </div>
+                        <h5 class="font-size-14-ncl mt-2 ms-2">Đang giao hàng</h5>
+                    </div>
+                    <div class="d-flex mt-a4">
+                        <div>
+                            <i class="fas fa-check li-status-unactive"></i>
+                        </div>
+                        <h5 class="font-size-14-ncl mt-2 ms-2">Đã thanh toán</h5>
                     </div>
                 </div>
             </div>
-            <div class="hoaDonChiTiet mb-3">
-                <div class="card">
-                    <div class="card-header">
-                        Thông tin sản phẩm
-                    </div>
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th>STT</th>
-                            <th>Ảnh</th>
-                            <th>Tên sản phẩm</th>
-                            <th>Số lượng</th>
-                            <th>Đơn giá</th>
-                            <th>Thành Tiền</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td><img
-                                    src="https://sapo.dktcdn.net/100/742/370/variants/6a6ff5ac-b79c-4929-bb2d-5f576c2f9339-1698808054659.jpg"
-                                    width="50px" alt=""></td>
-                            <td>Giày A</td>
-                            <td>1</td>
-                            <td>0%</td>
-                            <td>100.000</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <div class="d-flex justify-content-end">
-                        <div class="bill col-md-4">
-                            <div class="d-flex justify-content-between">
-                                <p>Tổng tiền (2 sản phẩm)</p>
-                                <p>797,000</p>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <p>Phí giao hàng</p>
-                                <p>797,000</p>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <p>Mã giảm giá</p>
-                                <p>797,000</p>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <p>Khách Phải Trả</p>
-                                <p class="font-weight-bold">797,000</p>
-                            </div>
-                        </div>
-                    </div>
+
+            <div class="box-shadow-page rounded-3 p-3 mb-3">
+                <h5 class="font-size-14-ncl fw-bold mb-3">Thông tin khách hàng</h5>
+                <hr>
+                <h4 class="font-size-14-ncl fw-bold mb-3">Nguyễn Đăng Cường</h4>
+                <p class="font-size-14-ncl mb-3">quanchun11022@gmail.com</p>
+                <p class="font-size-14-ncl">0396189965</p>
+            </div>
+
+            <div class="box-shadow-page rounded-3 p-3 mb-3">
+                <h5 class="font-size-14-ncl fw-bold mb-3">Địa chỉ nhận hàng</h5>
+                <hr>
+                <div>
+                    <p class="font-size-14-ncl mb-3">Tân Hòa - Quốc Oai - Hà Nội</p>
+                    <p class="font-size-14-ncl">0396189965</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
+<!--<div class="col-md-12">-->
+<!--    <div class="content p-2">-->
+<!--        <div class="header-page d-flex align-items-center justify-content-between">-->
+<!--            <div class="title-hoaDon">-->
+<!--                <h5>{{hoaDon.id}} <span ng-class="{-->
+<!--                  'badge bd-warning-custom': hoaDon.trangThai == 1,-->
+<!--                  'badge bd-success-custom': hoaDon.trangThai == 2,-->
+<!--                  'badge bd-info-custom': hoaDon.trangThai == 3,-->
+<!--                  'badge bd-redOrange-custom': hoaDon.trangThai == 4,-->
+<!--                  'badge bd-blueDark-custom': hoaDon.trangThai == 5-->
+<!--                    }">-->
+<!--                  <span ng-if="hoaDon.trangThai == 1">Chờ thanh toán</span>-->
+<!--                  <span ng-if="hoaDon.trangThai == 2">Đã thanh toán</span>-->
+<!--                  <span ng-if="hoaDon.trangThai == 3">Chờ đóng gói</span>-->
+<!--                  <span ng-if="hoaDon.trangThai == 4">Chờ giao hàng</span>-->
+<!--                  <span ng-if="hoaDon.trangThai == 5">Đang giao hàng</span>-->
+<!--                                </span></h5>-->
+<!--            </div>-->
+<!--            <div class="progess-hoaDon">-->
+<!--                <div class="progess d-flex align-items-center">-->
+<!--                    <div class="progess-outer">-->
+<!--                        <div class="d-flex  align-items-center " ng-class=" {'passed' : hoaDon.trangThai >= 1 || hoaDon.trangThai == 2} ">-->
+<!--                            <i class="fas fa-check-circle"></i>-->
+<!--                            <div class="hr-item"></div>-->
+<!--                        </div>-->
+<!--                        <p>Đặt hàng</p>-->
+<!--                        <p class="font-size-14">{{hoaDon.ngayTao}}</p>-->
+<!--                    </div>-->
+<!--                    <div class="progess-outer">-->
+<!--                        <div class="d-flex  align-items-center " ng-class=" {'passed' : hoaDon.trangThai >= 1 || hoaDon.trangThai == 2} ">-->
+<!--                            <i class="fas fa-check-circle"></i>-->
+<!--                            <div class="hr-item"></div>-->
+<!--                        </div>-->
+<!--                        <p>Duyệt</p>-->
+<!--                        <p class="font-size-14">{{hoaDon.ngayTao}}</p>-->
+<!--                    </div>-->
+<!--                    <div class="progess-outer">-->
+<!--                        <div class="d-flex  align-items-center" ng-class=" {'passed' : hoaDon.trangThai >= 4 || hoaDon.trangThai == 2} ">-->
+<!--                            <i class="fas fa-check-circle"></i>-->
+<!--                            <div class="hr-item"></div>-->
+<!--                        </div>-->
+<!--                        <p>Đóng gói</p>-->
+<!--                        <p class="font-size-14">{{hoaDon.ngayTao}}</p>-->
+<!--                    </div>-->
+<!--                    <div class="progess-outer">-->
+<!--                        <div class="d-flex  align-items-center" ng-class=" {'passed' : hoaDon.trangThai >= 5 || hoaDon.trangThai == 2} ">-->
+<!--                            <i class="fas fa-check-circle"></i>-->
+<!--                            <div class="hr-item"></div>-->
+<!--                        </div>-->
+<!--                        <p>Xuất kho</p>-->
+<!--                        <p class="font-size-14">{{hoaDon.ngayShip}}</p>-->
+<!--                    </div>-->
+<!--                    <div class="progess-outer">-->
+<!--                        <div class="d-flex  align-items-center" ng-class=" {'passed' : hoaDon.trangThai == 2} ">-->
+<!--                            <i class="fas fa-check-circle"></i>-->
+<!--                        </div>-->
+<!--                        <p>Hoàn thành</p>-->
+<!--                        <p class="font-size-14">{{hoaDon.ngayNhan}}</p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="body-page">-->
+<!--            <div class="row mb-3">-->
+<!--                <div class="col-md-9">-->
+<!--                    <div class="card mb-3 ">-->
+<!--                        <div class="card-body">-->
+<!--                            <h5>Thông tin khách hàng</h5>-->
+<!--                            <h5>Khách lẻ</h5>-->
+<!--                            <hr>-->
+<!--                            <div class="d-flex align-items-center justify-content-between">-->
+<!--                                <div class="address-ship">-->
+<!--                                    <p>ĐỊA CHỈ GIAO HÀNG</p>-->
+<!--                                    <p class="font-size-14">Chưa có thông tin giao hàng</p>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="card mb-3">-->
+<!--                        <div class="card-header">-->
+<!--                            <i class="fas fa-money-bill"></i> Đơn hàng đã thanh toán-->
+<!--                        </div>-->
+<!--                        <div class="px-4 pt-2 d-flex align-items-center justify-content-between">-->
+<!--                            <div class="khach-phai-tra">-->
+<!--                                <p class="font-size-14-ncl">Khách phải trả : <span-->
+<!--                                        class="font-weight-bold">156.000</span></p>-->
+<!--                            </div>-->
+<!--                            <div class="da-thanh-toan">-->
+<!--                                <p class="font-size-14-ncl">Đã thanh toán : <span-->
+<!--                                        class="font-weight-bold">156.000</span></p>-->
+<!--                            </div>-->
+<!--                            <div class="con-phai-tra">-->
+<!--                                <p class="font-size-14-ncl">Khách phải trả : <span-->
+<!--                                        class="font-weight-bold text-danger">156.000</span>-->
+<!--                                </p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+<!--                        <div class="px-4 d-flex align-items-center justify-content-between">-->
+<!--                            <div class="d-flex align-items-center justify-content-between">-->
+<!--                                <p class="font-size-14-ncl">-->
+<!--                                <div class="li-custom"></div>-->
+<!--                                Tiền mặt <span class="font-weight-bold mx-2">-->
+<!--                                            600.000-->
+<!--                                        </span>-->
+<!--                                </p>-->
+<!--                            </div>-->
+<!--                            <div>-->
+<!--                                <p class="font-size-14">-->
+<!--                                    2003-11-11 15:05:06-->
+<!--                                </p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class=" card">-->
+<!--                        <div class="card-header">-->
+<!--                            <i class="fas fa-shipping-fast"></i> Đóng gói và giao hàng-->
+<!--                        </div>-->
+<!--                        <div class="card-body">-->
+<!--                            <div class="d-flex align-items-center justify-content-between">-->
+<!--                                <div class="d-flex align-items-center justify-content-between">-->
+<!--                                    <p class="font-size-14-ncl">-->
+<!--                                    <div class="li-custom"></div>-->
+<!--                                    MaVanDon01-->
+<!--                                    </p>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-3">-->
+<!--                    <div class="card p-3 mb-3">-->
+<!--                        <p class="font-weight-bold">Thông tin đơn hàng</p>-->
+<!--                        <div class="d-flex align-items-center">-->
+<!--                            <p class="w-133px d-flex justify-content-between font-size-14-ncl">Chính sách giá-->
+<!--                                <span>:</span></p>-->
+<!--                            <p class="ml-2 font-size-14-ncl">Giá bán lẻ</p>-->
+<!--                        </div>-->
+<!--                        <div class="d-flex align-items-center">-->
+<!--                            <p class="w-133px d-flex justify-content-between font-size-14-ncl">Hẹn giao hàng-->
+<!--                                <span>:</span></p>-->
+<!--                            <p class="ml-2 font-size-14-ncl">06/11/2023 14:56</p>-->
+<!--                        </div>-->
+<!--                        <div class="d-flex align-items-center">-->
+<!--                            <p class="w-133px d-flex justify-content-between font-size-14-ncl">Kênh Bán-->
+<!--                                Hàng<span>:</span></p>-->
+<!--                            <p class="ml-2 font-size-14-ncl">POS</p>-->
+<!--                        </div>-->
+<!--                        <div class="d-flex align-items-center">-->
+<!--                            <p class="w-133px d-flex justify-content-between font-size-14-ncl">Ngày bán<span>:</span>-->
+<!--                            </p>-->
+<!--                            <p class="ml-2 font-size-14-ncl">06/11/2023 14:56</p>-->
+<!--                        </div>-->
+
+<!--                    </div>-->
+<!--                    <div class="card p-3">-->
+<!--                        <div class="tag">-->
+<!--                            <p class="font-weight-bold">Ghi chú</p>-->
+<!--                            <p class="font-size-14-ncl">Không có</p>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="hoaDonChiTiet mb-3">-->
+<!--                <div class="card">-->
+<!--                    <div class="card-header">-->
+<!--                        Thông tin sản phẩm-->
+<!--                    </div>-->
+<!--                    <table class="table table-hover">-->
+<!--                        <thead>-->
+<!--                        <tr>-->
+<!--                            <th>STT</th>-->
+<!--                            <th>Ảnh</th>-->
+<!--                            <th>Tên sản phẩm</th>-->
+<!--                            <th>Số lượng</th>-->
+<!--                            <th>Đơn giá</th>-->
+<!--                            <th>Thành Tiền</th>-->
+<!--                        </tr>-->
+<!--                        </thead>-->
+<!--                        <tbody>-->
+<!--                        <tr>-->
+<!--                            <td>1</td>-->
+<!--                            <td><img-->
+<!--                                    src="https://sapo.dktcdn.net/100/742/370/variants/6a6ff5ac-b79c-4929-bb2d-5f576c2f9339-1698808054659.jpg"-->
+<!--                                    width="50px" alt=""></td>-->
+<!--                            <td>Giày A</td>-->
+<!--                            <td>1</td>-->
+<!--                            <td>0%</td>-->
+<!--                            <td>100.000</td>-->
+<!--                        </tr>-->
+<!--                        </tbody>-->
+<!--                    </table>-->
+<!--                    <div class="d-flex justify-content-end">-->
+<!--                        <div class="bill col-md-4">-->
+<!--                            <div class="d-flex justify-content-between">-->
+<!--                                <p>Tổng tiền (2 sản phẩm)</p>-->
+<!--                                <p>797,000</p>-->
+<!--                            </div>-->
+<!--                            <div class="d-flex justify-content-between">-->
+<!--                                <p>Phí giao hàng</p>-->
+<!--                                <p>797,000</p>-->
+<!--                            </div>-->
+<!--                            <div class="d-flex justify-content-between">-->
+<!--                                <p>Mã giảm giá</p>-->
+<!--                                <p>797,000</p>-->
+<!--                            </div>-->
+<!--                            <div class="d-flex justify-content-between">-->
+<!--                                <p>Khách Phải Trả</p>-->
+<!--                                <p class="font-weight-bold">797,000</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
