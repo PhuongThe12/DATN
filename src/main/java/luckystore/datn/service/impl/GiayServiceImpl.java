@@ -79,7 +79,19 @@ public class GiayServiceImpl implements GiayService {
 
     @Override
     public List<GiayResponse> getAllContains(List<Long> ids) {
-        return giayRepository.findAllContains(ids);
+        List<GiayResponse> giayResponses = giayRepository.findAllContains(ids);
+
+        Map<Long, GiayResponse> result = new HashMap<>();
+        for (GiayResponse giayResponse : giayResponses) {
+            if (result.containsKey(giayResponse.getId()) && !giayResponse.getLstBienTheGiay().isEmpty()) {
+                GiayResponse giay = result.get(giayResponse.getId());
+                giay.getLstBienTheGiay().add(giay.getLstBienTheGiay().get(0));
+            } else {
+                result.put(giayResponse.getId(), giayResponse);
+            }
+        }
+
+        return new ArrayList<>(result.values());
     }
 
     @Transactional
