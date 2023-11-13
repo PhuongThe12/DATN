@@ -5,17 +5,16 @@ app.config(function ($routeProvider, $locationProvider) {
         .when("/list", {
             templateUrl: '/pages/admin/degiay/views/list.html',
             controller: 'deGiayListController'
-        }).when("/detail/:id", {
-        templateUrl: '/pages/admin/degiay/views/detail.html',
-        controller: 'detailDeGiayController'
-    }).when("/update/:id", {
-        templateUrl: '/pages/admin/degiay/views/update.html',
-        controller: 'updateDeGiayController'
-    }).when("/add", {
-        templateUrl: '/pages/admin/degiay/views/add.html',
-        controller: 'addDeGiayController'
-    })
-        .otherwise({ redirectTo: '/list' });
+        })
+        .when("/update/:id", {
+            templateUrl: '/pages/admin/degiay/views/update.html',
+            controller: 'updateDeGiayController'
+        })
+        .when("/add", {
+            templateUrl: '/pages/admin/degiay/views/add.html',
+            controller: 'addDeGiayController'
+        })
+        .otherwise({redirectTo: '/list'});
 });
 
 app.controller("addDeGiayController", function ($scope, $http, $location) {
@@ -48,19 +47,6 @@ app.controller("addDeGiayController", function ($scope, $http, $location) {
 
 });
 
-
-app.controller("detailDeGiayController", function ($scope, $http, $location, $routeParams) {
-    const id = $routeParams.id;
-    $http.get(host + '/admin/rest/de-giay/' + id)
-        .then(function (response) {
-            $scope.deGiay = response.data;
-        }).catch(function (error) {
-        toastr["error"]("Lấy dữ liệu thất bại");
-        $location.path("/list");
-    });
-
-});
-
 app.controller("deGiayListController", function ($scope, $http, $window, $location) {
 
     $scope.curPage = 1,
@@ -70,7 +56,7 @@ app.controller("deGiayListController", function ($scope, $http, $window, $locati
     let searchText;
 
     $scope.search = function () {
-        if(!$scope.searchText) {
+        if (!$scope.searchText) {
             toastr["error"]("Vui lòng nhập tên muốn tìm kiếm");
             return;
         }
@@ -84,14 +70,15 @@ app.controller("deGiayListController", function ($scope, $http, $window, $locati
     }
 
     function getData(currentPage) {
+        $scope.isLoading = true;
         let apiUrl = host + '/admin/rest/de-giay?page=' + currentPage;
         if (searchText) {
             apiUrl += '&search=' + searchText;
         }
 
-        if($scope.status === 0) {
+        if ($scope.status === 0) {
             apiUrl += '&status=' + 0;
-        } else if($scope.status === 1) {
+        } else if ($scope.status === 1) {
             apiUrl += '&status=' + 1;
         }
 
@@ -99,9 +86,11 @@ app.controller("deGiayListController", function ($scope, $http, $window, $locati
             .then(function (response) {
                 $scope.deGiays = response.data.content;
                 $scope.numOfPages = response.data.totalPages;
+                $scope.isLoading = false;
             })
             .catch(function (error) {
                 toastr["error"]("Lấy dữ liệu thất bại");
+                $scope.isLoading = false;
                 // window.location.href = feHost + '/trang-chu';
             });
     }
@@ -117,7 +106,7 @@ app.controller("deGiayListController", function ($scope, $http, $window, $locati
         const id = val;
 
         if (!isNaN(id)) {
-            $scope.deGiayDetail = $scope.deGiays.find(function(deGiay) {
+            $scope.deGiayDetail = $scope.deGiays.find(function (deGiay) {
                 return deGiay.id == id;
             });
         } else {

@@ -43,12 +43,11 @@ app.controller('giayListController', function ($scope, $http, $location) {
         }
 
 
-        if (!isNaN($scope.giaNhapSearch)) {
-            giaySearch.giaNhap = $scope.giaNhapSearch;
+        if (!isNaN($scope.giaDenSearch)) {
+            giaySearch.giaDen = $scope.giaDenSearch;
         }
-
-        if (!isNaN($scope.giaBanSearch)) {
-            giaySearch.giaBan = $scope.giaBanSearch;
+        if (!isNaN($scope.giaTuSearch)) {
+            giaySearch.giaTu = $scope.giaTuSearch;
         }
 
         if ($scope.selectedThuongHieu) {
@@ -57,9 +56,14 @@ app.controller('giayListController', function ($scope, $http, $location) {
             ).map(th => th.id);
         }
 
+        if (giaySearch.thuongHieuIds && giaySearch.thuongHieuIds.length === 0) {
+            giaySearch.thuongHieuIds = null;
+        }
+
         giaySearch.currentPage = currentPage;
         giaySearch.pageSize = $scope.itemsPerPage;
 
+        console.log(giaySearch);
         $http.post(apiUrl, giaySearch)
             .then(function (response) {
                 $scope.giays = response.data.content;
@@ -73,13 +77,15 @@ app.controller('giayListController', function ($scope, $http, $location) {
     }
 
     $scope.resetSearch = function () {
-        searchText = '';
         $scope.searchText = '';
         $scope.status = -1;
-        $scope.giaNhapSearch = null;
-        $scope.giaBanSearch = null;
+        $scope.giaDenSearch = null;
+        $scope.giaTuSearch = null;
         if ($scope.selectedThuongHieu) {
-            $scope.selectedThuongHieu.forEach(thuongHieu => thuongHieu.status = 'disabled');
+            $scope.selectedThuongHieu.forEach((thuongHieu, index) => {
+                $scope.selectedThuongHieu.splice(index, 1);
+                $scope.thuongHieus.push(thuongHieu)
+            });
         }
         getData(1);
     }
@@ -104,14 +110,6 @@ app.controller('giayListController', function ($scope, $http, $location) {
             // $scope.giayModal.index = giayIndex;
             setTimeout(function () {
                 document.getElementById('detailModalSoLuong' + bienTheIndex).focus();
-            }, 524);
-        } else if (modal === 'giaNhap') {
-            $scope.giaGiayModal = angular.copy($scope.giays[giayIndex]);
-            $scope.giaGiayModal.lstBienTheGiay.forEach(giaGiayModal => {
-                giaGiayModal.errors = {};
-            });
-            setTimeout(function () {
-                document.getElementById('detailModalGiaNhap' + bienTheIndex).focus();
             }, 524);
         } else if (modal === 'giaBan') {
             $scope.giaGiayModal = angular.copy($scope.giays[giayIndex]);
@@ -138,18 +136,6 @@ app.controller('giayListController', function ($scope, $http, $location) {
                 $scope.giayModal.lstBienTheGiay[bienTheIndex].errors.soLuong = 'Số lượng không được âm';
             } else {
                 $scope.giayModal.lstBienTheGiay[bienTheIndex].errors.soLuong = null;
-            }
-        } else if (modal === 'giaNhap') {
-            if (isNaN($scope.giaGiayModal.lstBienTheGiay[bienTheIndex].giaNhap) ||
-                ($scope.giaGiayModal.lstBienTheGiay[bienTheIndex].giaNhap + "").trim().length === 0 ||
-                !$scope.giaGiayModal.lstBienTheGiay[bienTheIndex].giaNhap) {
-                $scope.giaGiayModal.lstBienTheGiay[bienTheIndex].giaNhap = null;
-                $scope.giaGiayModal.lstBienTheGiay[bienTheIndex].errors.giaNhap = 'Không được để trống số lượng';
-            } else if ($scope.giaGiayModal.lstBienTheGiay[bienTheIndex].giaNhap < 0) {
-                $scope.giaGiayModal.lstBienTheGiay[bienTheIndex].giaNhap = null;
-                $scope.giaGiayModal.lstBienTheGiay[bienTheIndex].errors.giaNhap = 'Số lượng không được âm';
-            } else {
-                $scope.giaGiayModal.lstBienTheGiay[bienTheIndex].errors.giaNhap = null;
             }
         } else if (modal === 'giaBan') {
             if (isNaN($scope.giaGiayModal.lstBienTheGiay[bienTheIndex].giaBan) ||
@@ -204,50 +190,26 @@ app.controller('giayListController', function ($scope, $http, $location) {
             } else {
                 $scope.giaBanUpdateAllErrors = null;
             }
-        } else if (modal === 'giaNhap') {
-            if (isNaN($scope.giaNhapUpdateAll) ||
-                ($scope.giaNhapUpdateAll + "").trim().length === 0 ||
-                !$scope.giaNhapUpdateAll) {
-                $scope.giaNhapUpdateAll = null;
-                $scope.giaNhapUpdateAllErrors = 'Không được để trống số lượng';
-            } else if ($scope.giaNhapUpdateAll < 0) {
-                $scope.giaNhapUpdateAll = null;
-                $scope.giaNhapUpdateAllErrors = 'Số lượng không được âm';
-            } else {
-                $scope.giaNhapUpdateAllErrors = null;
-            }
         }
     }
 
     $scope.blurGiaInput = function (index, modal) {
         if (modal === 'giaBan') {
-            if ($scope.giaGiayModal.lstBienTheGiay[index].giaBan && $scope.giaGiayModal.lstBienTheGiay[index].giaNhap &&
-                $scope.giaGiayModal.lstBienTheGiay[index].giaBan < $scope.giaGiayModal.lstBienTheGiay[index].giaNhap) {
+            if (!$scope.giaGiayModal.lstBienTheGiay[index].giaBan && isNaN($scope.giaGiayModal.lstBienTheGiay[index].giaBan)) {
                 $scope.giaGiayModal.lstBienTheGiay[index].giaBan = null;
-                $scope.giaGiayModal.lstBienTheGiay[index].errors.giaBan = 'Giá bán không được nhỏ hơn giá nhập';
-            }
-        } else if (modal === 'giaNhap') {
-            if ($scope.giaGiayModal.lstBienTheGiay[index].giaBan && $scope.giaGiayModal.lstBienTheGiay[index].giaNhap &&
-                $scope.giaGiayModal.lstBienTheGiay[index].giaBan < $scope.giaGiayModal.lstBienTheGiay[index].giaNhap) {
-                $scope.giaGiayModal.lstBienTheGiay[index].giaNhap = null;
-                $scope.giaGiayModal.lstBienTheGiay[index].errors.giaNhap = 'Giá bán không được nhỏ hơn giá nhập';
+                $scope.giaGiayModal.lstBienTheGiay[index].errors.giaBan = 'Giá bán không được để trống';
             }
         }
     }
 
     $scope.setAllForUpdateGia = function () {
-        if (!$scope.giaNhapUpdateAll || $scope.giaBanUpdateAll) {
+        if (!$scope.giaBanUpdateAll) {
             toastr["error"]("Lỗi, hãy điền đầy đủ thông tin bắt buộc");
             return;
         }
 
-        if ($scope.giaBanUpdateAll < $scope.giaNhapUpdateAll) {
-            toastr["error"]("Lỗi, giá nhập không được lớn hơn giá bán");
-            return;
-        }
         $scope.giaGiayModal.lstBienTheGiay.forEach(bienThe => {
             bienThe.giaBan = $scope.giaBanUpdateAll;
-            bienThe.giaNhap = $scope.giaNhapUpdateAll;
         });
 
     }
@@ -296,14 +258,12 @@ app.controller('giayListController', function ($scope, $http, $location) {
             bienTheGiays: $scope.giaGiayModal.lstBienTheGiay.map(bienThe => {
                 return {
                     id: bienThe.id,
-                    giaNhap: bienThe.giaNhap,
                     giaBan: bienThe.giaBan
                 };
             })
         };
 
-        if (!giayChange.id || giayChange.bienTheGiays.some(bienThe => !bienThe.id || !bienThe.giaNhap || isNaN(bienThe.giaNhap))
-            || giayChange.bienTheGiays.some(bienThe => !bienThe.id || !bienThe.giaBan || isNaN(bienThe.giaBan))) {
+        if (!giayChange.id || giayChange.bienTheGiays.some(bienThe => !bienThe.id || !bienThe.giaBan || isNaN(bienThe.giaBan))) {
             toastr["error"]("Lỗi, hãy điền đầy đủ thông tin bắt buộc");
             return;
         }
@@ -317,7 +277,6 @@ app.controller('giayListController', function ($scope, $http, $location) {
                     g.lstBienTheGiay.forEach(bienThe => {
                         giayChange.bienTheGiays.forEach(bienTheChange => {
                             if (bienTheChange.id === bienThe.id) {
-                                bienThe.giaNhap = bienTheChange.giaNhap;
                                 bienThe.giaBan = bienTheChange.giaBan;
                             }
                         })

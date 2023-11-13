@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import luckystore.datn.validation.PriceCheck;
 import luckystore.datn.validation.groups.CreateGroup;
 import luckystore.datn.validation.groups.UpdateGiaGroup;
 import luckystore.datn.validation.groups.UpdateGroup;
@@ -19,7 +18,6 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@PriceCheck(groups = {CreateGroup.class, UpdateGroup.class, UpdateGiaGroup.class})
 public class BienTheGiayRequest {
 
     @NotNull(message = "Không được để trống", groups = {UpdateSoLuongGroup.class, UpdateGroup.class})
@@ -32,11 +30,7 @@ public class BienTheGiayRequest {
     private Long kichThuocId;
 
     @NotNull(message = "Không được để trống", groups = {CreateGroup.class, UpdateGroup.class, UpdateGiaGroup.class})
-    @DecimalMin(message = "Không được âm", value = "0.0", groups = {CreateGroup.class, UpdateGroup.class , UpdateGiaGroup.class})
-    private BigDecimal giaNhap;
-
-    @NotNull(message = "Không được để trống", groups = {CreateGroup.class, UpdateGroup.class, UpdateGiaGroup.class})
-    @DecimalMin(message = "Không được âm", value = "0.0", groups = {CreateGroup.class, UpdateGroup.class , UpdateGiaGroup.class})
+    @DecimalMin(message = "Không được âm", value = "0.0", groups = {CreateGroup.class, UpdateGroup.class, UpdateGiaGroup.class})
     private BigDecimal giaBan;
 
     @NotNull(message = "Không được để trống", groups = {CreateGroup.class, UpdateGroup.class})

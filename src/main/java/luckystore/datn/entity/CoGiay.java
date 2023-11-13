@@ -41,7 +41,4 @@ public class CoGiay {
     @Column(name = "TRANG_THAI")
     private Integer trangThai;
 
-    @Column(name = "NGAY_TAO")
-    private LocalDateTime ngayTao;
-
 }

@@ -13,7 +13,7 @@ public interface BienTheGiayRepository extends JpaRepository<BienTheGiay, Long> 
 
     Boolean existsByHinhAnh(String link);
     
-    @Query("select new luckystore.datn.model.response.BienTheGiayResponse(bt.id, bt.kichThuoc.ten, bt.mauSac.ten, bt.soLuong, bt.giaBan, bt.giaNhap) " +
+    @Query("select new luckystore.datn.model.response.BienTheGiayResponse(bt.id, bt.kichThuoc.ten, bt.mauSac.ten, bt.soLuong, bt.giaBan) " +
             "  from BienTheGiay bt where bt.giay.id = :idGiay order by bt.mauSac.ten, bt.kichThuoc.ten")
     List<BienTheGiayResponse> getSimpleByIdGiay(Long idGiay);
 

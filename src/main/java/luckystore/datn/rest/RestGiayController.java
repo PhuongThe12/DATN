@@ -1,8 +1,8 @@
 package luckystore.datn.rest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import luckystore.datn.model.request.GiayRequest;
 import luckystore.datn.model.request.GiaySearch;
+import luckystore.datn.model.request.TestRequest;
 import luckystore.datn.service.GiayService;
 import luckystore.datn.service.ImageHubService;
 import luckystore.datn.util.JsonString;
@@ -23,6 +23,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.lang.instrument.Instrumentation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +42,22 @@ public class RestGiayController {
 
     @Autowired
     private ImageHubService imageHubService;
+
+    @PostMapping("/test")
+    public ResponseEntity<?> test(@RequestBody TestRequest lst) throws IOException {
+//        System.out.println(lst);
+//        for (String src : lst.getData()) {
+//            imageHubService.base64ToFile(src);
+//        }
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+        objectOutputStream.writeObject(lst);
+        System.out.println("Byte: " + outputStream.toByteArray().length / (1024 * 1024) + "MB");
+        System.out.println("Data: " + lst.getData().size());
+        return ResponseEntity.ok(lst);
+//        return ResponseEntity.ok("{\"data\":\"Done\"}");
+    }
 
     @PostMapping("/get-page")
     public ResponseEntity<?> getPage(
@@ -63,6 +86,11 @@ public class RestGiayController {
         return new ResponseEntity<>(giayService.findAllForList(giaySearch), HttpStatus.OK);
     }
 
+    @PostMapping("/find-all-by-search")
+    public ResponseEntity<?> findAllBySearch(@RequestBody GiaySearch giaySearch) {
+        return new ResponseEntity<>(giayService.findAllBySearch(giaySearch), HttpStatus.OK);
+    }
+
     @PostMapping("/get-giay-contains")
     public ResponseEntity<?> getAllContains(@RequestBody List<Long> ids) {
         return new ResponseEntity<>(giayService.getAllContains(ids), HttpStatus.OK);
@@ -79,7 +107,7 @@ public class RestGiayController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateGiay(@PathVariable("id") Long id,
-                                        @Validated({UpdateGiaGroup.class}) @RequestBody GiayRequest giayRequest, BindingResult result){
+                                        @Validated({UpdateGiaGroup.class}) @RequestBody GiayRequest giayRequest, BindingResult result) {
         ResponseEntity<?> errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
