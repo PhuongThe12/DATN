@@ -51,9 +51,10 @@ public class BienTheGiayResponse {
             if(bienTheGiay.getGiay() != null && level != null) {
                 giayResponse = new GiayResponse();
                 giayResponse.setId(bienTheGiay.getGiay().getId());
-                giayResponse.getLstAnh().add(bienTheGiay.getGiay().getLstAnh().isEmpty() ? null :
-                        ImageHubServiceImpl.getBase64FromFileStatic(bienTheGiay.getGiay().getLstAnh().get(0).getLink()));
-                giayResponse.setTen(bienTheGiay.getGiay().getTen());
+                giayResponse.setLstAnh(null);
+//                giayResponse.getLstAnh().add(bienTheGiay.getGiay().getLstAnh().isEmpty() ? null :
+//                        ImageHubServiceImpl.getBase64FromFileStatic(bienTheGiay.getGiay().getLstAnh().get(0).getLink()));
+//                giayResponse.setTen(bienTheGiay.getGiay().getTen());
                 giayResponse.setLstBienTheGiay(null);
             }
         }

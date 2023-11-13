@@ -307,3 +307,25 @@ table tbody:hover tr td[rowspan]:hover {
 .nowrap-column {
     /*white-space: nowrap;*/
 }
+
+.barcode-options {
+    display: none;
+    position: absolute;
+    top: 40px;
+    right: 100%;
+    transform: translateX(50%);
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 150px;
+    z-index: 12;
+}
+
+.barcodeButton {
+    position: relative;
+}
+
+.barcodeButton:hover>.barcode-options {
+    display: block;
+}

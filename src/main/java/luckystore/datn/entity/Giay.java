@@ -76,7 +76,7 @@ public class Giay {
     @JsonManagedReference
     private List<BienTheGiay> lstBienTheGiay;
 
-    @OneToMany(mappedBy = "giay", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "giay", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<HinhAnh> lstAnh;
 
