@@ -154,13 +154,13 @@ app.controller("updateChatLieuController", function ($scope, $http, $routeParams
         .then(function (response) {
             $scope.chatLieu = response.data;
             $scope.isLoading = false;
-        }).catch(function (error) {
-        toastr["error"]("Lấy dữ liệu thất bại");
-        $location.path("/list");
-        $scope.isLoading = false;
-    });
+        })
+        .catch(function (error) {
+            toastr["error"]("Lấy dữ liệu thất bại");
+            $location.path("/list");
+        });
 
-    $scope.comfirmUpdate = function (){
+    $scope.comfirmUpdate = function () {
         Swal.fire({
             text: "Xác nhận cập nhật?",
             icon: "info",
@@ -168,10 +168,10 @@ app.controller("updateChatLieuController", function ($scope, $http, $routeParams
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
             confirmButtonText: "Đồng ý",
-            cancelButtonText:"Hủy"
+            cancelButtonText: "Hủy"
         }).then((result) => {
             if (result.isConfirmed) {
-              $scope.updateChatLieu();
+                $scope.updateChatLieu();
             }
         });
     }

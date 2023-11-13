@@ -13,4 +13,9 @@ public class GiayController {
         return "/admin/giay/index";
     }
 
+    @GetMapping("/test")
+    public String test() {
+        return "/admin/giay/test";
+    }
+
 }
