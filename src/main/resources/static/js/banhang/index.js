@@ -29,11 +29,14 @@ app.controller("homeController", function ($scope, $http, $location, $cookies) {
     $scope.curPage = 1,
         $scope.itemsPerPage = 12,
         $scope.maxSize = 5;
+    $scope.hoaDon = {};
 
     let giaySearch = {};
-    $scope.listGiaySelected = [];
+    $scope.listGiaySelected = []; // List biến thể giày
 
-    $scope.giayChoosed = {};
+    $scope.giayChoosed = {}; // Biến thể giày được chọn khi chọn màu + size
+
+    $scope.tongTien = 0; // Tổng tiền
 
     $scope.search = function () {
         getData(1);
@@ -99,8 +102,6 @@ app.controller("homeController", function ($scope, $http, $location, $cookies) {
 
 
     // Thêm giày vào giỏ hàng
-
-
     $scope.addOrder = function (id) {
 
         $scope.checkExits = $scope.listGiaySelected.find(function (giay) {
@@ -187,7 +188,6 @@ app.controller("homeController", function ($scope, $http, $location, $cookies) {
                                 priceDisplay.textContent = variant.giaBan;
                                 $scope.giayChoosed = variant;
                                 $scope.giayChoosed.ten = productData.ten;
-                                console.log($scope.giayChoosed);
                             });
                             sizeButtons.appendChild(sizeButton);
                         }
@@ -211,6 +211,25 @@ app.controller("homeController", function ($scope, $http, $location, $cookies) {
         }
     }
 
+    $scope.deleteSelected = function (id) {
+        for (var i = 0; i < $scope.listGiaySelected.length; i++) {
+            if ($scope.listGiaySelected[i].id === id) {
+
+                // Tìm thấy phần tử có id trùng khớp, loại bỏ nó khỏi mảng
+                var deletedItem = $scope.listGiaySelected.splice(i, 1)[0];
+
+                // Cập nhật tổng tiền sau khi xóa sản phẩm
+                $scope.tongTien -= (deletedItem.gia * deletedItem.soLuong);
+                Swal.fire({
+                    text: "Xóa thành công",
+                    icon: "success"
+                });
+                break; // Dừng vòng lặp sau khi xóa thành công
+            }
+        }
+    }
+
+    // Hàm thêm biến thể giày sau khi chọn "Thêm vào giỏ haàng"
     $scope.addGiay = function () {
         var exists = $scope.listGiaySelected.some(function (item) {
             // Kiểm tra điều kiện, ví dụ so sánh ID của đối tượng
@@ -224,26 +243,19 @@ app.controller("homeController", function ($scope, $http, $location, $cookies) {
             });
         } else {
             Swal.fire({
-                text: "Bạn có chắc chắn muốn thêm giày vào giỏ hàng",
-                icon: "info",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Đồng ý",
-                cancelButtonText:"Hủy"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        text: "Thêm thành công",
-                        icon: "success"
-                    });
-                    $scope.giayChoosed.soLuongMua = 1;
-                    $scope.listGiaySelected.push($scope.giayChoosed);
-                }
-
+                text: "Thêm thành công",
+                icon: "success"
             });
-
+            $scope.giayChoosed.soLuongMua = 1;
+            $scope.listGiaySelected.push($scope.giayChoosed);
+            $scope.tongTien += $scope.giayChoosed.giaBan;
         }
+    }
+
+    $scope.taoHoaDon = function () {
+        $scope.hoaDon.listBienTheGiay = $scope.listGiaySelected;
+        $scope.hoaDon.tongTien = $scope.tongTien;
+        console.log($scope.hoaDon);
     }
 
 
