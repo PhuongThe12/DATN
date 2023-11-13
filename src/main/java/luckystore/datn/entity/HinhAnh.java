@@ -43,8 +43,8 @@ public class HinhAnh {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_GIAY")
     private Giay giay;
-
-    @Column(name = "NGAY_TAO")
-    private LocalDateTime ngayTao;
+//
+//    @Column(name = "NGAY_TAO")
+//    private LocalDateTime ngayTao;
 
 }

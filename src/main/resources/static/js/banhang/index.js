@@ -79,6 +79,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies) {
             .then(function (response) {
                 $scope.giays = response.data.content;
                 $scope.numOfPages = response.data.totalPages;
+                $scope.isLoading = false;
             })
             .catch(function (error) {
                 console.log(error);
@@ -86,9 +87,11 @@ app.controller("homeController", function ($scope, $http, $location, $cookies) {
             });
     }
 
+    $scope.isLoading = true;
     getData(1);
 
     $scope.$watch('curPage + numPerPage', function () {
+        $scope.isLoading = true;
         getData($scope.curPage);
     });
 
@@ -103,19 +106,140 @@ app.controller("homeController", function ($scope, $http, $location, $cookies) {
         });
 
         if ($scope.checkExits === undefined) {
-            $scope.giaySeletect = $scope.giays.find(function (giay) {
-                return giay.id == id;
-            });
-            $scope.giaySeletect.soLuong = 1;
-            console.log($scope.giaySeletect);
-            $scope.listGiaySelected.push($scope.giaySeletect);
 
-            $scope.totalPrice += $scope.giaySeletect.gia;
+            $http.get(host + '/admin/rest/giay/' + id)
+                .then(function (response) {
+                    $scope.giaySeletect = response.data;
+                    detailGiayChiTiet(response.data);
+                }).catch(function (error) {
+                toastr["error"]("Lấy dữ liệu thất bại");
+                console.log(error);
+                $location.path("/home");
+            });
+
+
+            // $scope.giaySeletect = $scope.giays.find(function (giay) {
+            //     return giay.id == id;
+            // });
+            // $scope.giaySeletect.soLuong = 1;
+            // console.log($scope.giaySeletect);
+            // $scope.listGiaySelected.push($scope.giaySeletect);
+            //
+            // $scope.totalPrice += $scope.giaySeletect.gia;
         } else {
             $scope.checkExits.soLuong++;
             $scope.totalPrice += $scope.checkExits.gia;
         }
 
     }
+
+    function detailGiayChiTiet(productData) {
+
+        $scope.giayDetail = productData;
+        displayImages(productData.lstAnh);
+
+        const mauSacImages = productData.mauSacImages;
+        console.log(mauSacImages);
+        const lstBienTheGiay = productData.lstBienTheGiay;
+
+        const buttonsContainer = document.getElementById('buttons-container');
+        buttonsContainer.innerHTML = '';
+        const productInfoContainer = document.getElementById('product-info');
+        const sizeButtons = document.getElementById("sizeButtons");
+        const quantityDisplay = document.getElementById('quantity');
+        const priceDisplay = document.getElementById('price-product');
+
+// Tạo các button màu sắc và xử lý sự kiện click
+        for (const mauSacId in mauSacImages) {
+            if (mauSacImages.hasOwnProperty(mauSacId)) {
+                const mauSacIdInt = parseInt(mauSacId, 10);
+
+                // Tìm tên màu sắc từ lstBienTheGiay dựa trên mauSacId
+                const mauSacInfo = lstBienTheGiay.find(variant => variant.mauSac.id === mauSacIdInt)?.mauSac || {
+                    ten: `Màu ${mauSacId}`,
+                    maMau: '#FFFFFF'
+                };
+
+
+                const outerDiv = document.createElement('div');
+                const insideDiv = document.createElement('div');
+                insideDiv.classList.add('insideDiv');
+                const input = document.createElement("input");
+                input.type = "radio"; // Để sử dụng input như một lựa chọn màu sắc
+                input.name = "color" // Đặt cùng một tên cho tất cả các input của màu sắc
+                input.hidden = true;
+
+                insideDiv.textContent = "";
+                insideDiv.style.backgroundColor = mauSacInfo.maMau; // Đặt màu nền của nút
+                insideDiv.appendChild(input);
+                outerDiv.appendChild(insideDiv);
+
+                outerDiv.addEventListener('click', () => {
+                    input.checked = true;
+                    productInfoContainer.innerHTML = '';
+                    sizeButtons.innerHTML = '';
+                    // Tạo danh sách ul để chứa thông tin sản phẩm
+                    const ul = document.createElement('ul');
+                    lstBienTheGiay.forEach(variant => {
+                        if (mauSacIdInt === variant.mauSac.id) {
+                            const li = document.createElement('li');
+                            li.textContent = `ID: ${variant.id}, GiaBan: ${variant.giaBan}`;
+                            ul.appendChild(li);
+
+                            // Tạo nút kích thước và xử lý sự kiện click
+                            const sizeButton = document.createElement("button");
+                            sizeButton.textContent = variant.kichThuoc.ten;
+                            sizeButton.className = "btn btn-dark";
+                            sizeButton.addEventListener("click", () => {
+                                quantityDisplay.textContent = variant.soLuong;
+                                priceDisplay.textContent = variant.giaBan;
+                            });
+                            sizeButtons.appendChild(sizeButton);
+                        }
+
+                    });
+
+                    const allColorContainers = document.querySelectorAll('.button_color');
+                    allColorContainers.forEach(container => {
+                        container.classList.remove('button_checked');
+                    });
+                    outerDiv.classList.add('button_checked');
+
+
+                    const linkAnh = mauSacImages[mauSacId];
+                    const imageList = [linkAnh];
+                    displayImages(imageList);
+                });
+                outerDiv.className = "button_color";
+                buttonsContainer.appendChild(outerDiv);
+            }
+        }
+    }
+
+
+    function displayImages(imageList) {
+        const carouselInner = document.querySelector('#carouselExampleControls .carousel-inner');
+        const carouselItems = document.querySelectorAll('#carouselExampleControls .carousel-item');
+
+        // Xóa tất cả các carousel items hiện tại
+        carouselItems.forEach(item => {
+            carouselInner.removeChild(item);
+        });
+
+        // Tạo các carousel items mới từ danh sách ảnh mới
+        for (let i = 0; i < imageList.length; i++) {
+            const imageUrl = imageList[i];
+            const div = document.createElement('div');
+            div.className = i === 0 ? 'carousel-item active' : 'carousel-item';
+
+            const img = document.createElement('img');
+            img.src = imageUrl;
+            img.className = 'd-block w-100';
+
+            div.appendChild(img);
+            carouselInner.appendChild(div);
+        }
+    }
+
 
 });
