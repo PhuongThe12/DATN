@@ -41,6 +41,7 @@ import luckystore.datn.service.GiayService;
 import luckystore.datn.service.ImageHubService;
 import luckystore.datn.util.JsonString;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -169,13 +170,25 @@ public class GiayServiceImpl implements GiayService {
     @Override
     public Page<GiayResponse> findAllForList(GiaySearch giaySearch) {
         Pageable pageable = PageRequest.of(giaySearch.getCurrentPage() - 1, giaySearch.getPageSize());
-//
-//        Page<GiayResponse> giayResponsePage = giayRepository.findPageForList(giaySearch, pageable);
-//        giayResponsePage.stream().forEach(giayResponse -> {
-//            giayResponse.setLstBienTheGiay(bienTheGiayRepository.getSimpleByIdGiay(giayResponse.getId()));
-//            giayResponse.getLstAnh().add(imageHubService.getBase64FromFile(hinhAnhRepository.findThubmailByIdGiay(giayResponse.getId())));
-//        });
-        return giayRepository.findPageForList(giaySearch, pageable);
+        Page<GiayResponse> giayResponsePage = giayRepository.findGiayBySearchForList(giaySearch, pageable);
+
+        List<Long> lstId = giayResponsePage.getContent().stream()
+                .map(GiayResponse::getId).toList();
+
+        List<GiayResponse> giayResponses = giayRepository.findListByInList(lstId);
+        Map<Long, GiayResponse> giayResponseMap = new HashMap<>();
+
+        for (GiayResponse giayResponse : giayResponses) {
+            GiayResponse giay = giayResponseMap.get(giayResponse.getId());
+            if(giay == null && !giayResponse.getLstBienTheGiay().isEmpty()) {
+                giayResponseMap.put(giayResponse.getId(), giayResponse);
+            } else if(!giayResponse.getLstBienTheGiay().isEmpty()) {
+                giay.getLstBienTheGiay().add(giayResponse.getLstBienTheGiay().get(0));
+            }
+        }
+        
+        return new PageImpl<>(new ArrayList<>(giayResponseMap.values()), pageable, giayResponsePage.getTotalElements());
+
     }
 
     @Override

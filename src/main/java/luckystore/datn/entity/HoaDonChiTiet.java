@@ -3,16 +3,15 @@ package luckystore.datn.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.io.Serializable;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Builder
 @Entity
+@ToString
 @Table(name = "HoaDonChiTiet")
-public class HoaDonChiTiet implements Serializable {
+public class HoaDonChiTiet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
@@ -20,9 +19,9 @@ public class HoaDonChiTiet implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_HOA_DON")
-    private HoaDon idHoaDon;
+    private HoaDon hoaDon;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_BIEN_THE_GIAY")
     private BienTheGiay bienTheGiay;
 

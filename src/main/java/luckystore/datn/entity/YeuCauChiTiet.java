@@ -3,8 +3,8 @@ package luckystore.datn.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
+import luckystore.datn.model.request.YeuCauChiTietRequest;
 
-import java.io.Serializable;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Builder
 @Entity
 @Table(name = "YeuCauChiTiet")
-public class YeuCauChiTiet implements Serializable {
+public class YeuCauChiTiet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
@@ -26,10 +26,11 @@ public class YeuCauChiTiet implements Serializable {
 
     @OneToOne
     @JoinColumn(name = "ID_HOA_DON_CHI_TIET")
-    private HoaDonChiTiet idHoaDonChiTiet;
+    private HoaDonChiTiet hoaDonChiTiet;
 
-    @Column(name = "ID_BIEN_THE_GIAY")
-    private Long idSanPhamChiTiet;
+    @OneToOne
+    @JoinColumn(name = "ID_BIEN_THE_GIAY")
+    private BienTheGiay bienTheGiay;
 
     @Column(name = "LY_DO")
     private String lyDo;
@@ -45,4 +46,27 @@ public class YeuCauChiTiet implements Serializable {
 
     @Column(name = "GHI_CHU")
     private String ghiChu;
+
+    public YeuCauChiTiet(YeuCauChiTietRequest yeuCauChiTietRequest) {
+        if (yeuCauChiTietRequest != null) {
+            this.id = yeuCauChiTietRequest.getId();
+//            this.yeuCau = yeuCauChiTietRequest.getYeuCau();
+//            this.hoaDonChiTiet = yeuCauChiTietRequest.getHoaDonChiTiet();
+//            this.bienTheGiay = yeuCauChiTietRequest.getBienTheGiay();
+//            this.lyDo = yeuCauChiTietRequest.getLyDo();
+//            this.soLuong = yeuCauChiTietRequest.getSoLuong();
+//            this.trangThai = yeuCauChiTietRequest.getTrangThai();
+//            this.ghiChu = yeuCauChiTietRequest.getGhiChu();
+        }
+    }
+
+    public YeuCauChiTiet(YeuCau yeuCau, HoaDonChiTiet hoaDonChiTiet, BienTheGiay bienTheGiay, String lyDo, Integer soLuong, Integer trangThai, String ghiChu) {
+        this.yeuCau = yeuCau;
+        this.hoaDonChiTiet = hoaDonChiTiet;
+        this.bienTheGiay = bienTheGiay;
+        this.lyDo = lyDo;
+        this.soLuong = soLuong;
+        this.trangThai = trangThai;
+        this.ghiChu = ghiChu;
+    }
 }

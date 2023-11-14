@@ -1,5 +1,6 @@
 package luckystore.datn.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -42,6 +43,7 @@ public class HinhAnh {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_GIAY")
+    @JsonBackReference
     private Giay giay;
 
     @Column(name = "NGAY_TAO")

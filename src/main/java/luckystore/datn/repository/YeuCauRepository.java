@@ -3,6 +3,7 @@ package luckystore.datn.repository;
 
 
 import luckystore.datn.entity.YeuCau;
+import luckystore.datn.model.response.GiayResponse;
 import luckystore.datn.model.response.MauSacResponse;
 import luckystore.datn.model.response.YeuCauResponse;
 import org.springframework.data.domain.Page;
@@ -27,4 +28,8 @@ public interface YeuCauRepository extends JpaRepository<YeuCau,Long> {
             "AND (:searchText IS NULL OR yc.id = :searchText) " +
             "ORDER BY yc.ngayTao DESC" )
     Page<YeuCauResponse> getPageResponse(Date ngayBatDau,String searchText,Date ngayKetThuc, Integer loaiYeuCau, Integer trangThai,Pageable pageable);
+
+    @Query("select new luckystore.datn.model.response.YeuCauResponse(yc) from YeuCau yc  where yc.trangThai = 0")
+    YeuCauResponse findResponseByStatus();
+
 }

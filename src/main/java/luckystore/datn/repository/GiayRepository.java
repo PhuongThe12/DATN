@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface GiayRepository extends JpaRepository<Giay, Long> {
@@ -34,6 +35,24 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
             "order by g.id desc"
     )
     Page<GiayResponse> findPageForList(GiaySearch giaySearch, Pageable pageable);
+
+    @Query("select new luckystore.datn.model.response.GiayResponse(g.id, g.ten, b, anh.link) " +
+            "from Giay g left join g.lstBienTheGiay b left join g.lstAnh anh " +
+            "where g.id in :lstId and anh.uuTien = 1"
+    )
+    List<GiayResponse> findListByInList(List<Long> lstId);
+
+
+    @Query("select distinct new luckystore.datn.model.response.GiayResponse(g.id) from Giay g " +
+            "left join g.lstBienTheGiay bienThe " +
+            "where (:#{#giaySearch.ten} is null or g.ten like %:#{#giaySearch.ten}%) " +
+            "and (:#{#giaySearch.giaTu} is null or bienThe.giaBan >= :#{#giaySearch.giaTu}) " +
+            "and (:#{#giaySearch.giaDen} is null or bienThe.giaBan <= :#{#giaySearch.giaDen}) " +
+            "and (:#{#giaySearch.tenThuongHieu} is null or g.thuongHieu.ten like %:#{#giaySearch.tenThuongHieu}%) " +
+            "and (:#{#giaySearch.thuongHieuIds} is null or g.thuongHieu.id in :#{#giaySearch.thuongHieuIds}) " +
+            "and (:#{#giaySearch.trangThai} is null or g.trangThai = :#{#giaySearch.trangThai}) "
+    )
+    Page<GiayResponse> findGiayBySearchForList(GiaySearch giaySearch, Pageable pageable);
 
 
     @Query("select distinct new luckystore.datn.model.response.GiayResponse(g.id, g.ten, anh.link) from Giay g " +
