@@ -2,12 +2,13 @@ package luckystore.datn.service.impl;
 
 
 import luckystore.datn.constraints.ErrorMessage;
-import luckystore.datn.entity.YeuCau;
+import luckystore.datn.entity.*;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.exception.NullException;
+import luckystore.datn.model.request.YeuCauChiTietRequest;
 import luckystore.datn.model.request.YeuCauRequest;
 import luckystore.datn.model.response.YeuCauResponse;
-import luckystore.datn.repository.YeuCauRepository;
+import luckystore.datn.repository.*;
 import luckystore.datn.service.YeuCauService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,19 +24,47 @@ import java.util.List;
 public class YeuCauServiceIplm implements YeuCauService {
 
 
+
+    private final YeuCauRepository yeuCauRepository;
+    private final YeuCauChiTietRepository yeuCauChiTietRepository;
+    private final HoaDonRepository hoaDonRepository;
+    private final HoaDonChiTietRepository hoaDonChiTietRepository;
+    private final BienTheGiayRepository bienTheGiayRepository;
+
     @Autowired
-    private YeuCauRepository yeuCauRepo;
+    public YeuCauServiceIplm(YeuCauRepository yeuCauRepo, YeuCauChiTietRepository yeuCauChiTietRepository, HoaDonRepository hoaDonRepository, HoaDonChiTietRepository hoaDonChiTietRepository, BienTheGiayRepository bienTheGiayRepository) {
+        this.yeuCauRepository = yeuCauRepo;
+        this.yeuCauChiTietRepository = yeuCauChiTietRepository;
+        this.hoaDonRepository = hoaDonRepository;
+        this.hoaDonChiTietRepository = hoaDonChiTietRepository;
+        this.bienTheGiayRepository = bienTheGiayRepository;
+    }
 
     public List<YeuCauResponse> getAll() {
-        return yeuCauRepo.finAllResponse();
+        return yeuCauRepository.finAllResponse();
     }
 
     @Override
     public YeuCauResponse addYeuCau(YeuCauRequest yeuCauRequest) {
-        YeuCau yeuCau = new YeuCau(yeuCauRequest);
+        HoaDon hoaDon = hoaDonRepository.findById(yeuCauRequest.getHoaDon()).orElse(null);
+        YeuCau yeuCau = new YeuCau(yeuCauRequest,hoaDon);
         yeuCau.setNgayTao(new Date());
         yeuCau.setNgaySua(new Date());
-        return new YeuCauResponse(yeuCauRepo.save(yeuCau));
+        addYeuCauChiTiet(yeuCauRequest,yeuCau);
+        return null;
+    }
+
+    public void addYeuCauChiTiet(YeuCauRequest yeuCauRequest, YeuCau yeuCau){
+        for (YeuCauChiTietRequest yeuCauChiTietRequest : yeuCauRequest.getListYeuCauChiTiet()) {
+            YeuCau yeuCauAdd = yeuCauRepository.save(yeuCau);
+            HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findById(yeuCauChiTietRequest.getHoaDonChiTiet()).orElse(null);
+            BienTheGiay bienTheGiay = bienTheGiayRepository.findById(yeuCauChiTietRequest.getBienTheGiay()).orElse(null);
+            String lyDo = yeuCauChiTietRequest.getLyDo();
+            Integer soLuongDoi = yeuCauChiTietRequest.getSoLuong();
+            Integer trangThai = yeuCauChiTietRequest.getTrangThai();
+            String moTa = yeuCauChiTietRequest.getGhiChu();
+            yeuCauChiTietRepository.save(new YeuCauChiTiet(yeuCauAdd,hoaDonChiTiet,bienTheGiay,lyDo,soLuongDoi,trangThai,moTa));
+        }
     }
 
     @Override
@@ -44,23 +73,28 @@ public class YeuCauServiceIplm implements YeuCauService {
         if (id == null) {
             throw new NullException();
         } else {
-            yeuCau = yeuCauRepo.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND));
+            yeuCau = yeuCauRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND));
         }
-
-        yeuCau = new YeuCau(yeuCauRequest);
+        HoaDon hoaDon = new HoaDon();
+        yeuCau = new YeuCau(yeuCauRequest, hoaDon);
         yeuCau.setId(id);
 
-        return new YeuCauResponse(yeuCauRepo.save(yeuCau));
+        return new YeuCauResponse(yeuCauRepository.save(yeuCau));
     }
 
     @Override
     public YeuCauResponse findById(Long id) {
-        return new YeuCauResponse(yeuCauRepo.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND)));
+        return new YeuCauResponse(yeuCauRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND)));
+    }
+
+    @Override
+    public YeuCauResponse findByStatus() {
+        return new YeuCauResponse(yeuCauRepository.findResponseByStatus());
     }
 
     @Override
     public Page<YeuCauResponse> getPage(Integer page,String searchText ,Date ngayBatDau, Date ngayKetThuc, Integer loaiYeuCau, Integer trangThai) {
-        return yeuCauRepo.getPageResponse(ngayBatDau,searchText,ngayKetThuc,loaiYeuCau,trangThai, PageRequest.of((page - 1), 5));
+        return yeuCauRepository.getPageResponse(ngayBatDau,searchText,ngayKetThuc,loaiYeuCau,trangThai, PageRequest.of((page - 1), 5));
     }
 
 

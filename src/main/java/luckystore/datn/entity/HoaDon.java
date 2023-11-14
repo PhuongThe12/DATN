@@ -3,7 +3,6 @@ package luckystore.datn.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDateTime;
@@ -23,8 +22,9 @@ public class HoaDon {
     @Column(name = "ID")
     private Long id;
 
-    @Column(name = "ID_HOA_DON_GOC")
-    private Long idHoaDonGoc;
+    @OneToOne
+    @JoinColumn(name = "ID_HOA_DON_GOC")
+    private HoaDon hoaDonGoc;
 
     @ManyToOne
     @JoinColumn(name = "ID_KHACH_HANG")

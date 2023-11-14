@@ -3,8 +3,6 @@ package luckystore.datn.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.io.Serializable;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -21,9 +19,9 @@ public class HoaDonChiTiet {
 
     @ManyToOne
     @JoinColumn(name = "ID_HOA_DON")
-    private HoaDon idHoaDon;
+    private HoaDon hoaDon;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_BIEN_THE_GIAY")
     private BienTheGiay bienTheGiay;
 
@@ -31,7 +29,7 @@ public class HoaDonChiTiet {
     private Long donGia;
 
     @Column(name = "SO_LUONG")
-    private Integer soLong;
+    private Integer soLuong;
 
     @Column(name = "TRANG_THAI")
     private Integer trangThai;

@@ -4,7 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import luckystore.datn.entity.BienTheGiay;
+import luckystore.datn.entity.HoaDonChiTiet;
 import luckystore.datn.entity.YeuCau;
+import luckystore.datn.entity.YeuCauChiTiet;
 
 @Data
 @AllArgsConstructor
@@ -16,17 +19,28 @@ public class YeuCauChiTietResponse {
 
     private YeuCau yeuCau;
 
-    private Long hoaDon;
+    private HoaDonChiTiet hoaDonChiTiet;
 
-    private Long giayChiTiet;
+    private BienTheGiay bienTheGiay;
 
     private String lyDo;
 
     private Integer soLuong;
 
-    private String hinhAnh;
-
     private Integer trangThai;
 
     private String ghiChu;
+
+    public YeuCauChiTietResponse(YeuCauChiTiet yeuCauChiTiet) {
+        if(yeuCauChiTiet != null){
+            this.id = yeuCauChiTiet.getId();
+            this.yeuCau = yeuCauChiTiet.getYeuCau();
+            this.hoaDonChiTiet = yeuCauChiTiet.getHoaDonChiTiet();
+            this.bienTheGiay = yeuCauChiTiet.getBienTheGiay();
+            this.lyDo = yeuCauChiTiet.getLyDo();
+            this.soLuong = yeuCauChiTiet.getSoLuong();
+            this.trangThai = yeuCauChiTiet.getTrangThai();
+            this.ghiChu = yeuCauChiTiet.getGhiChu();
+        }
+    }
 }
