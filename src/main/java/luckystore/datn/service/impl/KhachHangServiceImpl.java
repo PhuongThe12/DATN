@@ -2,12 +2,14 @@ package luckystore.datn.service.impl;
 
 import luckystore.datn.constraints.ErrorMessage;
 import luckystore.datn.entity.HangKhachHang;
+import luckystore.datn.entity.HoaDonChiTiet;
 import luckystore.datn.entity.KhachHang;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.exception.NullException;
 import luckystore.datn.model.request.KhachHangRequest;
 import luckystore.datn.model.response.KhachHangResponse;
 import luckystore.datn.repository.HangKhachHangRepository;
+import luckystore.datn.repository.HoaDonChiTietRepository;
 import luckystore.datn.repository.KhachHangRepository;
 import luckystore.datn.service.KhachHangService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,8 @@ public class KhachHangServiceImpl implements KhachHangService {
 
     @Autowired
     private KhachHangRepository khachHangRepo;
+    @Autowired
+    private HoaDonChiTietRepository hoaDonChiTietRepo;
 
     @Autowired
     private HangKhachHangRepository hangKhachHangRepo;

@@ -2,7 +2,7 @@ package luckystore.datn.rest;
 
 import luckystore.datn.model.request.GiayRequest;
 import luckystore.datn.model.request.GiaySearch;
-import luckystore.datn.model.request.TestRequest;
+//import luckystore.datn.model.request.TestRequest;
 import luckystore.datn.service.GiayService;
 import luckystore.datn.service.ImageHubService;
 import luckystore.datn.util.JsonString;
@@ -43,21 +43,21 @@ public class RestGiayController {
     @Autowired
     private ImageHubService imageHubService;
 
-    @PostMapping("/test")
-    public ResponseEntity<?> test(@RequestBody TestRequest lst) throws IOException {
-//        System.out.println(lst);
-//        for (String src : lst.getData()) {
-//            imageHubService.base64ToFile(src);
-//        }
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-        objectOutputStream.writeObject(lst);
-        System.out.println("Byte: " + outputStream.toByteArray().length / (1024 * 1024) + "MB");
-        System.out.println("Data: " + lst.getData().size());
-        return ResponseEntity.ok(lst);
-//        return ResponseEntity.ok("{\"data\":\"Done\"}");
-    }
+//    @PostMapping("/test")
+//    public ResponseEntity<?> test(@RequestBody TestRequest lst) throws IOException {
+////        System.out.println(lst);
+////        for (String src : lst.getData()) {
+////            imageHubService.base64ToFile(src);
+////        }
+//
+//        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+//        objectOutputStream.writeObject(lst);
+//        System.out.println("Byte: " + outputStream.toByteArray().length / (1024 * 1024) + "MB");
+//        System.out.println("Data: " + lst.getData().size());
+//        return ResponseEntity.ok(lst);
+////        return ResponseEntity.ok("{\"data\":\"Done\"}");
+//    }
 
     @PostMapping("/get-page")
     public ResponseEntity<?> getPage(

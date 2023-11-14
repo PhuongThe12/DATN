@@ -30,7 +30,7 @@ public class HoaDonChiTiet implements Serializable {
     private Long donGia;
 
     @Column(name = "SO_LUONG")
-    private Integer soLong;
+    private Integer soLuong;
 
     @Column(name = "TRANG_THAI")
     private Integer trangThai;

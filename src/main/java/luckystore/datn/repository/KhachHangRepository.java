@@ -31,4 +31,5 @@ public interface KhachHangRepository extends JpaRepository<KhachHang,Long> {
 //    fig tạm khách hàng id =5
     @Query(value = "SELECT * FROM KhachHang WHERE ID=5" , nativeQuery = true)
     KhachHang findIdKH(KhachHang khachHang);
+
 }

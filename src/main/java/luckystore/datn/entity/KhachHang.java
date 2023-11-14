@@ -38,9 +38,6 @@ public class KhachHang {
     @Column(name = "NGAY_SINH")
     private Date ngaySinh;
 
-    @Column(name = "NGAY_TAO")
-    private Instant ngayTao;
-
     @Column(name = "SO_DIEN_THOAI", length = 20)
     private String soDienThoai;
 
