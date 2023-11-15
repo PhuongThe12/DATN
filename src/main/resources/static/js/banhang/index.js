@@ -153,33 +153,6 @@ app.controller("homeController", function ($scope, $http, $location, $cookies) {
     function initGiayList(){
         let apiUrl = host + '/admin/rest/giay/get-all-giay';
 
-        if ($scope.searchText) {
-            giaySearch.ten = ($scope.searchText + "").trim();
-        }
-
-        if ($scope.status === 0) {
-            giaySearch.trangThai = 0;
-        } else if ($scope.status === 1) {
-            giaySearch.trangThai = 1;
-        } else {
-            giaySearch.trangThai = null;
-        }
-
-
-        if (!isNaN($scope.giaNhapSearch)) {
-            giaySearch.giaNhap = $scope.giaNhapSearch;
-        }
-
-        if (!isNaN($scope.giaBanSearch)) {
-            giaySearch.giaBan = $scope.giaBanSearch;
-        }
-
-        if ($scope.selectedThuongHieu) {
-            giaySearch.thuongHieuIds = $scope.selectedThuongHieu.filter(
-                thuongHieu => thuongHieu.status === 'active'
-            ).map(th => th.id);
-        }
-
         $http.post(apiUrl, {
             pageSize : 9999999
         })
@@ -194,6 +167,23 @@ app.controller("homeController", function ($scope, $http, $location, $cookies) {
     }
 
     initGiayList();
+
+    $scope.newListBienTheGiay = [];
+
+    // Duyệt qua danh sách object cha
+    angular.forEach($scope.giayListSearch, function (parentObject) {
+        // Duyệt qua danh sách object con
+        angular.forEach(parentObject.lstBienTheGiay, function (childObject) {
+            // Tạo một bản sao của object con
+            var newChildObject = angular.copy(childObject);
+            // Thêm trường 'name' từ object cha
+            newChildObject.ten = parentObject.ten;
+            // Thêm object mới vào danh sách
+            $scope.newListBienTheGiay.push(newChildObject);
+        });
+    });
+
+    console.log($scope.newListBienTheGiay);
 
     $scope.search = function() {
         $scope.filterGiay = [];
