@@ -31,6 +31,6 @@ public interface KichThuocRepository extends JpaRepository<KichThuoc, Long> {
 
     Boolean existsByTenAndIdNot(String ten, Long id);
 
-    @Query("select g.id from KichThuoc g where g.ten in :names")
-    List<Long> getIdsByName(Set<String> names);
+    @Query("select new luckystore.datn.model.response.KichThuocResponse(g.id, g.ten) from KichThuoc g where g.ten in :names")
+    List<KichThuocResponse> getIdsByName(Set<String> names);
 }

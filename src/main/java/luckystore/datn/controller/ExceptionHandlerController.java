@@ -2,6 +2,7 @@ package luckystore.datn.controller;
 
 import luckystore.datn.exception.ConflictException;
 import luckystore.datn.exception.DuplicateException;
+import luckystore.datn.exception.ExcelException;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.exception.NullException;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,11 @@ public class ExceptionHandlerController {
     @ExceptionHandler(NullException.class)
     public ResponseEntity<?> nullExceptionHandler(NullException exception) {
         return new ResponseEntity<>(null, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    @ExceptionHandler(ExcelException.class)
+    public ResponseEntity<?> nullExceptionHandler(ExcelException exception) {
+        return new ResponseEntity<>(exception.getData(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NotFoundException.class)

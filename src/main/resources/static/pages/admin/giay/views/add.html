@@ -426,12 +426,8 @@
                                                onkeypress="nextInput(event)"
                                                ng-required="true">
                                         <button type="button" role="button" class="input-group-text barcodeButton"><i
-                                                class="fas fa-qrcode"></i>
+                                                class="fas fa-qrcode" ng-click="setBarcode(msIndex, ktIndex)"></i>
                                             <div id="barcode-options1" class="barcode-options">
-                                                <div>
-                                                    <label class="btn btn-outline-secondary my-2"
-                                                           ng-click="setBarcode(msIndex, ktIndex)">Tự động</label>
-                                                </div>
                                                 <div>
                                                     <label for="imageBarcode{{msIndex}}{{ktIndex}}"
                                                            class="btn btn-outline-secondary my-2">Chọn ảnh</label>

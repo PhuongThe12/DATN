@@ -17,6 +17,7 @@ import luckystore.datn.entity.MauSac;
 import luckystore.datn.entity.MuiGiay;
 import luckystore.datn.entity.ThuongHieu;
 import luckystore.datn.exception.ConflictException;
+import luckystore.datn.exception.ExcelException;
 import luckystore.datn.exception.InvalidIdException;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.model.request.BienTheGiayRequest;
@@ -24,7 +25,18 @@ import luckystore.datn.model.request.GiayExcelRequest;
 import luckystore.datn.model.request.GiayRequest;
 import luckystore.datn.model.request.GiaySearch;
 import luckystore.datn.model.response.BienTheGiayResponse;
+import luckystore.datn.model.response.ChatLieuResponse;
+import luckystore.datn.model.response.CoGiayResponse;
+import luckystore.datn.model.response.DayGiayResponse;
+import luckystore.datn.model.response.DeGiayResponse;
+import luckystore.datn.model.response.ExcelError;
 import luckystore.datn.model.response.GiayResponse;
+import luckystore.datn.model.response.HashTagResponse;
+import luckystore.datn.model.response.KichThuocResponse;
+import luckystore.datn.model.response.LotGiayResponse;
+import luckystore.datn.model.response.MauSacResponse;
+import luckystore.datn.model.response.MuiGiayResponse;
+import luckystore.datn.model.response.ThuongHieuResponse;
 import luckystore.datn.repository.BienTheGiayRepository;
 import luckystore.datn.repository.ChatLieuRepository;
 import luckystore.datn.repository.CoGiayRepository;
@@ -42,11 +54,11 @@ import luckystore.datn.service.GiayService;
 import luckystore.datn.service.ImageHubService;
 import luckystore.datn.util.JsonString;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -54,6 +66,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -144,24 +157,11 @@ public class GiayServiceImpl implements GiayService {
 
         giay.setLstBienTheGiay(new ArrayList<>());
         for (BienTheGiayRequest bienTheGiayRequest : giayRequest.getBienTheGiays()) {
-            MauSac mauSac = mauSacRepository.findById(bienTheGiayRequest.getMauSacId()).orElseThrow(() ->
-                    new InvalidIdException(JsonString.stringToJson(
-                            JsonString.errorToJsonObject("mauSac", "Không tồn tại màu sắc này"))));
+            MauSac mauSac = mauSacRepository.findById(bienTheGiayRequest.getMauSacId()).orElseThrow(() -> new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("mauSac", "Không tồn tại màu sắc này"))));
 
-            KichThuoc kichThuoc = kichThuocRepository.findById(bienTheGiayRequest.getKichThuocId()).orElseThrow(() ->
-                    new InvalidIdException(JsonString.stringToJson(
-                            JsonString.errorToJsonObject("kichThuoc", "Không tồn tại kích thước này"))));
+            KichThuoc kichThuoc = kichThuocRepository.findById(bienTheGiayRequest.getKichThuocId()).orElseThrow(() -> new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("kichThuoc", "Không tồn tại kích thước này"))));
 
-            BienTheGiay bienTheGiay = BienTheGiay.builder()
-                    .barCode(bienTheGiayRequest.getBarcode())
-                    .giay(giay)
-                    .giaBan(bienTheGiayRequest.getGiaBan())
-                    .mauSac(mauSac)
-                    .kichThuoc(kichThuoc)
-                    .hinhAnh(files.get(mauSac.getId()))
-                    .trangThai(bienTheGiayRequest.getTrangThai())
-                    .soLuong(bienTheGiayRequest.getSoLuong())
-                    .build();
+            BienTheGiay bienTheGiay = BienTheGiay.builder().barCode(bienTheGiayRequest.getBarcode()).giay(giay).giaBan(bienTheGiayRequest.getGiaBan()).mauSac(mauSac).kichThuoc(kichThuoc).hinhAnh(files.get(mauSac.getId())).trangThai(bienTheGiayRequest.getTrangThai()).soLuong(bienTheGiayRequest.getSoLuong()).build();
 
             giay.getLstBienTheGiay().add(bienTheGiay);
         }
@@ -205,8 +205,7 @@ public class GiayServiceImpl implements GiayService {
     @Override
     @Transactional
     public GiayResponse updateSoLuong(GiayRequest giayRequest) {
-        Giay giay = giayRepository.findById(giayRequest.getId()).orElseThrow(() -> new InvalidIdException(JsonString.stringToJson(
-                JsonString.errorToJsonObject("giay", "Không tồn tại giày này"))));
+        Giay giay = giayRepository.findById(giayRequest.getId()).orElseThrow(() -> new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("giay", "Không tồn tại giày này"))));
 
         giay.getLstBienTheGiay().forEach(bienTheGiay -> {
             giayRequest.getBienTheGiays().forEach(bienTheRequest -> {
@@ -223,8 +222,7 @@ public class GiayServiceImpl implements GiayService {
     @Override
     public GiayResponse updateGia(GiayRequest giayRequest) {
 
-        Giay giay = giayRepository.findById(giayRequest.getId()).orElseThrow(() -> new InvalidIdException(JsonString.stringToJson(
-                JsonString.errorToJsonObject("giay", "Không tồn tại giày này"))));
+        Giay giay = giayRepository.findById(giayRequest.getId()).orElseThrow(() -> new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("giay", "Không tồn tại giày này"))));
 
         giay.getLstBienTheGiay().forEach(bienTheGiay -> {
             giayRequest.getBienTheGiays().forEach(bienTheRequest -> {
@@ -382,12 +380,10 @@ public class GiayServiceImpl implements GiayService {
             boolean exists = false;
 
             for (BienTheGiay bienThe : giay.getLstBienTheGiay()) {
-                if (Objects.equals(bienThe.getMauSac().getId(), bienTheGiayRequest.getMauSacId())
-                        && Objects.equals(bienThe.getKichThuoc().getId(), bienTheGiayRequest.getKichThuocId())) {
+                if (Objects.equals(bienThe.getMauSac().getId(), bienTheGiayRequest.getMauSacId()) && Objects.equals(bienThe.getKichThuoc().getId(), bienTheGiayRequest.getKichThuocId())) {
 
                     if (bienTheGiayRepository.getBienTheGiayByBarCodeUpdate(bienTheGiayRequest.getBarcode(), bienThe.getId())) {
-                        errors.add(bienThe.getMauSac().getId() + ", "
-                                + bienThe.getKichThuoc().getId() + ": Barcode đã tồn tại");
+                        errors.add(bienThe.getMauSac().getId() + ", " + bienThe.getKichThuoc().getId() + ": Barcode đã tồn tại");
                     }
                     bienThe.setGiaBan(bienTheGiayRequest.getGiaBan());
                     bienThe.setSoLuong(bienTheGiayRequest.getSoLuong());
@@ -401,24 +397,12 @@ public class GiayServiceImpl implements GiayService {
             }
             if (!exists) {
                 barCodes.add(bienTheGiayRequest.getBarcode());
-                MauSac mauSac = mauSacRepository.findById(bienTheGiayRequest.getMauSacId()).orElseThrow(() ->
-                        new InvalidIdException(JsonString.stringToJson(
-                                JsonString.errorToJsonObject("mauSac", "Không tồn tại màu sắc này"))));
+                MauSac mauSac = mauSacRepository.findById(bienTheGiayRequest.getMauSacId()).orElseThrow(() -> new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("mauSac", "Không tồn tại màu sắc này"))));
 
-                KichThuoc kichThuoc = kichThuocRepository.findById(bienTheGiayRequest.getKichThuocId()).orElseThrow(() ->
-                        new InvalidIdException(JsonString.stringToJson(
-                                JsonString.errorToJsonObject("kichThuoc", "Không tồn tại kích thước này"))));
+                KichThuoc kichThuoc = kichThuocRepository.findById(bienTheGiayRequest.getKichThuocId()).orElseThrow(() -> new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("kichThuoc", "Không tồn tại kích thước này"))));
 
 
-                BienTheGiay bienTheGiay = BienTheGiay.builder()
-                        .barCode(bienTheGiayRequest.getBarcode())
-                        .giay(giay)
-                        .giaBan(bienTheGiayRequest.getGiaBan())
-                        .mauSac(mauSac)
-                        .kichThuoc(kichThuoc)
-                        .trangThai(bienTheGiayRequest.getTrangThai())
-                        .soLuong(bienTheGiayRequest.getSoLuong())
-                        .build();
+                BienTheGiay bienTheGiay = BienTheGiay.builder().barCode(bienTheGiayRequest.getBarcode()).giay(giay).giaBan(bienTheGiayRequest.getGiaBan()).mauSac(mauSac).kichThuoc(kichThuoc).trangThai(bienTheGiayRequest.getTrangThai()).soLuong(bienTheGiayRequest.getSoLuong()).build();
 
                 bienTheGiay.setHinhAnh(files.getOrDefault(bienTheGiay.getMauSac().getId(), null));
 
@@ -437,6 +421,7 @@ public class GiayServiceImpl implements GiayService {
         return giayRepository.findAllBySearch(giaySearch);
     }
 
+    @Transactional
     @Override
     public void addExcel(List<GiayExcelRequest> giayExcelRequests) {
         Set<String> tenGiays = new HashSet<>();
@@ -445,11 +430,11 @@ public class GiayServiceImpl implements GiayService {
         Set<String> tenDayGiays = new HashSet<>();
         Set<String> tenDeGiays = new HashSet<>();
         Set<String> tenKichThuocs = new HashSet<>();
-        Set<String> tenHashTags = new HashSet<>();
         Set<String> tenLotGiays = new HashSet<>();
         Set<String> tenMuiGiays = new HashSet<>();
         Set<String> tenMauSacs = new HashSet<>();
         Set<String> tenThuongHieus = new HashSet<>();
+        AtomicReference<Set<String>> tenHashTags = new AtomicReference<>(new HashSet<>());
 
 
         giayExcelRequests.forEach(request -> {
@@ -458,10 +443,10 @@ public class GiayServiceImpl implements GiayService {
             tenCoGiays.add(request.getCoGiay());
             tenDeGiays.add(request.getDeGiay());
             tenDayGiays.add(request.getDayGiay());
-            tenHashTags.add(request.getHashTags());
-            tenLotGiays.add(request.getChatLieu());
+            tenLotGiays.add(request.getLotGiay());
             tenMuiGiays.add(request.getMuiGiay());
             tenThuongHieus.add(request.getThuongHieu());
+            tenHashTags.set(request.getHashTags());
 
             request.getBienTheGiays().forEach(bienThe -> {
 
@@ -469,19 +454,193 @@ public class GiayServiceImpl implements GiayService {
                 tenKichThuocs.add(bienThe.getKichThuoc());
             });
         });
-        List<Long> giayIds = giayRepository.getIdsByName(tenGiays);
-        List<Long> chatLieuIds = chatLieuRepository.getIdsByName(tenChatLieus);
-        List<Long> coGiayIds = coGiayRepository.getIdsByName(tenCoGiays);
-        List<Long> deGiayIds = deGiayRepository.getIdsByName(tenDeGiays);
-        List<Long> dayGiayIds = dayGiayRepository.getIdsByName(tenDayGiays);
-        List<Long> hashTagIds = hashTagRepository.getIdsByName(tenHashTags);
-        List<Long> lotGiayIds = lotGiayRepository.getIdsByName(tenLotGiays);
-        List<Long> muiGiayIds = muiGiayRepository.getIdsByName(tenMuiGiays);
-        List<Long> thuongHieuIds = thuongHieuRepository.getIdsByName(tenThuongHieus);
-        List<Long> mauSacIds = mauSacRepository.getIdsByName(tenMauSacs);
-        List<Long> kichThuocIds = kichThuocRepository.getIdsByName(tenKichThuocs);
+        Map<String, GiayResponse> giayIds = giayRepository.getIdsByName(tenGiays).stream().collect(Collectors.toMap(GiayResponse::getTen, giay -> giay));
+        Map<String, ChatLieuResponse> chatLieuIds = chatLieuRepository.getIdsByName(tenChatLieus).stream().collect(Collectors.toMap(ChatLieuResponse::getTen, giay -> giay));
+        Map<String, CoGiayResponse> coGiayIds = coGiayRepository.getIdsByName(tenCoGiays).stream().collect(Collectors.toMap(CoGiayResponse::getTen, giay -> giay));
+        Map<String, DeGiayResponse> deGiayIds = deGiayRepository.getIdsByName(tenDeGiays).stream().collect(Collectors.toMap(DeGiayResponse::getTen, giay -> giay));
+        Map<String, DayGiayResponse> dayGiayIds = dayGiayRepository.getIdsByName(tenDayGiays).stream().collect(Collectors.toMap(DayGiayResponse::getTen, giay -> giay));
+        Map<String, HashTagResponse> hashTagIds = hashTagRepository.getIdsByName(tenHashTags.get()).stream().collect(Collectors.toMap(HashTagResponse::getTen, giay -> giay));
+        Map<String, LotGiayResponse> lotGiayIds = lotGiayRepository.getIdsByName(tenLotGiays).stream().collect(Collectors.toMap(LotGiayResponse::getTen, giay -> giay));
+        Map<String, MuiGiayResponse> muiGiayIds = muiGiayRepository.getIdsByName(tenMuiGiays).stream().collect(Collectors.toMap(MuiGiayResponse::getTen, giay -> giay));
+        Map<String, ThuongHieuResponse> thuongHieuIds = thuongHieuRepository.getIdsByName(tenThuongHieus).stream().collect(Collectors.toMap(ThuongHieuResponse::getTen, giay -> giay));
+        Map<String, MauSacResponse> mauSacIds = mauSacRepository.getIdsByName(tenMauSacs).stream().collect(Collectors.toMap(MauSacResponse::getTen, giay -> giay));
+        Map<String, KichThuocResponse> kichThuocIds = kichThuocRepository.getIdsByName(tenKichThuocs).stream().collect(Collectors.toMap(KichThuocResponse::getTen, giay -> giay));
 
-        
+        List<Giay> giays = new ArrayList<>();
+        List<ExcelError> errors = new ArrayList<>();
+
+        giayExcelRequests.forEach(request -> {
+            Giay giay = new Giay();
+            if (giayIds.containsKey(request.getTen())) {
+                errors.add(new ExcelError(request.getRow(), 0, "Tên đã tồn tại"));
+            } else if(request.getTen().isBlank()) {
+                errors.add(new ExcelError(request.getRow(), 0, "Tên không được trống"));
+            } else if(request.getTen().length() > 120) {
+                errors.add(new ExcelError(request.getRow(), 0, "Tên không được quá 120 ký tự"));
+            }
+            giay.setTen(request.getTen());
+
+            if (lotGiayIds.containsKey(request.getLotGiay())) {
+                LotGiay lotGiay = LotGiay.builder().id(lotGiayIds.get(request.getLotGiay()).getId()).build();
+                giay.setLotGiay(lotGiay);
+            } else {
+                errors.add(new ExcelError(request.getRow(), 6, "Lót giày không tồn tại"));
+            }
+
+            if (muiGiayIds.containsKey(request.getMuiGiay())) {
+                MuiGiay muiGiay = MuiGiay.builder().id(muiGiayIds.get(request.getMuiGiay()).getId()).build();
+                giay.setMuiGiay(muiGiay);
+            } else {
+                errors.add(new ExcelError(request.getRow(), 7, "Mũi giày không tồn tại"));
+            }
+
+            if (coGiayIds.containsKey(request.getCoGiay())) {
+                CoGiay coGiay = CoGiay.builder().id(coGiayIds.get(request.getCoGiay()).getId()).build();
+                giay.setCoGiay(coGiay);
+            } else {
+                errors.add(new ExcelError(request.getRow(), 8, "Cổ giày không tồn tại"));
+            }
+
+            if (thuongHieuIds.containsKey(request.getThuongHieu())) {
+                ThuongHieu thuongHieu = ThuongHieu.builder().id(thuongHieuIds.get(request.getThuongHieu()).getId()).build();
+                giay.setThuongHieu(thuongHieu);
+            } else {
+                errors.add(new ExcelError(request.getRow(), 9, "Thương hiệu không tồn tại"));
+            }
+
+            if (chatLieuIds.containsKey(request.getChatLieu())) {
+                ChatLieu chatLieu = ChatLieu.builder().id(chatLieuIds.get(request.getChatLieu()).getId()).build();
+                giay.setChatLieu(chatLieu);
+            } else {
+                errors.add(new ExcelError(request.getRow(), 10, "Chất liệu không tồn tại"));
+            }
+
+            if (dayGiayIds.containsKey(request.getDayGiay())) {
+                DayGiay dayGiay = DayGiay.builder().id(dayGiayIds.get(request.getDayGiay()).getId()).build();
+                giay.setDayGiay(dayGiay);
+            } else {
+                errors.add(new ExcelError(request.getRow(), 11, "Dây giày không tồn tại"));
+            }
+
+            if (deGiayIds.containsKey(request.getDeGiay())) {
+                DeGiay deGiay = DeGiay.builder().id(deGiayIds.get(request.getDeGiay()).getId()).build();
+                giay.setDeGiay(deGiay);
+            } else {
+                errors.add(new ExcelError(request.getRow(), 12, "Đế giày không tồn tại"));
+            }
+
+            List<HashTagChiTiet> tags = new ArrayList<>();
+            tenHashTags.get().forEach(ht -> {
+                if (hashTagIds.containsKey(ht)) {
+                    HashTag tag = HashTag.builder().id(hashTagIds.get(ht).getId()).build();
+                    tags.add(HashTagChiTiet.builder().hashTag(tag).giay(giay).build());
+                } else {
+                    errors.add(new ExcelError(request.getRow(), 13, "HashTag không tồn tại"));
+                }
+            });
+            giay.setHashTagChiTiets(tags);
+
+            if (request.getNamSX() == null) {
+                errors.add(new ExcelError(request.getRow(), 14, "Năm sản xuất không được để trống"));
+            } else if (request.getNamSX() > 9999 || request.getNamSX() < 1000) {
+                errors.add(new ExcelError(request.getRow(), 14, "Năm sản xuất không hợp lệ"));
+            }
+            giay.setNamSX(request.getNamSX());
+
+            if (request.getMoTa().isBlank()) {
+                errors.add(new ExcelError(request.getRow(), 15, "Mô tả không được để trống"));
+            } else if (request.getMoTa().length() < 3) {
+                errors.add(new ExcelError(request.getRow(), 15, "Mô tả không được ít hơn 3 ký tự"));
+            } else if (request.getMoTa().length() > 3000) {
+                errors.add(new ExcelError(request.getRow(), 15, "Mô tả không được quá 3000 ký tự"));
+            }
+            giay.setMoTa(request.getMoTa());
+
+            List<BienTheGiay> bienTheGiayList = new ArrayList<>();
+            Map<String, String> files = new HashMap<>();
+            for (Map.Entry<String, String> mauSacImage : request.getMauSacImages().entrySet()) {
+                String file = imageHubService.base64ToFile(mauSacImage.getValue());
+                files.put(mauSacImage.getKey(), file);
+            }
+
+            request.getBienTheGiays().forEach(bt -> {
+                if(bt.getSoLuong() == null) {
+                    errors.add(new ExcelError(bt.getRow(), bt.getColumn(), "Không được để trống số lượng"));
+                } else if(bt.getSoLuong() < 0) {
+                    errors.add(new ExcelError(bt.getRow(), bt.getColumn(), "Số lượng không được âm"));
+                }
+
+                if(bt.getBarcode() == null) {
+                    errors.add(new ExcelError(bt.getRow(), bt.getColumn(), "Không được để trống barcode"));
+                } else if(bt.getBarcode().length() > 20) {
+                    errors.add(new ExcelError(bt.getRow(), bt.getColumn(), "Barcode không hợp lệ"));
+                }
+
+                if (bt.getGiaBan() == null) {
+                    errors.add(new ExcelError(bt.getRow(), bt.getColumn(), "Không được để trống giá bán"));
+                } else if (bt.getGiaBan().compareTo(BigDecimal.ZERO) < 0) {
+                    errors.add(new ExcelError(bt.getRow(), bt.getColumn(), "Giá bán không được âm"));
+                }
+
+                if (kichThuocIds.containsKey(bt.getKichThuoc()) && mauSacIds.containsKey(bt.getMauSac())) {
+                    BienTheGiay bienThe = new BienTheGiay();
+                    bienThe.setGiay(giay);
+                    bienThe.setGiaBan(bt.getGiaBan());
+                    bienThe.setSoLuong(bt.getSoLuong());
+                    bienThe.setTrangThai(bt.getTrangThai());
+                    bienThe.setKichThuoc(KichThuoc.builder().id(kichThuocIds.get(bt.getKichThuoc()).getId()).build());
+                    bienThe.setMauSac(MauSac.builder().id(mauSacIds.get(bt.getMauSac()).getId()).build());
+                    bienThe.setHinhAnh(files.get(bt.getMauSac()));
+                    bienTheGiayList.add(bienThe);
+                } else if (!kichThuocIds.containsKey(bt.getKichThuoc())) {
+                    errors.add(new ExcelError(bt.getRow(), bt.getColumn(), "Kích thước không tồn tại"));
+                } else {
+                    errors.add(new ExcelError(bt.getRow(), bt.getColumn(), "Màu sắc không tồn tại"));
+                }
+            });
+
+            giay.setLstBienTheGiay(bienTheGiayList);
+
+            //set hình ảnh
+            List<HinhAnh> hinhAnhs = new ArrayList<>();
+            if (request.getImage1() != null) {
+                String file = imageHubService.base64ToFile(request.getImage1());
+                HinhAnh hinhAnh = HinhAnh.builder().giay(giay).link(file).uuTien(1).build();
+                hinhAnhs.add(hinhAnh);
+            }
+            if (request.getImage2() != null) {
+                String file = imageHubService.base64ToFile(request.getImage2());
+                HinhAnh hinhAnh = HinhAnh.builder().giay(giay).link(file).uuTien(2).build();
+                hinhAnhs.add(hinhAnh);
+            }
+            if (request.getImage3() != null) {
+                String file = imageHubService.base64ToFile(request.getImage3());
+                HinhAnh hinhAnh = HinhAnh.builder().giay(giay).link(file).uuTien(3).build();
+                hinhAnhs.add(hinhAnh);
+            }
+            if (request.getImage4() != null) {
+                String file = imageHubService.base64ToFile(request.getImage4());
+                HinhAnh hinhAnh = HinhAnh.builder().giay(giay).link(file).uuTien(4).build();
+                hinhAnhs.add(hinhAnh);
+            }
+            if (request.getImage5() != null) {
+                String file = imageHubService.base64ToFile(request.getImage1());
+                HinhAnh hinhAnh = HinhAnh.builder().giay(giay).link(file).uuTien(5).build();
+                hinhAnhs.add(hinhAnh);
+            }
+
+            giay.setLstAnh(hinhAnhs);
+
+            giays.add(giay);
+
+        });
+
+        if (!errors.isEmpty()) {
+            throw new ExcelException(errors);
+        } else {
+            giayRepository.saveAll(giays);
+        }
+
     }
 
     @Override
@@ -504,51 +663,29 @@ public class GiayServiceImpl implements GiayService {
 
     private void getGiay(Giay giay, GiayRequest giayRequest) {
 
-        DayGiay dayGiay = dayGiayRepository.findById(giayRequest.getDayGiayId()).orElseThrow(() ->
-                new InvalidIdException(JsonString.stringToJson(
-                        JsonString.errorToJsonObject("dayGiay", "Không tồn tại dây giày này")))
-        );
+        DayGiay dayGiay = dayGiayRepository.findById(giayRequest.getDayGiayId()).orElseThrow(() -> new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("dayGiay", "Không tồn tại dây giày này"))));
         giay.setDayGiay(dayGiay);
 
-        LotGiay lotGiay = lotGiayRepository.findById(giayRequest.getLotGiayId()).orElseThrow(() ->
-                new InvalidIdException(JsonString.stringToJson(
-                        JsonString.errorToJsonObject("lotGiay", "Không tồn tại lót giày này")))
-        );
+        LotGiay lotGiay = lotGiayRepository.findById(giayRequest.getLotGiayId()).orElseThrow(() -> new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("lotGiay", "Không tồn tại lót giày này"))));
         giay.setLotGiay(lotGiay);
 
-        MuiGiay muiGiay = muiGiayRepository.findById(giayRequest.getMuiGiayId()).orElseThrow(() ->
-                new InvalidIdException(JsonString.stringToJson(
-                        JsonString.errorToJsonObject("muiGiay", "Không tồn tại mũi giày này")))
-        );
+        MuiGiay muiGiay = muiGiayRepository.findById(giayRequest.getMuiGiayId()).orElseThrow(() -> new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("muiGiay", "Không tồn tại mũi giày này"))));
         giay.setMuiGiay(muiGiay);
 
-        CoGiay coGiay = coGiayRepository.findById(giayRequest.getCoGiayId()).orElseThrow(() ->
-                new InvalidIdException(JsonString.stringToJson(
-                        JsonString.errorToJsonObject("coGiay", "Không tồn tại cổ giày này")))
-        );
+        CoGiay coGiay = coGiayRepository.findById(giayRequest.getCoGiayId()).orElseThrow(() -> new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("coGiay", "Không tồn tại cổ giày này"))));
         giay.setCoGiay(coGiay);
 
-        ThuongHieu thuongHieu = thuongHieuRepository.findById(giayRequest.getThuongHieuId()).orElseThrow(() ->
-                new InvalidIdException(JsonString.stringToJson(
-                        JsonString.errorToJsonObject("thuongHieu", "Không tồn tại thương hiệu này")))
-        );
+        ThuongHieu thuongHieu = thuongHieuRepository.findById(giayRequest.getThuongHieuId()).orElseThrow(() -> new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("thuongHieu", "Không tồn tại thương hiệu này"))));
         giay.setThuongHieu(thuongHieu);
 
-        ChatLieu chatLieu = chatLieuRepository.findById(giayRequest.getChatLieuId()).orElseThrow(() ->
-                new InvalidIdException(JsonString.stringToJson(
-                        JsonString.errorToJsonObject("chatLieu", "Không tồn tại chất liệu này")))
-        );
+        ChatLieu chatLieu = chatLieuRepository.findById(giayRequest.getChatLieuId()).orElseThrow(() -> new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("chatLieu", "Không tồn tại chất liệu này"))));
         giay.setChatLieu(chatLieu);
 
-        DeGiay deGiay = deGiayRepository.findById(giayRequest.getDeGiayId()).orElseThrow(() ->
-                new InvalidIdException(JsonString.stringToJson(
-                        JsonString.errorToJsonObject("deGiay", "Không tồn tại đế giày này")))
-        );
+        DeGiay deGiay = deGiayRepository.findById(giayRequest.getDeGiayId()).orElseThrow(() -> new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("deGiay", "Không tồn tại đế giày này"))));
         giay.setDeGiay(deGiay);
 
         List<HashTag> hashTags = hashTagRepository.findByIdIn(giayRequest.getHashTagIds());
-        List<HashTagChiTiet> hashTagChiTiets = hashTags.stream().map(hashTag ->
-                HashTagChiTiet.builder().giay(giay).hashTag(hashTag).build()).collect(Collectors.toList());
+        List<HashTagChiTiet> hashTagChiTiets = hashTags.stream().map(hashTag -> HashTagChiTiet.builder().giay(giay).hashTag(hashTag).build()).collect(Collectors.toList());
 
         giay.setHashTagChiTiets(hashTagChiTiets);
         giay.setTrangThai(giayRequest.getTrangThai());
@@ -569,8 +706,7 @@ public class GiayServiceImpl implements GiayService {
         List<BienTheGiayResponse> lstBienTheBarcode = bienTheGiayRepository.getBienTheGiayByListBarCode(lstBarcode);
 
         for (BienTheGiayResponse bienTheGiayResponse : lstBienTheBarcode) {
-            errors.add(bienTheGiayResponse.getMauSac().getId() + ", "
-                    + bienTheGiayResponse.getKichThuoc().getId() + ": Barcode đã tồn tại");
+            errors.add(bienTheGiayResponse.getMauSac().getId() + ", " + bienTheGiayResponse.getKichThuoc().getId() + ": Barcode đã tồn tại");
         }
 
 
@@ -585,8 +721,7 @@ public class GiayServiceImpl implements GiayService {
         List<BienTheGiayResponse> lstBienTheBarcode = bienTheGiayRepository.getBienTheGiayByListBarCode(lstBarcode);
 
         for (BienTheGiayResponse bienTheGiayResponse : lstBienTheBarcode) {
-            errors.add(bienTheGiayResponse.getMauSac().getId() + ", "
-                    + bienTheGiayResponse.getKichThuoc().getId() + ": Barcode đã tồn tại");
+            errors.add(bienTheGiayResponse.getMauSac().getId() + ", " + bienTheGiayResponse.getKichThuoc().getId() + ": Barcode đã tồn tại");
         }
 
 

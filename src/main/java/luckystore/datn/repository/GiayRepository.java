@@ -107,7 +107,7 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
     )
     List<GiayResponse> findAllBySearch(GiaySearch giaySearch);
 
-    @Query("select g.id from Giay g where g.ten in :names")
-    List<Long> getIdsByName(Set<String> names);
+    @Query("select new luckystore.datn.model.response.GiayResponse(g.id, g.ten) from Giay g where g.ten in :names")
+    List<GiayResponse> getIdsByName(Set<String> names);
 
 }
