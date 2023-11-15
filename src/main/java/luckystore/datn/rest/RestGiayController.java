@@ -23,9 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,11 +39,7 @@ public class RestGiayController {
 
     @PostMapping("/test")
     public ResponseEntity<?> test(@RequestBody List<GiayExcelRequest> lst) throws IOException {
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-        objectOutputStream.writeObject(lst);
-        System.out.println("Byte: " + outputStream.toByteArray().length / (1024) + "KB");
+        giayService.addExcel(lst);
 //        return ResponseEntity.ok(lst);
         return ResponseEntity.ok("{\"data\":\"Done\"}");
     }

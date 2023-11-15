@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface MauSacRepository extends JpaRepository<MauSac, Long> {
@@ -33,5 +34,8 @@ public interface MauSacRepository extends JpaRepository<MauSac, Long> {
     Boolean existsByTenAndIdNot(String ten, Long id);
 
     Boolean existsByMaMauAndIdNot(String maMau, Long id);
+
+    @Query("select g.id from MauSac g where g.ten in :names")
+    List<Long> getIdsByName(Set<String> names);
 
 }

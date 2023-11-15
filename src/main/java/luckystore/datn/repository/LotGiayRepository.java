@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface LotGiayRepository extends JpaRepository<LotGiay, Long> {
@@ -29,4 +30,7 @@ public interface LotGiayRepository extends JpaRepository<LotGiay, Long> {
     Boolean existsByTen(String ten);
 
     Boolean existsByTenAndIdNot(String ten, Long id);
+
+    @Query("select g.id from LotGiay g where g.ten in :names")
+    List<Long> getIdsByName(Set<String> names);
 }
