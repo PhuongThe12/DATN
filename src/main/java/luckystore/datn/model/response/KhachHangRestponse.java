@@ -44,4 +44,8 @@ public class KhachHangRestponse {
             this.hangKhachHang=khachHang.getHangKhachHang();
         }
     }
+    public KhachHangRestponse(Long id, String hoTen){
+        this.id = id;
+        this.hoTen = hoTen;
+    }
 }
