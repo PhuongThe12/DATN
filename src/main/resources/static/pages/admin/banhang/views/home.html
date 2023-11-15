@@ -56,14 +56,17 @@
 
 <div style="margin: 20px;">
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-8 position-relative">
             <div style="position: sticky;top: 0;">
                 <div class="card">
                     <div class="card-body">
                         <div class="card-title">
                             <h5>Giỏ hàng</h5>
                         </div>
-                        <input type="text" class="form-control" placeholder="search...">
+                        <custom-select id="muiGiay" title="mũi giày" items="giayListSearch"
+                                       modal-id="modalMuiGiay"></custom-select>
+<!--                        <input type="text" class="form-control" placeholder="search..." ng-model="searchText"-->
+<!--                               ng-change="search()">-->
                         <div class="cart-table">
                             <table class="table align-middle table-borderless text-center mw-100" border="1">
                                 <tr>
@@ -89,7 +92,8 @@
                                     <td>{{giaySelect.giaBan}}</td>
                                     <td>{{giaySelect.giaBan * giaySelect.soLuongMua}}</td>
                                     <td>
-                                        <button class="btn" ng-click="deleteSelected(giaySelect.id)"><i class="fas text-danger font-size-16 fa-trash-alt"></i>
+                                        <button class="btn" ng-click="deleteSelected(giaySelect.id)"><i
+                                                class="fas text-danger font-size-16 fa-trash-alt"></i>
                                         </button>
                                     </td>
                                 </tr>
@@ -128,6 +132,15 @@
                     </div>
                 </div>
             </div>
+<!--            <div  class="box-search box-shadow-page">-->
+<!--                <ul>-->
+<!--                    <li ng-repeat="giay in filterGiay">-->
+<!--                        <p ng-repeat="bienTheGiay in giay.lstBienTheGiay" class="mb-4">-->
+<!--                            {{ giay.ten.concat('( ', bienTheGiay.kichThuoc.ten, ' x ', bienTheGiay.mauSac.ten, ')') }}-->
+<!--                        </p>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            </div>-->
         </div>
         <div class="col-md-4">
             <form ng-submit="taoHoaDon()">
@@ -279,6 +292,8 @@
             </form>
         </div>
     </div>
+
+
 </div>
 
 

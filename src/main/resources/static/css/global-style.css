@@ -373,3 +373,15 @@ input:focus{
     height:381px;
     overflow: auto;
 }
+
+.box-search{
+    padding: 15px;
+    left: 34px;
+    background: white;
+    position: absolute;
+    right: 0px;
+    top: 105px;
+    max-height: 500px;
+    overflow: auto;
+    height: auto;
+}
