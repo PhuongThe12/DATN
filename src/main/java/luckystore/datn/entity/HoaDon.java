@@ -1,11 +1,14 @@
 package luckystore.datn.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,8 +24,9 @@ public class HoaDon {
     @Column(name = "ID")
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_HOA_DON_GOC")
+    @JsonBackReference
     private HoaDon hoaDonGoc;
 
     @ManyToOne
@@ -48,6 +52,9 @@ public class HoaDon {
     @Column(name = "KENH_BAN")
     private Integer kenhBan;
 
+    @Column(name = "LOAI_HOA_DON")
+    private Integer loaiHoaDon;
+
     @Column(name = "MA_VAN_DON")
     private String maVanDon;
 
@@ -68,5 +75,9 @@ public class HoaDon {
 
     @Column(name = "MO_TA")
     private String ghiChu;
+
+    @OneToMany(mappedBy = "hoaDon", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private Set<HoaDonChiTiet> listHoaDonChiTiet;
 
 }
