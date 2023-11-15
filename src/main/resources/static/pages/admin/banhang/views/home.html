@@ -63,10 +63,7 @@
                         <div class="card-title">
                             <h5>Giỏ hàng</h5>
                         </div>
-                        <custom-select id="muiGiay" title="mũi giày" items="newListBienTheGiay"
-                                       modal-id="modalMuiGiay"></custom-select>
-<!--                        <input type="text" class="form-control" placeholder="search..." ng-model="searchText"-->
-<!--                               ng-change="search()">-->
+                        <custom-select id="giay" title="Giày" items="newListBienTheGiay" on-select="optionSelected(selectedOption)"></custom-select>
                         <div class="cart-table">
                             <table class="table align-middle table-borderless text-center mw-100" border="1">
                                 <tr>

@@ -9,87 +9,8 @@ app.config(function ($routeProvider, $locationProvider) {
         }).otherwise({redirectTo: '/home'});
 });
 
-app.directive('customSelect', function ($injector) {
-    return {
-        restrict: 'E',
-        templateUrl: '/pages/admin/giay/views/combobox.html',
-        scope: {
-            id: '@',
-            title: '@',
-            items: '=',
-            ngModel: '=',
-            modalId: '@'
-        },
-        controller: function ($scope) {
-            $scope.isActive = false;
 
-            $scope.toggleDropdown = function () {
-                $scope.isActive = !$scope.isActive;
-            };
-
-            $scope.selectItem = function (item) {
-                $scope.ngModel = item;
-                $scope.selectedItem = item;
-                $scope.isActive = false;
-            };
-
-            $scope.$watch('ngModel', function (newNgModel, oldNgModel) {
-                if (!oldNgModel && newNgModel || newNgModel && newNgModel.id !== oldNgModel.id) {
-                    if ($scope.items) {
-                        var selectedItem = $scope.items.find((item) => item.id === newNgModel.id);
-                        if (selectedItem) {
-                            $scope.selectItem(selectedItem);
-                        }
-                    }
-                }
-            }, true);
-
-            $scope.showDetailComboboxModal = function (title, item) {
-                event.stopPropagation();
-                var DetailEntityService = $injector.get('DetailEntityService');
-                let detailEntity = {title: title, ...item};
-                DetailEntityService.setDetailEntity(detailEntity);
-
-                setTimeout(function () {
-                    document.getElementById('modalDetail').click();
-                }, 0);
-
-            }
-
-            angular.element(document).on('click', function (event) {
-                var container = angular.element(document.querySelector('#' + $scope.id));
-                if (container.length > 0) {
-                    if (!container[0].contains(event.target)) {
-                        $scope.$apply(function () {
-                            $scope.isActive = false;
-                        });
-                    }
-                }
-            });
-
-
-        }
-    };
-
-});
-
-// app.controller("indexController", function ($scope, $http, $location, $cookies) {
-//     $http.get(host + '/admin/rest/nhan-vien/check-logged')
-//         .then(function (response) {
-//             if (response.status == 200) {
-//                 $scope.nhanVienLogged = response.data;
-//                 if ($scope.nhanVienLogged.chucVu == 2) {
-//                     $scope.chuCuaHangLogged = true;
-//                 } else if ($scope.nhanVienLogged.chucVu == 1) {
-//                     $scope.chuCuaHangLogged = false;
-//                 }
-//             }
-//         }).catch(function (error) {
-//         toastr["error"]("Không tìm thấy người dùng , vui lòng đăng nhập lại !");
-//     });
-// });
-
-app.controller("homeController", function ($scope, $http, $location, $cookies) {
+app.controller("homeController", function ($scope, $http, $location, $cookies, $rootScope) {
 
     $scope.curPage = 1,
         $scope.itemsPerPage = 12,
@@ -101,64 +22,35 @@ app.controller("homeController", function ($scope, $http, $location, $cookies) {
 
     $scope.giayListSearch = [];
 
-    $scope.filterGiay = [];
+    $scope.newListBienTheGiay = [];
 
     $scope.giayChoosed = {}; // Biến thể giày được chọn khi chọn màu + size
 
     $scope.tongTien = 0; // Tổng tiền
 
-    $scope.search = function () {
-        let apiUrl = host + '/admin/rest/giay/get-all-giay';
-
-        if ($scope.searchText) {
-            giaySearch.ten = ($scope.searchText + "").trim();
-        }
-
-        if ($scope.status === 0) {
-            giaySearch.trangThai = 0;
-        } else if ($scope.status === 1) {
-            giaySearch.trangThai = 1;
-        } else {
-            giaySearch.trangThai = null;
-        }
-
-
-        if (!isNaN($scope.giaNhapSearch)) {
-            giaySearch.giaNhap = $scope.giaNhapSearch;
-        }
-
-        if (!isNaN($scope.giaBanSearch)) {
-            giaySearch.giaBan = $scope.giaBanSearch;
-        }
-
-        if ($scope.selectedThuongHieu) {
-            giaySearch.thuongHieuIds = $scope.selectedThuongHieu.filter(
-                thuongHieu => thuongHieu.status === 'active'
-            ).map(th => th.id);
-        }
-        giaySearch.pageSize = 9999999;
-
-        $http.post(apiUrl, giaySearch)
-            .then(function (response) {
-                console.log(response);
-                $scope.giayListSearch = response.data.content;
-                $scope.isLoading = false;
-            })
-            .catch(function (error) {
-                console.log(error);
-                toastr["error"]("Lấy dữ liệu thất bại");
-            });
-    };
-
-    function initGiayList(){
+    function initGiayList() {
         let apiUrl = host + '/admin/rest/giay/get-all-giay';
 
         $http.post(apiUrl, {
-            pageSize : 9999999
+            pageSize: 9999999
         })
             .then(function (response) {
                 $scope.giayListSearch = response.data.content;
                 $scope.isLoading = false;
+
+                // Duyệt qua danh sách object cha
+                angular.forEach($scope.giayListSearch, function (parentObject) {
+                    // Duyệt qua danh sách object con
+                    angular.forEach(parentObject.lstBienTheGiay, function (childObject) {
+                        // Tạo một bản sao của object con
+                        var newChildObject = angular.copy(childObject);
+                        // Thêm trường 'name' từ object cha
+                        newChildObject.ten = parentObject.ten + ' ( ' + childObject.kichThuoc.ten + ' - ' + childObject.mauSac.ten + ' ) ';
+                        // Thêm object mới vào danh sách
+                        $scope.newListBienTheGiay.push(newChildObject);
+                    });
+                });
+
             })
             .catch(function (error) {
                 console.log(error);
@@ -168,36 +60,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies) {
 
     initGiayList();
 
-    $scope.newListBienTheGiay = [];
 
-    // Duyệt qua danh sách object cha
-    angular.forEach($scope.giayListSearch, function (parentObject) {
-        // Duyệt qua danh sách object con
-        angular.forEach(parentObject.lstBienTheGiay, function (childObject) {
-            // Tạo một bản sao của object con
-            var newChildObject = angular.copy(childObject);
-            // Thêm trường 'name' từ object cha
-            newChildObject.ten = parentObject.ten;
-            // Thêm object mới vào danh sách
-            $scope.newListBienTheGiay.push(newChildObject);
-        });
-    });
-
-    console.log($scope.newListBienTheGiay);
-
-    $scope.search = function() {
-        $scope.filterGiay = [];
-        angular.forEach($scope.giayListSearch, function(item) {
-            if (item.ten.toLowerCase().includes($scope.searchText.toLowerCase())) {
-                $scope.filterGiay.push(item);
-            }
-        });
-    };
-
-    $scope.changeRadio = function (status) {
-        $scope.status = status;
-        getData(1);
-    }
 
     function getData(currentPage) {
         let apiUrl = host + '/admin/rest/giay/get-all-giay';
@@ -234,7 +97,6 @@ app.controller("homeController", function ($scope, $http, $location, $cookies) {
 
         $http.post(apiUrl, giaySearch)
             .then(function (response) {
-                console.log(response);
                 $scope.giays = response.data.content;
                 $scope.numOfPages = response.data.totalPages;
                 $scope.isLoading = false;
@@ -411,6 +273,16 @@ app.controller("homeController", function ($scope, $http, $location, $cookies) {
         console.log($scope.hoaDon);
     }
 
+    var addToCartListener = $scope.$on('addToCartEvent', function (event, data) {
+        // Thực hiện xử lý khi sự kiện được phát ra từ directive
+        $scope.listGiaySelected.push(data.item);
+        alert(2);
+    });
+
+    // Hủy đăng ký lắng nghe sự kiện khi controller bị hủy
+    $scope.$on('$destroy', function () {
+        addToCartListener(); // Hủy đăng ký lắng nghe sự kiện
+    });
 
     function displayImages(imageList) {
         const carouselInner = document.querySelector('#carouselExampleControls .carousel-inner');
@@ -436,5 +308,64 @@ app.controller("homeController", function ($scope, $http, $location, $cookies) {
         }
     }
 
+
+
+});
+
+
+app.directive('customSelect', function ($rootScope,$injector) {
+    return {
+        restrict: 'E',
+        templateUrl: '/pages/admin/banhang/views/combobox.html',
+        scope: {
+            id: '@',
+            title: '@',
+            items: '=',
+            ngModel: '=',
+            modalId: '@'
+        },
+        controller: function ($scope) {
+            $scope.isActive = false;
+
+            $scope.toggleDropdown = function () {
+                $scope.isActive = !$scope.isActive;
+            };
+
+            $scope.selectItem = function (item) {
+                $scope.ngModel = item;
+                $scope.selectedItem = item;
+                $scope.isActive = false;
+            };
+
+            $scope.addToCart = function (item) {
+                $rootScope.$emit('addToCartEvent', { item: item });
+            }
+
+            $scope.$watch('ngModel', function (newNgModel, oldNgModel) {
+                if (!oldNgModel && newNgModel || newNgModel && newNgModel.id !== oldNgModel.id) {
+                    if ($scope.items) {
+                        var selectedItem = $scope.items.find((item) => item.id === newNgModel.id);
+                        if (selectedItem) {
+                            $scope.selectItem(selectedItem);
+                        }
+                    }
+                }
+            }, true);
+
+
+            angular.element(document).on('click', function (event) {
+                var container = angular.element(document.querySelector('#' + $scope.id));
+                if (container.length > 0) {
+                    if (!container[0].contains(event.target)) {
+                        $scope.$apply(function () {
+                            $scope.isActive = false;
+                        });
+                    }
+                }
+            });
+
+
+        }
+    };
 
 });
