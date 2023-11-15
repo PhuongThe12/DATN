@@ -19,7 +19,7 @@ public class YeuCauResponse {
 
     private Long id;
     private Long nguoiThucHien;
-    private HoaDon hoaDon;
+    private Long hoaDon;
     private Integer loaiYeuCau;
     private Integer trangThai;
     private Date ngayTao;
@@ -30,7 +30,7 @@ public class YeuCauResponse {
         if(yeuCau != null){
             this.id = yeuCau.getId();
             this.nguoiThucHien = yeuCau.getNguoiThucHien();
-            this.hoaDon = yeuCau.getHoaDon();
+            this.hoaDon = yeuCau.getHoaDon().getId();
             this.loaiYeuCau = yeuCau.getLoaiYeuCau();
             this.trangThai = yeuCau.getTrangThai();
             this.ngayTao = yeuCau.getNgayTao();
@@ -39,4 +39,16 @@ public class YeuCauResponse {
         }
     }
 
+    public YeuCauResponse(YeuCauResponse responseByStatus) {
+        if(responseByStatus != null){
+            this.id = responseByStatus.getId();
+            this.nguoiThucHien = responseByStatus.getNguoiThucHien();
+            this.hoaDon = responseByStatus.getHoaDon();
+            this.loaiYeuCau = responseByStatus.getLoaiYeuCau();
+            this.trangThai = responseByStatus.getTrangThai();
+            this.ngayTao = responseByStatus.getNgayTao();
+            this.ngaySua = responseByStatus.getNgaySua();
+            this.ghiChu = responseByStatus.getGhiChu();
+        }
+    }
 }

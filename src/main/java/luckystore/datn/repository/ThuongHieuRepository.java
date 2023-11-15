@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface ThuongHieuRepository extends JpaRepository<ThuongHieu, Long> {
@@ -29,5 +30,8 @@ public interface ThuongHieuRepository extends JpaRepository<ThuongHieu, Long> {
     Boolean existsByTen(String ten);
 
     Boolean existsByTenAndIdNot(String ten, Long id);
+
+    @Query("select g.id from ThuongHieu g where g.ten in :names")
+    List<Long> getIdsByName(Set<String> names);
 
 }

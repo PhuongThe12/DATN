@@ -19,7 +19,7 @@ import java.time.format.DateTimeFormatter;
 public class HoaDonResponse {
     private Long id;
 
-    private Long idHoaDonGoc;
+    private HoaDon hoaDonGoc;
 
     private KhachHang khachHang;
 
@@ -58,7 +58,7 @@ public class HoaDonResponse {
 
         if (hoaDon != null) {
             this.id = hoaDon.getId();
-            this.idHoaDonGoc = hoaDon.getIdHoaDonGoc();
+            this.hoaDonGoc = hoaDon.getHoaDonGoc();
             this.nhanVien = hoaDon.getNhanVien();
             this.khachHang = hoaDon.getKhachHang();
             this.ngayTao = dateFormat(hoaDon.getNgayTao());

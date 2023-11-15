@@ -11,7 +11,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,7 +35,6 @@ public class RestYeuCauController {
     public ResponseEntity addYeuCau(@Valid @RequestBody YeuCauRequest yeuCauRequest, BindingResult result) {
         ResponseEntity errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
-
         return new ResponseEntity(yeuCauService.addYeuCau(yeuCauRequest), HttpStatus.OK);
     }
 
@@ -48,18 +46,15 @@ public class RestYeuCauController {
         return new ResponseEntity(yeuCauService.updateYeuCau(id, yeuCauRequest), HttpStatus.OK);
     }
 
+
+    @GetMapping("/find-by-status")
+    public ResponseEntity findByStatus(){
+        return new ResponseEntity(yeuCauService.findByStatus(), HttpStatus.OK);
+    }
     @GetMapping(("/{id}"))
     public ResponseEntity getOne(@PathVariable Long id) {
         return new ResponseEntity(yeuCauService.findById(id), HttpStatus.OK);
     }
-//    @GetMapping
-//    public ResponseEntity getMauSacPage(@RequestParam(value = "page", defaultValue = "1") Integer page,
-//                                        @RequestParam(value = "ngayBatDau", required = false) Date ngayBatDau,
-//                                        @RequestParam(value = "ngayKetThuc", required = false) Date ngayKetThuc,
-//                                        @RequestParam(value = "loaiYeuCau", required = false) Integer loaiYeuCau,
-//                                        @RequestParam(value = "trangThai", required = false) Integer trangThai) {
-//        return new ResponseEntity(yeuCauService.getPage(page,ngayBatDau,ngayKetThuc,loaiYeuCau,trangThai), HttpStatus.OK);
-//    }
 
     @GetMapping()
     public ResponseEntity getYeuCauPage(

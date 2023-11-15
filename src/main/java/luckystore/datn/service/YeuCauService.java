@@ -1,5 +1,6 @@
 package luckystore.datn.service;
 
+import luckystore.datn.entity.YeuCau;
 import luckystore.datn.model.request.YeuCauRequest;
 import luckystore.datn.model.response.YeuCauResponse;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,6 @@ public interface YeuCauService {
     YeuCauResponse updateYeuCau(Long id, YeuCauRequest yeuCauRequest);
 
     YeuCauResponse findById(Long id);
-
+    YeuCauResponse findByStatus();
     Page<YeuCauResponse> getPage(Integer page,String searchText,Date ngayBatDau, Date ngayKetThuc, Integer loaiYeuCau, Integer trangThai);
 }

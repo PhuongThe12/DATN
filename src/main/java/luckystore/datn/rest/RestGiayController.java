@@ -1,6 +1,6 @@
 package luckystore.datn.rest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import luckystore.datn.model.request.GiayExcelRequest;
 import luckystore.datn.model.request.GiayRequest;
 import luckystore.datn.model.request.GiaySearch;
 import luckystore.datn.service.GiayService;
@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,13 @@ public class RestGiayController {
 
     @Autowired
     private ImageHubService imageHubService;
+
+    @PostMapping("/test")
+    public ResponseEntity<?> test(@RequestBody List<GiayExcelRequest> lst) throws IOException {
+        giayService.addExcel(lst);
+//        return ResponseEntity.ok(lst);
+        return ResponseEntity.ok("{\"data\":\"Done\"}");
+    }
 
     @PostMapping("/get-page")
     public ResponseEntity<?> getPage(
@@ -84,7 +92,7 @@ public class RestGiayController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateGiay(@PathVariable("id") Long id,
-                                        @Validated({UpdateGiaGroup.class}) @RequestBody GiayRequest giayRequest, BindingResult result){
+                                        @Validated({UpdateGiaGroup.class}) @RequestBody GiayRequest giayRequest, BindingResult result) {
         ResponseEntity<?> errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 

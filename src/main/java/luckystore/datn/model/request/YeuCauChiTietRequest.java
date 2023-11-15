@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import luckystore.datn.entity.YeuCau;
 
 @Data
 @AllArgsConstructor
@@ -14,17 +13,13 @@ public class YeuCauChiTietRequest {
 
     private Long id;
 
-    private YeuCau yeuCau;
+    private Long hoaDonChiTiet;
 
-    private Long hoaDon;
-
-    private Long giayChiTiet;
+    private Long bienTheGiay;
 
     private String lyDo;
 
     private Integer soLuong;
-
-    private String hinhAnh;
 
     private Integer trangThai;
 

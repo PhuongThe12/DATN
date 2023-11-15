@@ -28,6 +28,7 @@ app.controller('giayListController', function ($scope, $http, $location) {
     }
 
     function getData(currentPage) {
+        $scope.isLoading = true;
         let apiUrl = host + '/admin/rest/giay/get-all-giay';
 
         if ($scope.searchText) {
@@ -63,15 +64,16 @@ app.controller('giayListController', function ($scope, $http, $location) {
         giaySearch.currentPage = currentPage;
         giaySearch.pageSize = $scope.itemsPerPage;
 
-        console.log(giaySearch);
         $http.post(apiUrl, giaySearch)
             .then(function (response) {
                 $scope.giays = response.data.content;
                 $scope.numOfPages = response.data.totalPages;
+                $scope.isLoading = false;
             })
             .catch(function (error) {
                 console.log(error);
                 toastr["error"]("Lấy dữ liệu thất bại");
+                $scope.isLoading = false;
                 // window.location.href = feHost + '/trang-chu';
             });
     }

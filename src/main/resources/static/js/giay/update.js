@@ -146,22 +146,42 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                 }
                 switch (image) {
                     case 2:
+                        if(file.size > 5 * 1024 * 1024){
+                            toastr["error"]("File không được vượt quá 5MB");
+                            break;
+                        }
                         $scope.image2 = file;
                         loadImage($scope.image2, 'selectedImage2');
                         break;
                     case 3:
+                        if(file.size > 5 * 1024 * 1024){
+                            toastr["error"]("File không được vượt quá 5MB");
+                            break;
+                        }
                         $scope.image3 = file;
                         loadImage($scope.image3, 'selectedImage3');
                         break;
                     case 4:
+                        if(file.size > 5 * 1024 * 1024){
+                            toastr["error"]("File không được vượt quá 5MB");
+                            break;
+                        }
                         $scope.image4 = file;
                         loadImage($scope.image4, 'selectedImage4');
                         break;
                     case 5:
+                        if(file.size > 5 * 1024 * 1024){
+                            toastr["error"]("File không được vượt quá 5MB");
+                            break;
+                        }
                         $scope.image5 = file;
                         loadImage($scope.image5, 'selectedImage5');
                         break;
                     default:
+                        if(file.size > 5 * 1024 * 1024){
+                            toastr["error"]("File không được vượt quá 5MB");
+                            break;
+                        }
                         $scope.image1 = file;
                         $scope.errors.anh = null;
                         loadImage($scope.image1, 'selectedImage1');
@@ -366,6 +386,23 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
         $scope.blurInput(msIndex, ktIndex, 'barcode');
     }
 
+    $scope.comfirmUpdate = function () {
+        Swal.fire({
+            text: "Xác nhận cập nhật?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $scope.submitData();
+            }
+
+        });
+    }
+
     $scope.submitData = function () {
         $scope.isLoading = true;
         if (!isValid()) {
@@ -378,27 +415,37 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
         let imagePromises = [];
         if ($scope.image1 !== 1 && $scope.image1) {
             imagePromises.push(getBase64($scope.image1).then(data => giayRequest.image1 = data + ""));
-        } else {
+        } else if(!$scope.image1){
+            giayRequest.image1 = null;
+        }else {
             giayRequest.image1 = 1;
         }
         if ($scope.image2 !== 1 && $scope.image2) {
             imagePromises.push(getBase64($scope.image2).then(data => giayRequest.image2 = data + ""));
-        } else {
+        } else if(!$scope.image2){
+            giayRequest.image2 = null;
+        }else {
             giayRequest.image2 = 1;
         }
         if ($scope.image3 !== 1 && $scope.image3) {
             imagePromises.push(getBase64($scope.image3).then(data => giayRequest.image3 = data + ""));
-        } else {
+        } else if(!$scope.image3){
+            giayRequest.image3 = null;
+        }else {
             giayRequest.image3 = 1;
         }
         if ($scope.image4 !== 1 && $scope.image4) {
             imagePromises.push(getBase64($scope.image4).then(data => giayRequest.image4 = data + ""));
-        } else {
+        } else if(!$scope.image4){
+            giayRequest.image4 = null;
+        }else {
             giayRequest.image4 = 1;
         }
         if ($scope.image5 !== 1 && $scope.image5) {
             imagePromises.push(getBase64($scope.image5).then(data => giayRequest.image5 = data + ""));
-        } else {
+        } else if(!$scope.image5){
+            giayRequest.image5 = null;
+        }else {
             giayRequest.image5 = 1;
         }
 
@@ -423,7 +470,9 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             if (mauSac.hinhAnh !== 1 && mauSac.hinhAnh) {
                 let mauSacImage = await getBase64(mauSac.hinhAnh);
                 giayRequest.mauSacImages[mauSac.id] = mauSacImage + "";
-            } else {
+            } else if(!mauSac.hinhAnh) {
+                giayRequest.mauSacImages[mauSac.id] = null;
+            }else {
                 giayRequest.mauSacImages[mauSac.id] = 1;
             }
             mauSac.selectedKichThuocs.forEach(kichThuoc => {
@@ -445,7 +494,6 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                 Promise.all($scope.selectedMauSacs.map(processMauSac))
                     .then(() => {
                         giayRequest.bienTheGiays = bienTheGiays;
-                        console.log(giayRequest);
                         $http.put(host + '/admin/rest/giay/update/' + id, JSON.stringify(giayRequest))
                             .then(function (response) {
                                 toastr["success"]("Cập nhật thành công");
@@ -1177,4 +1225,159 @@ app.directive('customInputUpdate', function () {
 
         }
     };
+
+    $scope.setBarcode = function (msIndex, ktIndex) {
+        $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].barcode = new Date().getTime();
+        $scope.blurInput(msIndex, ktIndex, 'barcode');
+    }
+
+    $scope.scanQR =  function (e, element) {
+
+        const msIndex = parseInt(element.getAttribute("ms-index"));
+        const ktIndex = parseInt(element.getAttribute("kt-index"));
+        if(isNaN(msIndex) || isNaN(ktIndex)) {
+            toastr["error"]("Lỗi bất định!");
+            return;
+        }
+
+        if (e.target.files && e.target.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const image = new Image();
+                image.src = e.target.result;
+
+                image.onload = function () {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = image.width;
+                    canvas.height = image.height;
+                    const context = canvas.getContext('2d');
+                    context.drawImage(image, 0, 0, image.width, image.height);
+
+                    const imageData = context.getImageData(0, 0, image.width, image.height);
+                    const code = jsQR(imageData.data, image.width, image.height);
+
+                    if (code) {
+                        $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].barcode = code.data;
+                        $scope.blurInput(msIndex, ktIndex, 'barcode');
+                        document.getElementById('barcode' + msIndex + ktIndex).value = code.data;
+                    } else {
+                        Quagga.decodeSingle({
+                            src: e.target.result,
+                            numOfWorkers: 0,
+                            decoder: {
+                                readers: ['ean_reader', 'code_128_reader', 'code_39_reader']
+                            },
+                        }, function (result) {
+                            if (result && result.codeResult) {
+                                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].barcode = result.codeResult.code;
+                                $scope.blurInput(msIndex, ktIndex, 'barcode');
+                                document.getElementById('barcode' + msIndex + ktIndex).value = result.codeResult.code;
+                            } else {
+                                toastr["error"]("Không tìm thấy mã trong hình ảnh");
+                            }
+                        });
+                    }
+                };
+            };
+
+            reader.readAsDataURL(e.target.files[0]);
+        } else {
+            toastr["error"]("Không tìm thấy hình ảnh");
+        }
+    }
+
+    const video = document.getElementById('video');
+
+    let scanning = false;
+
+    $scope.startScanning =  function(msIndex, ktIndex) {
+        scanning = true;
+        if (scanning) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then((stream) => {
+                    video.srcObject = stream;
+                    video.play();
+
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+
+                    const interval = setInterval(() => {
+                        if (scanning) {
+                            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                            const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+                            if (code) {
+                                // Thực hiện các hành động với mã QR tại đây
+                                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].barcode =  code.data;
+                                $scope.blurInput(msIndex, ktIndex, 'barcode');
+                                document.getElementById('barcode' + msIndex + ktIndex).value = code.data;
+                                document.getElementById('closeModalCamera').click();
+                                clearInterval(interval);
+                            } else {
+                                Quagga.decodeSingle({
+                                    src: convertImageDataToBase64(imageData),
+                                    numOfWorkers: 0,
+                                    decoder: {
+                                        readers: ['ean_reader', 'code_128_reader', 'code_39_reader']
+                                    },
+                                }, function (result) {
+                                    if (result && result.codeResult) {
+                                        $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].barcode =  result.codeResult.code;
+                                        $scope.blurInput(msIndex, ktIndex, 'barcode');
+                                        document.getElementById('barcode' + msIndex + ktIndex).value = result.codeResult.code;
+                                        document.getElementById('closeModalCamera').click();
+                                        clearInterval(interval);
+                                    }
+                                });
+
+                            }
+
+                        }
+                    }, 500);
+                })
+                .catch((error) => {
+                    toastr["error"]('Không thể truy cập camera:');
+                });
+        } else {
+            $scope.stopScanning();
+        }
+    }
+
+    function convertImageDataToBase64(imageData) {
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.width = imageData.width;
+        canvas.height = imageData.height;
+        context.putImageData(imageData, 0, 0);
+
+        return canvas.toDataURL('image');
+    }
+
+
+    function updateVideoStream() {
+        navigator.mediaDevices.getUserMedia({
+            video: { deviceId: selectedCamera, width: 1920, height: 1080 }
+        })
+            .then((stream) => {
+                video.srcObject = stream;
+                video.play();
+            })
+            .catch((error) => {
+                console.error('Không thể cập nhật stream camera:', error);
+            });
+    }
+
+
+    $scope.stopScanning = function() {
+        video.pause();
+        video.srcObject.getTracks().forEach(track => track.stop());
+    }
+
+    $scope.closeModalCamera = function () {
+        scanning = false;
+        $scope.stopScanning();
+    }
+
 });

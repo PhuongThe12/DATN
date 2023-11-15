@@ -31,4 +31,7 @@ public interface HashTagRepository extends JpaRepository<HashTag, Long> {
     Boolean existsByTenAndIdNot(String ten, Long id);
 
     List<HashTag> findByIdIn(Set<Long> ids);
+
+    @Query("select g.id from HashTag g where g.ten in :names")
+    List<Long> getIdsByName(Set<String> names);
 }
