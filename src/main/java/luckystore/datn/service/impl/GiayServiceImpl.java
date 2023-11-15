@@ -180,13 +180,13 @@ public class GiayServiceImpl implements GiayService {
 
         for (GiayResponse giayResponse : giayResponses) {
             GiayResponse giay = giayResponseMap.get(giayResponse.getId());
-            if(giay == null && !giayResponse.getLstBienTheGiay().isEmpty()) {
+            if (giay == null && !giayResponse.getLstBienTheGiay().isEmpty()) {
                 giayResponseMap.put(giayResponse.getId(), giayResponse);
-            } else if(!giayResponse.getLstBienTheGiay().isEmpty()) {
+            } else if (!giayResponse.getLstBienTheGiay().isEmpty()) {
                 giay.getLstBienTheGiay().add(giayResponse.getLstBienTheGiay().get(0));
             }
         }
-        
+
         return new PageImpl<>(new ArrayList<>(giayResponseMap.values()), pageable, giayResponsePage.getTotalElements());
 
     }
@@ -541,5 +541,6 @@ public class GiayServiceImpl implements GiayService {
             throw new ConflictException(errors);
         }
     }
+
 
 }

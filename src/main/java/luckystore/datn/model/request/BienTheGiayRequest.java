@@ -1,6 +1,7 @@
 package luckystore.datn.model.request;
 
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,13 +35,14 @@ public class BienTheGiayRequest {
     private BigDecimal giaBan;
 
     @NotNull(message = "Không được để trống", groups = {CreateGroup.class, UpdateGroup.class})
-    private Integer trangThai;
+    private Integer trangThai = 1;
 
     @NotNull(message = "Không được để trống", groups = {CreateGroup.class, UpdateGroup.class})
     @Length(message = "Không được vượt quá 20 ký tự", max = 20, groups = {CreateGroup.class, UpdateGroup.class})
     private String barcode;
 
     @NotNull(message = "Không được để trống", groups = {CreateGroup.class, UpdateGroup.class, UpdateSoLuongGroup.class})
+    @Min(value = 0, message = "Số lượng không được âm", groups = {CreateGroup.class, UpdateGroup.class, UpdateSoLuongGroup.class})
     private Integer soLuong;
 
 }

@@ -1,8 +1,8 @@
 package luckystore.datn.rest;
 
+import luckystore.datn.model.request.GiayExcelRequest;
 import luckystore.datn.model.request.GiayRequest;
 import luckystore.datn.model.request.GiaySearch;
-import luckystore.datn.model.request.TestRequest;
 import luckystore.datn.service.GiayService;
 import luckystore.datn.service.ImageHubService;
 import luckystore.datn.util.JsonString;
@@ -23,13 +23,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.io.UnsupportedEncodingException;
-import java.lang.instrument.Instrumentation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,19 +40,14 @@ public class RestGiayController {
     private ImageHubService imageHubService;
 
     @PostMapping("/test")
-    public ResponseEntity<?> test(@RequestBody TestRequest lst) throws IOException {
-//        System.out.println(lst);
-//        for (String src : lst.getData()) {
-//            imageHubService.base64ToFile(src);
-//        }
+    public ResponseEntity<?> test(@RequestBody List<GiayExcelRequest> lst) throws IOException {
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
         objectOutputStream.writeObject(lst);
-        System.out.println("Byte: " + outputStream.toByteArray().length / (1024 * 1024) + "MB");
-        System.out.println("Data: " + lst.getData().size());
-        return ResponseEntity.ok(lst);
-//        return ResponseEntity.ok("{\"data\":\"Done\"}");
+        System.out.println("Byte: " + outputStream.toByteArray().length / (1024) + "KB");
+//        return ResponseEntity.ok(lst);
+        return ResponseEntity.ok("{\"data\":\"Done\"}");
     }
 
     @PostMapping("/get-page")

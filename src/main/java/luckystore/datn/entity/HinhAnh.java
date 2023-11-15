@@ -46,7 +46,4 @@ public class HinhAnh {
     @JsonBackReference
     private Giay giay;
 
-    @Column(name = "NGAY_TAO")
-    private LocalDateTime ngayTao;
-
 }
