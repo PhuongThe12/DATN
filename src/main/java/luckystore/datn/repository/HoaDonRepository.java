@@ -24,7 +24,7 @@ public interface HoaDonRepository extends JpaRepository<HoaDon,Long> {
             "WHERE (:searchText IS NULL OR hd.ghiChu LIKE %:searchText%) AND (:status IS NULL OR hd.trangThai = :status)")
     Page<HoaDonResponse> getPageResponse(String searchText, Integer status, Pageable pageable);
 
-    @Query("SELECT new luckystore.datn.model.response.HoaDonYeuCauRespone(hd)" +
+    @Query("SELECT new luckystore.datn.model.response.HoaDonYeuCauRespone(hd, hd.hoaDonGoc.id)" +
             "FROM HoaDon hd " +
             "LEFT JOIN hd.khachHang kh " +
             "LEFT JOIN hd.nhanVien nv " +
@@ -38,7 +38,7 @@ public interface HoaDonRepository extends JpaRepository<HoaDon,Long> {
             "AND (:#{#hoaDonSearch.nhanVien} IS NULL OR nv.hoTen = :#{#hoaDonSearch.nhanVien}) "+
             "AND (:#{#hoaDonSearch.giaTu} IS NULL OR (SELECT SUM(ct.donGia * ct.soLuong) FROM HoaDonChiTiet ct WHERE ct.hoaDon = hd) >= :#{#hoaDonSearch.giaTu})"+
             "AND (:#{#hoaDonSearch.giaDen} IS NULL OR (SELECT SUM(ct.donGia * ct.soLuong) FROM HoaDonChiTiet ct WHERE ct.hoaDon = hd) <= :#{#hoaDonSearch.giaDen})"+
-            "order by hd desc ")
+            "order by hd.id desc ")
     Page<HoaDonYeuCauRespone> getPageHoaDonYeuCauResponse(HoaDonSearch hoaDonSearch, Pageable pageable);
 
 }
