@@ -19,7 +19,7 @@ public class YeuCauResponse {
 
     private Long id;
     private Long nguoiThucHien;
-    private HoaDon hoaDon;
+    private Long hoaDon;
     private Integer loaiYeuCau;
     private Integer trangThai;
     private Date ngayTao;
@@ -30,7 +30,7 @@ public class YeuCauResponse {
         if(yeuCau != null){
             this.id = yeuCau.getId();
             this.nguoiThucHien = yeuCau.getNguoiThucHien();
-            this.hoaDon = yeuCau.getHoaDon();
+            this.hoaDon = yeuCau.getHoaDon().getId();
             this.loaiYeuCau = yeuCau.getLoaiYeuCau();
             this.trangThai = yeuCau.getTrangThai();
             this.ngayTao = yeuCau.getNgayTao();
