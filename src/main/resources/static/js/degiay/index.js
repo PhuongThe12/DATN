@@ -23,8 +23,27 @@ app.controller("addDeGiayController", function ($scope, $http, $location) {
         input.$dirty = true;
     }
 
+    $scope.comfirmAdd = function () {
+        Swal.fire({
+            text: "Xác nhận thêm?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $scope.addDeGiay();
+            }
+
+        });
+    }
+
     $scope.addDeGiay = function () {
+        $scope.isLoading = true;
         if ($scope.deGiayForm.$invalid) {
+            $scope.isLoading = false;
             return;
         }
         $http.post(host + '/admin/rest/de-giay', $scope.deGiay)
@@ -36,6 +55,7 @@ app.controller("addDeGiayController", function ($scope, $http, $location) {
             })
             .catch(function (error) {
                 toastr["error"]("Thêm thất bại");
+                $scope.isLoading = false;
                 if (error.status === 400) {
                     $scope.deGiayForm.ten.$dirty = false;
                     $scope.deGiayForm.moTa.$dirty = false;
@@ -133,8 +153,27 @@ app.controller("updateDeGiayController", function ($scope, $http, $routeParams, 
         $location.path("/list");
     });
 
+    $scope.comfirmUpdate = function () {
+        Swal.fire({
+            text: "Xác nhận cập nhật?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $scope.updateDeGiay();
+            }
+
+        });
+    }
+
     $scope.updateDeGiay = function () {
+        $scope.isLoading = true;
         if ($scope.deGiayForm.$invalid) {
+            $scope.isLoading = false;
             return;
         }
         $http.put(host + '/admin/rest/de-giay/' + id, $scope.deGiay)
@@ -147,6 +186,7 @@ app.controller("updateDeGiayController", function ($scope, $http, $routeParams, 
                 $location.path("/list");
             }).catch(function (error) {
             toastr["error"]("Cập nhật thất bại");
+            $scope.isLoading = false;
             if (error.status === 400) {
                 $scope.deGiayForm.ten.$dirty = false;
                 $scope.deGiayForm.moTa.$dirty = false;

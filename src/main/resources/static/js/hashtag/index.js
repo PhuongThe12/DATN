@@ -5,10 +5,7 @@ app.config(function ($routeProvider, $locationProvider) {
         .when("/list", {
             templateUrl: '/pages/admin/hashtag/views/list.html',
             controller: 'hashTagListController'
-        }).when("/detail/:id", {
-        templateUrl: '/pages/admin/hashtag/views/detail.html',
-        controller: 'detailHashTagController'
-    }).when("/update/:id", {
+        }).when("/update/:id", {
         templateUrl: '/pages/admin/hashtag/views/update.html',
         controller: 'updateHashTagController'
     }).when("/add", {
@@ -24,8 +21,27 @@ app.controller("addHashTagController", function ($scope, $http, $location) {
         input.$dirty = true;
     }
 
+    $scope.comfirmAdd = function () {
+        Swal.fire({
+            text: "Xác nhận thêm?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $scope.addHashTag();
+            }
+
+        });
+    }
+
     $scope.addHashTag = function () {
+        $scope.isLoading = true;
         if ($scope.hashTagForm.$invalid) {
+            $scope.isLoading = false;
             return;
         }
         $http.post(host + '/admin/rest/hash-tag', $scope.hashTag)
@@ -37,6 +53,7 @@ app.controller("addHashTagController", function ($scope, $http, $location) {
             })
             .catch(function (error) {
                 toastr["error"]("Thêm thất bại");
+                $scope.isLoading = false;
                 if (error.status === 400) {
                     $scope.hashTagForm.ten.$dirty = false;
                     $scope.hashTagForm.moTa.$dirty = false;
@@ -47,18 +64,6 @@ app.controller("addHashTagController", function ($scope, $http, $location) {
 
 });
 
-
-app.controller("detailHashTagController", function ($scope, $http, $location, $routeParams) {
-    const id = $routeParams.id;
-    $http.get(host + '/admin/rest/hash-tag/' + id)
-        .then(function (response) {
-            $scope.hashTag = response.data;
-        }).catch(function (error) {
-        toastr["error"]("Lấy dữ liệu thất bại");
-        $location.path("/list");
-    });
-
-});
 
 app.controller("hashTagListController", function ($scope, $http, $window, $location) {
 
@@ -83,6 +88,7 @@ app.controller("hashTagListController", function ($scope, $http, $window, $locat
     }
 
     function getData(currentPage) {
+        $scope.isLoading = true;
         let apiUrl = host + '/admin/rest/hash-tag?page=' + currentPage;
         if (searchText) {
             apiUrl += '&search=' + searchText;
@@ -98,9 +104,11 @@ app.controller("hashTagListController", function ($scope, $http, $window, $locat
             .then(function (response) {
                 $scope.hashTags = response.data.content;
                 $scope.numOfPages = response.data.totalPages;
+                $scope.isLoading = false;
             })
             .catch(function (error) {
                 toastr["error"]("Lấy dữ liệu thất bại");
+                $scope.isLoading = false;
                 // window.location.href = feHost + '/trang-chu';
             });
     }
@@ -142,8 +150,26 @@ app.controller("updateHashTagController", function ($scope, $http, $routeParams,
         $location.path("/list");
     });
 
+    $scope.comfirmUpdate = function () {
+        Swal.fire({
+            text: "Xác nhận cập nhật?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $scope.updateHashTag();
+            }
+
+        });
+    }
     $scope.updateHashTag = function () {
+        $scope.isLoading = true;
         if ($scope.hashTagForm.$invalid) {
+            $scope.isLoading = false;
             return;
         }
         $http.put(host + '/admin/rest/hash-tag/' + id, $scope.hashTag)
@@ -156,6 +182,7 @@ app.controller("updateHashTagController", function ($scope, $http, $routeParams,
                 $location.path("/list");
             }).catch(function (error) {
             toastr["error"]("Cập nhật thất bại");
+            $scope.isLoading = false;
             if (error.status === 400) {
                 $scope.hashTagForm.ten.$dirty = false;
                 $scope.hashTagForm.moTa.$dirty = false;

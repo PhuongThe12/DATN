@@ -5,17 +5,14 @@ app.config(function ($routeProvider, $locationProvider) {
         .when("/list", {
             templateUrl: '/pages/admin/kichthuoc/views/list.html',
             controller: 'kichThuocListController'
-        }).when("/detail/:id", {
-            templateUrl: '/pages/admin/kichthuoc/views/detail.html',
-            controller: 'detailKichThuocController'
         }).when("/update/:id", {
-            templateUrl: '/pages/admin/kichthuoc/views/update.html',
-            controller: 'updateKichThuocController'
-        }).when("/add", {
-            templateUrl: '/pages/admin/kichthuoc/views/add.html',
-            controller: 'addKichThuocController'
-        })
-        .otherwise({ redirectTo: '/list' });
+        templateUrl: '/pages/admin/kichthuoc/views/update.html',
+        controller: 'updateKichThuocController'
+    }).when("/add", {
+        templateUrl: '/pages/admin/kichthuoc/views/add.html',
+        controller: 'addKichThuocController'
+    })
+        .otherwise({redirectTo: '/list'});
 });
 
 app.controller("addKichThuocController", function ($scope, $http, $location) {
@@ -24,8 +21,27 @@ app.controller("addKichThuocController", function ($scope, $http, $location) {
         input.$dirty = true;
     }
 
+    $scope.comfirmAdd = function () {
+        Swal.fire({
+            text: "Xác nhận thêm?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $scope.addKichThuoc();
+            }
+
+        });
+    }
+
     $scope.addKichThuoc = function () {
+        $scope.isLoading = true;
         if ($scope.kichThuocForm.$invalid) {
+            $scope.isLoading = false;
             return;
         }
         $http.post(host + '/admin/rest/kich-thuoc', $scope.kichThuoc)
@@ -37,6 +53,7 @@ app.controller("addKichThuocController", function ($scope, $http, $location) {
             })
             .catch(function (error) {
                 toastr["error"]("Thêm thất bại");
+                $scope.isLoading = false;
                 if (error.status === 400) {
                     $scope.kichThuocForm.ten.$dirty = false;
                     $scope.kichThuocForm.moTa.$dirty = false;
@@ -50,18 +67,6 @@ app.controller("addKichThuocController", function ($scope, $http, $location) {
 });
 
 
-app.controller("detailKichThuocController", function ($scope, $http, $location, $routeParams) {
-    const id = $routeParams.id;
-    $http.get(host + '/admin/rest/kich-thuoc/' + id)
-        .then(function (response) {
-            $scope.kichThuoc = response.data;
-        }).catch(function (error) {
-        toastr["error"]("Lấy dữ liệu thất bại");
-        $location.path("/list");
-    });
-
-});
-
 app.controller("kichThuocListController", function ($scope, $http, $window, $location) {
 
     $scope.curPage = 1,
@@ -71,7 +76,7 @@ app.controller("kichThuocListController", function ($scope, $http, $window, $loc
     let searchText;
 
     $scope.search = function () {
-        if(!$scope.searchText) {
+        if (!$scope.searchText) {
             toastr["error"]("Vui lòng nhập tên muốn tìm kiếm");
             return;
         }
@@ -85,14 +90,15 @@ app.controller("kichThuocListController", function ($scope, $http, $window, $loc
     }
 
     function getData(currentPage) {
+        $scope.isLoading = true;
         let apiUrl = host + '/admin/rest/kich-thuoc?page=' + currentPage;
         if (searchText) {
             apiUrl += '&search=' + searchText;
         }
 
-        if($scope.status == 0) {
+        if ($scope.status == 0) {
             apiUrl += '&status=' + 0;
-        } else if($scope.status == 1) {
+        } else if ($scope.status == 1) {
             apiUrl += '&status=' + 1;
         }
 
@@ -100,9 +106,11 @@ app.controller("kichThuocListController", function ($scope, $http, $window, $loc
             .then(function (response) {
                 $scope.kichThuocs = response.data.content;
                 $scope.numOfPages = response.data.totalPages;
+                $scope.isLoading = false;
             })
             .catch(function (error) {
                 toastr["error"]("Lấy dữ liệu thất bại");
+                $scope.isLoading = false;
                 // window.location.href = feHost + '/trang-chu';
             });
     }
@@ -118,7 +126,7 @@ app.controller("kichThuocListController", function ($scope, $http, $window, $loc
         const id = val;
 
         if (!isNaN(id)) {
-            $scope.kichThuocDetail = $scope.kichThuocs.find(function(kichThuoc) {
+            $scope.kichThuocDetail = $scope.kichThuocs.find(function (kichThuoc) {
                 return kichThuoc.id == id;
             });
         } else {
@@ -141,12 +149,31 @@ app.controller("updateKichThuocController", function ($scope, $http, $routeParam
         .then(function (response) {
             $scope.kichThuoc = response.data;
         }).catch(function (error) {
-            toastr["error"]("Lấy dữ liệu thất bại");
-            $location.path("/list");
+        toastr["error"]("Lấy dữ liệu thất bại");
+        $location.path("/list");
+    });
+
+    $scope.comfirmAdd = function () {
+        Swal.fire({
+            text: "Xác nhận cập nhật?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $scope.updateKichThuoc();
+            }
+
         });
+    }
 
     $scope.updateKichThuoc = function () {
+        $scope.isLoading = true;
         if ($scope.kichThuocForm.$invalid) {
+            $scope.isLoading = false;
             return;
         }
         $http.put(host + '/admin/rest/kich-thuoc/' + id, $scope.kichThuoc)
@@ -158,14 +185,15 @@ app.controller("updateKichThuocController", function ($scope, $http, $routeParam
                 }
                 $location.path("/list");
             }).catch(function (error) {
-                toastr["error"]("Cập nhật thất bại");
-                if (error.status === 400) {
-                    $scope.kichThuocForm.ten.$dirty = false;
-                    $scope.kichThuocForm.moTa.$dirty = false;
-                    $scope.kichThuocForm.chieuDai.$dirty = false;
-                    $scope.kichThuocForm.chieuRong.$dirty = false;
-                    $scope.errors = error.data;
-                }
-            })
+            toastr["error"]("Cập nhật thất bại");
+            $scope.isLoading = false;
+            if (error.status === 400) {
+                $scope.kichThuocForm.ten.$dirty = false;
+                $scope.kichThuocForm.moTa.$dirty = false;
+                $scope.kichThuocForm.chieuDai.$dirty = false;
+                $scope.kichThuocForm.chieuRong.$dirty = false;
+                $scope.errors = error.data;
+            }
+        })
     };
 });
