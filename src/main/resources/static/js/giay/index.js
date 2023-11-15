@@ -376,6 +376,23 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
             });
     }, 0);
 
+    $scope.comfirmAdd = function () {
+        Swal.fire({
+            text: "Xác nhận thêm?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $scope.submitData();
+            }
+
+        });
+    }
+
     $scope.submitData = function () {
         $scope.isLoading = true;
 

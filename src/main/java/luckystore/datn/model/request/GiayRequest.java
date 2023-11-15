@@ -15,6 +15,7 @@ import luckystore.datn.validation.groups.UpdateSoLuongGroup;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.validation.annotation.Validated;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,7 +24,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @GroupSequence({UpdateGroup.class, UpdateSoLuongGroup.class, GiayRequest.class})
-public class GiayRequest {
+public class GiayRequest implements Serializable {
 
     @NotNull(message = "Không được để trống", groups = {UpdateGroup.class, UpdateSoLuongGroup.class})
     private Long id;
@@ -66,7 +67,7 @@ public class GiayRequest {
     private Long deGiayId;
 
     @NotNull(message = "Không được để trống", groups = {UpdateGroup.class, CreateGroup.class})
-    private Integer trangThai;
+    private Integer trangThai = 1;
 
     @NotNull(message = "Không được để trống", groups = {UpdateGroup.class, CreateGroup.class})
     @Length(message = "Mô tả không được quá ngắn", min = 3, groups = {UpdateGroup.class, CreateGroup.class})

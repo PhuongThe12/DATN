@@ -386,6 +386,23 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
         $scope.blurInput(msIndex, ktIndex, 'barcode');
     }
 
+    $scope.comfirmUpdate = function () {
+        Swal.fire({
+            text: "Xác nhận cập nhật?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $scope.submitData();
+            }
+
+        });
+    }
+
     $scope.submitData = function () {
         $scope.isLoading = true;
         if (!isValid()) {

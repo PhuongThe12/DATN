@@ -5,10 +5,7 @@ app.config(function ($routeProvider, $locationProvider) {
         .when("/list", {
             templateUrl: '/pages/admin/lotgiay/views/list.html',
             controller: 'lotGiayListController'
-        }).when("/detail/:id", {
-        templateUrl: '/pages/admin/lotgiay/views/detail.html',
-        controller: 'detailLotGiayController'
-    }).when("/update/:id", {
+        }).when("/update/:id", {
         templateUrl: '/pages/admin/lotgiay/views/update.html',
         controller: 'updateLotGiayController'
     }).when("/add", {
@@ -24,8 +21,27 @@ app.controller("addLotGiayController", function ($scope, $http, $location) {
         input.$dirty = true;
     }
 
+    $scope.comfirmAdd = function () {
+        Swal.fire({
+            text: "Xác nhận thêm?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $scope.addLotGiay();
+            }
+
+        });
+    }
+
     $scope.addLotGiay = function () {
+        $scope.isLoading = true;
         if ($scope.lotGiayForm.$invalid) {
+            $scope.isLoading = false;
             return;
         }
         $http.post(host + '/admin/rest/lot-giay', $scope.lotGiay)
@@ -37,6 +53,7 @@ app.controller("addLotGiayController", function ($scope, $http, $location) {
             })
             .catch(function (error) {
                 toastr["error"]("Thêm thất bại");
+                $scope.isLoading = false;
                 if (error.status === 400) {
                     $scope.lotGiayForm.ten.$dirty = false;
                     $scope.lotGiayForm.moTa.$dirty = false;
@@ -47,18 +64,6 @@ app.controller("addLotGiayController", function ($scope, $http, $location) {
 
 });
 
-
-app.controller("detailLotGiayController", function ($scope, $http, $location, $routeParams) {
-    const id = $routeParams.id;
-    $http.get(host + '/admin/rest/lot-giay/' + id)
-        .then(function (response) {
-            $scope.lotGiay = response.data;
-        }).catch(function (error) {
-        toastr["error"]("Lấy dữ liệu thất bại");
-        $location.path("/list");
-    });
-
-});
 
 app.controller("lotGiayListController", function ($scope, $http, $window, $location) {
 
@@ -83,6 +88,7 @@ app.controller("lotGiayListController", function ($scope, $http, $window, $locat
     }
 
     function getData(currentPage) {
+        $scope.isLoading = true;
         let apiUrl = host + '/admin/rest/lot-giay?page=' + currentPage;
         if (searchText) {
             apiUrl += '&search=' + searchText;
@@ -98,6 +104,7 @@ app.controller("lotGiayListController", function ($scope, $http, $window, $locat
             .then(function (response) {
                 $scope.lotGiays = response.data.content;
                 $scope.numOfPages = response.data.totalPages;
+                $scope.isLoading = false;
             })
             .catch(function (error) {
                 toastr["error"]("Lấy dữ liệu thất bại");
@@ -142,8 +149,27 @@ app.controller("updateLotGiayController", function ($scope, $http, $routeParams,
         $location.path("/list");
     });
 
+    $scope.comfirmAdd = function () {
+        Swal.fire({
+            text: "Xác nhận cập nhật?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $scope.updateLotGiay();
+            }
+
+        });
+    }
+
     $scope.updateLotGiay = function () {
+        $scope.isLoading = true;
         if ($scope.lotGiayForm.$invalid) {
+            $scope.isLoading = false;
             return;
         }
         $http.put(host + '/admin/rest/lot-giay/' + id, $scope.lotGiay)
@@ -156,6 +182,7 @@ app.controller("updateLotGiayController", function ($scope, $http, $routeParams,
                 $location.path("/list");
             }).catch(function (error) {
             toastr["error"]("Cập nhật thất bại");
+            $scope.isLoading = false;
             if (error.status === 400) {
                 $scope.lotGiayForm.ten.$dirty = false;
                 $scope.lotGiayForm.moTa.$dirty = false;

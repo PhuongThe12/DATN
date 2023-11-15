@@ -45,8 +45,11 @@ public class HinhAnh {
     @JoinColumn(name = "ID_GIAY")
     @JsonBackReference
     private Giay giay;
+<<<<<<< HEAD
 //
 //    @Column(name = "NGAY_TAO")
 //    private LocalDateTime ngayTao;
+=======
+>>>>>>> a802cd7cc0944af972d7a1888889f2a8d3b6b198
 
 }

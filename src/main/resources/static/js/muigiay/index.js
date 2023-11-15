@@ -5,10 +5,7 @@ app.config(function ($routeProvider, $locationProvider) {
         .when("/list", {
             templateUrl: '/pages/admin/muigiay/views/list.html',
             controller: 'muiGiayListController'
-        }).when("/detail/:id", {
-        templateUrl: '/pages/admin/muigiay/views/detail.html',
-        controller: 'detailMuiGiayController'
-    }).when("/update/:id", {
+        }).when("/update/:id", {
         templateUrl: '/pages/admin/muigiay/views/update.html',
         controller: 'updateMuiGiayController'
     }).when("/add", {
@@ -24,8 +21,27 @@ app.controller("addMuiGiayController", function ($scope, $http, $location) {
         input.$dirty = true;
     }
 
+    $scope.comfirmAdd = function () {
+        Swal.fire({
+            text: "Xác nhận thêm?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $scope.addMuiGiay();
+            }
+
+        });
+    }
+
     $scope.addMuiGiay = function () {
+        $scope.isLoading = true;
         if ($scope.muiGiayForm.$invalid) {
+            $scope.isLoading = false;
             return;
         }
         $http.post(host + '/admin/rest/mui-giay', $scope.muiGiay)
@@ -37,6 +53,7 @@ app.controller("addMuiGiayController", function ($scope, $http, $location) {
             })
             .catch(function (error) {
                 toastr["error"]("Thêm thất bại");
+                $scope.isLoading = false;
                 if (error.status === 400) {
                     $scope.muiGiayForm.ten.$dirty = false;
                     $scope.muiGiayForm.moTa.$dirty = false;
@@ -47,18 +64,6 @@ app.controller("addMuiGiayController", function ($scope, $http, $location) {
 
 });
 
-
-app.controller("detailMuiGiayController", function ($scope, $http, $location, $routeParams) {
-    const id = $routeParams.id;
-    $http.get(host + '/admin/rest/mui-giay/' + id)
-        .then(function (response) {
-            $scope.muiGiay = response.data;
-        }).catch(function (error) {
-        toastr["error"]("Lấy dữ liệu thất bại");
-        $location.path("/list");
-    });
-
-});
 
 app.controller("muiGiayListController", function ($scope, $http, $window, $location) {
 
@@ -83,6 +88,7 @@ app.controller("muiGiayListController", function ($scope, $http, $window, $locat
     }
 
     function getData(currentPage) {
+        $scope.isLoading = true;
         let apiUrl = host + '/admin/rest/mui-giay?page=' + currentPage;
         if (searchText) {
             apiUrl += '&search=' + searchText;
@@ -98,9 +104,11 @@ app.controller("muiGiayListController", function ($scope, $http, $window, $locat
             .then(function (response) {
                 $scope.muiGiays = response.data.content;
                 $scope.numOfPages = response.data.totalPages;
+                $scope.isLoading = false;
             })
             .catch(function (error) {
                 toastr["error"]("Lấy dữ liệu thất bại");
+                $scope.isLoading = false;
                 // window.location.href = feHost + '/trang-chu';
             });
     }
@@ -142,8 +150,27 @@ app.controller("updateMuiGiayController", function ($scope, $http, $routeParams,
         $location.path("/list");
     });
 
+    $scope.comfirmAdd = function () {
+        Swal.fire({
+            text: "Xác nhận cập nhật?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $scope.updateMuiGiay();
+            }
+
+        });
+    }
+
     $scope.updateMuiGiay = function () {
+        $scope.isLoading = true;
         if ($scope.muiGiayForm.$invalid) {
+            $scope.isLoading = false;
             return;
         }
         $http.put(host + '/admin/rest/mui-giay/' + id, $scope.muiGiay)
@@ -156,6 +183,7 @@ app.controller("updateMuiGiayController", function ($scope, $http, $routeParams,
                 $location.path("/list");
             }).catch(function (error) {
             toastr["error"]("Cập nhật thất bại");
+            $scope.isLoading = false;
             if (error.status === 400) {
                 $scope.muiGiayForm.ten.$dirty = false;
                 $scope.muiGiayForm.moTa.$dirty = false;

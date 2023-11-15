@@ -37,16 +37,6 @@ public class RestYeuCauController {
         if (errorJson != null) return errorJson;
         return new ResponseEntity(yeuCauService.addYeuCau(yeuCauRequest), HttpStatus.OK);
     }
-
-//    @PostMapping("/add-test")
-//    public ResponseEntity addYeuCauTest(@Valid @RequestBody test test, BindingResult result) {
-//        System.out.println(test);
-//        ResponseEntity errorJson = getErrorJson(result);
-//        if (errorJson != null) return errorJson;
-//
-//        return new ResponseEntity(test,HttpStatus.OK);
-//    }
-
     @PutMapping("/{id}")
     public ResponseEntity updateYeuCau(@PathVariable("id") Long id, @Valid @RequestBody YeuCauRequest yeuCauRequest, BindingResult result) {
         ResponseEntity errorJson = getErrorJson(result);
