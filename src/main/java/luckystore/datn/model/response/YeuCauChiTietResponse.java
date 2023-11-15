@@ -19,9 +19,9 @@ public class YeuCauChiTietResponse {
 
     private YeuCau yeuCau;
 
-    private HoaDonChiTiet hoaDonChiTiet;
+    private HoaDonChiTietResponse hoaDonChiTiet;
 
-    private BienTheGiay bienTheGiay;
+    private BienTheGiayResponse bienTheGiay;
 
     private String lyDo;
 
@@ -35,8 +35,8 @@ public class YeuCauChiTietResponse {
         if(yeuCauChiTiet != null){
             this.id = yeuCauChiTiet.getId();
             this.yeuCau = yeuCauChiTiet.getYeuCau();
-            this.hoaDonChiTiet = yeuCauChiTiet.getHoaDonChiTiet();
-            this.bienTheGiay = yeuCauChiTiet.getBienTheGiay();
+            this.hoaDonChiTiet = new HoaDonChiTietResponse(yeuCauChiTiet.getHoaDonChiTiet());
+            this.bienTheGiay = new BienTheGiayResponse(yeuCauChiTiet.getBienTheGiay());
             this.lyDo = yeuCauChiTiet.getLyDo();
             this.soLuong = yeuCauChiTiet.getSoLuong();
             this.trangThai = yeuCauChiTiet.getTrangThai();
