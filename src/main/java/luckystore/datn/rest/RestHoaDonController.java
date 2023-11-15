@@ -1,7 +1,7 @@
 package luckystore.datn.rest;
 
+import luckystore.datn.model.request.HoaDonSearch;
 import luckystore.datn.service.HoaDonService;
-import luckystore.datn.service.impl.HoaDonServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +12,11 @@ import org.springframework.web.bind.annotation.*;
 public class RestHoaDonController {
 
     @Autowired
-    HoaDonService hoaDonService;
+    private final HoaDonService hoaDonService;
+
+    public RestHoaDonController(HoaDonService hoaDonService) {
+        this.hoaDonService = hoaDonService;
+    }
 
     @GetMapping
     public ResponseEntity getHashTagPage(@RequestParam(value = "page", defaultValue = "1") Integer page,
@@ -20,6 +24,14 @@ public class RestHoaDonController {
                                          @RequestParam(value = "status", required = false) Integer status) {
         return new ResponseEntity(hoaDonService.getPage(page, searchText, status), HttpStatus.OK);
     }
+
+    @PostMapping("/yeu-cau")
+    public ResponseEntity getHoaDonYeuCauPage(@RequestBody HoaDonSearch hoaDonSearch,
+                                              @RequestParam(value = "page", defaultValue = "1") Integer page) {
+        return new ResponseEntity(hoaDonService.getPageHoaDonYeuCau(page, hoaDonSearch), HttpStatus.OK);
+    }
+
+
 
     @GetMapping("/get-all")
     public ResponseEntity getAll() {
@@ -30,5 +42,6 @@ public class RestHoaDonController {
     public ResponseEntity getHoaDon(@PathVariable("id") Long id) {
         return new ResponseEntity(hoaDonService.findById(id), HttpStatus.OK);
     }
+
 
 }

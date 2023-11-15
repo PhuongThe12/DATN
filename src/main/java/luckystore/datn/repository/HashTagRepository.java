@@ -32,6 +32,6 @@ public interface HashTagRepository extends JpaRepository<HashTag, Long> {
 
     List<HashTag> findByIdIn(Set<Long> ids);
 
-    @Query("select g.id from HashTag g where g.ten in :names")
-    List<Long> getIdsByName(Set<String> names);
+    @Query("select new luckystore.datn.model.response.HashTagResponse(g.id, g.ten) from HashTag g where g.ten in :names")
+    List<HashTagResponse> getIdsByName(Set<String> names);
 }

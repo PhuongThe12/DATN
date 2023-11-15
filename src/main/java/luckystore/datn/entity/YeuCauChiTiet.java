@@ -38,7 +38,7 @@ public class YeuCauChiTiet {
     @Column(name = "SO_LUONG")
     private Integer soLuong;
 
-    @Column(name = "Hinh_Anh")
+    @Column(name = "HINH_ANH")
     private String hinhAnh;
 
     @Column(name = "TRANG_THAI")

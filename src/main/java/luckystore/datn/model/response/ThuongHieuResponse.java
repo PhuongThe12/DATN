@@ -32,4 +32,9 @@ public class ThuongHieuResponse {
         }
     }
 
+    public ThuongHieuResponse(Long id, String ten) {
+        this.id = id;
+        this.ten = ten;
+    }
+
 }
