@@ -24,7 +24,7 @@ public interface HoaDonRepository extends JpaRepository<HoaDon,Long> {
             "WHERE (:searchText IS NULL OR hd.ghiChu LIKE %:searchText%) AND (:status IS NULL OR hd.trangThai = :status)")
     Page<HoaDonResponse> getPageResponse(String searchText, Integer status, Pageable pageable);
 
-    @Query("SELECT new luckystore.datn.model.response.HoaDonYeuCauRespone(hd)" +
+    @Query("SELECT new luckystore.datn.model.response.HoaDonYeuCauRespone(hd, hd.hoaDonGoc.id)" +
             "FROM HoaDon hd " +
             "LEFT JOIN hd.khachHang kh " +
             "LEFT JOIN hd.nhanVien nv " +

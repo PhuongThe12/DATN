@@ -2,6 +2,7 @@ package luckystore.datn.repository;
 
 import luckystore.datn.entity.DeGiay;
 import luckystore.datn.model.response.DeGiayResponse;
+import luckystore.datn.model.response.DeGiayResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -30,6 +31,6 @@ public interface DeGiayRepository extends JpaRepository<DeGiay, Long> {
 
     Boolean existsByTenAndIdNot(String ten, Long id);
 
-    @Query("select g.id from DeGiay g where g.ten in :names")
-    List<Long> getIdsByName(Set<String> names);
+    @Query("select new luckystore.datn.model.response.DeGiayResponse(g.id, g.ten) from DeGiay g where g.ten in :names")
+    List<DeGiayResponse> getIdsByName(Set<String> names);
 }

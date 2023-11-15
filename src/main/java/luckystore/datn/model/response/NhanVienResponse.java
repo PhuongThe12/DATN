@@ -58,8 +58,8 @@ public class NhanVienResponse {
         }
     }
 
-    public NhanVienResponse(Long id, String hoTen) {
+    public NhanVienResponse(Long id, String ten) {
         this.id = id;
-        this.hoTen = hoTen;
+        this.hoTen = ten;
     }
 }

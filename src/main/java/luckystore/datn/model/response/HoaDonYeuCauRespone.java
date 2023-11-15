@@ -35,15 +35,15 @@ public class HoaDonYeuCauRespone {
 
     private BigDecimal tongTien;
 
-    public HoaDonYeuCauRespone(HoaDon hoaDon) {
+    public HoaDonYeuCauRespone(HoaDon hoaDon, Long idHoaDonGoc) {
         this.id = hoaDon.getId();
-//        this.hoaDonGoc = hoaDon.getHoaDonGoc().getId();
-//        this.khachHang = new KhachHangRestponse(hoaDon.getKhachHang().getId(), hoaDon.getKhachHang().getHoTen());
-//        this.nhanVien = new NhanVienResponse(hoaDon.getNhanVien().getId(), hoaDon.getNhanVien().getHoTen());
-//        this.kenhBan = hoaDon.getKenhBan();
-//        this.trangThai = hoaDon.getTrangThai();
-//        this.moTa = hoaDon.getGhiChu();
-//        this.listHoaDonChiTiet = (hoaDon.getListHoaDonChiTiet().stream().map(HoaDonChiTietResponse::new).collect(Collectors.toList()));
+        this.hoaDonGoc = idHoaDonGoc;
+        this.khachHang = new KhachHangRestponse(hoaDon.getKhachHang().getId(), hoaDon.getKhachHang().getHoTen());
+        this.nhanVien = new NhanVienResponse(hoaDon.getNhanVien().getId(), hoaDon.getNhanVien().getHoTen());
+        this.kenhBan = hoaDon.getKenhBan();
+        this.trangThai = hoaDon.getTrangThai();
+        this.moTa = hoaDon.getGhiChu();
+        this.listHoaDonChiTiet = (hoaDon.getListHoaDonChiTiet().stream().map(HoaDonChiTietResponse::new).collect(Collectors.toList()));
     }
 
 
