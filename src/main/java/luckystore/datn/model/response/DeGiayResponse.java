@@ -34,4 +34,9 @@ public class DeGiayResponse {
         }
     }
 
+    public DeGiayResponse(Long id, String ten) {
+        this.id = id;
+        this.ten = ten;
+    }
+
 }

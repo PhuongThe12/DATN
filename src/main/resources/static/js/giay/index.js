@@ -14,6 +14,9 @@ app.config(function ($routeProvider, $locationProvider) {
     }).when("/add", {
         templateUrl: '/pages/admin/giay/views/add.html',
         controller: 'addGiayController'
+    }).when("/excel", {
+        templateUrl: '/pages/admin/giay/views/excel.html',
+        controller: 'excelController'
     })
         .otherwise({redirectTo: '/list'});
 });

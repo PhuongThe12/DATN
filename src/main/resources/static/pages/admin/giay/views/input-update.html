@@ -1,7 +1,7 @@
 <div class="wrapper" id="{{id}}">
     <div ng-click="toggleDropdown()">
         <div class="form-select" id="{{inputId}}" style="padding: 0; min-height: 38px;">
-            <div class="selected-tags d-flex flex-wrap justify-content-start align-items-center" style="padding-left: 12px; height: 38px;">
+            <div class="selected-tags d-flex flex-wrap justify-content-start align-items-center" style="padding-left: 12px; min-height: 38px;">
                 <option ng-show="selectType == 'hashtag'">{{selectedTags.length == 0? "Chọn hashtags" : ""}}</i></option>
                 <option ng-show="selectType == 'mausac'">{{selectedTags.length == 0? "Chọn màu sắc" : ""}}</i></option>
                 <option ng-show="selectType == 'kichthuoc'">{{selectedTags.length == 0? "Chọn kích thước" : ""}}</i></option>

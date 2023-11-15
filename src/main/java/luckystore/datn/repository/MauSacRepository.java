@@ -2,7 +2,6 @@ package luckystore.datn.repository;
 
 import luckystore.datn.entity.MauSac;
 import luckystore.datn.model.response.MauSacResponse;
-import luckystore.datn.model.response.MauSacResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -35,7 +34,7 @@ public interface MauSacRepository extends JpaRepository<MauSac, Long> {
 
     Boolean existsByMaMauAndIdNot(String maMau, Long id);
 
-    @Query("select g.id from MauSac g where g.ten in :names")
-    List<Long> getIdsByName(Set<String> names);
+    @Query("select new luckystore.datn.model.response.MauSacResponse(g.id, g.ten) from MauSac g where g.ten in :names")
+    List<MauSacResponse> getIdsByName(Set<String> names);
 
 }

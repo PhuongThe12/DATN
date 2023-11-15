@@ -2,7 +2,6 @@ package luckystore.datn.repository;
 
 import luckystore.datn.entity.LotGiay;
 import luckystore.datn.model.response.LotGiayResponse;
-import luckystore.datn.model.response.LotGiayResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -31,6 +30,6 @@ public interface LotGiayRepository extends JpaRepository<LotGiay, Long> {
 
     Boolean existsByTenAndIdNot(String ten, Long id);
 
-    @Query("select g.id from LotGiay g where g.ten in :names")
-    List<Long> getIdsByName(Set<String> names);
+    @Query("select new luckystore.datn.model.response.LotGiayResponse(g.id, g.ten) from LotGiay g where g.ten in :names")
+    List<LotGiayResponse> getIdsByName(Set<String> names);
 }

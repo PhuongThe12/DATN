@@ -1,45 +1,30 @@
-<!DOCTYPE html>
-<html lang="en" ng-app="app">
+app.controller('excelController', function ($scope, $http) {
 
-<head>
-    <meta charset="UTF-8">
-    <title>XLSX Processing with JavaScript</title>
-</head>
+    let request = [];
 
-<body ng-controller="controller">
-{{test}}
+    $scope.isLoading = false;
+    $scope.send = function () {
 
-<input type="file" id="fileInput" accept=".xlsx, .xls"/>
-<button ng-click="processExcel()">Process Excel</button>
-<button ng-click="send()">Send</button>
+    }
 
-<script src="/excel/xlsx.full.min.js"></script>
-<script src="/angular-1.8.2/angular.min.js"></script>
+    $scope.processExcel = async function () {
+        const fileInput = document.getElementById('fileInput');
+        const file = fileInput.files[0];
 
-<script>
-
-    const app = angular.module("app", []);
-    app.controller('controller', function ($scope, $http) {
-        let request = [];
-        $scope.test = "test";
-
-        $scope.send = function () {
-
+        if (!file) {
+            Swal.fire({
+                title: "Lỗi!",
+                text: "Bạn chưa chọn file excel nào!",
+                icon: "error"
+            });
+            return;
         }
 
-        $scope.processExcel = async function () {
-            const fileInput = document.getElementById('fileInput');
-            const file = fileInput.files[0];
+        const reader = new FileReader();
 
-            if (!file) {
-                alert('Please select an Excel file.');
-                return;
-            }
-
-            const reader = new FileReader();
-
-            reader.onload = function (e) {
-                const data = new Uint8Array(e.target.result);
+        reader.onload = function (e) {
+            const data = new Uint8Array(e.target.result);
+            try {
                 const workbook = XLSX.read(data, {type: 'array'});
 
                 // Assume the first sheet is the one you want to process
@@ -55,7 +40,6 @@
 
                 // Process the JSON data as needed
 
-                let excelData = [];
                 let giayData = {};
 
                 let lastKey;
@@ -406,7 +390,7 @@
                                 r: giayData[k].bienTheGiay[x].row,
                                 c: giayData[k].bienTheGiay[x].column
                             }) + ": Số lượng không đúng định dạng. Số lượng phải là số nguyên");
-                        } else if(giayData[k].bienTheGiay[x].soLuong < 0) {
+                        } else if (giayData[k].bienTheGiay[x].soLuong < 0) {
                             errors.push("Lỗi ở dòng " + XLSX.utils.encode_cell({
                                 r: giayData[k].bienTheGiay[x].row,
                                 c: giayData[k].bienTheGiay[x].column
@@ -423,7 +407,7 @@
                                 r: giayData[k].bienTheGiay[x].row,
                                 c: giayData[k].bienTheGiay[x].column
                             }) + ": Giá bán phải là số.");
-                        } else if(giayData[k].bienTheGiay[x].giaBan < 0) {
+                        } else if (giayData[k].bienTheGiay[x].giaBan < 0) {
                             errors.push("Lỗi ở dòng " + XLSX.utils.encode_cell({
                                 r: giayData[k].bienTheGiay[x].row,
                                 c: giayData[k].bienTheGiay[x].column
@@ -454,25 +438,34 @@
                 Promise.all(promises)
                     .then(() => {
                         console.log("requestGiays: ", requestGiays);
+                        if (!requestGiays || requestGiays.length === 0) {
+                            Swal.fire({
+                                title: "Lỗi!",
+                                text: "Không thể đọc dữ liệu hoặc dữ liệu không đúng!\n" +
+                                    "Không thể đọc dữ liệu hoặc dữ liệu không đúng!",
+                                icon: "error"
+                            });
+                            return;
+
+                        }
                         if (errors.length > 0) {
                             alert(errors);
                             return;
                         }
 
 
-                        let dataRequest = JSON.stringify(requestGiays);
+                        // let dataRequest = JSON.stringify(requestGiays);
 
-                        const start = new Date().getTime();
-                        console.log(request);
-                        $http.post("http://localhost:8080/admin/rest/giay/test", dataRequest)
-                            .then(function (response) {
-                                console.log("response");
-                                console.log("time: ", new Date().getTime() - start);
-                            })
-                            .catch(function (error) {
-                                console.log(error);
-                                console.log("time: ", new Date().getTime() - start);
-                            });
+                        // const start = new Date().getTime();
+                        // $http.post("http://localhost:8080/admin/rest/giay/test", dataRequest)
+                        //     .then(function (response) {
+                        //         console.log("response");
+                        //         console.log("time: ", new Date().getTime() - start);
+                        //     })
+                        //     .catch(function (error) {
+                        //         console.log(error);
+                        //         console.log("time: ", new Date().getTime() - start);
+                        //     });
                     })
 
 
@@ -507,24 +500,17 @@
                             });
                     });
                 }
+            } catch (e) {
+                Swal.fire({
+                    title: "Lỗi!",
+                    text: "Không thể sử lý file này. Vui lòng thử lại",
+                    icon: "error"
+                });
+            }
 
+        };
 
-            };
+        reader.readAsArrayBuffer(file);
+    }
 
-            reader.readAsArrayBuffer(file);
-        }
-
-
-        function processJsonData(jsonData) {
-            // Process the JSON data here
-            console.log('JSON Data:', jsonData);
-        }
-    })
-    ;
-
-
-</script>
-
-</body>
-
-</html>
+});

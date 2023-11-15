@@ -146,7 +146,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                 }
                 switch (image) {
                     case 2:
-                        if(file.size > 5 * 1024 * 1024){
+                        if (file.size > 5 * 1024 * 1024) {
                             toastr["error"]("File không được vượt quá 5MB");
                             break;
                         }
@@ -154,7 +154,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                         loadImage($scope.image2, 'selectedImage2');
                         break;
                     case 3:
-                        if(file.size > 5 * 1024 * 1024){
+                        if (file.size > 5 * 1024 * 1024) {
                             toastr["error"]("File không được vượt quá 5MB");
                             break;
                         }
@@ -162,7 +162,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                         loadImage($scope.image3, 'selectedImage3');
                         break;
                     case 4:
-                        if(file.size > 5 * 1024 * 1024){
+                        if (file.size > 5 * 1024 * 1024) {
                             toastr["error"]("File không được vượt quá 5MB");
                             break;
                         }
@@ -170,7 +170,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                         loadImage($scope.image4, 'selectedImage4');
                         break;
                     case 5:
-                        if(file.size > 5 * 1024 * 1024){
+                        if (file.size > 5 * 1024 * 1024) {
                             toastr["error"]("File không được vượt quá 5MB");
                             break;
                         }
@@ -178,7 +178,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                         loadImage($scope.image5, 'selectedImage5');
                         break;
                     default:
-                        if(file.size > 5 * 1024 * 1024){
+                        if (file.size > 5 * 1024 * 1024) {
                             toastr["error"]("File không được vượt quá 5MB");
                             break;
                         }
@@ -415,37 +415,37 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
         let imagePromises = [];
         if ($scope.image1 !== 1 && $scope.image1) {
             imagePromises.push(getBase64($scope.image1).then(data => giayRequest.image1 = data + ""));
-        } else if(!$scope.image1){
+        } else if (!$scope.image1) {
             giayRequest.image1 = null;
-        }else {
+        } else {
             giayRequest.image1 = 1;
         }
         if ($scope.image2 !== 1 && $scope.image2) {
             imagePromises.push(getBase64($scope.image2).then(data => giayRequest.image2 = data + ""));
-        } else if(!$scope.image2){
+        } else if (!$scope.image2) {
             giayRequest.image2 = null;
-        }else {
+        } else {
             giayRequest.image2 = 1;
         }
         if ($scope.image3 !== 1 && $scope.image3) {
             imagePromises.push(getBase64($scope.image3).then(data => giayRequest.image3 = data + ""));
-        } else if(!$scope.image3){
+        } else if (!$scope.image3) {
             giayRequest.image3 = null;
-        }else {
+        } else {
             giayRequest.image3 = 1;
         }
         if ($scope.image4 !== 1 && $scope.image4) {
             imagePromises.push(getBase64($scope.image4).then(data => giayRequest.image4 = data + ""));
-        } else if(!$scope.image4){
+        } else if (!$scope.image4) {
             giayRequest.image4 = null;
-        }else {
+        } else {
             giayRequest.image4 = 1;
         }
         if ($scope.image5 !== 1 && $scope.image5) {
             imagePromises.push(getBase64($scope.image5).then(data => giayRequest.image5 = data + ""));
-        } else if(!$scope.image5){
+        } else if (!$scope.image5) {
             giayRequest.image5 = null;
-        }else {
+        } else {
             giayRequest.image5 = 1;
         }
 
@@ -470,9 +470,9 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             if (mauSac.hinhAnh !== 1 && mauSac.hinhAnh) {
                 let mauSacImage = await getBase64(mauSac.hinhAnh);
                 giayRequest.mauSacImages[mauSac.id] = mauSacImage + "";
-            } else if(!mauSac.hinhAnh) {
+            } else if (!mauSac.hinhAnh) {
                 giayRequest.mauSacImages[mauSac.id] = null;
-            }else {
+            } else {
                 giayRequest.mauSacImages[mauSac.id] = 1;
             }
             mauSac.selectedKichThuocs.forEach(kichThuoc => {
@@ -660,7 +660,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             } else if ($scope.selectedMauSacs[0].selectedKichThuocs[0].giaBan < 0) {
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaBan = 'Giá bán không được âm';
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan = null;
-            }  else {
+            } else {
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaBan = null;
             }
         }
@@ -801,10 +801,17 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                 $scope.selectedMauSacs.forEach((ms, msIndex) => {
                     ms.selectedKichThuocs.forEach((kt, ktIndex) => {
                         const bt = $scope.giay.lstBienTheGiay.find(bienThe => bienThe.mauSac.id === ms.id && bienThe.kichThuoc.id === kt.id);
-                        kt.giaBan = bt.giaBan;
-                        kt.trangThai = bt.trangThai;
-                        kt.barcode = bt.barCode;
-                        kt.soLuong = bt.soLuong;
+                        if (bt) {
+                            kt.giaBan = bt.giaBan;
+                            kt.trangThai = bt.trangThai;
+                            kt.barcode = bt.barCode;
+                            kt.soLuong = bt.soLuong;
+                        } else {
+                            kt.giaBan = 0;
+                            kt.trangThai = 0;
+                            kt.barcode = new Date().getTime();
+                            kt.soLuong = 0;
+                        }
                     });
                 });
 
@@ -1231,11 +1238,11 @@ app.directive('customInputUpdate', function () {
         $scope.blurInput(msIndex, ktIndex, 'barcode');
     }
 
-    $scope.scanQR =  function (e, element) {
+    $scope.scanQR = function (e, element) {
 
         const msIndex = parseInt(element.getAttribute("ms-index"));
         const ktIndex = parseInt(element.getAttribute("kt-index"));
-        if(isNaN(msIndex) || isNaN(ktIndex)) {
+        if (isNaN(msIndex) || isNaN(ktIndex)) {
             toastr["error"]("Lỗi bất định!");
             return;
         }
@@ -1291,10 +1298,10 @@ app.directive('customInputUpdate', function () {
 
     let scanning = false;
 
-    $scope.startScanning =  function(msIndex, ktIndex) {
+    $scope.startScanning = function (msIndex, ktIndex) {
         scanning = true;
         if (scanning) {
-            navigator.mediaDevices.getUserMedia({ video: true })
+            navigator.mediaDevices.getUserMedia({video: true})
                 .then((stream) => {
                     video.srcObject = stream;
                     video.play();
@@ -1310,7 +1317,7 @@ app.directive('customInputUpdate', function () {
 
                             if (code) {
                                 // Thực hiện các hành động với mã QR tại đây
-                                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].barcode =  code.data;
+                                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].barcode = code.data;
                                 $scope.blurInput(msIndex, ktIndex, 'barcode');
                                 document.getElementById('barcode' + msIndex + ktIndex).value = code.data;
                                 document.getElementById('closeModalCamera').click();
@@ -1324,7 +1331,7 @@ app.directive('customInputUpdate', function () {
                                     },
                                 }, function (result) {
                                     if (result && result.codeResult) {
-                                        $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].barcode =  result.codeResult.code;
+                                        $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].barcode = result.codeResult.code;
                                         $scope.blurInput(msIndex, ktIndex, 'barcode');
                                         document.getElementById('barcode' + msIndex + ktIndex).value = result.codeResult.code;
                                         document.getElementById('closeModalCamera').click();
@@ -1358,7 +1365,7 @@ app.directive('customInputUpdate', function () {
 
     function updateVideoStream() {
         navigator.mediaDevices.getUserMedia({
-            video: { deviceId: selectedCamera, width: 1920, height: 1080 }
+            video: {deviceId: selectedCamera, width: 1920, height: 1080}
         })
             .then((stream) => {
                 video.srcObject = stream;
@@ -1370,7 +1377,7 @@ app.directive('customInputUpdate', function () {
     }
 
 
-    $scope.stopScanning = function() {
+    $scope.stopScanning = function () {
         video.pause();
         video.srcObject.getTracks().forEach(track => track.stop());
     }

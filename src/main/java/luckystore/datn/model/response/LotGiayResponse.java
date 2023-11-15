@@ -31,4 +31,9 @@ public class LotGiayResponse {
         }
     }
 
+    public LotGiayResponse(Long id, String ten) {
+        this.id = id;
+        this.ten = ten;
+    }
+
 }

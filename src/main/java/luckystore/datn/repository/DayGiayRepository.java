@@ -30,6 +30,6 @@ public interface DayGiayRepository extends JpaRepository<DayGiay, Long> {
 
     Boolean existsByTenAndIdNot(String ten, Long id);
 
-    @Query("select g.id from DayGiay g where g.ten in :names")
-    List<Long> getIdsByName(Set<String> names);
+    @Query("select new luckystore.datn.model.response.DayGiayResponse(g.id, g.ten) from DayGiay g where g.ten in :names")
+    List<DayGiayResponse> getIdsByName(Set<String> names);
 }
