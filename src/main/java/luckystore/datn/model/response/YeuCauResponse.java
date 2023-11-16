@@ -1,5 +1,6 @@
 package luckystore.datn.model.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +11,7 @@ import luckystore.datn.entity.YeuCau;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

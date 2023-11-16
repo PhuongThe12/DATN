@@ -50,22 +50,22 @@ public class YeuCauServiceIplm implements YeuCauService {
         YeuCau yeuCau = new YeuCau(yeuCauRequest,hoaDon);
         yeuCau.setNgayTao(new Date());
         yeuCau.setNgaySua(new Date());
-        addYeuCauChiTiet(yeuCauRequest,yeuCau);
+//        addYeuCauChiTiet(yeuCauRequest,yeuCau);
         return null;
     }
 
-    public void addYeuCauChiTiet(YeuCauRequest yeuCauRequest, YeuCau yeuCau){
-        for (YeuCauChiTietRequest yeuCauChiTietRequest : yeuCauRequest.getListYeuCauChiTiet()) {
-            YeuCau yeuCauAdd = yeuCauRepository.save(yeuCau);
-            HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findById(yeuCauChiTietRequest.getHoaDonChiTiet()).orElse(null);
-            BienTheGiay bienTheGiay = bienTheGiayRepository.findById(yeuCauChiTietRequest.getBienTheGiay()).orElse(null);
-            String lyDo = yeuCauChiTietRequest.getLyDo();
-            Integer soLuongDoi = yeuCauChiTietRequest.getSoLuong();
-            Integer trangThai = yeuCauChiTietRequest.getTrangThai();
-            String moTa = yeuCauChiTietRequest.getGhiChu();
-            yeuCauChiTietRepository.save(new YeuCauChiTiet(yeuCauAdd,hoaDonChiTiet,bienTheGiay,lyDo,soLuongDoi,trangThai,moTa));
-        }
-    }
+//    public void addYeuCauChiTiet(YeuCauRequest yeuCauRequest, YeuCau yeuCau){
+//        for (YeuCauChiTietRequest yeuCauChiTietRequest : yeuCauRequest.getListYeuCauChiTiet()) {
+//            YeuCau yeuCauAdd = yeuCauRepository.save(yeuCau);
+//            HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findById(yeuCauChiTietRequest.getHoaDonChiTiet()).orElse(null);
+//            BienTheGiay bienTheGiay = bienTheGiayRepository.findById(yeuCauChiTietRequest.getBienTheGiay()).orElse(null);
+//            String lyDo = yeuCauChiTietRequest.getLyDo();
+//            Integer soLuongDoi = yeuCauChiTietRequest.getSoLuong();
+//            Integer trangThai = yeuCauChiTietRequest.getTrangThai();
+//            String moTa = yeuCauChiTietRequest.getGhiChu();
+//            yeuCauChiTietRepository.save(new YeuCauChiTiet(yeuCauAdd,hoaDonChiTiet,bienTheGiay,lyDo,soLuongDoi,trangThai,moTa));
+//        }
+//    }
 
     @Override
     public YeuCauResponse updateYeuCau(Long id, YeuCauRequest yeuCauRequest) {

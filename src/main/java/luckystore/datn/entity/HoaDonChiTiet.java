@@ -35,6 +35,9 @@ public class HoaDonChiTiet {
     @Column(name = "SO_LUONG")
     private Integer soLuong;
 
+    @Column(name = "SO_LUONG_TRA")
+    private Integer soLuongTra;
+
     @Column(name = "TRANG_THAI")
     private Integer trangThai;
 

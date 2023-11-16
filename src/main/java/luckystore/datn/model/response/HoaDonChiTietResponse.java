@@ -1,5 +1,6 @@
 package luckystore.datn.model.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,7 +8,7 @@ import lombok.NoArgsConstructor;
 import luckystore.datn.entity.HoaDonChiTiet;
 
 import java.math.BigDecimal;
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,6 +27,8 @@ public class HoaDonChiTietResponse {
 
     private Integer trangThai;
 
+    private Integer soLuongTra;
+
     private String ghiChu;
 
     public HoaDonChiTietResponse(HoaDonChiTiet hoaDonChiTiet) {
@@ -36,6 +39,7 @@ public class HoaDonChiTietResponse {
             this.donGia = hoaDonChiTiet.getDonGia();
             this.soLuong = hoaDonChiTiet.getSoLuong();
             this.trangThai = hoaDonChiTiet.getTrangThai();
+            this.soLuongTra = hoaDonChiTiet.getSoLuongTra();
             this.ghiChu = hoaDonChiTiet.getGhiChu();
         }
     }
