@@ -18,21 +18,6 @@ app.config(function ($routeProvider, $locationProvider) {
         .otherwise({redirectTo: '/list'});
 });
 
-app.controller("indexController", function ($scope, $http, $location, $cookies) {
-    $http.get(host + '/admin/rest/nhan-vien/check-logged')
-        .then(function (response) {
-            if(response.status == 200){
-                $scope.nhanVienLogged = response.data;
-                if ($scope.nhanVienLogged.chucVu == 2) {
-                    $scope.chuCuaHangLogged = true;
-                } else if ($scope.nhanVienLogged.chucVu == 1) {
-                    $scope.chuCuaHangLogged = false;
-                }
-            }
-        }).catch(function (error) {
-        toastr["error"]("Không tìm thấy người dùng , vui lòng đăng nhập lại !");
-    });
-});
 app.controller("donHangListController", function ($scope, $http, $window, $location) {
     $scope.curPage = 1,
         $scope.itemsPerPage = 5,
@@ -70,6 +55,8 @@ app.controller("donHangListController", function ($scope, $http, $window, $locat
             apiUrl += '&status=' + 4;
         }else if($scope.status == 5){
             apiUrl += '&status=' + 5;
+        }else{
+            apiUrl += '&status=' + 1;
         }
 
         $http.get(apiUrl)
