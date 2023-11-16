@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Repository
@@ -30,4 +31,6 @@ public interface MuiGiayRepository extends JpaRepository<MuiGiay, Long> {
 
     @Query("select new luckystore.datn.model.response.MuiGiayResponse(g.id, g.ten) from MuiGiay g where g.ten in :names")
     List<MuiGiayResponse> getIdsByName(Set<String> names);
+
+    Optional<MuiGiay> findByTen(String ten);
 }

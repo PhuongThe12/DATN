@@ -17,7 +17,7 @@
 
 <div class="title-page">
     <div class="d-flex">
-        <p class="text-secondary m-0">Trang chủ - Quản Lý Giày - Thêm bằng file excel</p>
+        <p class="text-secondary m-0">Trang chủ - Quản Lý Giày - Cập nhật bằng file excel</p>
     </div>
 </div>
 
@@ -41,16 +41,16 @@
         <div class="py-3">
 
             <div class="mb-3">
-                <label for="fileInput" class="form-label">Thêm bằng file excel</label>
+                <label for="fileInput" class="form-label">Cập nhật bằng file excel</label>
                 <input type="file" id="fileInput" accept=".xlsx, .xls" class="form-control" onchange="angular.element(this).scope().processExcel()"/>
             </div>
-<!--            <button ng-click="processExcel()" class="btn btn-primary">Xử lý file</button>-->
+            <!--            <button ng-click="processExcel()" class="btn btn-primary">Xử lý file</button>-->
             <div class="row mt-3" ng-show="requestData.active">
                 <div class="my-2">
                     Tìm thấy: <strong>{{requestData.length}}</strong> giày có trong file excel
                 </div>
                 <div class="d-flex flex-row">
-                    <button ng-click="addExcel()" id="addExcelBtn" class="btn btn-primary">Thêm vào danh sách</button>
+                    <button ng-click="updateExcel()" id="addExcelBtn" class="btn btn-primary">Cập nhật vào danh sách</button>
                 </div>
             </div>
         </div>
