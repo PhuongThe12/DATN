@@ -12,6 +12,7 @@ import luckystore.datn.service.HoaDonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,8 +32,14 @@ public class HoaDonServiceImpl implements HoaDonService {
     }
 
     @Override
-    public Page<HoaDonYeuCauRespone> getPageHoaDonYeuCau(int page, HoaDonSearch hoaDonSearch) {
-        return hoaDonRepository.getPageHoaDonYeuCauResponse(hoaDonSearch,PageRequest.of((page - 1), 5));
+    public Page<HoaDonYeuCauRespone> getPageHoaDonYeuCau(HoaDonSearch hoaDonSearch) {
+        Pageable pageable = PageRequest.of(hoaDonSearch.getCurrentPage() - 1, hoaDonSearch.getPageSize());
+        return hoaDonRepository.getPageHoaDonYeuCauResponse(hoaDonSearch,pageable);
+    }
+
+    @Override
+    public HoaDonYeuCauRespone getHoaDonYeuCau(Long id) {
+        return hoaDonRepository.getHoaDonYeuCauResponse(id);
     }
 
     @Override

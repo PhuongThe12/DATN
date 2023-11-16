@@ -51,4 +51,10 @@ public class HoaDonSearch {
     private BigDecimal giaTu;
 
     private BigDecimal giaDen;
+
+    private Integer currentPage = 1;
+
+    private Integer pageSize = 5;
+
+    private Integer loaiHoaDon;
 }

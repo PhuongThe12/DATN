@@ -87,7 +87,11 @@
 
             <div class="d-flex flex-row">
                 <div class="px-3">
-                    <a class="btn btn-primary" href="#/excel"><i class="fas fa-file-excel px-2"></i>Xử lý với excel</a>
+                    <a class="btn btn-primary" href="#/excel"><i class="fas fa-file-excel px-2"></i>Thêm với excel</a>
+                </div>
+
+                <div>
+                    <a class="btn btn-primary" href="#/excelUpdate"><i class="fas fa-file-excel px-2"></i>Cập nhật với excel</a>
                 </div>
 
                 <div class="px-3">
@@ -203,7 +207,6 @@
                                 <div class="d-flex flex-column">
                                     <a class="btn btn-primary mb-2" ng-href="#/update/{{giay.id}}">Cập nhật</a>
                                     <a class="btn btn-primary mb-2" ng-href="#/detail/{{giay.id}}">Xem chi tiết</a>
-                                    <a class="btn btn-primary">Lịch sử cập nhật</a>
                                 </div>
                             </div>
                             <div ng-show="giay.lstBienTheGiay.length > 5 && !looped" class="w-100 text-center">
