@@ -20,7 +20,7 @@ public class HoaDonChiTiet {
     @Column(name = "ID")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "ID_HOA_DON")
     @JsonBackReference
     private HoaDon hoaDon;

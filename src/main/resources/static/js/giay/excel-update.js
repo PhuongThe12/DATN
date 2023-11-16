@@ -1,18 +1,18 @@
-app.controller('excelController', function ($scope, $http, $location) {
+app.controller('excelUpdateController', function ($scope, $http, $location) {
 
     let request = [];
 
     $scope.isLoading = false;
 
-    $scope.addExcel = function () {
+    $scope.updateExcel = function () {
         if ($scope.errors.length > 0) {
             return;
         }
 
         $scope.isLoading = true;
-        $http.post("http://localhost:8080/admin/rest/giay/add-excel", JSON.stringify($scope.requestData))
+        $http.post("http://localhost:8080/admin/rest/giay/update-excel", JSON.stringify($scope.requestData))
             .then(function (response) {
-                toastr["success"]("Thêm thành công");
+                toastr["success"]("Cập nhật thành công");
                 $location.path("/list");
             })
             .catch(function (error) {
@@ -30,7 +30,6 @@ app.controller('excelController', function ($scope, $http, $location) {
                 }
                 $scope.isLoading = false;
             });
-
     }
 
     $scope.requestData = {};
@@ -279,116 +278,49 @@ app.controller('excelController', function ($scope, $http, $location) {
                 const errors = [];
                 const promises = [];
                 for (const k in giayData) {
-                    if (!giayData[k].ten) {
-                        errors.push("Lỗi ở ô " + XLSX.utils.encode_cell({
-                            r: giayData[k].row,
-                            c: 0
-                        }) + ": Tên không được để trống");
-                    } else if ((giayData + "").length > 120) {
-                        errors.push("Lỗi ở ô " + XLSX.utils.encode_cell({
-                            r: giayData[k].row,
-                            c: 0
-                        }) + ": Tên không được vượt quá 120 ký tự");
-                    }
 
-                    if (!giayData[k].lotGiay) {
-                        errors.push("Lỗi ở ô " + XLSX.utils.encode_cell({
-                            r: giayData[k].row,
-                            c: 6
-                        }) + ": Lót giày không được để trống");
-                    }
-                    if (!giayData[k].muiGiay) {
-                        errors.push("Lỗi ở ô " + XLSX.utils.encode_cell({
-                            r: giayData[k].row,
-                            c: 7
-                        }) + ": Mũi giày không được để trống");
-                    }
-                    if (!giayData[k].coGiay) {
-                        errors.push("Lỗi ở ô " + XLSX.utils.encode_cell({
-                            r: giayData[k].row,
-                            c: 8
-                        }) + ": Co giày không được để trống");
-                    }
-                    if (!giayData[k].thuongHieu) {
-                        errors.push("Lỗi ở ô " + XLSX.utils.encode_cell({
-                            r: giayData[k].row,
-                            c: 9
-                        }) + ": Thương hiệu không được để trống");
-                    }
-                    if (!giayData[k].chatLieu) {
-                        errors.push("Lỗi ở ô " + XLSX.utils.encode_cell({
-                            r: giayData[k].row,
-                            c: 10
-                        }) + ": Chất liệu không được để trống");
-                    }
-                    if (!giayData[k].dayGiay) {
-                        errors.push("Lỗi ở ô " + XLSX.utils.encode_cell({
-                            r: giayData[k].row,
-                            c: 11
-                        }) + ": Dây giày không được để trống");
-                    }
-                    if (!giayData[k].deGiay) {
-                        errors.push("Lỗi ở ô " + XLSX.utils.encode_cell({
-                            r: giayData[k].row,
-                            c: 12
-                        }) + ": Đế giày không được để trống");
-                    }
-                    if (!giayData[k].namSX) {
-                        errors.push("Lỗi ở ô " + XLSX.utils.encode_cell({
-                            r: giayData[k].row,
-                            c: 14
-                        }) + ": Năm sản xuất không được để trống");
-                    } else if (!Number.isInteger(giayData[k].namSX)) {
+                    if (giayData[k].namSX && !Number.isInteger(giayData[k].namSX)) {
                         errors.push("Lỗi ở ô " + XLSX.utils.encode_cell({
                             r: giayData[k].row,
                             c: 14
                         }) + ": Năm sản xuất phải là số nguyên");
-                    } else if (giayData[k].namSX > 9999 || giayData[k].namSX < 1000) {
+                    } else if (giayData[k].namSX && giayData[k].namSX > 9999 || giayData[k].namSX < 1000) {
                         errors.push("Lỗi ở ô " + XLSX.utils.encode_cell({
                             r: giayData[k].row,
                             c: 14
                         }) + ": Năm sản xuất phải nằm trong khoảng 1000 - 9999");
                     }
-                    if (!giayData[k].moTa) {
-                        errors.push("Lỗi ở ô " + XLSX.utils.encode_cell({
-                            r: giayData[k].row,
-                            c: 15
-                        }) + ": Mô tả không được để trống");
-                    } else if ((giayData[k].moTa + "").length > 3000) {
+
+                    if ((giayData[k].moTa + "") && (giayData[k].moTa + "").length > 3000) {
                         errors.push("Lỗi ở ô " + XLSX.utils.encode_cell({
                             r: giayData[k].row,
                             c: 15
                         }) + ": Mô tả không được quá 3000 ký tự");
-                    } else if ((giayData[k].moTa + "").length < 3) {
+                    } else if ((giayData[k].moTa + "") && (giayData[k].moTa + "").length < 3) {
                         errors.push("Lỗi ở ô " + XLSX.utils.encode_cell({
                             r: giayData[k].row,
                             c: 15
                         }) + ": Mô tả không được ít hơn 3 ký tự");
                     }
 
-                    let filterImages = [giayData[k].image1, giayData[k].image2, giayData[k].image3, giayData[k].image4, giayData[k].image5];
-                    filterImages = filterImages.filter(image => image !== null);
+                    let numImages = [giayData[k].image1, giayData[k].image2, giayData[k].image3, giayData[k].image4, giayData[k].image5];
 
-                    const numImages = Math.min(filterImages.length, 5);
-                    for (let i = 0; i < 5; i++) {
-                        giayData[k][`image${i + 1}`] = null;
-                    }
-
-                    for (let i = 0; i < numImages; i++) {
+                    for (let i = 0; i < numImages.length; i++) {
                         const columnIndex = i + 1;
-
-                        promises.push(
-                            readImageFromURL(filterImages[i])
-                                .then(result => {
-                                    giayData[k][`image${i + 1}`] = result;
-                                })
-                                .catch(error => {
-                                    errors.push("Lỗi ở ô " + XLSX.utils.encode_cell({
-                                        r: giayData[k].row,
-                                        c: columnIndex
-                                    }) + ': ' + error.message);
-                                })
-                        );
+                        if (numImages[i]) {
+                            promises.push(
+                                readImageFromURL(numImages[i])
+                                    .then(result => {
+                                        giayData[k][`image${i + 1}`] = result;
+                                    })
+                                    .catch(error => {
+                                        errors.push("Lỗi ở ô " + XLSX.utils.encode_cell({
+                                            r: giayData[k].row,
+                                            c: columnIndex
+                                        }) + ': ' + error.message);
+                                    })
+                            );
+                        }
                     }
 
 
@@ -410,46 +342,31 @@ app.controller('excelController', function ($scope, $http, $location) {
                             }) + ": Không được để trống kích thước");
                         }
 
-                        if (!giayData[k].bienTheGiay[x].barcode) {
-                            errors.push("Lỗi ở ô " + XLSX.utils.encode_cell({
-                                r: giayData[k].bienTheGiay[x].row,
-                                c: giayData[k].bienTheGiay[x].column
-                            }) + ": Không được để trống barcode");
-                        } else if ((giayData[k].bienTheGiay[x].barcode + "").length > 20) {
+                        if (giayData[k].bienTheGiay[x].barcode && (giayData[k].bienTheGiay[x].barcode + "").length > 20) {
                             errors.push("Lỗi ở ô " + XLSX.utils.encode_cell({
                                 r: giayData[k].bienTheGiay[x].row,
                                 c: giayData[k].bienTheGiay[x].column
                             }) + ": Barcode không hợp lệ, barcode quá 20 ký tự");
                         }
 
-                        if (!giayData[k].bienTheGiay[x].soLuong) {
-                            errors.push("Lỗi ở ô " + XLSX.utils.encode_cell({
-                                r: giayData[k].bienTheGiay[x].row,
-                                c: giayData[k].bienTheGiay[x].column
-                            }) + ": Không được để trống số lượng");
-                        } else if (!Number.isInteger(giayData[k].bienTheGiay[x].soLuong)) {
+                        if (giayData[k].bienTheGiay[x].soLuong && !Number.isInteger(giayData[k].bienTheGiay[x].soLuong)) {
                             errors.push("Lỗi ở ô " + XLSX.utils.encode_cell({
                                 r: giayData[k].bienTheGiay[x].row,
                                 c: giayData[k].bienTheGiay[x].column
                             }) + ": Số lượng không đúng định dạng. Số lượng phải là số nguyên");
-                        } else if (giayData[k].bienTheGiay[x].soLuong < 0) {
+                        } else if (giayData[k].bienTheGiay[x].soLuong && giayData[k].bienTheGiay[x].soLuong < 0) {
                             errors.push("Lỗi ở ô " + XLSX.utils.encode_cell({
                                 r: giayData[k].bienTheGiay[x].row,
                                 c: giayData[k].bienTheGiay[x].column
                             }) + ": Số lượng không được âm");
                         }
 
-                        if (!giayData[k].bienTheGiay[x].giaBan) {
-                            errors.push("Lỗi ở ô " + XLSX.utils.encode_cell({
-                                r: giayData[k].bienTheGiay[x].row,
-                                c: giayData[k].bienTheGiay[x].column
-                            }) + ": Không được để trống giá bán");
-                        } else if (isNaN(giayData[k].bienTheGiay[x].giaBan)) {
+                        if (giayData[k].bienTheGiay[x].giaBan && isNaN(giayData[k].bienTheGiay[x].giaBan)) {
                             errors.push("Lỗi ở ô " + XLSX.utils.encode_cell({
                                 r: giayData[k].bienTheGiay[x].row,
                                 c: giayData[k].bienTheGiay[x].column
                             }) + ": Giá bán phải là số.");
-                        } else if (giayData[k].bienTheGiay[x].giaBan < 0) {
+                        } else if (giayData[k].bienTheGiay[x].giaBan && giayData[k].bienTheGiay[x].giaBan < 0) {
                             errors.push("Lỗi ở ô " + XLSX.utils.encode_cell({
                                 r: giayData[k].bienTheGiay[x].row,
                                 c: giayData[k].bienTheGiay[x].column
@@ -505,22 +422,12 @@ app.controller('excelController', function ($scope, $http, $location) {
                             $scope.requestData.active = true;
                         });
 
-                        // const start = new Date().getTime();
-                        // $http.post("http://localhost:8080/admin/rest/giay/test", dataRequest)
-                        //     .then(function (response) {
-                        //         console.log("response");
-                        //         console.log("time: ", new Date().getTime() - start);
-                        //     })
-                        //     .catch(function (error) {
-                        //         console.log(error);
-                        //         console.log("time: ", new Date().getTime() - start);
-                        //     });
                     })
 
 
                 function readImageFromURL(url) {
 
-                    if(!url) {
+                    if (!url) {
                         return;
                     }
 
