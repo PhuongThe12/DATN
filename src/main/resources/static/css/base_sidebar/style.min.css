@@ -514,9 +514,6 @@ ol, ul {
     background: rgba(253, 253, 253, .4)
 }
 
-body {
-    background-color: #f1f5f9;
-}
 
 .library-table-name span, .page-center, .page-flex, .sidebar-user-img picture, .users-table picture {
     display: -webkit-box;
@@ -1543,7 +1540,7 @@ label {
     padding: 8px;
     color: #475569;
     font-weight: 500;
-    font-size: 14px;
+    font-size: 13px;
     line-height: 2.43
 }
 

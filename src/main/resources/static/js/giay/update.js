@@ -231,23 +231,26 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
 
     //remove selected image
     $scope.removeImage = function (image) {
-        for (let i = image; i <= 5; i++) {
-            if (i === 5) {
-                $scope['image' + i] = null;
-                document.getElementById('selectedImage' + i).src = '';
-                document.getElementById('selectedImage' + i).style.display = 'none';
-            } else if ($scope['image' + (i + 1)]) {
-                $scope['image' + i] = $scope['image' + (i + 1)];
-                loadImage($scope['image' + i], 'selectedImage' + i);
-            } else {
-                $scope['image' + i] = null;
-                document.getElementById('selectedImage' + i).src = '';
-                document.getElementById('selectedImage' + i).style.display = 'none';
-            }
-        }
+        $scope['image' + image] = null;
+        document.getElementById('selectedImage' + image).src = '';
+        document.getElementById('selectedImage' + image).style.display = 'none';
+        // for (let i = image; i <= 5; i++) {
+        // if (i === 5) {
+        // $scope['image' + i] = null;
+        // document.getElementById('selectedImage' + i).src = '';
+        // document.getElementById('selectedImage' + i).style.display = 'none';
+        // } else if ($scope['image' + (i + 1)]) {
+        //     $scope['image' + i] = $scope['image' + (i + 1)];
+        //     loadImage($scope['image' + i], 'selectedImage' + i);
+        // } else {
+        //     $scope['image' + i] = null;
+        //     document.getElementById('selectedImage' + i).src = '';
+        //     document.getElementById('selectedImage' + i).style.display = 'none';
+        // }
+        // }
     };
 
-    //Select lot giay
+//Select lot giay
     $scope.lotGiays = [];
     setTimeout(function () {
         $http.get(host + "/admin/rest/lot-giay/get-all")
@@ -260,7 +263,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }, 0);
 
-    //Select de giay
+//Select de giay
     $scope.deGiays = [];
     setTimeout(function () {
         $http.get(host + "/admin/rest/de-giay/get-all")
@@ -272,7 +275,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                 // window.location.href = feHost + '/trang-chu';
             });
     }, 0);
-    //Select mui giay
+//Select mui giay
     $scope.muiGiays = [];
     setTimeout(function () {
         $http.get(host + "/admin/rest/mui-giay/get-all")
@@ -286,7 +289,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }, 0);
 
-    //Select co giay
+//Select co giay
     $scope.coGiays = [];
     setTimeout(function () {
         $http.get(host + "/admin/rest/co-giay/get-all")
@@ -300,7 +303,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }, 0);
 
-    //Select thuong hieu
+//Select thuong hieu
     $scope.thuongHieus = [];
     setTimeout(function () {
         $http.get(host + "/admin/rest/thuong-hieu/get-all")
@@ -314,7 +317,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }, 0);
 
-    //Select chat lieu
+//Select chat lieu
     $scope.chatLieus = [];
     setTimeout(function () {
         $http.get(host + "/admin/rest/chat-lieu/get-all")
@@ -328,7 +331,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }, 0);
 
-    //Select day giay
+//Select day giay
     $scope.dayGiays = [];
     setTimeout(function () {
         $http.get(host + "/admin/rest/day-giay/get-all")
@@ -342,7 +345,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }, 0);
 
-    //Select mau sac
+//Select mau sac
     $scope.mauSacs = [];
     setTimeout(function () {
         $http.get(host + "/admin/rest/mau-sac/get-all")
@@ -355,7 +358,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }, 0);
 
-    //Select size
+//Select size
     $scope.kichThuocs = [];
     setTimeout(function () {
         $http.get(host + "/admin/rest/kich-thuoc/get-all")
@@ -368,7 +371,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }, 0);
 
-    //Select hashtag
+//Select hashtag
     $scope.hashTags = [];
     setTimeout(function () {
         $http.get(host + "/admin/rest/hash-tag/get-all")
@@ -858,7 +861,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
     }
 
 
-    //////////////for modal
+//////////////for modal
     $scope.addChatLieu = function () {
         if ($scope.chatLieuForm.$invalid) {
             return;
@@ -884,7 +887,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }
 
-    //modal lot giay
+//modal lot giay
     $scope.addLotGiay = function () {
         if ($scope.lotGiayForm.$invalid) {
             return;
@@ -910,7 +913,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }
 
-    //modal mui giay
+//modal mui giay
     $scope.addMuiGiay = function () {
         if ($scope.muiGiayForm.$invalid) {
             return;
@@ -936,7 +939,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }
 
-    //modal co giay
+//modal co giay
     $scope.addCoGiay = function () {
         if ($scope.coGiayForm.$invalid) {
             return;
@@ -962,7 +965,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }
 
-    //modal thuong hieu
+//modal thuong hieu
     $scope.addThuongHieu = function () {
         if ($scope.thuongHieuForm.$invalid) {
             return;
@@ -989,7 +992,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
     }
 
 
-    //modal day giay
+//modal day giay
     $scope.addDayGiay = function () {
         if ($scope.dayGiayForm.$invalid) {
             return;
@@ -1015,7 +1018,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }
 
-    //modal de giay
+//modal de giay
     $scope.addDeGiay = function () {
         if ($scope.deGiayForm.$invalid) {
             return;
@@ -1041,7 +1044,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }
 
-    //modal hash tag
+//modal hash tag
     $scope.addHashTag = function () {
         if ($scope.hashTagForm.$invalid) {
             return;
@@ -1068,7 +1071,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
     }
 
 
-    //modal kichThuoc
+//modal kichThuoc
     $scope.addKichThuoc = function () {
 
         if ($scope.kichThuocForm.$invalid) {
@@ -1096,7 +1099,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }
 
-    //modal mau sac
+//modal mau sac
     $scope.addMauSac = function () {
 
         if ($scope.mauSacForm.$invalid) {
@@ -1123,7 +1126,8 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }
 
-});
+})
+;
 
 
 //input chung

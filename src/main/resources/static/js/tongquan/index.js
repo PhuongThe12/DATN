@@ -33,4 +33,21 @@ app.controller("homeController", function ($scope, $http, $location, $cookies) {
         toastr["error"]("Lấy dữ liệu thất bại");
         $location.path("/home");
     });
+
+    const ctx = document.getElementById('myChart');
+
+    const data = {
+        labels: ['Ngày 1', 'Ngày 2', 'Ngày 3', 'Ngày 4', 'Ngày 5', 'Ngày 6', 'Ngày 1', 'Ngày 2', 'Ngày 3', 'Ngày 4', 'Ngày 5', 'Ngày 6'],
+        datasets: [{
+            label: 'Số đơn hàng',
+            data: [10, 20, 15, 30, 25, 40, 10, 20, 15, 30, 25, 40],
+            backgroundColor: '#4669fa'
+        }]
+    };
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: data
+    });
+
 })

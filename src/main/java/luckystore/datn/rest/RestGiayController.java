@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,11 +36,15 @@ public class RestGiayController {
     @Autowired
     private ImageHubService imageHubService;
 
-
-    @PostMapping("/test")
-    public ResponseEntity<?> test(@RequestBody List<GiayExcelRequest> lst) throws IOException {
+    @PostMapping("/add-excel")
+    public ResponseEntity<?> addExcel(@RequestBody List<GiayExcelRequest> lst) {
         giayService.addExcel(lst);
-//        return ResponseEntity.ok(lst);
+        return ResponseEntity.ok("{\"data\":\"Done\"}");
+    }
+
+    @PostMapping("/update-excel")
+    public ResponseEntity<?> test(@RequestBody List<GiayExcelRequest> lst) {
+        giayService.updateExcel(lst);
         return ResponseEntity.ok("{\"data\":\"Done\"}");
     }
 
