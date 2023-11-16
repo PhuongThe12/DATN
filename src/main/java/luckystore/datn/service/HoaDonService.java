@@ -16,7 +16,8 @@ public interface HoaDonService {
     List<HoaDonResponse> getAll();
 
     Page<HoaDonResponse> getPage(int page, String searchText, Integer status);
-    Page<HoaDonYeuCauRespone> getPageHoaDonYeuCau(int page, HoaDonSearch hoaDonSearch);
+    Page<HoaDonYeuCauRespone> getPageHoaDonYeuCau(HoaDonSearch hoaDonSearch);
+    HoaDonYeuCauRespone getHoaDonYeuCau(Long id);
 
     HoaDonResponse findById(Long id);
 }
