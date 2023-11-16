@@ -20,7 +20,7 @@ app.config(function ($routeProvider, $locationProvider) {
 app.controller("yeuCauListController", function ($scope, $http, $window, $location) {
 
     $scope.curPage = 1, $scope.itemsPerPage = 5, $scope.maxSize = 5;
-    let searchText,startDate,endDate;
+    let searchText, startDate, endDate;
 
 
     // Datepicker ngày bắt đầu
@@ -222,16 +222,14 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
 
     const idHoaDon = $routeParams.id;
 
-    $scope.listHoaDonChiTiet = [];
-    $scope.listGiay = [];
-
-    $scope.mapSanPhamTra = new Map();
-    $scope.arrayForRepeat = [];
-
-    $scope.mapSanPhamThayThe = new Map();
-    $scope.arrayForRepeat1 = [];
-
-    $scope.mapYeuCauChiTiet = new Map();
+//checkForm
+    $scope.focusLyDo = false, $scope.focusGhiChu = false;
+//các list
+    $scope.listHoaDonChiTiet = [], $scope.listGiay = [], $scope.arrayForRepeat = [], $scope.arrayForRepeat1 = [];
+//các map
+    $scope.mapSanPhamTra = new Map(), $scope.mapSanPhamThayThe = new Map(), $scope.mapYeuCauChiTiet = new Map();
+//tạo search
+    $scope.giaySearch = {}, $scope.giaySearch.curPage = 1, $scope.giaySearch.itemsPerPage = 5, $scope.giaySearch.maxSize = 5, $scope.giaySearch.pageSize = 6;
 
     $scope.yeuCau = {
         nguoiThucHien: "1", loaiYeuCau: "1", trangThai: "1",
@@ -240,9 +238,6 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
     $scope.change = function (input) {
         input.$dirty = true;
     }
-    $scope.giaySearch = {};
-    $scope.giaySearch.curPage = 1, $scope.giaySearch.itemsPerPage = 5, $scope.giaySearch.maxSize = 5, $scope.giaySearch.pageSize = 6;
-
 
     getHoaDon(idHoaDon);
 
@@ -252,10 +247,18 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
     }
 
 
-    $scope.ghiChu_LyDo = function(item){
-        getAllLyDo();
-        $scope.giayTra = item;
-    }
+    $scope.doiSanPham = function (hoaDonChiTiet, index) {
+        if (hoaDonChiTiet.soLuongTra > 0) {
+            // Lấy ID duy nhất của hoá đơn chi tiết
+            var baseId = index;
+
+            // Thêm hoặc cập nhật hoá đơn chi tiết vào Map
+            $scope.addToMapForMultipleItems(baseId, hoaDonChiTiet, hoaDonChiTiet.soLuongTra);
+
+        } else {
+            toastr["error"]("Bạn phải chọn số lượng trả lớn hơn 0.");
+        }
+    };
 
 
     $scope.addToMapForMultipleItems = function (baseId, hoaDonChiTiet, soLuongTra) {
@@ -272,23 +275,21 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
             });
         }
         $scope.arrayForRepeat = Array.from($scope.mapSanPhamTra, ([key, value]) => ({key, value}));
+        console.log("List Giày Trả:")
+        console.log($scope.arrayForRepeat)
     };
 
 
-    $scope.doiSanPham = function (hoaDonChiTiet) {
-        if (hoaDonChiTiet.soLuongTra > 0) {
-            // Lấy ID duy nhất của hoá đơn chi tiết
-            var baseId = hoaDonChiTiet.id;
+    $scope.ghiChu_LyDo = function (item) {
+        getAllLyDo();
+        $scope.giayTra = item;
+    }
 
-            // Thêm hoặc cập nhật hoá đơn chi tiết vào Map
-            $scope.addToMapForMultipleItems(baseId, hoaDonChiTiet, hoaDonChiTiet.soLuongTra);
-
-        } else {
-            toastr["error"]("Bạn phải chọn số lượng trả lớn hơn 0.");
-        }
-    };
 
     $scope.updateMapSanPhamTra = function (key, lyDo, ghiChu) {
+        console.log(key);
+        console.log(ghiChu);
+        console.log(lyDo);
         if ($scope.mapSanPhamTra.has(key)) {
             var item = $scope.mapSanPhamTra.get(key);
             item.lyDo = lyDo;
@@ -297,25 +298,41 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
 
             // Cập nhật arrayForRepeat nếu cần
             $scope.arrayForRepeat = Array.from($scope.mapSanPhamTra, ([key, value]) => ({key, value}));
+            console.log("Cập nhật lý do + ghichu:")
+            console.log($scope.arrayForRepeat)
         } else {
             toastr["error"]("Lỗi không lấy được giữ liệu");
         }
     }
 
-    $scope.chonSanPham = function (lyDo, ghiChu) {
-        if (lyDo && ghiChu) {
-            $scope.updateMapSanPhamTra($scope.giayTra.key,lyDo,ghiChu)
-            $http.post(host + '/admin/rest/giay/find-all-by-search', $scope.giaySearch)
-                .then(function (response) {
-                    $scope.listGiay = response.data;
-                    $scope.numOfPages = response.data.totalPages;
-                }).catch(function (error) {
-                toastr["error"]("Lấy dữ liệu thất bại");
-                // $location.path("/list");
-            });
+    $scope.isFormValid = function () {
+        return !$scope.lyDo && !$scope.ghiChu;
+    };
+
+
+    $scope.kiemTraVaMoModal = function (lyDo, ghiChu) {
+        if ($scope.isFormValid()) {
+            $scope.chonSanPham(lyDo, ghiChu);
+            $('#exampleModal').modal('show');
         } else {
-            toastr["error"]("Bạn phải chọn lý do và mô tả lỗi");
+            // Hiển thị thông báo lỗi hoặc thông báo nhắc nhở
+            toastr["error"]("Bạn chưa điền chọn và mô tả lý do!");
+            return;
         }
+    };
+
+
+    $scope.chonSanPham = function (lyDo, ghiChu) {
+        $scope.updateMapSanPhamTra($scope.giayTra.key, lyDo, ghiChu)
+        $http.post(host + '/admin/rest/giay/find-all-by-search', $scope.giaySearch)
+            .then(function (response) {
+                $scope.listGiay = response.data;
+                $scope.numOfPages = response.data.totalPages;
+            }).catch(function (error) {
+            toastr["error"]("Lấy dữ liệu thất bại");
+            // $location.path("/list");
+        });
+
     };
 
     $scope.chonGiayDoi = function (giay) {
@@ -377,8 +394,6 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
         var yeuCauChiTietList = Array.from($scope.mapYeuCauChiTiet.values());
         $scope.yeuCau.listYeuCauChiTiet = yeuCauChiTietList;
 
-        console.log($scope.yeuCau)
-        console.log(JSON.stringify($scope.yeuCau))
 
         // Gửi yêu cầu POST đến máy chủ Spring Boot
         $http.post(host + '/admin/rest/yeu-cau/add', JSON.stringify($scope.yeuCau))
@@ -504,7 +519,7 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
     }
 
     function getHoaDon(id) {
-        $http.get(host + '/admin/rest/hoa-don/yeu-cau/'+ id)
+        $http.get(host + '/admin/rest/hoa-don/yeu-cau/' + id)
             .then(function (response) {
                 $scope.hoaDon = response.data;
                 $scope.numOfPages = response.data.totalPages;
@@ -540,19 +555,18 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
         });
     }
 
-    function getAllLyDo(){
+    function getAllLyDo() {
         $http.get(host + '/admin/rest/ly-do/list')
             .then(function (response) {
                 $scope.listLyDo = response.data;
-                console.log($scope.listLyDo);
             }).catch(function (error) {
             toastr["error"]("Lấy dữ liệu thất bại");
             throw error; // Đẩy lỗi để xử lý ở nơi gọi hàm
         });
     }
 
-    function insertOrUpdateLyDo(lyDo){
-        $http.post(host + '/admin/rest/ly-do/list',lyDo)
+    function insertOrUpdateLyDo(lyDo) {
+        $http.post(host + '/admin/rest/ly-do/list', lyDo)
             .then(function (response) {
                 $scope.listLyDo = response.data;
             }).catch(function (error) {
@@ -576,7 +590,7 @@ app.controller("selectedHoaDonController", function ($scope, $http, $location, $
         getData($scope.hoaDonSearch);
     }
 
-    document.getElementById('flexSwitchCheckDefault').addEventListener('change', function() {
+    document.getElementById('flexSwitchCheckDefault').addEventListener('change', function () {
         var label = document.getElementById('switchLabel');
         if (this.checked) {
             label.textContent = 'Onlline';
@@ -589,7 +603,7 @@ app.controller("selectedHoaDonController", function ($scope, $http, $location, $
         }
     });
 
-    $scope.search = function() {
+    $scope.search = function () {
 
     }
 
