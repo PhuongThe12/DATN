@@ -69,12 +69,12 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="bienTheGiay in giay.lstBienTheGiay">
+            <tr ng-repeat="bienTheGiay in khuyenMai.khuyenMaiChiTietResponses">
                 <td><input type="checkbox" ng-model="bienTheGiay.selected" ng-checked="giay.selectAll" ng-change="addToKhuyenMaiChiTiet(bienTheGiay)"></td>
                 <td>
-                    {{bienTheGiay.mauSac.ten}},{{bienTheGiay.kichThuoc.ten}}
+                    {{bienTheGiay.bienTheGiayResponsel.mauSac.ten}},{{bienTheGiay.bienTheGiayResponsel.kichThuoc.ten}}
                 </td>
-                <td>{{bienTheGiay.giaBan}}</td>
+                <td>{{bienTheGiay.bienTheGiayResponsel.giaBan}}</td>
                 <td>
                     <input type="number" ng-model="bienTheGiay.phanTramGiam">
                 </td>
