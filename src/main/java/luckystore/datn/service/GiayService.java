@@ -36,4 +36,6 @@ public interface GiayService {
     void addExcel(List<GiayExcelRequest> giayExcelRequests);
 
     void updateExcel(List<GiayExcelRequest> lst);
+
+    Integer getSoLuong(Long id);
 }

@@ -119,6 +119,11 @@ public class RestGiayController {
         return ResponseEntity.ok(giayService.updateGia(giayRequest));
     }
 
+    @GetMapping("/{id}/so-luong")
+    public ResponseEntity<?> getSoLuong(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(giayService.getSoLuong(id));
+    }
+
     private ResponseEntity<?> getErrorJson(BindingResult result) {
         if (result.hasErrors()) {
             List<String> fieldErrors = new ArrayList<>();
@@ -132,4 +137,6 @@ public class RestGiayController {
         return null;
 
     }
+
+
 }

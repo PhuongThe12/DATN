@@ -272,10 +272,6 @@ table tbody:hover tr td[rowspan]:hover {
 .remove-icon {
     position: absolute;
     display: none;
-
-    padding: 3px 2px;
-    width: 30px;
-    height: 30px;
     top: 0;
     right: 0;
     transform: translate(30%, -30%);
@@ -290,18 +286,12 @@ table tbody:hover tr td[rowspan]:hover {
     z-index: 999;
 }
 
-.tag-remove-icon {
-    width: 30px;
-    height: 30px;
+.tag-remove-icon:hover {
+    color: red !important;
 }
 
 .image:hover .remove-icon {
     display: block;
-}
-
-.remove-icon:hover,
-.tag-remove-icon:hover {
-    background-color: red;
 }
 
 .nowrap-column {
