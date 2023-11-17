@@ -15,7 +15,7 @@ app.config(function ($routeProvider, $locationProvider) {
         templateUrl: '/pages/admin/dotgiamgia/views/add.html',
         controller: 'addDotGiamGiaController'
     })
-        .otherwise({ redirectTo: '/list' });
+        .otherwise({redirectTo: '/list'});
 });
 
 app.controller("addDotGiamGiaController", function ($scope, $http, $location) {
@@ -28,6 +28,38 @@ app.controller("addDotGiamGiaController", function ($scope, $http, $location) {
     $scope.change = function (input) {
         input.$dirty = true;
     }
+    $scope.checkNgayBatDau = function () {
+        var currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0); // Đặt giờ về 0 để so sánh ngày mà không tính giờ, phút, giây
+        var ngayBatDau = new Date($scope.dotGiamGia.ngayBatDau);
+
+        return ngayBatDau >= currentDate;
+    };
+
+    // Trong controller của bạn
+    $scope.isConditionDuplicate = function (index) {
+        var currentCondition = $scope.dotGiamGia.dieuKienRequests[index];
+        for (var i = 0; i < $scope.dotGiamGia.dieuKienRequests.length; i++) {
+            if (i !== index) {
+                // So sánh các thuộc tính của điều kiện hiện tại với các điều kiện đã có
+                if (currentCondition.tongHoaDon === $scope.dotGiamGia.dieuKienRequests[i].tongHoaDon &&
+                    currentCondition.phanTramGiam === $scope.dotGiamGia.dieuKienRequests[i].phanTramGiam) {
+                    return true; // Điều kiện trùng lặp
+                }
+            }
+        }
+        return false; // Không có điều kiện trùng lặp
+    };
+
+    $scope.disableAddDieuKien = function () {
+        // Kiểm tra nếu có điều kiện trùng lặp thì disable nút
+        for (var i = 0; i < $scope.dotGiamGia.dieuKienRequests.length; i++) {
+            if ($scope.isConditionDuplicate(i)) {
+                return true;
+            }
+        }
+        return false;
+    };
 
     $scope.removeDieuKien = function (index) {
         $scope.dotGiamGia.dieuKienRequests.splice(index, 1);
@@ -71,7 +103,7 @@ app.controller("addDotGiamGiaController", function ($scope, $http, $location) {
         });
     }
     $scope.hasErrorInItems = false;
-    $scope.checkErrorsInItems = function() {
+    $scope.checkErrorsInItems = function () {
         $scope.hasErrorInItems = false;
         for (var i = 0; i < $scope.items.length; i++) {
             if ($scope.items[i].itemForm.$invalid) {
@@ -80,7 +112,7 @@ app.controller("addDotGiamGiaController", function ($scope, $http, $location) {
             }
         }
     };
-    $scope.$watch('items', function(newItems, oldItems) {
+    $scope.$watch('items', function (newItems, oldItems) {
         $scope.checkErrorsInItems();
     }, true);
 
@@ -108,7 +140,7 @@ app.controller("dotGiamGiaListController", function ($scope, $http, $window, $lo
     let searchText;
 
     $scope.search = function () {
-        if(!$scope.searchText) {
+        if (!$scope.searchText) {
             toastr["error"]("Vui lòng nhập tên muốn tìm kiếm");
             return;
         }
@@ -127,9 +159,9 @@ app.controller("dotGiamGiaListController", function ($scope, $http, $window, $lo
             apiUrl += '&search=' + searchText;
         }
 
-        if($scope.status == 0) {
+        if ($scope.status == 0) {
             apiUrl += '&status=' + 0;
-        } else if($scope.status == 1) {
+        } else if ($scope.status == 1) {
             apiUrl += '&status=' + 1;
         }
 
@@ -177,6 +209,17 @@ app.controller("updateDotGiamGiaController", function ($scope, $http, $location,
                 if (response.status === 200) {
                     $scope.dotGiamGia = response.data;
                     console.log($scope.dotGiamGia)
+
+                    var ngayBatDau = $scope.dotGiamGia.ngayBatDau;
+                    var object = new Date(ngayBatDau);
+                    $scope.dotGiamGia.ngayBatDau = object;
+
+                    var ngayKetThuc = $scope.dotGiamGia.ngayKetThuc;
+                    var object = new Date(ngayKetThuc);
+                    $scope.dotGiamGia.ngayKetThuc = object;
+
+                    console.log("Ngày bắt đầu", $scope.dotGiamGia.ngayBatDau)
+                    console.log("Ngày kết thúc", $scope.dotGiamGia.ngayKetThuc)
                 }
             })
             .catch(function (error) {
@@ -184,12 +227,46 @@ app.controller("updateDotGiamGiaController", function ($scope, $http, $location,
             });
     };
 
+
     $scope.change = function (input) {
         input.$dirty = true;
     }
 
+    $scope.checkNgayBatDau = function () {
+        var currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0); // Đặt giờ về 0 để so sánh ngày mà không tính giờ, phút, giây
+        var ngayBatDau = new Date($scope.dotGiamGia.ngayBatDau);
+
+        return ngayBatDau >= currentDate;
+    };
+
+    $scope.isConditionDuplicate = function (index) {
+        var currentCondition = $scope.dotGiamGia.dieuKienResponses[index];
+        console.log("íist ", $scope.dotGiamGia.dieuKienResponses);
+        for (var i = 0; i < $scope.dotGiamGia.dieuKienResponses.length; i++) {
+            if (i !== index) {
+                // So sánh các thuộc tính của điều kiện hiện tại với các điều kiện đã có
+                if (parseInt(currentCondition.tongHoaDon) == $scope.dotGiamGia.dieuKienResponses[i].tongHoaDon &&
+                    parseInt(currentCondition.phanTramGiam) == $scope.dotGiamGia.dieuKienResponses[i].phanTramGiam) {
+                    return true; // Điều kiện trùng lặp
+                }
+            }
+        }
+        return false; // Không có điều kiện trùng lặp
+    };
+
+    $scope.disableAddDieuKien = function () {
+        // Kiểm tra nếu có điều kiện trùng lặp thì disable nút
+        for (var i = 0; i < $scope.dotGiamGia.dieuKienResponses.length; i++) {
+            if ($scope.isConditionDuplicate(i)) {
+                return true;
+            }
+        }
+        return false;
+    };
+
     $scope.removeDieuKien = function (index) {
-        $scope.dotGiamGia.dieuKienRequests.splice(index, 1);
+        $scope.dotGiamGia.dieuKienResponses.splice(index, 1);
     }
 
     $scope.updateDotGiamGia = function () {
@@ -228,13 +305,13 @@ app.controller("updateDotGiamGiaController", function ($scope, $http, $location,
     }
 
     $scope.addDieuKien = function () {
-        $scope.dotGiamGia.dieuKienRequests.push({
+        $scope.dotGiamGia.dieuKienResponses.push({
             tongHoaDon: "",
             phanTramGiam: ""
         });
     }
     $scope.hasErrorInItems = false;
-    $scope.checkErrorsInItems = function() {
+    $scope.checkErrorsInItems = function () {
         $scope.hasErrorInItems = false;
         for (var i = 0; i < $scope.items.length; i++) {
             if ($scope.items[i].itemForm.$invalid) {
@@ -243,7 +320,7 @@ app.controller("updateDotGiamGiaController", function ($scope, $http, $location,
             }
         }
     };
-    $scope.$watch('items', function(newItems, oldItems) {
+    $scope.$watch('items', function (newItems, oldItems) {
         $scope.checkErrorsInItems();
     }, true);
 

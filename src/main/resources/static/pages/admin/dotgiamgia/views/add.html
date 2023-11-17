@@ -1,5 +1,5 @@
 <form name="dotGiamGiaForm" ng-submit="addDotGiamGia()">
-    <button type="submit" class="btn btn-primary" ng-disabled="dotGiamGiaForm.$invalid">Thêm</button>
+    <button type="submit" class="btn btn-primary" ng-disabled="dotGiamGiaForm.$invalid || disableAddDieuKien()">Thêm</button>
     <div class="form-group">
         <label for="ten">Tên chương trình: </label>
         <input type="text" class="form-control" id="ten" name="ten" ng-model="dotGiamGia.ten" ng-maxlength="50"
@@ -24,7 +24,6 @@
             trống ghi chú</small>
         <small class="error-message" ng-show="errors.ghiChu && !dotGiamGiaForm.ghiChu.$dirty">{{errors.ghiChu}}</small>
     </div>
-
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
@@ -32,8 +31,11 @@
                 <input type="date" class="form-control" id="ngayBatDau" name="ngayBatDau"
                        ng-model="dotGiamGia.ngayBatDau" ng-required="true">
                 <small class="error-message"
-                       ng-show="(dotGiamGiaForm.ngayBatDau.$dirty || dotGiamGiaForm.ngayBatDau.$touched) && dotGiamGiaForm.ngayBatDau.$error.required">Không
+                       ng-show="dotGiamGiaForm.ngayBatDau.$error.required && (dotGiamGiaForm.ngayBatDau.$dirty || dotGiamGiaForm.ngayBatDau.$touched)">Không
                     được để trống ngày bắt đầu</small>
+                <small class="error-message"
+                       ng-show="dotGiamGiaForm.ngayBatDau.$dirty && !dotGiamGiaForm.ngayBatDau.$error.required && !checkNgayBatDau()">Ngày
+                    bắt đầu phải từ ngày hôm nay</small>
             </div>
         </div>
         <div class="col-md-4">
@@ -44,55 +46,57 @@
                 <small class="error-message"
                        ng-show="(dotGiamGiaForm.ngayKetThuc.$dirty || dotGiamGiaForm.ngayKetThuc.$touched) && dotGiamGiaForm.ngayKetThuc.$error.required">Không
                     được để trống ngày kết thúc</small>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                <label>Trạng thái: </label>
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="dotGiamGiaTrangThai" name="trangThai"
-                           ng-model="dotGiamGia.trangThai" ng-true-value="1" ng-false-value="0"
-                           ng-init="dotGiamGia.trangThai = 1">
-                    <label class="form-check-label" for="dotGiamGiaTrangThai">Kích hoạt</label>
-                </div>
                 <small class="error-message"
-                       ng-show="errors.trangThai && !dotGiamGiaForm.trangThai.$dirty">{{errors.trangThai}}</small>
+                       ng-show="(dotGiamGiaForm.ngayKetThuc.$dirty || dotGiamGiaForm.ngayBatDau.$dirty) && dotGiamGia.ngayKetThuc < dotGiamGia.ngayBatDau">Ngày
+                    kết thúc phải lớn hơn ngày bắt đầu</small>
             </div>
         </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label>Trạng thái: </label>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="dotGiamGiaTrangThai" name="trangThai"
+                       ng-model="dotGiamGia.trangThai" ng-true-value="1" ng-false-value="0"
+                       ng-init="dotGiamGia.trangThai = 1">
+                <label class="form-check-label" for="dotGiamGiaTrangThai">Kích hoạt</label>
+            </div>
+            <small class="error-message"
+                   ng-show="errors.trangThai && !dotGiamGiaForm.trangThai.$dirty">{{errors.trangThai}}</small>
+        </div>
+    </div>
     </div>
     <label>Điều kiện</label>
-    <div ng-repeat="dieuKien in dotGiamGia.dieuKienRequests">
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input type="text" class="form-control" id="tongHoaDon" name="tongHoaDon{{$index}}"
-                           ng-model="dieuKien.tongHoaDon" ng-change="change(dotGiamGiaForm['tongHoaDon' + $index])"
-                           ng-required="true" placeholder="Tổng hóa đơn" ng-pattern="/^[1-9][0-9]*$/"/>
-                    <small class="error-message"
-                           ng-show="(dotGiamGiaForm['tongHoaDon' + $index].$dirty || dotGiamGiaForm['tongHoaDon' + $index].$touched) && (dotGiamGiaForm['tongHoaDon' + $index].$error.required || dotGiamGiaForm['tongHoaDon' + $index].$error.pattern)">Tổng
-                        hóa đơn phải >= 0</small>
-                </div>
+    <div class="row" ng-repeat="dieuKien in dotGiamGia.dieuKienRequests">
+        <div class="col-md-2">
+            <div class="form-group">
+                <input type="text" class="form-control" id="tongHoaDon" name="tongHoaDon{{$index}}"
+                       ng-model="dieuKien.tongHoaDon" ng-change="change(dotGiamGiaForm['tongHoaDon' + $index])"
+                       ng-required="true" placeholder="Tổng hóa đơn" ng-pattern="/^[0-9][0-9]*$"/>
+                <small class="error-message"
+                       ng-show="(dotGiamGiaForm['tongHoaDon' + $index].$dirty || dotGiamGiaForm['tongHoaDon' + $index].$touched) && (dotGiamGiaForm['tongHoaDon' + $index].$error.required || dotGiamGiaForm['tongHoaDon' + $index].$error.pattern)">Tổng
+                    hóa đơn phải >=0</small>
             </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <input type="text" class="form-control" id="phanTramGiam" name="phanTramGiam{{$index}}"
-                           ng-model="dieuKien.phanTramGiam" ng-change="change(dotGiamGiaForm['phanTramGiam' + $index])"
-                           ng-required="true" placeholder="% giảm" ng-pattern="/^([1-9][0-9]?|100)$/"/>
-                    <small class="error-message"
-                           ng-show="(dotGiamGiaForm['phanTramGiam' + $index].$dirty || dotGiamGiaForm['phanTramGiam' + $index].$touched) && (dotGiamGiaForm['phanTramGiam' + $index].$error.required || dotGiamGiaForm['phanTramGiam' + $index].$error.pattern)">Vui
-                        lòng nhập một số từ 1 đến 100</small>
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <button ng-click="removeDieuKien($index)" ng-show="$index > 0">Xóa</button>
-                </div>
-            </div>
-
         </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <input type="text" class="form-control" id="phanTramGiam" name="phanTramGiam{{$index}}"
+                       ng-model="dieuKien.phanTramGiam" ng-change="change(dotGiamGiaForm['phanTramGiam' + $index])"
+                       ng-required="true" placeholder="% giảm" ng-pattern="/^([1-9][0-9]?|100)$/"/>
+                <small class="error-message"
+                       ng-show="(dotGiamGiaForm['phanTramGiam' + $index].$dirty || dotGiamGiaForm['phanTramGiam' + $index].$touched) && (dotGiamGiaForm['phanTramGiam' + $index].$error.required || dotGiamGiaForm['phanTramGiam' + $index].$error.pattern)">Vui
+                    lòng nhập một số từ 1 đến 100</small>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <button ng-click="removeDieuKien($index)" ng-show="$index > 0">Xóa</button>
+            </div>
+        </div>
+        <small class="error-message"
+               ng-show="isConditionDuplicate($index)">Điều kiện trùng lặp</small>
     </div>
     <button type="button" class="btn btn-primary" ng-click="addDieuKien()"
-            ng-disabled="dotGiamGiaForm.$invalid">Thêm
-        điều kiện
+            ng-disabled="disableAddDieuKien() || dotGiamGiaForm.$invalid">Thêm điều kiện
     </button>
 </form>
