@@ -30,46 +30,30 @@ public class GiayExcelRequest implements Serializable {
     private String image4;
     private String image5;
 
-    @NotNull(message = "Không được để trống tên")
-    @Length(message = "Tên không được vượt quá 120 ký tự", max = 120)
     private String ten;
 
-    @NotNull(message = "Không được để trống năm sản xuất", groups = {CreateGroup.class})
-    @Min(message = "Năm sản xuất không hợp lệ", value = 999, groups = {UpdateGroup.class, CreateGroup.class})
-    @Max(message = "Năm sản xuất không hợp lệ", value = 9999, groups = {UpdateGroup.class, CreateGroup.class})
     private Integer namSX;
 
-    @NotNull(message = "Không được để trống", groups = {CreateGroup.class})
     private String lotGiay;
 
-    @NotNull(message = "Không được để trống", groups = {CreateGroup.class})
     private String muiGiay;
 
-    @NotNull(message = "Không được để trống", groups = {CreateGroup.class})
     private String coGiay;
 
-    @NotNull(message = "Không được để trống", groups = {CreateGroup.class})
     private String thuongHieu;
 
-    @NotNull(message = "Không được để trống", groups = {CreateGroup.class})
     private String chatLieu;
 
-    @NotNull(message = "Không được để trống", groups = {CreateGroup.class})
     private String dayGiay;
 
-    @NotNull(message = "Không được để trống", groups = {CreateGroup.class})
     private String deGiay;
 
     private Integer trangThai = 1;
 
-    @NotNull(message = "Không được để trống", groups = {CreateGroup.class})
-    @Length(message = "Mô tả không được quá ngắn", min = 3, groups = {UpdateGroup.class, CreateGroup.class})
-    @Length(message = "Mô tả không được quá 3000 ký tự", max = 3000, groups = {UpdateGroup.class, CreateGroup.class})
     private String moTa;
 
-    private String hashTags;
+    private Set<String> hashTags;
 
-    @Valid
     private Set<BienTheGiayExcelRequest> bienTheGiays;
 
     private Map<String, String> mauSacImages;

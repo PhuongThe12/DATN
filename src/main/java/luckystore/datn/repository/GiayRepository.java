@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Repository
@@ -18,7 +19,7 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
     @Query("select new luckystore.datn.model.response.GiayResponse(g) from Giay g  where g.trangThai = 1")
     Page<GiayResponse> findAllByTrangThai(Pageable pageable);
 
-    @Query("select new luckystore.datn.model.response.GiayResponse(g) from Giay g  where g.id = :id")
+    @Query("select new luckystore.datn.model.response.GiayResponse(g) from Giay g where g.id = :id")
     GiayResponse findResponseById(Long id);
 
     @Query("select new luckystore.datn.model.response.GiayResponse(g) from Giay g  where g.trangThai = 1")
@@ -107,7 +108,9 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
     )
     List<GiayResponse> findAllBySearch(GiaySearch giaySearch);
 
-    @Query("select g.id from Giay g where g.ten in :names")
-    List<Long> getIdsByName(Set<String> names);
+    @Query("select new luckystore.datn.model.response.GiayResponse(g.id, g.ten) from Giay g where g.ten in :names")
+    List<GiayResponse> getIdsByName(Set<String> names);
+
+    Optional<Giay> findByTen(String ten);
 
 }

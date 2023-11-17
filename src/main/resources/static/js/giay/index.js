@@ -14,6 +14,12 @@ app.config(function ($routeProvider, $locationProvider) {
     }).when("/add", {
         templateUrl: '/pages/admin/giay/views/add.html',
         controller: 'addGiayController'
+    }).when("/excel", {
+        templateUrl: '/pages/admin/giay/views/excel.html',
+        controller: 'excelController'
+    }).when("/excelUpdate", {
+        templateUrl: '/pages/admin/giay/views/excel-update.html',
+        controller: 'excelUpdateController'
     })
         .otherwise({redirectTo: '/list'});
 });

@@ -57,4 +57,9 @@ public class NhanVienResponse {
             this.taiKhoan = nhanVien.getTaiKhoan();
         }
     }
+
+    public NhanVienResponse(Long id, String ten) {
+        this.id = id;
+        this.hoTen = ten;
+    }
 }

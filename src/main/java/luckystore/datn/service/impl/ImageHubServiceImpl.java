@@ -107,7 +107,7 @@ public class ImageHubServiceImpl implements ImageHubService {
 
     @Override
     public String base64ToFile(String base64Data) {
-        String filename = System.currentTimeMillis() + ".txt";
+        String filename = System.currentTimeMillis() + (Math.random() + "").replaceAll("\\.", "") + ".txt";
         String filePath = uploadDir + "/" + filename;
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));

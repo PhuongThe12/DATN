@@ -24,4 +24,9 @@ public interface BienTheGiayRepository extends JpaRepository<BienTheGiay, Long> 
             "from BienTheGiay bt where bt.barCode = :barCode and bt.id != :id")
     Boolean getBienTheGiayByBarCodeUpdate(String barCode, Long id);
 
+    @Query("select bt.soLuong from BienTheGiay bt where bt.id = :id")
+    Integer getSoLuong(Long id);
+
+    @Query("select bt from BienTheGiay bt where bt.id in :id")
+    List<BienTheGiay> findByIdContains(List<Long> id);
 }

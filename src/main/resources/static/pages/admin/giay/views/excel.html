@@ -1,0 +1,102 @@
+<div ng-show="isLoading" class="loading-spinner">
+    <div class="text-center" style="  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Màu nền đục để làm mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; ">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<div class="title-page">
+    <div class="d-flex">
+        <p class="text-secondary m-0">Trang chủ - Quản Lý Giày - Thêm bằng file excel</p>
+    </div>
+</div>
+
+<div class="card" style="margin: 20px">
+    <div class="card-body">
+
+        <div class="d-flex justify-content-between">
+            <div>
+                <a type="button" data-bs-toggle="modal" data-bs-target="#excelRule" data-toggle="tooltip"
+                   data-placement="right"
+                   title="Quy định xử lý file excel">
+                    <i class="fas fa-info-circle text-info"></i>
+                </a>
+                <a href="" class="link-primary mx-3">Tải dữ liệu mẫu</a>
+            </div>
+
+            <button class="btn btn-outline-danger" id="btnShowErrors" type="button" data-bs-toggle="modal"
+                    data-bs-target="#excelError" ng-show="errors.length > 0">Lỗi hiện tại
+            </button>
+        </div>
+        <div class="py-3">
+
+            <div class="mb-3">
+                <label for="fileInput" class="form-label">Thêm bằng file excel</label>
+                <input type="file" id="fileInput" accept=".xlsx, .xls" class="form-control" onchange="angular.element(this).scope().processExcel()"/>
+            </div>
+<!--            <button ng-click="processExcel()" class="btn btn-primary">Xử lý file</button>-->
+            <div class="row mt-3" ng-show="requestData.active">
+                <div class="my-2">
+                    Tìm thấy: <strong>{{requestData.length}}</strong> giày có trong file excel
+                </div>
+                <div class="d-flex flex-row">
+                    <button ng-click="addExcel()" id="addExcelBtn" class="btn btn-primary">Thêm vào danh sách</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="excelRule" tabindex="-1" aria-labelledby="exelRuleLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exelRuleLabel">Quy tắc xử lý file excel</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đã hiều</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="excelError" tabindex="-1" aria-labelledby="excelErrorsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="excelErrorsLabel">Lỗi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group list-group-flush" ng-repeat="error in errors">
+                    <li class="list-group-item">{{error}}</li>
+                </ul>
+
+                <ul class="list-group list-group-flush" ng-show="errors.length == 0">
+                    <li class="list-group-item">Không lỗi nào được phát hiện</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đã hiểu</button>
+            </div>
+        </div>
+    </div>
+</div>
