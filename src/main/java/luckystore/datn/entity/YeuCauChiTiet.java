@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import luckystore.datn.model.request.YeuCauChiTietRequest;
+import org.hibernate.annotations.Nationalized;
 
 
 @AllArgsConstructor
@@ -32,19 +33,18 @@ public class YeuCauChiTiet {
     @JoinColumn(name = "ID_BIEN_THE_GIAY")
     private BienTheGiay bienTheGiay;
 
-    @Column(name = "LY_DO")
-    private String lyDo;
+    @OneToOne
+    @JoinColumn(name = "LY_DO")
+    private LyDo lyDo;
 
     @Column(name = "SO_LUONG")
     private Integer soLuong;
-
-    @Column(name = "HINH_ANH")
-    private String hinhAnh;
 
     @Column(name = "TRANG_THAI")
     private Integer trangThai;
 
     @Column(name = "GHI_CHU")
+    @Nationalized
     private String ghiChu;
 
     public YeuCauChiTiet(YeuCauChiTietRequest yeuCauChiTietRequest) {
@@ -60,13 +60,4 @@ public class YeuCauChiTiet {
         }
     }
 
-    public YeuCauChiTiet(YeuCau yeuCau, HoaDonChiTiet hoaDonChiTiet, BienTheGiay bienTheGiay, String lyDo, Integer soLuong, Integer trangThai, String ghiChu) {
-        this.yeuCau = yeuCau;
-        this.hoaDonChiTiet = hoaDonChiTiet;
-        this.bienTheGiay = bienTheGiay;
-        this.lyDo = lyDo;
-        this.soLuong = soLuong;
-        this.trangThai = trangThai;
-        this.ghiChu = ghiChu;
-    }
 }

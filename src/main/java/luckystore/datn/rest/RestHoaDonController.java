@@ -33,12 +33,15 @@ public class RestHoaDonController {
     }
 
     @PostMapping("/yeu-cau")
-    public ResponseEntity getHoaDonYeuCauPage(@RequestBody HoaDonSearch hoaDonSearch,
-                                              @RequestParam(value = "page", defaultValue = "1") Integer page) {
-        return new ResponseEntity(hoaDonService.getPageHoaDonYeuCau(page, hoaDonSearch), HttpStatus.OK);
+    public ResponseEntity getPageHoaDonYeuCauPage(@RequestBody HoaDonSearch hoaDonSearch) {
+        System.out.println(hoaDonSearch);
+        return new ResponseEntity<>(hoaDonService.getPageHoaDonYeuCau(hoaDonSearch), HttpStatus.OK);
     }
 
-
+    @GetMapping("/yeu-cau/{id}")
+    public ResponseEntity getHoaDonYeuCauPage(@PathVariable("id") Long id) {
+        return new ResponseEntity(hoaDonService.getHoaDonYeuCau(id), HttpStatus.OK);
+    }
 
     @GetMapping("/get-all")
     public ResponseEntity getAll() {

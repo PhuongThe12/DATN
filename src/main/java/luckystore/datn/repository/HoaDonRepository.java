@@ -27,11 +27,12 @@ public interface HoaDonRepository extends JpaRepository<HoaDon,Long> {
 
     @Query("SELECT new luckystore.datn.model.response.HoaDonYeuCauRespone(hd, hd.hoaDonGoc.id)" +
             "FROM HoaDon hd " +
-            "LEFT JOIN hd.khachHang kh " +
-            "LEFT JOIN hd.nhanVien nv " +
+            "left JOIN hd.khachHang kh " +
+            "left JOIN hd.nhanVien nv " +
             "INNER JOIN hd.listHoaDonChiTiet hdct " +
             "WHERE (hd.loaiHoaDon = 1 OR hd.loaiHoaDon = 2) "+
             "AND (:#{#hoaDonSearch.idHoaDon} IS NULL OR CAST(hd.id AS string) like %:#{#hoaDonSearch.idHoaDon}%) "+
+            "AND (:#{#hoaDonSearch.loaiHoaDon} IS NULL OR hd.loaiHoaDon = :#{#hoaDonSearch.loaiHoaDon}) "+
             "AND (:#{#hoaDonSearch.email} IS NULL OR hd.email like %:#{#hoaDonSearch.email}%) "+
             "AND (:#{#hoaDonSearch.kenhBan} IS NULL OR hd.kenhBan = :#{#hoaDonSearch.kenhBan}) "+
             "AND (:#{#hoaDonSearch.trangThai} IS NULL OR hd.trangThai = :#{#hoaDonSearch.trangThai}) "+
@@ -49,6 +50,10 @@ public interface HoaDonRepository extends JpaRepository<HoaDon,Long> {
 
     @Query("SELECT hd.id FROM HoaDon hd where hd.id = :id")
     Long getIdById(Long id);
+  
+    @Query("select new luckystore.datn.model.response.HoaDonYeuCauRespone(hd, hd.hoaDonGoc.id) from HoaDon hd " +
+            "WHERE hd.id = :id")
+    HoaDonYeuCauRespone getHoaDonYeuCauResponse(Long id);
 }
 
 

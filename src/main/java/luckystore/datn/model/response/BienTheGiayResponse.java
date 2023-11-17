@@ -57,7 +57,7 @@ public class BienTheGiayResponse {
                 giayResponse.setTen(bienTheGiay.getGiay().getTen());
 //                giayResponse.getLstAnh().add(bienTheGiay.getGiay().getLstAnh().isEmpty() ? null :
 //                        ImageHubServiceImpl.getBase64FromFileStatic(bienTheGiay.getGiay().getLstAnh().get(0).getLink()));
-//                giayResponse.setTen(bienTheGiay.getGiay().getTen());
+                giayResponse.setTen(bienTheGiay.getGiay().getTen());
                 giayResponse.setLstBienTheGiay(null);
             }
         }
