@@ -84,4 +84,12 @@ app.controller("detailDonHangController", function ($scope, $http, $window, $loc
         toastr["error"]("Lấy dữ liệu thất bại");
         $location.path("/list");
     });
+
+        $http.get(host + '/admin/rest/hoa-don-chi-tiet/find-by-id-hoa-don/' + id)
+            .then(function (response) {
+                $scope.hoaDonChiTiets = response.data;
+            }).catch(function (error) {
+            toastr["error"]("Lấy dữ liệu thất bại");
+            $location.path("/list");
+        });
 });

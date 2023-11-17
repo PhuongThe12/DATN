@@ -11,6 +11,8 @@ public interface HoaDonChiTietService {
 
     List<HoaDonChiTietResponse> getAll();
 
+    List<HoaDonChiTietResponse> getAllByIdHoaDon(Long id);
+
     Page<HoaDonChiTietResponse> getPage(int page, String searchText, Integer status);
 
     HoaDonChiTietResponse findById(Long id);
