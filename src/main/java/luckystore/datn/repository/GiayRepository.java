@@ -19,7 +19,7 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
     @Query("select new luckystore.datn.model.response.GiayResponse(g) from Giay g  where g.trangThai = 1")
     Page<GiayResponse> findAllByTrangThai(Pageable pageable);
 
-    @Query("select new luckystore.datn.model.response.GiayResponse(g) from Giay g  where g.id = :id")
+    @Query("select new luckystore.datn.model.response.GiayResponse(g) from Giay g where g.id = :id")
     GiayResponse findResponseById(Long id);
 
     @Query("select new luckystore.datn.model.response.GiayResponse(g) from Giay g  where g.trangThai = 1")

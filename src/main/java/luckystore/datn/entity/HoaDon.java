@@ -25,7 +25,7 @@ public class HoaDon {
     @Column(name = "ID")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "ID_HOA_DON_GOC")
     @JsonBackReference
     private HoaDon hoaDonGoc;
@@ -77,7 +77,7 @@ public class HoaDon {
     @Column(name = "MO_TA")
     private String ghiChu;
 
-    @OneToMany(mappedBy = "hoaDon", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "hoaDon", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonManagedReference
     private Set<HoaDonChiTiet> listHoaDonChiTiet;
 
