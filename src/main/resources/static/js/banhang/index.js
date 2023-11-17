@@ -242,9 +242,14 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
 
 
         $scope.giayDetail = productData;
-        displayImages(productData.lstAnh);
-
+        console.log(productData);
         const mauSacImages = productData.mauSacImages;
+        for(const key in mauSacImages) {
+            if(mauSacImages[key]) {
+                productData.lstAnh.push(mauSacImages[key]);
+            }
+        }
+        displayImages(productData.lstAnh);
         const lstBienTheGiay = productData.lstBienTheGiay;
 
         const buttonsContainer = document.getElementById('buttons-container');
@@ -294,7 +299,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                     // Tạo danh sách ul để chứa thông tin sản phẩm
                     const ul = document.createElement('ul');
                     lstBienTheGiay.forEach(variant => {
-                        if (mauSacIdInt === variant.mauSac.id) {
+                        if (mauSacIdInt === variant.mauSac.id && variant.soLuong > 0) {
                             const li = document.createElement('li');
                             li.textContent = `ID: ${variant.id}, GiaBan: ${variant.giaBan}`;
                             ul.appendChild(li);
@@ -320,11 +325,14 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                     });
                     outerDiv.classList.add('button_checked');
 
-                    if (mauSacImages[mauSacId]) {
                         const linkAnh = mauSacImages[mauSacId];
-                        const imageList = [linkAnh];
-                        displayImages(imageList);
-                    }
+                        if(linkAnh) {
+                            const imageList = [linkAnh];
+                            displayImages(imageList);
+                        } else {
+                            displayImages(productData.lstAnh);
+                        }
+
                 });
                 outerDiv.className = "button_color";
                 buttonsContainer.appendChild(outerDiv);

@@ -68,4 +68,7 @@ public class BienTheGiay {
     @JoinColumn(name = "ID_MAU_SAC")
     private MauSac mauSac;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ID_")
+    private KhuyenMaiC
 }
