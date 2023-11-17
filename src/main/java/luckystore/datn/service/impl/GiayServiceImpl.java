@@ -971,6 +971,11 @@ public class GiayServiceImpl implements GiayService {
     }
 
     @Override
+    public Integer getSoLuong(Long id) {
+        return bienTheGiayRepository.getSoLuong(id);
+    }
+
+    @Override
     public GiayResponse getResponseById(Long id) {
         GiayResponse giayResponse = giayRepository.findResponseById(id);
         if (giayResponse == null) {

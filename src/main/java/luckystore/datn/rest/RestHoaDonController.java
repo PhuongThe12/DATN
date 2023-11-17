@@ -1,8 +1,12 @@
 package luckystore.datn.rest;
 
+import luckystore.datn.model.request.AddOrderProcuctRequest;
 import luckystore.datn.model.request.HoaDonSearch;
+import luckystore.datn.model.response.HoaDonBanHangResponse;
+import luckystore.datn.service.HoaDonChiTietService;
 import luckystore.datn.service.HoaDonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +17,9 @@ public class RestHoaDonController {
 
     @Autowired
     private final HoaDonService hoaDonService;
+
+    @Autowired
+    private HoaDonChiTietService hoaDonChiTietService;
 
     public RestHoaDonController(HoaDonService hoaDonService) {
         this.hoaDonService = hoaDonService;
@@ -43,5 +50,37 @@ public class RestHoaDonController {
         return new ResponseEntity(hoaDonService.findById(id), HttpStatus.OK);
     }
 
+    @GetMapping("/chua-thanh-toan")
+    public ResponseEntity<?> getAllChuaThanhToan() {
+        return ResponseEntity.ok(hoaDonService.getAllChuaThanhToan());
+    }
+
+    @PostMapping("/new-hoa-don")
+    public ResponseEntity<?> createNewHoadon() {
+        return ResponseEntity.ok(hoaDonService.createNewHoaDon());
+    }
+
+    @PostMapping("/add-product")
+    public ResponseEntity<?> addProduct(@RequestBody AddOrderProcuctRequest addOrderProcuctRequest) {
+        return ResponseEntity.ok(hoaDonService.addProduct(addOrderProcuctRequest));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteHoaDon(@PathVariable("id") Long id) {
+        hoaDonService.deleteHoaDon(id);
+        return ResponseEntity.ok(HttpEntity.EMPTY);
+    }
+
+    @DeleteMapping("/delete-hdct/{id}")
+    public ResponseEntity<?> deleteHoaDonChiTiet(@PathVariable("id") Long idHdct) {
+        hoaDonChiTietService.deleteHoaDonChiTiet(idHdct);
+        return ResponseEntity.ok(HttpEntity.EMPTY);
+    }
+
+    @DeleteMapping("/delete-all-hdct/{id}")
+    public ResponseEntity<?> deleteAllHoaDonChiTiet(@PathVariable("id") Long idHd) {
+        hoaDonService.deleteAllHoaDonChiTiet(idHd);
+        return ResponseEntity.ok(HttpEntity.EMPTY);
+    }
 
 }

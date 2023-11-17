@@ -3,6 +3,7 @@ package luckystore.datn.repository;
 import luckystore.datn.entity.HoaDon;
 import luckystore.datn.model.request.HoaDonSearch;
 import luckystore.datn.model.response.HashTagResponse;
+import luckystore.datn.model.response.HoaDonBanHangResponse;
 import luckystore.datn.model.response.HoaDonResponse;
 import luckystore.datn.model.response.HoaDonYeuCauRespone;
 import luckystore.datn.model.response.MuiGiayResponse;
@@ -41,6 +42,13 @@ public interface HoaDonRepository extends JpaRepository<HoaDon,Long> {
             "order by hd.id desc ")
     Page<HoaDonYeuCauRespone> getPageHoaDonYeuCauResponse(HoaDonSearch hoaDonSearch, Pageable pageable);
 
+    @Query("SELECT new luckystore.datn.model.response.HoaDonBanHangResponse(hd.id, hdct, hd.trangThai)  FROM HoaDon hd " +
+            "left join hd.listHoaDonChiTiet hdct " +
+            "where hd.trangThai = 0 order by hd.id desc")
+    List<HoaDonBanHangResponse> getAllChuaThanhToan();
+
+    @Query("SELECT hd.id FROM HoaDon hd where hd.id = :id")
+    Long getIdById(Long id);
 }
 
 
