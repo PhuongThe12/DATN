@@ -7,6 +7,7 @@ import luckystore.datn.model.request.YeuCauRequest;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,25 +30,25 @@ public class YeuCau {
     @JoinColumn(name = "ID_HOA_DON")
     private HoaDon hoaDon;
 
-    @Column(name = "Loai_Yeu_Cau")
+    @Column(name = "LOAI_YEU_CAU")
     private Integer loaiYeuCau;
 
-    @Column(name = "Trang_Thai")
+    @Column(name = "TRANG_THAI")
     private Integer trangThai;
 
-    @Column(name = "Ngay_Tao")
+    @Column(name = "NGAY_TAO")
     private Date ngayTao;
 
-    @Column(name = "Ngay_Sua")
+    @Column(name = "NGAY_SUA")
     private Date ngaySua;
 
-    @Column(name = "Ghi_Chu")
+    @Column(name = "GHI_CHU")
     private String ghiChu;
 
     @OneToMany(mappedBy = "yeuCau",fetch = FetchType.LAZY)
     @Column(nullable = true)
     @JsonManagedReference
-    private List<YeuCauChiTiet> listYeuCauChiTiet;
+    private Set<YeuCauChiTiet> listYeuCauChiTiet;
 
     public YeuCau(YeuCauRequest YeuCauRequest,HoaDon hoaDon) {
         if (YeuCauRequest != null) {

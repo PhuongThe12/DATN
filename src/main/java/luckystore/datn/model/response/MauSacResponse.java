@@ -34,4 +34,9 @@ public class MauSacResponse {
         }
     }
 
+    public MauSacResponse(Long id, String ten) {
+        this.id = id;
+        this.ten = ten;
+    }
+
 }

@@ -34,4 +34,8 @@ public interface GiayService {
     List<GiayResponse> findAllBySearch(GiaySearch giaySearch);
 
     void addExcel(List<GiayExcelRequest> giayExcelRequests);
+
+    void updateExcel(List<GiayExcelRequest> lst);
+
+    Integer getSoLuong(Long id);
 }

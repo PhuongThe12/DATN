@@ -31,4 +31,9 @@ public class ChatLieuResponse {
         }
     }
 
+    public ChatLieuResponse(Long id, String ten) {
+        this.id = id;
+        this.ten = ten;
+    }
+
 }

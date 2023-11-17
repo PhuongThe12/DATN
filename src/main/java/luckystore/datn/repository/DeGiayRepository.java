@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Repository
@@ -30,6 +31,9 @@ public interface DeGiayRepository extends JpaRepository<DeGiay, Long> {
 
     Boolean existsByTenAndIdNot(String ten, Long id);
 
-    @Query("select g.id from DeGiay g where g.ten in :names")
-    List<Long> getIdsByName(Set<String> names);
+    @Query("select new luckystore.datn.model.response.DeGiayResponse(g.id, g.ten) from DeGiay g where g.ten in :names")
+    List<DeGiayResponse> getIdsByName(Set<String> names);
+
+    Optional<DeGiay> findByTen(String ten);
 }
+

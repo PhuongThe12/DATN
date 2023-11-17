@@ -4,10 +4,12 @@ import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import luckystore.datn.constraints.ErrorMessage;
 import luckystore.datn.constraints.SystemHistory;
+import luckystore.datn.entity.HoaDonChiTiet;
 import luckystore.datn.entity.NhanVien;
 import luckystore.datn.exception.DuplicateException;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.model.request.NhanVienRequest;
+import luckystore.datn.repository.HoaDonChiTietRepository;
 import luckystore.datn.service.NhanVienService;
 import luckystore.datn.service.impl.EmailSenderService;
 import luckystore.datn.service.impl.SystemHistoryLogger;
@@ -32,6 +34,15 @@ public class RestNhanVienController {
 
     @Autowired
     private EmailSenderService emailSenderService;
+
+    @Autowired
+    private HoaDonChiTietRepository hoaDonChiTietRepository;
+
+    @GetMapping("/hdct/{id}")
+    public ResponseEntity getOne(@PathVariable Long id){
+        HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findById(id).get();
+        return new ResponseEntity(hoaDonChiTiet,HttpStatus.OK);
+    }
 
     @PostMapping
     public ResponseEntity addNhanVien(@Valid @RequestBody NhanVienRequest nhanVienRequest, BindingResult result) {

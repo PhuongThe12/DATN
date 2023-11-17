@@ -1,7 +1,10 @@
 package luckystore.datn.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.math.BigDecimal;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,8 +20,9 @@ public class HoaDonChiTiet {
     @Column(name = "ID")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "ID_HOA_DON")
+    @JsonBackReference
     private HoaDon hoaDon;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -26,10 +30,13 @@ public class HoaDonChiTiet {
     private BienTheGiay bienTheGiay;
 
     @Column(name = "DON_GIA")
-    private Long donGia;
+    private BigDecimal donGia;
 
     @Column(name = "SO_LUONG")
     private Integer soLuong;
+
+    @Column(name = "SO_LUONG_TRA")
+    private Integer soLuongTra;
 
     @Column(name = "TRANG_THAI")
     private Integer trangThai;
