@@ -152,9 +152,9 @@
                                         hidden=""></button>
                                 <div class="p-2 hover-item" ng-click="addOrder(giay.id)">
                                     <div class="position-relative" style="text-align: center;">
-                                        <img width="60%" class="rounded-3"
-                                             src="https://product.hstatic.net/1000361048/product/giay_co_lung_forum_trang_fy4976_02_standard_hover_1af12c21fb0a498eb38c9d41c04e4514_grande.jpg"
-                                             alt="">
+                                        <img width="60%" class="rounded-3" style="height: 85px; width: 85px; object-fit: contain"
+                                             ng-src="{{giay.lstAnh && giay.lstAnh.length > 0 ? giay.lstAnh[0] : 'https://product.hstatic.net/1000361048/product/giay_co_lung_forum_trang_fy4976_02_standard_hover_1af12c21fb0a498eb38c9d41c04e4514_grande.jpg'}}"
+                                             alt="Ảnh giày">
                                     </div>
                                     <p class="mt-1" style="text-wrap: nowrap;overflow: hidden;text-align: center;">
                                         {{giay.ten}}</p>
