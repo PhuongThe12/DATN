@@ -36,4 +36,8 @@ public class HoaDonBanHangResponse {
         this.id = hoaDon.getId();
         this.trangThai = trangThai;
     }
+
+    public HoaDonBanHangResponse(Long id) {
+        this.id = id;
+    }
 }

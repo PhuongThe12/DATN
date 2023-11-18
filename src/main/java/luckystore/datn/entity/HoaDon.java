@@ -77,6 +77,12 @@ public class HoaDon {
     @Column(name = "MO_TA")
     private String ghiChu;
 
+    @Column(name = "TIEN_GIAM")
+    private BigDecimal tienGiam;
+
+    @Column(name = "UU_DAI")
+    private Integer uuDai;
+
     @OneToMany(mappedBy = "hoaDon", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonManagedReference
     private Set<HoaDonChiTiet> listHoaDonChiTiet;
