@@ -71,7 +71,7 @@
     }
 
     #formYeuCau {
-        height: 700px;
+        height: 710px;
     }
 
     .right {
@@ -126,7 +126,6 @@
                                         <th>Kích Cỡ</th>
                                         <th>Màu Sắc</th>
                                         <th>Đơn Giá</th>
-                                        <th>Thành Tiền</th>
                                         <th>Thao Tác</th>
                                     </tr>
                                     </thead>
@@ -136,16 +135,15 @@
                                         <td>{{hoaDonChiTiet.bienTheGiay.giayResponse.ten}}</td>
                                         <td>
                                             <input type="number" ng-model="hoaDonChiTiet.soLuongTra" min="0"
-                                                   max="{{hoaDonChiTiet.soLuong }}">
+                                                   max="{{hoaDonChiTiet.soLuong}}" ng-change="updateTongTienTra()">
                                             <span>/ {{hoaDonChiTiet.soLuong}}</span>
                                         </td>
                                         <td>{{hoaDonChiTiet.bienTheGiay.kichThuoc.ten}}</td>
                                         <td>{{hoaDonChiTiet.bienTheGiay.mauSac.ten}}</td>
-                                        <td>{{ formatToVND(hoaDonChiTiet.donGia) }}</td>
-                                        <td>{{ formatToVND(hoaDonChiTiet.donGia * hoaDonChiTiet.soLuongTra) }}</td>
+                                        <td>{{ hoaDonChiTiet.donGia | formatToVND }}</td>
                                         <td>
                                             <button type="button" class="btn btn-primary btn-lg"
-                                                    ng-click="doiSanPham(hoaDonChiTiet,index+1)">Trả
+                                                    ng-click="traSanPham(hoaDonChiTiet,index+1);updateTongTienTra()">Trả
                                             </button>
                                         </td>
                                     </tr>
@@ -169,17 +167,17 @@
                                 <thead>
                                 <tr>
                                     <th>Mã</th>
-                                    <th>Sản Phẩm Đổi</th>
+                                    <th>Loại</th>
+                                    <th>Tên Sản Phẩm</th>
                                     <th>Số Lượng Trả/Đổi</th>
                                     <th>Kích Cỡ</th>
                                     <th>Màu Sắc</th>
                                     <th>Đơn Giá</th>
-                                    <th>Thành Tiền</th>
                                     <th>Thao Tác</th>
                                 </tr>
                                 </thead>
                                 <tbody ng-repeat="item in arrayForRepeat track by $index"
-                                       style="max-height: 350px;overflow: auto">
+                                       style="max-height: 250px;overflow: auto">
                                 <tr>
                                     <td>{{ item.key}}</td>
                                     <td>Giày Trả</td>
@@ -188,12 +186,12 @@
                                     <td>{{ item.value.hoaDonChiTiet.bienTheGiay.kichThuoc.ten }}</td>
                                     <td>{{ item.value.hoaDonChiTiet.bienTheGiay.mauSac.ten }}</td>
                                     <td>{{ formatToVND(item.value.hoaDonChiTiet.donGia) }}</td>
-                                    <td>{{ formatToVND(item.value.hoaDonChiTiet.soLuongTra *
-                                        item.value.hoaDonChiTiet.donGia) }}
-                                    </td>
                                     <td>
                                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                                 data-bs-target="#exampleModal" ng-click="ghiChu_LyDo(item)">Đổi
+                                        </button>
+                                        <button type="button" class="btn btn-danger" ng-click="deleteGiayTra(item)">
+                                            <i class="bi bi-trash"></i>
                                         </button>
                                     </td>
                                 </tr>
@@ -207,9 +205,11 @@
                                     <td>{{ item1.value.bienTheGiay.kichThuoc.ten }}</td>
                                     <td>{{ item1.value.bienTheGiay.mauSac.ten }}</td>
                                     <td>{{ item1.value.bienTheGiay.giaBan }}</td>
-                                    <td>{{ item1.value.soLuongDoi * item1.value.bienTheGiay.giaBan }}</td>
-                                    <td><a class="btn btn-warning" data-bs-toggle="modal" href="#exampleModalToggle"
-                                           role="button" ng-click="chonLaiGiayDoi(item)">Chọn Lại</a></td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger" ng-click="deleteGiayDoi(item1)">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -218,7 +218,7 @@
                 </div>
 
 
-                <!-- Modal -->
+                <!-- Modal Điền: Lý Do + Ghi Chú-->
                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
                      aria-hidden="true">
                     <div class="modal-dialog">
@@ -262,7 +262,6 @@
                         </div>
                     </div>
                 </div>
-
 
 
                 <div class="modal fade" id="exampleModalToggle" aria-hidden="true"
@@ -409,7 +408,9 @@
                                         data-bs-toggle="modal"
                                         data-bs-dismiss="modal">Quay Về
                                 </button>
-                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close" ng-click="giaySelected()">Chọn</button>
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close"
+                                        ng-click="giaySelected()">Chọn
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -419,51 +420,213 @@
 
             <div class="right">
                 <div id="formYeuCau">
+
                     <div class="form-group">
-                        <label>Hoá Đơn: <a>HD{{hoaDon.id}}</a></label>
+                        <div class="form-floating">
+                            <select class="form-select" id="floatingSelect1"
+                                    placeholder="Chọn Lý Do Đổi/Trả"
+                                    aria-label="Floating label select example" name="nguoiThucHien"
+                                    ng-model="yeuCau.nguoiThucHien">
+                                <option ng-repeat="nhanVien in listNhanVien" value="{{nhanVien.id}}"
+                                        ng-selected="nhanVien.id">
+                                    {{nhanVien.hoTen}}
+                                </option>
+                            </select>
+                            <label for="floatingSelect1">Nhân Viên</label>
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <select class="form-select" id="floatingSelect1"
-                                placeholder="Chọn Lý Do Đổi/Trả"
-                                aria-label="Floating label select example" name="nguoiThucHien" ng-model="yeuCau.nguoiThucHien">
-                            <option ng-repeat="nhanVien in listNhanVien" value="{{nhanVien}}" ng-selected="nhanVien.id">{{nhanVien.hoTen}}
-                            </option>
-                        </select>
-                        <label for="floatingSelect1">Nhân Viên</label>
+                        <label>Trả hàng/: <a style="color: #0c63e4">HD{{hoaDon.id}} - {{hoaDon.nhanVien.ten}}</a></label>
                     </div>
 
                     <div class="form-group">
-                        <select class="form-select" id="floatingSelect2"
-                                aria-label="Floating label select example" name="loaiYeuCau"
-                                ng-model="yeuCau.loaiYeuCau">
-                            <option value="1">Yêu Cầu Đổi</option>
-                            <option value="2">Yêu Cầu Trả</option>
-                        </select>
-                        <label for="floatingSelect2">Loại Yêu Cầu</label>
+                        <label>Tổng tiền mua hàng: {{tongTienHangMua | formatToVND}}</label>
                     </div>
 
                     <div class="form-group">
-                        <select class="form-select" id="floatingSelect3"
-                                aria-label="Floating label select example" name="trangThai" ng-model="yeuCau.trangThai">
-                            <option value="1">Chờ Xét Duyệt</option>
-                            <option value="2">Đã Xét Duyệt</option>
-                            <option value="3">Đã Hoàn Thành</option>
-                            <option value="4">Bị Hủy</option>
-                        </select>
-                        <label for="floatingSelect3">Trạng Thái</label>
+                        <label>Tổng tiền hàng trả: {{ tongTienHangTra | formatToVND }}</label>
                     </div>
 
                     <div class="form-group">
-                        <textarea class="form-control" placeholder="Ghi chú chi tiê" name="ghiChu" ng-model="yeuCau.ghiChu"
-                                  id="floatingTextarea3" style="height: 100px"
-                                  ng-model="ghiChu" ng-change="change(addYeuCauForm.ghiChu)"></textarea>
-                        <label for="floatingTextarea3">Ghi Chú</label>
+                        <label>Tổng tiền hàng đổi: {{ tongTienHangDoi | formatToVND }}</label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tổng tiền trả khách: {{ tongTienTraKhach | formatToVND }}</label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tổng tiền trả khách: {{ tongTienKhachPhaiTra | formatToVND }}</label>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="form-floating">
+                            <select class="form-select" id="floatingSelect2"
+                                    aria-label="Floating label select example" name="loaiYeuCau"
+                                    ng-model="yeuCau.loaiYeuCau">
+                                <option value="1">Yêu Cầu Đổi</option>
+                                <option value="2">Yêu Cầu Trả</option>
+                            </select>
+                            <label for="floatingSelect2">Loại Yêu Cầu</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-floating">
+                            <select class="form-select" id="floatingSelect3"
+                                    aria-label="Floating label select example" name="trangThai"
+                                    ng-model="yeuCau.trangThai">
+                                <option value="1">Chờ Xét Duyệt</option>
+                                <option value="2">Đã Xét Duyệt</option>
+                                <option value="3">Đã Hoàn Thành</option>
+                                <option value="4">Bị Hủy</option>
+                            </select>
+                            <label for="floatingSelect3">Trạng Thái</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-floating">
+                            <textarea class="form-control"
+                                      name="ghiChu" ng-model="yeuCau.ghiChu"
+                                      id="floatingTextarea3" style="height: 100px"
+                                      ng-model="ghiChu"
+                                      ng-change="change(addYeuCauForm.ghiChu)"></textarea>
+                            <label for="floatingTextarea3">Ghi Chú</label>
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary">Tạo mới</button>
                     <button type="button" class="btn btn-primary" ng-click="combineMaps()">Hợp Nhât</button>
                 </div>
             </div>
         </div>
+        <!--            <div>-->
+        <!--                &lt;!&ndash; Hình ảnh &ndash;&gt;-->
+        <!--                <div class="p-3">-->
+        <!--                    <label>Hình ảnh <sup class="text-danger">(cần ít nhất một ảnh)</sup></label>-->
+        <!--                    <div class="imageContainer d-flex flex-row">-->
+
+        <!--                        <div class="image m-2">-->
+        <!--                            <label class="image-image p2" for="imageInput1">-->
+        <!--                                <input type="file" hidden id="imageInput1" accept="image/*"-->
+        <!--                                       ng-model="image1"-->
+        <!--                                       onchange="angular.element(this).scope().showSelectedImageYeuCau(event, 1)">-->
+        <!--                                <div class="imageSquare">-->
+        <!--                                    <img class="selectedImage" id="selectedImage1" src=""-->
+        <!--                                         alt="Ảnh được chọn">-->
+        <!--                                </div>-->
+        <!--                                <div class="imageTextContainer" ng-hide="image1">-->
+        <!--                            <span class="imageText-icon">-->
+        <!--                                <i class="fas fa-image fa-lg"></i>-->
+        <!--                            </span>-->
+        <!--                                    <small class="imageText">Thêm ảnh(1/5)</small>-->
+        <!--                                </div>-->
+        <!--                            </label>-->
+        <!--                            <div class="remove-icon text-center" ng-show="image1"-->
+        <!--                                 ng-click="removeImageYeuCau(1)"><i-->
+        <!--                                    class="fas fa-times"></i>-->
+        <!--                            </div>-->
+        <!--                        </div>-->
+
+        <!--                        &lt;!&ndash; image 2                     &ndash;&gt;-->
+        <!--                        <div class="image m-2" ng-show="image1">-->
+        <!--                            <label class="image-image p2" for="imageInput2">-->
+        <!--                                <input type="file" hidden id="imageInput2" accept="image/*"-->
+        <!--                                       ng-model="image2"-->
+        <!--                                       name="image2"-->
+        <!--                                       onchange="angular.element(this).scope().showSelectedImageYeuCau(event, 2)">-->
+        <!--                                <div class="imageSquare">-->
+        <!--                                    <img class="selectedImage" id="selectedImage2" src=""-->
+        <!--                                         alt="Ảnh được chọn">-->
+        <!--                                </div>-->
+        <!--                                <div class="imageTextContainer" ng-hide="image2">-->
+        <!--                            <span class="imageText-icon">-->
+        <!--                                <i class="fas fa-image fa-lg"></i>-->
+        <!--                            </span>-->
+        <!--                                    <small class="imageText">Thêm ảnh(2/5)</small>-->
+        <!--                                </div>-->
+        <!--                            </label>-->
+        <!--                            <div class="remove-icon text-center" ng-show="image2"-->
+        <!--                                 ng-click="removeImageYeuCau(2)"><i-->
+        <!--                                    class="fas fa-times"></i>-->
+        <!--                            </div>-->
+        <!--                        </div>-->
+
+
+        <!--                        &lt;!&ndash; image 3                     &ndash;&gt;-->
+        <!--                        <div class="image m-2" ng-show="image2">-->
+        <!--                            <label class="image-image p2" for="imageInput3">-->
+        <!--                                <input type="file" hidden id="imageInput3" accept="image/*"-->
+        <!--                                       ng-model="image3"-->
+        <!--                                       name="image3"-->
+        <!--                                       onchange="angular.element(this).scope().showSelectedImageYeuCau(event, 3)">-->
+        <!--                                <div class="imageSquare">-->
+        <!--                                    <img class="selectedImage" id="selectedImage3" src=""-->
+        <!--                                         alt="Ảnh được chọn">-->
+        <!--                                </div>-->
+        <!--                                <div class="imageTextContainer" ng-hide="image3">-->
+        <!--                            <span class="imageText-icon">-->
+        <!--                                <i class="fas fa-image fa-lg"></i>-->
+        <!--                            </span>-->
+        <!--                                    <small class="imageText">Thêm ảnh(3/5)</small>-->
+        <!--                                </div>-->
+        <!--                            </label>-->
+        <!--                            <div class="remove-icon text-center" ng-show="image3"-->
+        <!--                                 ng-click="removeImageYeuCau(3)"><i-->
+        <!--                                    class="fas fa-times"></i>-->
+        <!--                            </div>-->
+        <!--                        </div>-->
+
+        <!--                        &lt;!&ndash; image 4                     &ndash;&gt;-->
+        <!--                        <div class="image m-2" ng-show="image3">-->
+        <!--                            <label class="image-image p2" for="imageInput4">-->
+        <!--                                <input type="file" hidden id="imageInput4" accept="image/*"-->
+        <!--                                       ng-model="image4"-->
+        <!--                                       onchange="angular.element(this).scope().showSelectedImageYeuCau(event, 4)">-->
+        <!--                                <div class="imageSquare">-->
+        <!--                                    <img class="selectedImage" id="selectedImage4" src=""-->
+        <!--                                         alt="Ảnh được chọn">-->
+        <!--                                </div>-->
+        <!--                                <div class="imageTextContainer" ng-hide="image4">-->
+        <!--                            <span class="imageText-icon">-->
+        <!--                                <i class="fas fa-image fa-lg"></i>-->
+        <!--                            </span>-->
+        <!--                                    <small class="imageText">Thêm ảnh(4/5)</small>-->
+        <!--                                </div>-->
+        <!--                            </label>-->
+        <!--                            <div class="remove-icon text-center" ng-show="image4"-->
+        <!--                                 ng-click="removeImageYeuCau(4)"><i-->
+        <!--                                    class="fas fa-times"></i>-->
+        <!--                            </div>-->
+        <!--                        </div>-->
+
+        <!--                        &lt;!&ndash; image 5                     &ndash;&gt;-->
+        <!--                        <div class="image m-2" ng-show="image4">-->
+        <!--                            <label class="image-image p2" for="imageInput5">-->
+        <!--                                <input type="file" hidden id="imageInput5" accept="image/*"-->
+        <!--                                       ng-model="image5"-->
+        <!--                                       onchange="angular.element(this).scope().showSelectedImageYeuCau(event, 5)">-->
+        <!--                                <div class="imageSquare">-->
+        <!--                                    <img class="selectedImage" id="selectedImage5" src=""-->
+        <!--                                         alt="Ảnh được chọn">-->
+        <!--                                </div>-->
+        <!--                                <div class="imageTextContainer" ng-hide="image5">-->
+        <!--                            <span class="imageText-icon">-->
+        <!--                                <i class="fas fa-image fa-lg"></i>-->
+        <!--                            </span>-->
+        <!--                                    <small class="imageText">Thêm ảnh(5/5)</small>-->
+        <!--                                </div>-->
+        <!--                            </label>-->
+        <!--                            <div class="remove-icon text-center" ng-show="image5"-->
+        <!--                                 ng-click="removeImageYeuCau(5)"><i-->
+        <!--                                    class="fas fa-times"></i>-->
+        <!--                            </div>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                    <div><small class="text-danger" ng-show="errors.anh">Phải chọn ít nhất một ảnh</small></div>-->
+        <!--                </div>-->
+        <!--            </div>-->
     </form>
 </div>

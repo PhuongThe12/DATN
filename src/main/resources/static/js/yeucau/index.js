@@ -243,15 +243,12 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
     getAllNhanVien();
 
 
-    $scope.formatToVND = function (number) {
-        return number.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'});
-    }
 
-
-    $scope.doiSanPham = function (hoaDonChiTiet, index) {
+    //bắt đầu đổi trả
+    $scope.traSanPham = function (hoaDonChiTiet, index) {
         if (hoaDonChiTiet.soLuongTra > 0) {
             // Lấy ID duy nhất của hoá đơn chi tiết
-            var baseId = index;
+            let baseId = index;
 
             // Thêm hoặc cập nhật hoá đơn chi tiết vào Map
             $scope.addToMapForMultipleItems(baseId, hoaDonChiTiet, hoaDonChiTiet.soLuongTra);
@@ -261,11 +258,11 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
         }
     };
 
-
+    //add sản phẩm vào map trả
     $scope.addToMapForMultipleItems = function (baseId, hoaDonChiTiet, soLuongTra) {
-        for (var i = 1; i <= soLuongTra; i++) {
-            var key = baseId + "." + i;
-            var valueCopy = angular.copy(hoaDonChiTiet);
+        for (let i = 1; i <= soLuongTra; i++) {
+            let key = baseId + "." + i;
+            let valueCopy = angular.copy(hoaDonChiTiet);
             valueCopy.soLuongTra = 1; // Set số lượng trả mỗi bản ghi là 1
 
             // Cập nhật cấu trúc dữ liệu khi thêm vào map
@@ -280,7 +277,7 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
         console.log($scope.arrayForRepeat)
     };
 
-
+    //hiển thị modal để điền ghi chú + lý do
     $scope.ghiChu_LyDo = function (item) {
         getAllLyDo();
         $scope.keyGiayTra = item.key;
@@ -289,13 +286,11 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
         $scope.ghiChu = item.value.ghiChu;
     }
 
-
+    //update lại map sau khi người dùng điền đủ ghi chú + lý do
     $scope.updateMapSanPhamTra = function (key, lyDo, ghiChu) {
-        console.log(key);
-        console.log(ghiChu);
-        console.log(lyDo);
+
         if ($scope.mapSanPhamTra.has(key)) {
-            var item = $scope.mapSanPhamTra.get(key);
+            let item = $scope.mapSanPhamTra.get(key);
             item.lyDo = lyDo;
             item.ghiChu = ghiChu;
             $scope.mapSanPhamTra.set(key, item);
@@ -309,7 +304,21 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
         }
     }
 
+    //check xem đã điền ghi chú + lý do chưa
+    $scope.checkFormMoTaLyDo = function (giayTraKey, lyDo, ghiChu) {
+        if (!lyDo || !ghiChu || ghiChu.trim() === '') {
+            toastr.error('Bạn phải chọn lý do và mô tả chi tiết.');
+            return;
+        }
+        // Nếu form hợp lệ, tiếp tục thực hiện hành động tiếp theo
+        $('#exampleModalToggle').modal('show');
+        $('#exampleModal').modal('hide');
+        $scope.lyDo = 0;
+        $scope.ghiChu = '';
+        $scope.chonSanPham(lyDo, ghiChu);
+    };
 
+    //Lấy tất cả giày lên và fill cho người dùng chọn
     $scope.chonSanPham = function (lyDo, ghiChu) {
         $scope.updateMapSanPhamTra($scope.giayTra.key, lyDo, ghiChu)
         $http.post(host + '/admin/rest/giay/find-all-by-search', $scope.giaySearch)
@@ -323,21 +332,7 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
 
     };
 
-
-    $scope.checkFormMoTaLyDo = function(giayTraKey, lyDo, ghiChu) {
-        if (!lyDo || !ghiChu || ghiChu.trim() === '') {
-            toastr.error('Bạn phải chọn lý do và mô tả chi tiết.');
-            return;
-        }
-        // Nếu form hợp lệ, tiếp tục thực hiện hành động tiếp theo
-        $('#exampleModalToggle').modal('show');
-        $('#exampleModal').modal('hide');
-        $scope.lyDo = 0;
-        $scope.ghiChu = '';
-        $scope.chonSanPham(lyDo, ghiChu);
-    };
-
-
+    //fill biến thể giày cho người dùng chọn
     $scope.chonGiayDoi = function (giay) {
         $http.get(host + '/admin/rest/giay/' + giay.id)
             .then(function (response) {
@@ -349,13 +344,13 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
         });
     };
 
-
+    //Sau khi chọn được biến thể giày
     $scope.giaySelected = function () {
         $scope.chonBienTheGiayDoi($scope.giayChoosed);
     };
 
-
-    $scope.chonBienTheGiayDoi = function (bienTheGiayDoi,keyGiayTra) {
+    //Add biến thể giày đã chọn vào map đổi
+    $scope.chonBienTheGiayDoi = function (bienTheGiayDoi) {
         // Cấu trúc dữ liệu mới cho map
         $scope.mapSanPhamThayThe.set($scope.keyGiayTra, {
             bienTheGiay: bienTheGiayDoi, // Sản phẩm thay thế
@@ -364,29 +359,110 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
 
         // Cập nhật array cho ng-repeat
         $scope.arrayForRepeat1 = Array.from($scope.mapSanPhamThayThe, ([key, value]) => ({key, value}));
-        console.log($scope.arrayForRepeat1)
+
+        // Tính tổng số tiền hàng đổi
+        $scope.tinhTongTienHangDoi();
     };
 
 
-    $scope.chonLaiGiayDoi = function(item){
-        $scope.chonSanPham(item.value.lyDo,item.value.ghiChu);
+
+
+
+    //Xóa nếu người dùng không muốn đổi/trả nữa
+    $scope.deleteGiayDoi = function (item1) {
+        // Kiểm tra và xóa bản ghi trong map nếu key tồn tại
+        if ($scope.mapSanPhamThayThe.has(item1.key)) {
+            $scope.mapSanPhamThayThe.delete(item1.key);
+
+            // Cập nhật lại array cho ng-repeat
+            $scope.arrayForRepeat1 = Array.from($scope.mapSanPhamThayThe, ([key, value]) => ({key, value}));
+            // Tính tổng số tiền hàng đổi
+            $scope.tinhTongTienHangDoi();
+        } else {
+            // Xử lý trường hợp key không tồn tại trong map
+            toastr["error"]("Không tồn tại giày này trong danh sách sản phẩm trả");
+            // Bạn có thể thêm các xử lý khác tại đây nếu cần
+        }
     };
 
 
-    // $scope.capNhatThongTinThem = function (key, soLuongDoi) {
-    //     if ($scope.mapSanPhamThayThe.has(key)) {
-    //         var item = $scope.mapSanPhamThayThe.get(key);
-    //         item.soLuongDoi = soLuongDoi;
-    //         $scope.mapSanPhamThayThe.set(key, item);
-    //
-    //         // Cập nhật lại arrayForRepeat1 để phản ánh thay đổi
-    //         $scope.arrayForRepeat1 = Array.from($scope.mapSanPhamThayThe, ([key, value]) => ({key, value}));
-    //     } else {
-    //         toastr.error("Không thấy dữ liệu");
-    //     }
-    // };
+    $scope.deleteGiayTra = function (item) {
+        // Kiểm tra và xóa bản ghi trong map nếu key tồn tại
+        if ($scope.mapSanPhamTra.has(item.key)) {
+            $scope.mapSanPhamTra.delete(item.key);
+            $scope.mapSanPhamThayThe.delete(item.key);
+            // Cập nhật lại array cho ng-repeat
+            $scope.arrayForRepeat = Array.from($scope.mapSanPhamTra, ([key, value]) => ({key, value}));
+            $scope.arrayForRepeat1 = Array.from($scope.mapSanPhamThayThe, ([key, value]) => ({key, value}));
+            // Tính tổng số tiền hàng đổi
+            $scope.tongTienHangTra = $scope.tongTienHangTra - item.value.hoaDonChiTiet.donGia
+            $scope.tinhTongTienHangDoi();
+        } else {
+            // Xử lý trường hợp key không tồn tại trong map
+            toastr["error"]("Không tồn tại giày này trong danh sách sản phẩm trả");
+            // Bạn có thể thêm các xử lý khác tại đây nếu cần
+        }
+    }
 
 
+
+
+    //tính tiền khi đổi trả
+    $scope.tongTienTraKhach = 0, $scope.tongTienKhachPhaiTra = 0, $scope.tongTienHangTra = 0, $scope.tongTienHangDoi = 0;
+
+
+    $scope.updateTongTienTra = function () {
+        // Thiết lập lại tổng tiền về 0 trước khi bắt đầu tính toán
+        $scope.tongTienHangTra = 0;
+
+        angular.forEach($scope.hoaDon.listHoaDonChiTiet, function (hoaDonChiTiet) {
+            if (hoaDonChiTiet.soLuongTra >= 0 && hoaDonChiTiet.donGia >= 0) {
+                // Tính toán tổng tiền cho mỗi mục và cộng dồn vào tổng tiền
+                $scope.tongTienHangTra += hoaDonChiTiet.soLuongTra * hoaDonChiTiet.donGia;
+            } else {
+                // Xử lý trường hợp giá trị không hợp lệ
+                console.error("Số lượng trả hoặc đơn giá không hợp lệ");
+            }
+        });
+        $scope.tinhTongTienHangDoi();
+    };
+
+
+    $scope.updateTongTienTraKhach = function () {
+        $scope.tongTienTraKhach = 0;
+        $scope.tongTienKhachPhaiTra = 0;
+        let tienTraKhach = $scope.tongTienHangTra - $scope.tongTienHangDoi;
+
+        if (tienTraKhach <= 0) {
+            $scope.tongTienKhachPhaiTra = -tienTraKhach;
+        } else {
+            $scope.tongTienTraKhach = tienTraKhach;
+        }
+    }
+
+
+    function tinhTongTienHangMua() {
+        $scope.tongTienHangMua = 0;
+        angular.forEach($scope.hoaDon.listHoaDonChiTiet, function (hoaDonChiTiet) {
+            $scope.tongTienHangMua += hoaDonChiTiet.soLuong * hoaDonChiTiet.donGia;
+        });
+    }
+
+
+    $scope.tinhTongTienHangDoi = function () {
+        $scope.tongTienHangDoi = 0;
+        angular.forEach($scope.arrayForRepeat1, function (item) {
+            let soLuongDoi = item.value.soLuongDoi;
+            let giaBan = item.value.bienTheGiay.giaBan;
+            $scope.tongTienHangDoi += soLuongDoi * giaBan;
+        });
+        $scope.updateTongTienTraKhach();
+    };
+
+
+
+
+    //Hợp nhất 2 map mapSanPhamThayThe và mapSanPhamTra
     $scope.combineMaps = function () {
         // Duyệt qua tất cả các entries trong mapSanPhamTra
         $scope.mapSanPhamTra.forEach((hoaDonValue, key) => {
@@ -430,11 +506,15 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
     };
 
 
+
+
+    //Hiển thị modal chi tiết biến thể giày
     $scope.giayChoosed = {}; // Biến thể giày được chọn khi chọn màu + size
 
     function detailGiayChiTiet(productData) {
 
         $scope.giayDetail = productData;
+
         displayImages(productData.lstAnh);
 
         const mauSacImages = productData.mauSacImages;
@@ -542,12 +622,118 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
     }
 
 
+
+
+    //upload ảnh
+    // function isImage(fileName) {
+    //     const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+    //     return allowedExtensions.test(fileName);
+    // }
+    //
+    //
+    // let imagePromises = [];
+    //
+    //
+    //
+    // //Load selected image function
+    // function loadImage(file, imgId) {
+    //     var reader = new FileReader();
+    //     reader.onload = function (e) {
+    //         const img = document.getElementById(imgId);
+    //         img.src = e.target.result;
+    //         img.style.display = 'block';
+    //     };
+    //     reader.readAsDataURL(file);
+    // }
+
+    // //show selected image
+    // $scope.showSelectedImageYeuCau = function (e, image) {
+    //     $scope.$apply(function () {
+    //         if (e.target.files && e.target.files[0]) {
+    //             const file = e.target.files[0]; // Sử dụng 'e' thay vì 'event'
+    //             if (!isImage(file.name)) {
+    //                 toastr["error"]("Chỉ cho phép định dạng jpg/png/jpeg");
+    //                 return;
+    //             }
+    //
+    //             switch (image) {
+    //                 case 2:
+    //                     if (file.size > 5 * 1024 * 1024) {
+    //                         toastr["error"]("File không được vượt quá 5MB");
+    //                         break;
+    //                     }
+    //                     $scope.image2 = file;
+    //                     loadImage($scope.image2, 'selectedImage2');
+    //                     break;
+    //                 case 3:
+    //                     if (file.size > 5 * 1024 * 1024) {
+    //                         toastr["error"]("File không được vượt quá 5MB");
+    //                         break;
+    //                     }
+    //                     $scope.image3 = file;
+    //                     loadImage($scope.image3, 'selectedImage3');
+    //                     break;
+    //                 case 4:
+    //                     if (file.size > 5 * 1024 * 1024) {
+    //                         toastr["error"]("File không được vượt quá 5MB");
+    //                         break;
+    //                     }
+    //                     $scope.image4 = file;
+    //                     loadImage($scope.image4, 'selectedImage4');
+    //                     break;
+    //                 case 5:
+    //                     if (file.size > 5 * 1024 * 1024) {
+    //                         toastr["error"]("File không được vượt quá 5MB");
+    //                         break;
+    //                     }
+    //                     $scope.image5 = file;
+    //                     loadImage($scope.image5, 'selectedImage5');
+    //                     break;
+    //                 default:
+    //                     if (file.size > 5 * 1024 * 1024) {
+    //                         toastr["error"]("File không được vượt quá 5MB");
+    //                         break;
+    //                     }
+    //                     $scope.image1 = file;
+    //                     $scope.errors.anh = null;
+    //                     loadImage($scope.image1, 'selectedImage1');
+    //                     break;
+    //             }
+    //         }
+    //     });
+    // }
+    //
+    // //remove selected image
+    // $scope.removeImageYeuCau = function (image) {
+    //     for (let i = image; i <= 5; i++) {
+    //         if (i === 5) {
+    //             $scope['image' + i] = null;
+    //             document.getElementById('selectedImage' + i).src = '';
+    //             document.getElementById('selectedImage' + i).style.display = 'none';
+    //         } else if ($scope['image' + (i + 1)]) {
+    //             $scope['image' + i] = $scope['image' + (i + 1)];
+    //             loadImage($scope['image' + i], 'selectedImage' + i);
+    //         } else {
+    //             $scope['image' + i] = null;
+    //             document.getElementById('selectedImage' + i).src = '';
+    //             document.getElementById('selectedImage' + i).style.display = 'none';
+    //         }
+    //     }
+    // };
+
+
+
+
+    //các hàm get/insert
     function getHoaDon(id) {
         $http.get(host + '/admin/rest/hoa-don/yeu-cau/' + id)
             .then(function (response) {
                 $scope.hoaDon = response.data;
                 $scope.numOfPages = response.data.totalPages;
                 $scope.isLoading = false;
+
+                // Gọi hàm tính tổng tiền mua hàng
+                tinhTongTienHangMua();
             }).catch(function (error) {
             toastr["error"]("Lấy dữ liệu thất bại");
             // $location.path("/list");
@@ -658,11 +844,6 @@ app.controller("selectedHoaDonController", function ($scope, $http, $location, $
             });
     }
 
-
-    $scope.formatToVND = function (number) {
-        return number.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'});
-    }
-
     $scope.chonHoaDon = function (hoaDon) {
         $scope.hoaDonSelected = hoaDon;
     }
@@ -676,4 +857,15 @@ app.controller("selectedHoaDonController", function ($scope, $http, $location, $
         }
     };
 
+});
+
+
+app.filter('formatToVND', function () {
+    return function (number) {
+        if (number !== undefined && number !== null) {
+            return number.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'});
+        } else {
+            return '0 VND'; // Hoặc giá trị mặc định khác
+        }
+    };
 });

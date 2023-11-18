@@ -45,17 +45,19 @@ public class YeuCau {
     @Column(name = "GHI_CHU")
     private String ghiChu;
 
-    @OneToMany(mappedBy = "yeuCau",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "yeuCau",cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
     @Column(nullable = true)
     @JsonManagedReference
     private Set<YeuCauChiTiet> listYeuCauChiTiet;
 
-    public YeuCau(YeuCauRequest YeuCauRequest,HoaDon hoaDon) {
+    public YeuCau(YeuCauRequest YeuCauRequest,HoaDon hoaDon,Date ngayTao,Date ngaySua) {
         if (YeuCauRequest != null) {
             this.nguoiThucHien = YeuCauRequest.getNguoiThucHien();
             this.hoaDon = hoaDon;
             this.loaiYeuCau = YeuCauRequest.getLoaiYeuCau();
             this.trangThai = YeuCauRequest.getTrangThai();
+            this.ngayTao = ngayTao;
+            this.ngaySua = ngaySua;
             this.ghiChu = YeuCauRequest.getGhiChu();
         }
     }

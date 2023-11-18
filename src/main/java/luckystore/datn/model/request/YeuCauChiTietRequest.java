@@ -1,9 +1,16 @@
 package luckystore.datn.model.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import luckystore.datn.validation.groups.CreateGroup;
+import luckystore.datn.validation.groups.UpdateGroup;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -13,15 +20,23 @@ public class YeuCauChiTietRequest {
 
     private Long id;
 
+    @NotNull(message = "Không được để trống", groups = {UpdateGroup.class, CreateGroup.class})
     private Long hoaDonChiTiet;
 
+    @NotNull(message = "Không được để trống", groups = {UpdateGroup.class, CreateGroup.class})
     private Long bienTheGiay;
 
+    @NotBlank(message = "Không được để trống", groups = {UpdateGroup.class, CreateGroup.class})
     private String lyDo;
 
+    @NotNull(message = "Không được để trống", groups = {UpdateGroup.class, CreateGroup.class})
     private Integer soLuong;
 
+    @NotNull(message = "Không được để trống", groups = {UpdateGroup.class, CreateGroup.class})
     private Integer trangThai;
 
     private String ghiChu;
+
+    @NotNull(message = "Không được để trống hình ảnh", groups = {UpdateGroup.class, CreateGroup.class})
+    List<String> listAnhGiayTra = new ArrayList<>();
 }

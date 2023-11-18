@@ -1,10 +1,13 @@
 package luckystore.datn.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import luckystore.datn.model.request.YeuCauChiTietRequest;
 import org.hibernate.annotations.Nationalized;
+
+import java.util.List;
 
 
 @AllArgsConstructor
@@ -46,6 +49,10 @@ public class YeuCauChiTiet {
     @Column(name = "GHI_CHU")
     @Nationalized
     private String ghiChu;
+
+    @OneToMany(mappedBy = "yeuCauChiTiet", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<AnhGiayTra> listAnhGiayTra;
 
     public YeuCauChiTiet(YeuCauChiTietRequest yeuCauChiTietRequest) {
         if (yeuCauChiTietRequest != null) {

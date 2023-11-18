@@ -5,11 +5,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import luckystore.datn.entity.AnhGiayTra;
 import luckystore.datn.entity.HoaDon;
 import luckystore.datn.entity.YeuCau;
+import luckystore.datn.service.impl.ImageHubServiceImpl;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
@@ -26,6 +32,8 @@ public class YeuCauResponse {
     private Date ngayTao;
     private Date ngaySua;
     private String ghiChu;
+
+    private List<String> listAnhGiayTra = new ArrayList<>();
 
     public YeuCauResponse(YeuCau yeuCau){
         if(yeuCau != null){

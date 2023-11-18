@@ -9,6 +9,7 @@ import luckystore.datn.model.request.YeuCauChiTietRequest;
 import luckystore.datn.model.request.YeuCauRequest;
 import luckystore.datn.model.response.YeuCauResponse;
 import luckystore.datn.repository.*;
+import luckystore.datn.service.ImageHubService;
 import luckystore.datn.service.YeuCauService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,13 +18,10 @@ import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class YeuCauServiceIplm implements YeuCauService {
-
-
 
     private final YeuCauRepository yeuCauRepository;
     private final YeuCauChiTietRepository yeuCauChiTietRepository;
@@ -31,13 +29,16 @@ public class YeuCauServiceIplm implements YeuCauService {
     private final HoaDonChiTietRepository hoaDonChiTietRepository;
     private final BienTheGiayRepository bienTheGiayRepository;
 
+    private final ImageHubService imageHubService;
+
     @Autowired
-    public YeuCauServiceIplm(YeuCauRepository yeuCauRepo, YeuCauChiTietRepository yeuCauChiTietRepository, HoaDonRepository hoaDonRepository, HoaDonChiTietRepository hoaDonChiTietRepository, BienTheGiayRepository bienTheGiayRepository) {
+    public YeuCauServiceIplm(YeuCauRepository yeuCauRepo, YeuCauChiTietRepository yeuCauChiTietRepository, HoaDonRepository hoaDonRepository, HoaDonChiTietRepository hoaDonChiTietRepository, BienTheGiayRepository bienTheGiayRepository, ImageHubService imageHubService) {
         this.yeuCauRepository = yeuCauRepo;
         this.yeuCauChiTietRepository = yeuCauChiTietRepository;
         this.hoaDonRepository = hoaDonRepository;
         this.hoaDonChiTietRepository = hoaDonChiTietRepository;
         this.bienTheGiayRepository = bienTheGiayRepository;
+        this.imageHubService = imageHubService;
     }
 
     public List<YeuCauResponse> getAll() {
@@ -47,25 +48,22 @@ public class YeuCauServiceIplm implements YeuCauService {
     @Override
     public YeuCauResponse addYeuCau(YeuCauRequest yeuCauRequest) {
         HoaDon hoaDon = hoaDonRepository.findById(yeuCauRequest.getHoaDon()).orElse(null);
-        YeuCau yeuCau = new YeuCau(yeuCauRequest,hoaDon);
-        yeuCau.setNgayTao(new Date());
-        yeuCau.setNgaySua(new Date());
+        YeuCau yeuCau = new YeuCau(yeuCauRequest,hoaDon,new Date(),new Date());
+
+        for (YeuCauChiTietRequest ycctr : yeuCauRequest.getListYeuCauChiTiet()) {
+
+        }
 //        addYeuCauChiTiet(yeuCauRequest,yeuCau);
-        return null;
+        return new YeuCauResponse();
     }
 
-//    public void addYeuCauChiTiet(YeuCauRequest yeuCauRequest, YeuCau yeuCau){
-//        for (YeuCauChiTietRequest yeuCauChiTietRequest : yeuCauRequest.getListYeuCauChiTiet()) {
-//            YeuCau yeuCauAdd = yeuCauRepository.save(yeuCau);
-//            HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findById(yeuCauChiTietRequest.getHoaDonChiTiet()).orElse(null);
-//            BienTheGiay bienTheGiay = bienTheGiayRepository.findById(yeuCauChiTietRequest.getBienTheGiay()).orElse(null);
-//            String lyDo = yeuCauChiTietRequest.getLyDo();
-//            Integer soLuongDoi = yeuCauChiTietRequest.getSoLuong();
-//            Integer trangThai = yeuCauChiTietRequest.getTrangThai();
-//            String moTa = yeuCauChiTietRequest.getGhiChu();
-//            yeuCauChiTietRepository.save(new YeuCauChiTiet(yeuCauAdd,hoaDonChiTiet,bienTheGiay,lyDo,soLuongDoi,trangThai,moTa));
-//        }
-//    }
+    private List<YeuCauChiTiet> getListYeuCauChiTiet(List<YeuCauChiTietRequest> listYeuCauChiTietRequest) {
+        List<YeuCauChiTiet> listYeuCauChiTiet = new ArrayList<>();
+        for(YeuCauChiTietRequest request :listYeuCauChiTietRequest){
+
+        }
+        return listYeuCauChiTiet;
+    }
 
     @Override
     public YeuCauResponse updateYeuCau(Long id, YeuCauRequest yeuCauRequest) {
@@ -76,7 +74,7 @@ public class YeuCauServiceIplm implements YeuCauService {
             yeuCau = yeuCauRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND));
         }
         HoaDon hoaDon = new HoaDon();
-        yeuCau = new YeuCau(yeuCauRequest, hoaDon);
+        yeuCau = new YeuCau(yeuCauRequest, hoaDon,new Date(),new Date());
         yeuCau.setId(id);
 
         return new YeuCauResponse(yeuCauRepository.save(yeuCau));
