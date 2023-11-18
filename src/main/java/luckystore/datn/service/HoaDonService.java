@@ -1,10 +1,9 @@
 package luckystore.datn.service;
 
+import luckystore.datn.model.request.HoaDonRequest;
 import luckystore.datn.model.request.HoaDonSearch;
-import luckystore.datn.model.request.LotGiayRequest;
 import luckystore.datn.model.response.HoaDonResponse;
 import luckystore.datn.model.response.HoaDonYeuCauRespone;
-import luckystore.datn.model.response.LotGiayResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -20,4 +19,6 @@ public interface HoaDonService {
     HoaDonYeuCauRespone getHoaDonYeuCau(Long id);
 
     HoaDonResponse findById(Long id);
+
+    HoaDonResponse updateListHoaDon(List<HoaDonRequest> hoaDonRequestList);
 }

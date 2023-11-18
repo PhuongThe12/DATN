@@ -156,7 +156,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
         const sizeButtons = document.getElementById("sizeButtons");
         const quantityDisplay = document.getElementById('quantity');
         const priceDisplay = document.getElementById('price-product');
-
+        let isFirstMauSacId = true;
 // Tạo các button màu sắc và xử lý sự kiện click
         for (const mauSacId in mauSacImages) {
             if (mauSacImages.hasOwnProperty(mauSacId)) {
@@ -181,7 +181,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                 insideDiv.style.backgroundColor = mauSacInfo.maMau; // Đặt màu nền của nút
                 insideDiv.appendChild(input);
                 outerDiv.appendChild(insideDiv);
-
+                sizeButtons.innerHTML = '';
                 outerDiv.addEventListener('click', () => {
                     input.checked = true;
                     productInfoContainer.innerHTML = '';
@@ -197,12 +197,22 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                             // Tạo nút kích thước và xử lý sự kiện click
                             const sizeButton = document.createElement("button");
                             sizeButton.textContent = variant.kichThuoc.ten;
-                            sizeButton.className = "btn btn-dark";
+                            sizeButton.className = "btn btn-white button-size";
                             sizeButton.addEventListener("click", () => {
                                 quantityDisplay.textContent = variant.soLuong;
                                 priceDisplay.textContent = variant.giaBan;
                                 $scope.giayChoosed = variant;
-                                $scope.giayChoosed.ten = productData.ten;
+                                console.log($scope.giayChoosed);
+                                $scope.giayDetail.ten = $scope.giayChoosed.giayResponse.ten + "( " + $scope.giayChoosed.kichThuoc.ten +" - "+ $scope.giayChoosed.mauSac.ten + ") ";
+                                const allButtons = sizeButtons.querySelectorAll(".button-size");
+                                allButtons.forEach(button => {
+                                    button.classList.remove("btn-dark");
+                                    button.classList.add("btn-white");
+                                });
+
+                                // Thêm class 'click-select' cho nút được click
+                                sizeButton.classList.remove("btn-white");
+                                sizeButton.classList.add("btn-dark");
                             });
                             sizeButtons.appendChild(sizeButton);
                         }
@@ -222,7 +232,9 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                 });
                 outerDiv.className = "button_color";
                 buttonsContainer.appendChild(outerDiv);
+
             }
+
         }
     }
 

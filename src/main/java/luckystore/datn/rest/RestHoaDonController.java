@@ -1,11 +1,14 @@
 package luckystore.datn.rest;
 
+import luckystore.datn.model.request.HoaDonRequest;
 import luckystore.datn.model.request.HoaDonSearch;
 import luckystore.datn.service.HoaDonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin/rest/hoa-don")
@@ -46,5 +49,10 @@ public class RestHoaDonController {
         return new ResponseEntity(hoaDonService.findById(id), HttpStatus.OK);
     }
 
+    @PostMapping("/update-list")
+    public ResponseEntity updateListHoaDon(@RequestBody List<HoaDonRequest> hoaDonRequestList){
+        System.out.println("11111111111111111111111111111111111111111111111111111111111111111111111111111111");
+        return new ResponseEntity("2",HttpStatus.OK);
+    }
 
 }

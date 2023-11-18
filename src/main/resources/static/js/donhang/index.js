@@ -26,7 +26,7 @@ app.controller("donHangListController", function ($scope, $http, $window, $locat
     let searchText;
 
     $scope.search = function () {
-        if(!$scope.searchText) {
+        if (!$scope.searchText) {
             toastr["error"]("Vui lòng nhập tên muốn tìm kiếm");
             return;
         }
@@ -40,22 +40,25 @@ app.controller("donHangListController", function ($scope, $http, $window, $locat
     }
 
     function getData(currentPage) {
+        $scope.hoaDon = {
+            hoaDonChiTiets : []
+        }
         let apiUrl = host + '/admin/rest/hoa-don?page=' + currentPage;
         if (searchText) {
             apiUrl += '&search=' + searchText;
         }
 
-        if($scope.status == 1) {
+        if ($scope.status == 1) {
             apiUrl += '&status=' + 1;
-        } else if($scope.status == 2) {
+        } else if ($scope.status == 2) {
             apiUrl += '&status=' + 2;
-        }else if($scope.status == 3){
+        } else if ($scope.status == 3) {
             apiUrl += '&status=' + 3;
-        }else if($scope.status == 4){
+        } else if ($scope.status == 4) {
             apiUrl += '&status=' + 4;
-        }else if($scope.status == 5){
+        } else if ($scope.status == 5) {
             apiUrl += '&status=' + 5;
-        }else{
+        } else {
             apiUrl += '&status=' + 1;
         }
 
@@ -73,9 +76,54 @@ app.controller("donHangListController", function ($scope, $http, $window, $locat
     $scope.$watch('curPage + numPerPage', function () {
         getData($scope.curPage);
     });
+
+    $scope.updateSelected = function () {
+        var selectedRows = $scope.hoaDons.filter(function (hoaDon) {
+            return hoaDon.isSelected;
+        });
+        selectedRows.forEach(function (selectedRow) {
+            $http.get(host + '/admin/rest/hoa-don-chi-tiet/find-by-id-hoa-don/' + selectedRow.id)
+                .then(function (response) {
+                    selectedRow.listHoaDonChiTiet= response.data;
+                }).catch(function (error) {
+                toastr["error"]("Lấy dữ liệu thất bại");
+                $location.path("/list");
+            });
+
+            selectedRow.trangThai += 1;
+            console.log(selectedRow);
+        });
+        console.log(selectedRows);
+        $http.put(host + '/admin/rest/hoa-don/updateListHoaDon',selectedRows)
+            .then(function (response) {
+                console.log(response);
+                toastr["success"]("Cập nhật thành công");
+                $location.path("/list");
+            }).catch(function (error){
+                console.log(error);
+        })
+    };
+
+    $scope.detailHoaDon = function (id) {
+        $http.get(host + '/admin/rest/hoa-don/' + id)
+            .then(function (response) {
+                $scope.hoaDon = response.data;
+            }).catch(function (error) {
+            toastr["error"]("Lấy dữ liệu thất bại");
+            $location.path("/list");
+        });
+
+        $http.get(host + '/admin/rest/hoa-don-chi-tiet/find-by-id-hoa-don/' + id)
+            .then(function (response) {
+                $scope.hoaDonChiTiets = response.data;
+            }).catch(function (error) {
+            toastr["error"]("Lấy dữ liệu thất bại");
+            $location.path("/list");
+        });
+    }
 });
 
-app.controller("detailDonHangController", function ($scope, $http, $window, $location,$routeParams) {
+app.controller("detailDonHangController", function ($scope, $http, $window, $location, $routeParams) {
     const id = $routeParams.id;
     $http.get(host + '/admin/rest/hoa-don/' + id)
         .then(function (response) {
@@ -85,11 +133,11 @@ app.controller("detailDonHangController", function ($scope, $http, $window, $loc
         $location.path("/list");
     });
 
-        $http.get(host + '/admin/rest/hoa-don-chi-tiet/find-by-id-hoa-don/' + id)
-            .then(function (response) {
-                $scope.hoaDonChiTiets = response.data;
-            }).catch(function (error) {
-            toastr["error"]("Lấy dữ liệu thất bại");
-            $location.path("/list");
-        });
+    $http.get(host + '/admin/rest/hoa-don-chi-tiet/find-by-id-hoa-don/' + id)
+        .then(function (response) {
+            $scope.hoaDonChiTiets = response.data;
+        }).catch(function (error) {
+        toastr["error"]("Lấy dữ liệu thất bại");
+        $location.path("/list");
+    });
 });
