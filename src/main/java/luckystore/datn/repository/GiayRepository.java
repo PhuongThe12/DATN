@@ -22,6 +22,21 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
     @Query("select new luckystore.datn.model.response.GiayResponse(g) from Giay g where g.id = :id")
     GiayResponse findResponseById(Long id);
 
+//    @Query("select new luckystore.datn.model.response.GiayResponse(g.id, g.ten, chatLieu, coGiay, dayGiay, deGiay) " +
+//            "from Giay g " +
+//            "inner join g.chatLieu chatLieu " +
+//            "inner join g.coGiay coGiay " +
+//            "inner join g.dayGiay dayGiay " +
+//            "inner join g.deGiay deGiay " +
+//            "left join g.lstBienTheGiay bienThe " +
+//            "left join bienThe.khuyenMaiChiTiet kmct " +
+//            "left join kmct.khuyenMai km " +
+//            "where g.id = :id " +
+//            "and (km is null or km.trangThai = 1) " +
+//            "and (km is null or km.ngayBatDau < current_date) " +
+//            "and (km is null or km.ngayKetThuc > current_date)")
+//    List<GiayResponse> findGiayResponseFullById(Long id);
+
     @Query("select new luckystore.datn.model.response.GiayResponse(g) from Giay g  where g.trangThai = 1")
     List<GiayResponse> findAllByTrangThai(Integer trangThai);
 
@@ -33,6 +48,7 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
             "and (:#{#giaySearch.tenThuongHieu} is null or g.thuongHieu.ten like %:#{#giaySearch.tenThuongHieu}%) " +
             "and (:#{#giaySearch.thuongHieuIds} is null or g.thuongHieu.id in :#{#giaySearch.thuongHieuIds}) " +
             "and (:#{#giaySearch.trangThai} is null or g.trangThai = :#{#giaySearch.trangThai}) " +
+            "or (bienThe.barCode = :#{#giaySearch.ten})" +
             "order by g.id desc"
     )
     Page<GiayResponse> findPageForList(GiaySearch giaySearch, Pageable pageable);

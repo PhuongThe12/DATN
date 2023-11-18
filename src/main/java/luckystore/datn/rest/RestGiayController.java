@@ -80,6 +80,11 @@ public class RestGiayController {
         return new ResponseEntity<>(giayService.findAllBySearch(giaySearch), HttpStatus.OK);
     }
 
+    @GetMapping("/bien-the/{barcode}")
+    public ResponseEntity<?> findBienTheByBarcode(@PathVariable("barcode") String barcode) {
+        return new ResponseEntity<>(giayService.getBienTheByBarcode(barcode), HttpStatus.OK);
+    }
+
     @PostMapping("/get-giay-contains")
     public ResponseEntity<?> getAllContains(@RequestBody List<Long> ids) {
         return new ResponseEntity<>(giayService.getAllContains(ids), HttpStatus.OK);

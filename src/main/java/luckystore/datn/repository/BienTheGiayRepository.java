@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BienTheGiayRepository extends JpaRepository<BienTheGiay, Long> {
@@ -29,4 +30,7 @@ public interface BienTheGiayRepository extends JpaRepository<BienTheGiay, Long> 
 
     @Query("select bt from BienTheGiay bt where bt.id in :id")
     List<BienTheGiay> findByIdContains(List<Long> id);
+
+    @Query("select new luckystore.datn.model.response.BienTheGiayResponse(bt.id, bt.soLuong) from BienTheGiay bt where bt.barCode = :barCode")
+    Optional<BienTheGiayResponse> getBienTheGiayByBarCode(String barCode);
 }

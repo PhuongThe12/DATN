@@ -98,26 +98,41 @@
                                     <th>#</th>
                                     <th>Sản phẩm</th>
                                     <th>Số lượng</th>
-                                    <th>Đơn giá</th>
-                                    <th>Thành tiền</th>
+                                    <th>Đơn giá <sup class="text-danger">(vnđ)</sup></th>
+                                    <th>Thành tiền <sup class="text-danger">(vnđ)</sup></th>
                                     <th></th>
                                 </tr>
                                 <tr ng-repeat="giaySelect in listGiaySelected">
                                     <td>{{$index + 1}}</td>
-                                    <td>
+                                    <td style="max-width: 400px; overflow: hidden; text-overflow: ellipsis;"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="right" title="{{giaySelect.ten}}">
                                         <div class="d-flex align-items-center">
-                                            <p class="font-size-16 fw-bold ps-2">{{giaySelect.ten}} (
-                                                {{giaySelect.kichThuoc.ten}} - {{giaySelect.mauSac.ten}} )</p>
+                                            <p style="text-wrap: nowrap;">({{giaySelect.kichThuoc.ten}} -
+                                                {{giaySelect.mauSac.ten}})</p>
+                                            <p class="font-size-16 fw-bold ps-2"
+                                               style="text-wrap: nowrap;overflow: hidden;text-align: center;text-overflow: ellipsis;">
+                                                {{giaySelect.ten}}
+                                            </p>
                                         </div>
                                     </td>
                                     <td>
                                         <input type="number" ng-model="giaySelect.soLuongMua"
                                                ng-blur="blurSoLuong(giaySelect)"
                                                onkeypress="nextInput(event)"
-                                               class="form-control w-25 m-auto">
+                                               class="form-control w-50 m-auto">
                                     </td>
-                                    <td>{{giaySelect.giaBan}}</td>
-                                    <td>{{giaySelect.giaBan * giaySelect.soLuongMua}}</td>
+                                    <td>
+                                        <span ng-show="giaySelect.khuyenMai > 0">
+                                            <span class="position-relative"> {{giaySelect.giaBan | number:0}}
+                                                 <span class="position-absolute top-0 start-100 translate-middle badge bg-danger"
+                                                       style="transform: translate(0,-90%)!important; padding: 5px;">-{{giaySelect.khuyenMai}}%
+                                                </span>
+                                            </span>
+                                        </span>
+                                        <span ng-show="giaySelect.khuyenMai <= 0">{{giaySelect.giaBan | number:0}}<span>
+                                    </td>
+                                    <td>{{giaySelect.giaBan * giaySelect.soLuongMua | number:0}}</td>
                                     <td>
                                         <button class="btn" ng-click="deleteSelected(giaySelect.id)"><i
                                                 class="fas text-danger font-size-16 fa-trash-alt"></i>
@@ -142,21 +157,26 @@
                             <input type="text" class="form-control w-50" placeholder="search..." ng-model="searchText">
                             <button class="btn btn-custom" ng-click="search()">Tìm kiếm</button>
                             <button class="btn btn-custom mx-2" ng-click="reset()">Nhập lại</button>
-                            <button class="btn btn-custom mx-2" ng-click="startScanning(msIndex, ktIndex)"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop"><i class="fas fa-qrcode"></i></button>
+                            <button class="btn btn-custom mx-2" ng-click="startScanning()">
+                                <i class="fas fa-qrcode"></i></button>
+                            <button hidden="true" data-bs-toggle="modal"
+                                    data-bs-target="#staticBackdrop" id="staticBackDropButton">
+                            </button>
                         </div>
                         <div class="item row">
                             <div class="col-md-2 mb-2" ng-repeat="giay in giays">
                                 <button data-bs-toggle="modal" data-bs-target="#showGiaySelect" id="buttonModalSanPham"
                                         hidden=""></button>
-                                <div class="p-2 hover-item" ng-click="addOrder(giay.id)">
+                                <div class="p-2 hover-item" ng-click="addOrder(giay.id)" data-bs-toggle="tooltip"
+                                     data-bs-placement="right" title="{{giay.ten}}">
                                     <div class="position-relative" style="text-align: center;">
-                                        <img width="60%" class="rounded-3" style="height: 85px; width: 85px; object-fit: contain"
+                                        <img width="60%" class="rounded-3"
+                                             style="height: 85px; width: 85px; object-fit: contain"
                                              ng-src="{{giay.lstAnh && giay.lstAnh.length > 0 ? giay.lstAnh[0] : 'https://product.hstatic.net/1000361048/product/giay_co_lung_forum_trang_fy4976_02_standard_hover_1af12c21fb0a498eb38c9d41c04e4514_grande.jpg'}}"
                                              alt="Ảnh giày">
                                     </div>
-                                    <p class="mt-1" style="text-wrap: nowrap;overflow: hidden;text-align: center;">
+                                    <p class="mt-1"
+                                       style="text-wrap: nowrap;overflow: hidden;text-align: center;text-overflow: ellipsis;">
                                         {{giay.ten}}</p>
                                 </div>
                             </div>
@@ -184,6 +204,29 @@
         <div class="col-md-4">
             <form ng-submit="taoHoaDon()">
                 <div class="row">
+                    <div class="mb-3">
+                        <label class="form-label">Hóa đơn: <span
+                                ng-show="selectedHoaDon.id">HD{{selectedHoaDon.id}}</span></label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <label class="form-label">Khuyến mại (%)</label>
+                            <select class="form-select" aria-label="Select Khuyến mại">
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-6 d-flex align-items-end">
+                        <div class="mb-3">
+                            <label class="form-label">Tiền giảm: <sup class="text-danger">(vnđ)</sup>:</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
                     <div class="col-6">
                         <div class="mb-3">
                             <label class="form-label">Khách Hàng</label>
@@ -200,20 +243,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-6">
-                        <div class="mb-3">
-                            <label class="form-label">Mã Hóa Đơn</label>
-                            <input type="text" class="form-control" ng-model="hoaDon.id">
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="mb-3">
-                            <label class="form-label">Người Bán</label>
-                            <input type="text" class="form-control" ng-model="hoaDon.nhanVien">
-                        </div>
-                    </div>
-                </div>
+
                 <div class="row">
                     <div class="col-6">
                         <div class="mb-3">
@@ -339,7 +369,7 @@
 
 <!-- Modal -->
 <div class="modal fade" id="showGiaySelect" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog" style="max-width: 800px">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Chọn sản phẩm</h5>
@@ -369,12 +399,28 @@
                         </div>
 
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-8">
                         <div class="side-left">
                             <div class="title">
-                                <h5>{{giayDetail.ten}} </h5>
-                                <h5>Giá <span id="price-product">{{giayDetail.giaBan}}</span></h5>
-                                <h5>Số lượng : <span id="quantity">{{giayDetail.soLuong}}</span></h5>
+                                <h5 class="py-3">{{giayDetail.ten}} </h5>
+                                <h5 class="py-3">Giá <sup class="text-danger">vnđ</sup>:
+                                    <span id="price-product" class="py-3">
+                                        <span ng-show="giayDetail.khuyenMai">
+                                            <del>{{giayDetail.giaBan | number:0}}</del>
+                                        <span class="position-relative">
+                                            {{(giayDetail.giaBan - (giayDetail.giaBan * giayDetail.khuyenMai / 100))| number:0 }}
+                                        <span class="position-absolute top-0 start-100 translate-middle badge bg-danger"
+                                              style="transform: translate(0,-50%)!important; padding: 5px;">
+                                            -{{giayDetail.khuyenMai}}%
+                                        </span>
+                                        </span>
+                                        </span>
+                                        <span ng-show="!giayDetail.khuyenMai">
+                                            {{ giayDetail.giaBan | number:0}}
+                                        </span>
+                                    </span>
+                                </h5>
+                                <h5 class="py-3">Số lượng: <span id="quantity">{{giayDetail.soLuong}}</span></h5>
                             </div>
                             <div id="buttons-container"></div>
                             <div id="product-info"></div>

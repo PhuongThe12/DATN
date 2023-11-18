@@ -27,7 +27,7 @@ public class BienTheGiayResponse {
 
     private BigDecimal giaBan;
     
-    private Integer khuyenMai;
+    private Integer khuyenMai = 0;
 
     private String barCode;
 
@@ -76,6 +76,11 @@ public class BienTheGiayResponse {
         this.barCode = barCode;
         this.mauSac = MauSacResponse.builder().id(idMauSac).build();
         this.kichThuoc = KichThuocResponse.builder().id(idKichThuoc).build();
+    }
+
+    public BienTheGiayResponse(Long id, Integer soLuong) {
+        this.id = id;
+        this.soLuong = soLuong;
     }
 
 }

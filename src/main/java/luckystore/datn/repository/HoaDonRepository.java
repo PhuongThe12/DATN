@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface HoaDonRepository extends JpaRepository<HoaDon,Long> {
@@ -45,7 +46,11 @@ public interface HoaDonRepository extends JpaRepository<HoaDon,Long> {
 
     @Query("SELECT new luckystore.datn.model.response.HoaDonBanHangResponse(hd.id, hdct, hd.trangThai)  FROM HoaDon hd " +
             "left join hd.listHoaDonChiTiet hdct " +
-            "where hd.trangThai = 0 order by hd.id desc")
+            "where hd.id = :id")
+    List<HoaDonBanHangResponse> getAllById(Long id);
+
+    @Query("SELECT new luckystore.datn.model.response.HoaDonBanHangResponse(hd.id)  FROM HoaDon hd " +
+            "where hd.trangThai = 0")
     List<HoaDonBanHangResponse> getAllChuaThanhToan();
 
     @Query("SELECT hd.id FROM HoaDon hd where hd.id = :id")

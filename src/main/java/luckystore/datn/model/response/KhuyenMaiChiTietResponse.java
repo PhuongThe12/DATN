@@ -26,4 +26,10 @@ public class KhuyenMaiChiTietResponse {
         }
     }
 
+    public KhuyenMaiChiTietResponse(Long id, Long idBienThe, Integer phanTramGiam) {
+        this.id = id;
+        this.bienTheGiayResponsel = BienTheGiayResponse.builder().id(idBienThe).build();
+        this.phanTramGiam = phanTramGiam;
+    }
+
 }

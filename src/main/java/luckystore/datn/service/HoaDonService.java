@@ -3,6 +3,7 @@ package luckystore.datn.service;
 import luckystore.datn.model.request.AddOrderProcuctRequest;
 import luckystore.datn.model.request.HoaDonSearch;
 import luckystore.datn.model.response.HoaDonBanHangResponse;
+import luckystore.datn.model.response.HoaDonChiTietResponse;
 import luckystore.datn.model.response.HoaDonResponse;
 import luckystore.datn.model.response.HoaDonYeuCauRespone;
 import org.springframework.data.domain.Page;
@@ -20,16 +21,20 @@ public interface HoaDonService {
     Page<HoaDonYeuCauRespone> getPageHoaDonYeuCau(HoaDonSearch hoaDonSearch);
     HoaDonYeuCauRespone getHoaDonYeuCau(Long id);
 
-
     HoaDonResponse findById(Long id);
 
     List<HoaDonBanHangResponse> getAllChuaThanhToan();
 
+    HoaDonBanHangResponse getAllById(Long id);
+
     HoaDonBanHangResponse createNewHoaDon();
 
-    HoaDonBanHangResponse addProduct(AddOrderProcuctRequest addOrderProcuctRequest);
+    HoaDonChiTietResponse addProduct(AddOrderProcuctRequest addOrderProcuctRequest);
+
+    HoaDonChiTietResponse addNewHDCT(AddOrderProcuctRequest addOrderProcuctRequest);
 
     String deleteHoaDon(Long id);
 
     void deleteAllHoaDonChiTiet(Long idHd);
+
 }

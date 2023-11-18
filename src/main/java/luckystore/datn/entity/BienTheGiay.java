@@ -1,6 +1,7 @@
 package luckystore.datn.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
@@ -22,6 +24,7 @@ import org.hibernate.annotations.Nationalized;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -68,4 +71,7 @@ public class BienTheGiay {
     @JoinColumn(name = "ID_MAU_SAC")
     private MauSac mauSac;
 
+    @OneToMany(mappedBy = "bienTheGiay")
+    @JsonManagedReference
+    private List<KhuyenMaiChiTiet> khuyenMaiChiTietList;
 }
