@@ -554,7 +554,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
         $scope.selectedMauSacs.forEach(mauSac => {
             mauSac.selectedKichThuocs.forEach(kichThuoc => {
 
-                    if (isNaN(kichThuoc.giaBan) || !kichThuoc.giaBan) {
+                    if (isNaN(kichThuoc.giaBan)) {
                         kichThuoc.giaBan = null;
                         kichThuoc.errors.giaBan = 'Không được bỏ trống giá bán';
                         valid = false;
@@ -626,7 +626,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
     $scope.blurInput = function (msIndex, ktIndex, model) {
 
         if (model === 'giaBan') {
-            if (isNaN($scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan) || !$scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan) {
+            if (isNaN($scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan)) {
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaBan = 'Giá bán không được để trống';
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan = null;
             } else if ($scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan < 0) {

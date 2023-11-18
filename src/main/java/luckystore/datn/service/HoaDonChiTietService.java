@@ -16,4 +16,7 @@ public interface HoaDonChiTietService {
     Page<HoaDonChiTietResponse> getPage(int page, String searchText, Integer status);
 
     HoaDonChiTietResponse findById(Long id);
+
+    void deleteHoaDonChiTiet(Long idHdct);
+
 }

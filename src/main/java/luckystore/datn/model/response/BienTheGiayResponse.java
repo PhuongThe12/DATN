@@ -26,6 +26,8 @@ public class BienTheGiayResponse {
     private String hinhAnh;
 
     private BigDecimal giaBan;
+    
+    private Integer khuyenMai = 0;
 
     private String barCode;
 
@@ -52,6 +54,7 @@ public class BienTheGiayResponse {
                 giayResponse = new GiayResponse();
                 giayResponse.setId(bienTheGiay.getGiay().getId());
                 giayResponse.setLstAnh(null);
+                giayResponse.setTen(bienTheGiay.getGiay().getTen());
 //                giayResponse.getLstAnh().add(bienTheGiay.getGiay().getLstAnh().isEmpty() ? null :
 //                        ImageHubServiceImpl.getBase64FromFileStatic(bienTheGiay.getGiay().getLstAnh().get(0).getLink()));
                 giayResponse.setTen(bienTheGiay.getGiay().getTen());
@@ -73,6 +76,11 @@ public class BienTheGiayResponse {
         this.barCode = barCode;
         this.mauSac = MauSacResponse.builder().id(idMauSac).build();
         this.kichThuoc = KichThuocResponse.builder().id(idKichThuoc).build();
+    }
+
+    public BienTheGiayResponse(Long id, Integer soLuong) {
+        this.id = id;
+        this.soLuong = soLuong;
     }
 
 }

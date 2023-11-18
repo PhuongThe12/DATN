@@ -80,6 +80,11 @@ public class RestGiayController {
         return new ResponseEntity<>(giayService.findAllBySearch(giaySearch), HttpStatus.OK);
     }
 
+    @GetMapping("/bien-the/{barcode}")
+    public ResponseEntity<?> findBienTheByBarcode(@PathVariable("barcode") String barcode) {
+        return new ResponseEntity<>(giayService.getBienTheByBarcode(barcode), HttpStatus.OK);
+    }
+
     @PostMapping("/get-giay-contains")
     public ResponseEntity<?> getAllContains(@RequestBody List<Long> ids) {
         return new ResponseEntity<>(giayService.getAllContains(ids), HttpStatus.OK);
@@ -119,6 +124,11 @@ public class RestGiayController {
         return ResponseEntity.ok(giayService.updateGia(giayRequest));
     }
 
+    @GetMapping("/{id}/so-luong")
+    public ResponseEntity<?> getSoLuong(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(giayService.getSoLuong(id));
+    }
+
     private ResponseEntity<?> getErrorJson(BindingResult result) {
         if (result.hasErrors()) {
             List<String> fieldErrors = new ArrayList<>();
@@ -132,4 +142,6 @@ public class RestGiayController {
         return null;
 
     }
+
+
 }

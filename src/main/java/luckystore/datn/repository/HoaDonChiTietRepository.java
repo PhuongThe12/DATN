@@ -12,9 +12,14 @@ import java.util.List;
 @Repository
 public interface HoaDonChiTietRepository extends JpaRepository<HoaDonChiTiet,Long> {
 
+
     @Query("select new luckystore.datn.model.response.HoaDonChiTietResponse(hdct) from HoaDonChiTiet hdct")
     List<HoaDonChiTietResponse> findAllResponse();
 
     @Query("select new luckystore.datn.model.response.HoaDonChiTietResponse(hdct) from HoaDonChiTiet hdct where hdct.hoaDon.id = :id")
     List<HoaDonChiTietResponse> findAllResponse(Long id);
+
+    @Query("SELECT hd.id FROM HoaDonChiTiet hd where hd.id = :id")
+    Long getIdById(Long id);
+
 }

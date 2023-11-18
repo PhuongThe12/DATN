@@ -1,7 +1,12 @@
 package luckystore.datn.service.impl;
 
+import jakarta.transaction.Transactional;
+import luckystore.datn.entity.BienTheGiay;
+import luckystore.datn.entity.HoaDonChiTiet;
+import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.model.response.HoaDonChiTietResponse;
 import luckystore.datn.model.response.HoaDonResponse;
+import luckystore.datn.repository.BienTheGiayRepository;
 import luckystore.datn.repository.HoaDonChiTietRepository;
 import luckystore.datn.service.HoaDonChiTietService;
 import luckystore.datn.service.HoaDonService;
@@ -15,7 +20,10 @@ import java.util.List;
 public class HoaDonChiTietServiceImpl implements HoaDonChiTietService {
 
     @Autowired
-    HoaDonChiTietRepository hoaDonChiTietRepository;
+    private HoaDonChiTietRepository hoaDonChiTietRepository;
+
+    @Autowired
+    private BienTheGiayRepository bienTheGiayRepository;
 
     @Override
     public List<HoaDonChiTietResponse> getAll() {
@@ -36,4 +44,20 @@ public class HoaDonChiTietServiceImpl implements HoaDonChiTietService {
     public HoaDonChiTietResponse findById(Long id) {
         return null;
     }
+
+    @Override
+    @Transactional
+    public void deleteHoaDonChiTiet(Long idHdct) {
+        HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findById(idHdct).orElseThrow(() ->
+                new NotFoundException("Không tìm thấy"));
+
+        BienTheGiay bienTheGiay = bienTheGiayRepository.findById(hoaDonChiTiet.getBienTheGiay().getId()).orElseThrow(
+                () -> new NotFoundException("Không tìm thấy"));
+
+        bienTheGiay.setSoLuong(bienTheGiay.getSoLuong() + hoaDonChiTiet.getSoLuong());
+
+        bienTheGiayRepository.save(bienTheGiay);
+        hoaDonChiTietRepository.deleteById(idHdct);
+    }
+
 }
