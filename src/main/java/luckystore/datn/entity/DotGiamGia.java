@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,10 +27,10 @@ public class DotGiamGia {
     private String ten;
 
     @Column(name = "NGAY_BAT_DAU", columnDefinition = "DATETIME", nullable = false)
-    private LocalDateTime ngayBatDau;
+    private Date ngayBatDau;
 
     @Column(name = "NGAY_KET_THUC", columnDefinition = "DATETIME", nullable = false)
-    private LocalDateTime ngayKetThuc;
+    private Date ngayKetThuc;
 
     @Column(name = "TRANG_THAI", columnDefinition = "INT", nullable = false)
     private Integer trangThai;
@@ -39,6 +40,5 @@ public class DotGiamGia {
 
     @OneToMany(mappedBy = "dotGiamGia", cascade = CascadeType.ALL)
     private List<DieuKien> danhSachDieuKien;
-
 
 }

@@ -8,6 +8,7 @@ import luckystore.datn.entity.DieuKien;
 import luckystore.datn.entity.DotGiamGia;
 import luckystore.datn.model.request.DieuKienRequest;
 
+import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,9 +23,9 @@ public class DotGiamGiaResponse {
 
     private String ten;
 
-    private LocalDateTime ngayBatDau;
+    private Date ngayBatDau;
 
-    private LocalDateTime ngayKetThuc;
+    private Date ngayKetThuc;
 
     private String ghiChu;
 

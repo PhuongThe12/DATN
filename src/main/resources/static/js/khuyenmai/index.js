@@ -30,15 +30,15 @@ app.controller("addKhuyenMaiController", function ($scope, $http, $location) {
     $scope.khuyenMai = {};
     $scope.khuyenMai.khuyenMaiChiTietRequests = [];
 
-    $scope.loadGiay = function() {
+    $scope.loadGiay = function () {
         // Make an HTTP GET request to your API to fetch product data.
         $http.get('http://localhost:8080/mock/abc')
             .then(function (response) {
                 // The data has been successfully retrieved from the API.
                 $scope.giays = response.data;
                 // Cập nhật trạng thái checkbox dựa trên selectedGiays
-                $scope.giays.forEach(function(giay) {
-                    giay.selected = $scope.selectedGiays.some(function(selectedGiay) {
+                $scope.giays.forEach(function (giay) {
+                    giay.selected = $scope.selectedGiays.some(function (selectedGiay) {
                         return selectedGiay.id === giay.id;
                     });
                 });
@@ -57,6 +57,7 @@ app.controller("addKhuyenMaiController", function ($scope, $http, $location) {
             giay.selected = $scope.selectAll;
         });
     };
+
     $scope.selectedGiays = [];
     $scope.giays = [];
 
@@ -70,9 +71,14 @@ app.controller("addKhuyenMaiController", function ($scope, $http, $location) {
 
     $scope.isTableVisible = false;
     $scope.xacNhan = function () {
+        $scope.selectedGiays = $scope.giays.filter(function (giay) {
+            return giay.selected;
+        });
+
         $scope.isTableVisible = true;
         console.log($scope.selectedGiays)
     };
+
 
     ///////////////////////
     $scope.thietLapHangLoat = function () {
@@ -106,8 +112,8 @@ app.controller("addKhuyenMaiController", function ($scope, $http, $location) {
         //         $scope.khuyenMai.khuyenMaiChiTietRequests.push(khuyenMaiChiTiet);
         //     }
         // };
-        angular.forEach($scope.selectedGiays, function(giay) {
-            angular.forEach(giay.lstBienTheGiay, function(bienTheGiay) {
+        angular.forEach($scope.selectedGiays, function (giay) {
+            angular.forEach(giay.lstBienTheGiay, function (bienTheGiay) {
                 var khuyenMaiChiTietRequest = {
                     bienTheGiayId: bienTheGiay.id,
                     phanTramGiam: bienTheGiay.phanTramGiam
@@ -224,49 +230,13 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
     $scope.khuyenMai.id = $routeParams.id;
     $scope.khuyenMai.khuyenMaiChiTietRequests = [];
 
-    $scope.init = function () {
-        $http.get(host + '/admin/rest/khuyen-mai/' + $scope.khuyenMai.id)
-            .then(function (response) {
-                if (response.status === 200) {
-                    $scope.khuyenMai = response.data;
-                    console.log("Detail khuyến mại: ",$scope.khuyenMai)
-                }
-            })
-            .catch(function (error) {
-                toastr["error"]("Lấy dữ liệu thất bại");
-            });
-    };
-    $scope.change = function (input) {
-        input.$dirty = true;
-    }
-    $scope.changeGhiChu = function (input) {
-        input.$dirty = true;
-    }
-
-    $scope.loadGiay = function () {
-        // Make an HTTP GET request to your API to fetch product data.
-        $http.get('http://localhost:8080/mock/abc')
-            .then(function (response) {
-                // The data has been successfully retrieved from the API.
-                $scope.giays = response.data;
-                console.log($scope.giays);
-                // Show the modal
-                $('#myModal').modal('show');
-            })
-            .catch(function (error) {
-                // Handle any errors that may occur during the API request.
-                console.error('Error fetching data: ' + error);
-            });
-    };
     //Hàm chọn select tất cả.
     $scope.toggleSelectAllGiay = function () {
         angular.forEach($scope.giays, function (giay) {
             giay.selected = $scope.selectAll;
         });
     };
-    $scope.selectedGiays = [
-
-    ];
+    $scope.selectedGiays = [];
 
     //Hàm xác nhận
     $scope.isXacNhanDisabled = function () {
@@ -275,6 +245,8 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
         });
         return $scope.selectedGiays.length === 0;
     };
+    console.log($scope.giays);
+
 
     $scope.isTableVisible = false;
     $scope.xacNhan = function () {
@@ -299,8 +271,52 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
             bienTheGiay.selected = giay.selectAll;
         });
     };
+    $scope.init = function () {
+        $http.get(host + '/admin/rest/khuyen-mai/' + $scope.khuyenMai.id)
+            .then(function (response) {
+                if (response.status === 200) {
+                    $scope.khuyenMai = response.data;
+                    console.log("Detail khuyến mại: ", $scope.khuyenMai)
+                    console.log("Detail khuyến mại chi tiết: ", $scope.khuyenMai.khuyenMaiChiTietResponses)
+                    $scope.loadGiay();
+                }
+            })
+            .catch(function (error) {
+                toastr["error"]("Lấy dữ liệu thất bại");
+            });
+    };
+    $scope.change = function (input) {
+        input.$dirty = true;
+    }
+    $scope.changeGhiChu = function (input) {
+        input.$dirty = true;
+    }
 
+    $scope.loadGiay = function () {
+        $http.get('http://localhost:8080/mock/abc')
+            .then(function (response) {
+                $scope.giays = response.data;
+                console.log("Load giày: ", $scope.giays);
+                $scope.xacNhan();
+                $scope.khuyenMai.khuyenMaiChiTietResponses.forEach(function (item) {
+                    var giayResponseId = item.bienTheGiayResponsel.giayResponse.id;
+                    console.log("abc", giayResponseId);
 
+                    var selectedGiay = $scope.giays.find(function (giay) {
+                        return giay.id === giayResponseId;
+                    });
+
+                    if (selectedGiay) {
+                        selectedGiay.selected = true;
+                    }
+                });
+
+                // $('#myModal').modal('show');
+            })
+            .catch(function (error) {
+                console.error('Error fetching data: ' + error);
+            });
+    };
 
     $scope.updateDotGiamGia = function () {
 
@@ -336,7 +352,6 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
                 }
             });
     }
-
 
     $scope.hasErrorInItems = false;
     $scope.checkErrorsInItems = function () {

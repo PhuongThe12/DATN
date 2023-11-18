@@ -76,11 +76,19 @@ public class DotGiamGiaServiceImpl implements DotGiamGiaService {
 
         List<DieuKien> dieuKiens = new ArrayList<>();
         for (DieuKienRequest dieuKienRequest : dotGiamGiaRequest.getDieuKienRequests()) {
-            DieuKien dieuKien = dieuKienRepository.findById(dieuKienRequest.getId()).orElseThrow(() -> new RuntimeException());
-            dieuKien.setTongHoaDon(dieuKienRequest.getTongHoaDon());
-            dieuKien.setPhanTramGiam(dieuKienRequest.getPhanTramGiam());
-            dieuKien.setDotGiamGia(dotGiamGia);
-            dieuKiens.add(dieuKien);
+            if (dieuKienRequest.getId() != null) {
+                DieuKien dieuKien = dieuKienRepository.findById(dieuKienRequest.getId()).orElseThrow(() -> new RuntimeException());
+                dieuKien.setTongHoaDon(dieuKienRequest.getTongHoaDon());
+                dieuKien.setPhanTramGiam(dieuKienRequest.getPhanTramGiam());
+                dieuKien.setDotGiamGia(dotGiamGia);
+                dieuKiens.add(dieuKien);
+            } else {
+                DieuKien dieuKien = new DieuKien();
+                dieuKien.setTongHoaDon(dieuKienRequest.getTongHoaDon());
+                dieuKien.setPhanTramGiam(dieuKienRequest.getPhanTramGiam());
+                dieuKien.setDotGiamGia(dotGiamGia);
+                dieuKiens.add(dieuKien);
+            }
         }
         dotGiamGia.setDanhSachDieuKien(dieuKiens);
         dotGiamGiaRepository.save(dotGiamGia);

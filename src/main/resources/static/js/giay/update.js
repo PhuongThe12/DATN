@@ -586,7 +586,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
         $scope.selectedMauSacs.forEach(mauSac => {
             mauSac.selectedKichThuocs.forEach(kichThuoc => {
 
-                if (isNaN(kichThuoc.giaBan) || !kichThuoc.giaBan) {
+                if (isNaN(kichThuoc.giaBan)) {
                     kichThuoc.giaBan = null;
                     kichThuoc.errors.giaBan = 'Không được bỏ trống giá bán';
                     valid = false;
@@ -657,10 +657,10 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
     $scope.blurInput = function (msIndex, ktIndex, model) {
 
         if (model === 'giaBan') {
-            if (isNaN($scope.selectedMauSacs[0].selectedKichThuocs[0].giaBan) || !$scope.selectedMauSacs[0].selectedKichThuocs[0].giaBan) {
+            if (isNaN($scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan)) {
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaBan = 'Giá bán không được để trống';
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan = null;
-            } else if ($scope.selectedMauSacs[0].selectedKichThuocs[0].giaBan < 0) {
+            } else if ($scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan < 0) {
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaBan = 'Giá bán không được âm';
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan = null;
             } else {
@@ -690,10 +690,10 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                 }
             }
 
-        }
 
+        }
         if (model === 'soLuong') {
-            if (isNaN($scope.selectedMauSacs[0].selectedKichThuocs[0].soLuong) || !$scope.selectedMauSacs[0].selectedKichThuocs[0].soLuong) {
+            if (isNaN($scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].soLuong)) {
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.soLuong = 'Số lượng không được để trống';
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].soLuong = null;
             } else {
