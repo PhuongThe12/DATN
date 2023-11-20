@@ -38,6 +38,10 @@ public class HoaDon {
     @JoinColumn(name = "ID_NHAN_VIEN")
     private NhanVien nhanVien;
 
+    @ManyToOne
+    @JoinColumn(name = "ID_KHUYEN_MAI_THEO_DIEU_KIEN")
+    private DieuKien dieuKien;
+
     @Column(name = "NGAY_TAO")
     private LocalDateTime ngayTao;
 
@@ -86,5 +90,9 @@ public class HoaDon {
     @OneToMany(mappedBy = "hoaDon", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonManagedReference
     private Set<HoaDonChiTiet> listHoaDonChiTiet;
+
+    @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<ChiTietThanhToan> chiTietThanhToans;
 
 }

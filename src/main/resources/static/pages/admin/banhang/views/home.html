@@ -202,164 +202,293 @@
             <!--            </div>-->
         </div>
         <div class="col-md-4">
-            <form ng-submit="taoHoaDon()">
-                <div class="row">
-                    <div class="mb-3">
-                        <label class="form-label">Hóa đơn: <span
-                                ng-show="selectedHoaDon.id">HD{{selectedHoaDon.id}}</span></label>
-                    </div>
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#banTaiQuay"
+                       type="button" role="tab" aria-controls="nav-home" aria-selected="true">Bán tại quầy
+                    </a>
+                    <a class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#datHang"
+                       type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Đặt hàng
+                    </a>
                 </div>
-
-                <div class="row">
-                    <div class="col-6">
-                        <div class="mb-3">
-                            <label class="form-label">Khuyến mại (%)</label>
-                            <select class="form-select" aria-label="Select Khuyến mại">
-
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-6 d-flex align-items-end">
-                        <div class="mb-3">
-                            <label class="form-label">Tiền giảm: <sup class="text-danger">(vnđ)</sup>:</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-6">
-                        <div class="mb-3">
-                            <label class="form-label">Khách Hàng</label>
-                            <div class="input-group mb-3">
-                                <input type="text" class="form-control" ng-model="hoaDon.khachHang">
-                                <button class="btn btn-custom" type="button">+</button>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="banTaiQuay" role="tabpanel" aria-labelledby="nav-home-tab">
+                    <form ng-submit="taoHoaDon(1)">
+                        <div class="row">
+                            <div class="mb-3">
+                                <label class="form-label" style="margin-bottom: 0">Hóa đơn: <strong
+                                        ng-show="selectedHoaDon.id">HD{{selectedHoaDon.id}}</strong></label>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="mb-3">
-                            <label class="form-label">Số điện thoại</label>
-                            <input type="text" class="form-control" ng-model="hoaDon.soDienThoai">
-                        </div>
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-6">
-                        <div class="mb-3">
-                            <label class="form-label">Tỉnh</label>
-                            <select class="form-select" ng-model="hoaDon.xa">
-                                <option value="1">Tân Hòa</option>
-                                <option value="2">Cộng Hòa</option>
-                                <option value="3">Tân Phú</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Huyện</label>
-                            <select class="form-select" ng-model="hoaDon.huyen">
-                                <option value="1">Quốc Oai</option>
-                                <option value="2">Thạch Thất</option>
-                                <option value="3">Chương Mỹ</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Xã</label>
-                            <select class="form-select" ng-model="hoaDon.tinh">
-                                <option value="1">Bà Rịa</option>
-                                <option value="2">KonTum</option>
-                                <option value="3">Đak Lak</option>
-                            </select>
+                        <div class="row">
+                            <div class="mb-3">
+                                <label class="form-label" style="margin-bottom: 0">Tổng tiền:
+                                    <strong ng-show="tongTien > 0" class="text-info font-size-16">
+                                        {{tongTien | number:0}} <sup class="text-danger">(vnđ)</sup></strong></label>
+                            </div>
                         </div>
 
-                    </div>
-                    <div class="col-6">
-                        <div class="mb-3">
-                            <label class="form-label">Địa Chỉ Chi Tiết</label>
-                            <textarea class="form-control" rows="9" ng-model="hoaDon.diaChiChiTiet"></textarea>
+                        <div class="row">
+                            <div class="mb-3">
+                                <label class="form-label" style="margin-bottom: 0">Khách Hàng:
+                                    <strong class="bg-light" ng-show="selectedKhachHang.id"
+                                            style="border-radius: 5px; padding: 2px 5px !important;max-width: 60%; overflow: hidden;text-overflow: ellipsis; display: inline">
+                                        {{selectedKhachHang.hoTen}} - ({{selectedKhachHang.soDienThoai}})
+                                        <span class="badge badge-light p-0 labelTabDelete"
+                                              ng-click="deleteSelectedKhachHang()">
+                                <i class="fas fa-times-circle px-2"></i>
+                                </span>
+                                    </strong>
+                                </label>
+                                <button class="btn-primary badge" type="button" style="padding: 2px"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalKhachHang"><i
+                                        class="fas fa-plus"></i></button>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6">
-                        <div class="mb-3">
-                            <label class="form-label">Khuyến Mãi ( % )</label>
-                            <input type="text" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="mb-3">
-                            <label class="form-label">Tổng Tiền Sản Phẩm ( VNĐ )</label>
-                            <input type="text" class="form-control">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6">
-                        <div class="mb-3">
-                            <label class="form-label">Phương Thức Mua Hàng</label>
-                            <select class="form-select">
-                                <option value="1">Mua Tại Cửa Hàng</option>
-                                <option value="3">Mua Online</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="mb-3">
-                            <label class="form-label">Phương Thức Thanh Toán</label>
-                            <select class="form-select">
-                                <option value="1">Tiền Mặt</option>
-                                <option value="3">Chuyển Khoản</option>
-                                <option value="3">Kết hợp</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6">
-                        <div class="mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="">
-                                <label class="form-check-label">
-                                    Chờ thanh toán
+
+
+                        <div class="row">
+                            <div class="mb-3">
+                                <label class="form-label" style="margin-bottom: 0">Ưu đãi:
+                                    <span ng-show="uuDai.id">
+                                <strong class="text-danger">
+                                - {{uuDai.uuDai}}%
+                                 <span class="badge rounded-pill bg-primary"
+                                       style="transform: translate(0,-15%)!important;">
+                                    {{uuDai.tenHang}}
+                                 </span>
+                                </strong>
+                            </span>
                                 </label>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-6">
 
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="mb-3 d-flex align-items-center">
-                        <label class="form-label">Đơn vị vận chuyển</label>
-                        <img src="https://file.hstatic.net/200000078829/file/dich_vu_van_chuyen_ghn_express_1_f7f05461de5140f4abf8ab4524fd260f_grande.png"
-                             width="100px" alt="">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6">
-                        <div class="mb-3">
-                            <label class="form-label">Phí Vận Chuyển</label>
-                            <input type="text" class="form-control">
+                        <div class="row">
+                            <div class="mb-3">
+                                <label class="form-label" style="margin-bottom: 0" data-bs-toggle="modal"
+                                       data-bs-target="#modalDotGiamGia">Đợt giảm giá
+                                    <sup class="text-info" type="button"
+                                         data-bs-toggle="tooltip" data-bs-placement="right"
+                                         title="Đợt giảm giá đang hoạt động"><i class="fas fa-info-circle"></i></sup>
+
+                                    :
+                                    <strong ng-show="dotGiamGiaSelect.id" class="text-danger">-
+                                        {{dotGiamGiaSelect.phanTramGiam}}%</strong>
+                                </label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="mb-3">
-                            <label class="form-label">Tổng Tiền</label>
-                            <input type="text" class="form-control" ng-model="tongTien">
+                        <div class="row">
+                            <div class="mb-3">
+                                <label class="form-label" style="margin-bottom: 0">Tổng tiền giảm:</label>
+                                <span ng-show="tongTien > 0"><strong class="text-danger">- {{tongTienGiam | number : 0}}<sup
+                                        class="text-danger">(vnđ)</sup></strong></span>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="mb-3">
-                            <label class="form-label">Ghi chú</label>
-                            <textarea class="form-control" rows="3" ng-model="hoaDon.ghiChu"></textarea>
+
+                        <div class="row">
+                            <div class="mb-3">
+                                <label class="form-label" style="margin-bottom: 0">Tiền phải trả:</label>
+                                <span ng-show="tongTien > 0"><strong class="text-success">{{tongTienPhaiTra | number : 0}}<sup
+                                        class="text-danger">(vnđ)</sup></strong></span>
+                            </div>
                         </div>
-                    </div>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <label class="form-label" style="margin-bottom: 0">Phương Thức Thanh Toán</label>
+                                <select class="form-select" ng-model="phuongThucTaiQuay"
+                                        ng-change="changePhuongThucTaiQuay()"
+                                        ng-options="phuongThuc as phuongThuc.value for phuongThuc in phuongThucTaiQuays">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <label class="form-label" style="margin-bottom: 0">Tiền chuyển khoản:
+                                    <strong ng-show="chuyenKhoanTaiQuay > 0" class="text-info font-size-16">
+                                        {{chuyenKhoanTaiQuay | number:0}} <sup class="text-danger">(vnđ)</sup></strong></label>
+                                    <input type="number" class="form-control" ng-change="changeChuyenKhoanTaiQuay()" ng-model="chuyenKhoanTaiQuay" ng-disabled="disabledChuyenKhoanTaiQuay">
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <label class="form-label" style="margin-bottom: 0">Tiền khách đưa:
+                                    <strong ng-show="tienMatTaiQuay > 0" class="text-info font-size-16">
+                                        {{tienMatTaiQuay | number:0}} <sup class="text-danger">(vnđ)</sup></strong>
+                                </label>
+                                <input type="number" class="form-control" ng-change="changeTienMatTaiQuay()" ng-model="tienMatTaiQuay" ng-disabled="disabledTienMatTaiQuay">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div>
+                                <label class="form-label" style="margin-bottom: 0">Tiền thừa:
+                                    <strong ng-show="tienThuaTaiQuay" class="font-size-16" ng-class="tienThuaTaiQuay < 0 ? 'text-danger' : 'text-success'">
+                                        {{tienThuaTaiQuay | number:0}} <sup>(vnđ)</sup></strong></label>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label class="form-label" style="margin-bottom: 0">Ghi chú</label>
+                                    <textarea class="form-control" rows="3" ng-model="ghiChuTaiQuay" ng-maxlength="255"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-outline-dark" ng-click="thanhToanTaiQuay()">Thanh toán</button>
+                        </div>
+                    </form>
                 </div>
-                <button type="submit" class="btn btn-outline-dark">Tạo Hóa Đơn</button>
-            </form>
+                <div class="tab-pane fade" id="datHang" role="tabpanel" aria-labelledby="nav-profile-tab">
+                    <form ng-submit="taoHoaDon(2)">
+                        <div class="row">
+                            <div class="mb-3">
+                                <label class="form-label" style="margin-bottom: 0">Hóa đơn: <strong
+                                        ng-show="selectedHoaDon.id">HD{{selectedHoaDon.id}}</strong></label>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="mb-3">
+                                <label class="form-label" style="margin-bottom: 0">Tổng tiền:
+                                    <strong ng-show="tongTien > 0" class="text-info">
+                                        {{tongTien | number:0}} <sup class="text-danger">(vnđ)</sup></strong></label>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="mb-3">
+                                <label class="form-label" style="margin-bottom: 0">Khách Hàng:
+                                    <strong class="bg-light" ng-show="selectedKhachHang.id"
+                                            style="border-radius: 5px; padding: 2px 5px !important;max-width: 60%; overflow: hidden;text-overflow: ellipsis; display: inline">
+                                        {{selectedKhachHang.hoTen}} - ({{selectedKhachHang.soDienThoai}})
+                                        <span class="badge badge-light p-0 labelTabDelete"
+                                              ng-click="deleteSelectedKhachHang()">
+                                <i class="fas fa-times-circle px-2"></i>
+                                </span>
+                                    </strong>
+                                </label>
+                                <button class="btn-primary badge" type="button" style="padding: 2px"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalKhachHang"><i
+                                        class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="mb-3">
+                                <label class="form-label" style="margin-bottom: 0">Ưu đãi:
+                                    <span ng-show="uuDai.id">
+                                <strong class="text-danger">
+                                - {{uuDai.uuDai}}%
+                                 <span class="badge rounded-pill bg-primary"
+                                       style="transform: translate(0,-15%)!important;">
+                                    {{uuDai.tenHang}}
+                                 </span>
+                                </strong>
+                            </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="mb-3">
+                                <label class="form-label" style="margin-bottom: 0" data-bs-toggle="modal"
+                                       data-bs-target="#modalDotGiamGia">Đợt giảm giá
+                                    <sup class="text-info" type="button"
+                                         data-bs-toggle="tooltip" data-bs-placement="right"
+                                         title="Đợt giảm giá đang hoạt động"><i class="fas fa-info-circle"></i></sup>
+
+                                    :
+                                    <strong ng-show="dotGiamGiaSelect.id" class="text-danger">-
+                                        {{dotGiamGiaSelect.phanTramGiam}}%</strong>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="mb-3">
+                                <label class="form-label" style="margin-bottom: 0">Tổng tiền giảm:</label>
+                                <span ng-show="tongTien > 0"><strong class="text-danger">- {{tongTienGiam | number : 0}}<sup
+                                        class="text-danger">(vnđ)</sup></strong></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="mb-3">
+                                <label class="form-label" style="margin-bottom: 0">Tiền phải trả:</label>
+                                <span ng-show="tongTien > 0"><strong class="text-success">- {{tongTienPhaiTra | number : 0}}<sup
+                                        class="text-danger">(vnđ)</sup></strong></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div>
+                                Thông tin nhận hàng:
+                                <a data-bs-toggle="modal" data-bs-target="#modalThongTinNhanHang"
+                                   style="color: blue; text-decoration: underline; font-size: smaller; cursor: pointer">Thay
+                                    đổi</a>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <label class="form-label" style="margin-bottom: 0">Phương Thức Thanh Toán</label>
+                                <select class="form-select">
+                                    <option value="1">Tiền Mặt</option>
+                                    <option value="3">Chuyển Khoản</option>
+                                    <option value="3">Kết hợp</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div>
+                                <label class="form-label" style="margin-bottom: 0">Phí Vận Chuyển</label>
+                                <input type="checkbox" ng-model="phiVanChuyen">
+                                <input type="text" class="form-control" ng-disabled="!phiVanChuyen">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label class="form-label" style="margin-bottom: 0">Tiền chuyển khoản:</label>
+                                <input type="text" class="form-control">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label" style="margin-bottom: 0">Tiền mặt</label>
+                                <input type="text" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div>
+                                <label class="form-label" style="margin-bottom: 0">Tiền thừa: </label>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label class="form-label" style="margin-bottom: 0">Ghi chú</label>
+                                    <textarea class="form-control" rows="3" ng-model="ghiChuChuyenKhoan"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-outline-dark">Thanh toán</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -464,3 +593,203 @@
         </div>
     </div>
 </div>
+</div>
+
+
+<!--Modal Khách Hàng-->
+<div class="modal fade" id="modalKhachHang" tabindex="-1" aria-labelledby="modalKhachHangLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalKhachHangLabel">Chọn khách hàng</h5>
+                <button type="button" class="btn-close" id="closeModalKhachHang" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs mb-3" id="pills-tab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" id="pills-chon-khach-hang" data-bs-toggle="tab"
+                           data-bs-target="#chon-khach-hang" type="button" role="tab"
+                           aria-controls="chon-khach-hang" aria-selected="true">Tìm kiếm khách hàng
+                        </a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="pills-them-moi-khach-hang" data-bs-toggle="tab"
+                           data-bs-target="#them-moi-khach-hang" type="button" role="tab"
+                           aria-controls="them-moi-khach-hang" aria-selected="false">Thêm khách hàng mới
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade show active" id="chon-khach-hang" role="tabpanel"
+                         aria-labelledby="pills-chon-khach-hang">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Nhập tên, sđt" name="khachHangSearch"
+                                   aria-label="Nhập tên, sđt" aria-describedby="khach-hang-search"
+                                   ng-model="khachHangSearch">
+                            <div class="input-group-append">
+                                <button class="input-group-text" id="khach-hang-search" ng-click="searchKhachHang()">Tìm
+                                    kiếm
+                                </button>
+                            </div>
+                        </div>
+
+                        <div ng-show="khachHangs.length > 0" class="d-flex justify-content-center">
+                            <table>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Họ tên</th>
+                                    <th>Ngày sinh</th>
+                                    <th>Số điện thoại</th>
+                                    <th>Email</th>
+                                    <th></th>
+                                </tr>
+
+                                <tr ng-repeat="khachHang in khachHangs">
+                                    <td>{{$index + 1}}</td>
+                                    <td>{{khachHang.hoTen}}</td>
+                                    <td>{{khachHang.ngaySinh}}</td>
+                                    <td>{{khachHang.soDienThoai}}</td>
+                                    <td>{{khachHang.email}}</td>
+                                    <td>
+                                        <button class="btn btn-primary" ng-click="selectKhachHang(khachHang)">Chọn
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="them-moi-khach-hang" role="tabpanel"
+                         aria-labelledby="pills-them-moi-khach-hang">
+
+
+                        <form name="khachHangForm" ng-submit="addKhachHang()">
+                            <div class="form-group">
+                                <label for="khachHangHoTen">Tên</label>
+                                <input type="text" class="form-control" id="khachHangHoTen" name="hoTen"
+                                       ng-model="khachHang.hoTen"
+                                       ng-maxlength="50" ng-required="true" ng-change="change(khachHangForm.hoTen)">
+                                <small class="error-message"
+                                       ng-show="(khachHangForm.hoTen.$dirty || khachHangForm.hoTen.$touched) && khachHangForm.hoTen.$error.required">Không
+                                    được để
+                                    trống tên</small>
+                                <small class="error-message"
+                                       ng-show="(khachHangForm.hoTen.$dirty || khachHangForm.hoTen.$touched) && khachHangForm.hoTen.$error.maxlength">Số
+                                    điện thoại không được vượt quá 20 ký tự</small>
+                                <small class="error-message" ng-show="errors.ten">{{errors.ten}}</small>
+
+                                <div class="form-group">
+                                    <label for="khachHangGioiTinh">Giới Tính: </label>
+                                    <input type="radio" id="khachHangGioiTinh" value="true" name="gioiTinh"
+                                           ng-model="khachHang.gioiTinh" ng-required="true"
+                                           ng-change="change(khachHangForm.gioiTinh)"
+                                           ng-checked="khachHang.gioiTinh == true">Nam
+                                    <input type="radio" id="khachHangGioiTinh1" value="false" name="gioiTinh"
+                                           ng-model="khachHang.gioiTinh" ng-required="true"
+                                           ng-change="change(khachHangForm.gioiTinh)"
+                                           ng-checked="khachHang.gioiTinh == false">Nữ
+                                    <small class="error-message"
+                                           ng-show="(khachHangForm.gioiTinh.$dirty || khachHangForm.gioiTinh.$touched) && khachHangForm.gioiTinh.$error.required">
+                                        Không được để trống giới tính</small>
+                                    <small class="error-message"
+                                           ng-show="errors.gioiTinh && !khachHangForm.gioiTinh.$dirty">{{errors.gioiTinh}}</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="khachHangNgaySinh">Ngày Sinh: </label>
+                                    <input type="date" class="form-control" id="khachHangNgaySinh" name="ngaySinh"
+                                           ng-model="khachHang.ngaySinh" ng-required="true"
+                                           ng-change="change(khachHangForm.ngaySinh)">
+                                    <small class="error-message"
+                                           ng-show="(khachHangForm.ngaySinh.$dirty || khachHangForm.ngaySinh.$touched) && khachHangForm.ngaySinh.$error.required">
+                                        Không được để trống ngày sinh</small>
+                                    <small class="error-message"
+                                           ng-show="errors.ngaySinh && !khachHangForm.ngaySinh.$dirty">{{errors.ngaySinh}}</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="khachHangSoDienThoai">Số điện thoại: </label>
+                                    <input type="text" class="form-control" id="khachHangSoDienThoai" name="soDienThoai"
+                                           ng-model="khachHang.soDienThoai" ng-required="true"
+                                           ng-change="change(khachHangForm.soDienThoai)">
+                                    <small class="error-message"
+                                           ng-show="(khachHangForm.soDienThoai.$dirty || khachHangForm.soDienThoai.$touched) && khachHangForm.soDienThoai.$error.required">
+                                        Không được để trống số điện thoại</small>
+                                    <small class="error-message"
+                                           ng-show="errors.soDienThoai && !khachHangForm.soDienThoai.$dirty">{{errors.soDienThoai}}</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="khachHangEmail">Email: </label>
+                                    <input type="text" class="form-control" id="khachHangEmail" name="email"
+                                           ng-model="khachHang.email" ng-required="true"
+                                           ng-change="change(khachHangForm.email)">
+                                    <small class="error-message"
+                                           ng-show="(khachHangForm.email.$dirty || khachHangForm.email.$touched) && khachHangForm.email.$error.required">
+                                        Không được để trống số điện thoại</small>
+                                    <small class="error-message" ng-show="errors.email && !khachHangForm.email.$dirty">{{errors.email}}</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="khachHangTrangThai">Trạng thái: </label>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="khachHangTrangThai"
+                                               name="trangThai" ng-model="khachHang.trangThai" ng-true-value="1"
+                                               ng-false-value="0" ng-init="khachHang.trangThai = 1">
+                                        <label class="form-check-label" for="khachHangTrangThai">Hoạt động</label>
+                                    </div>
+                                    <small class="error-message"
+                                           ng-show="errors.trangThai && !khachHangForm.trangThai.$dirty">{{errors.trangThai}}</small>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Tạo mới</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalDotGiamGia" tabindex="-1" aria-labelledby="modalDotGiamGiaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalDotGiamGiaLabel">Đợt giảm giá</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card" ng-repeat="dgg in dotGiamGias">
+                    <div class="card-header" style="font-weight: bolder; font-size: 125%">
+                        {{dgg.ten}}
+                    </div>
+                    <div class="card-body mt-3">
+                        <blockquote class="blockquote p-2" ng-repeat="dk in dgg.dieuKienResponses">
+                            <footer class="blockquote-footer">Giảm <cite title="Source Title" class="text-danger"
+                                                                         style="font-weight: bolder">{{dk.phanTramGiam}}%</cite>
+                                cho hóa đơn trên {{dk.tongHoaDon | number : 0}} <sup class="text-danger">(vnđ)</sup>
+                            </footer>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalThongTinNhanHang" tabindex="-1" aria-labelledby="modalThongTinNhanHangLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalThongTinNhanHangLabel">Thông tin nhận hàng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+>>>>>>> 2ef72cb438619f0a75df9dfc3d7dfeef7b8e9fec

@@ -71,4 +71,9 @@ public class RestKhachHangController {
         }
         return null;
     }
+
+    @PostMapping("/search-by-name")
+    public ResponseEntity<?> searchByName(@RequestBody String searchText) {
+        return new ResponseEntity<>(khachHangService.searchByName(searchText), HttpStatus.OK);
+    }
 }

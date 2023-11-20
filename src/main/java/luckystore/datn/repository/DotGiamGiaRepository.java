@@ -23,5 +23,10 @@ public interface DotGiamGiaRepository extends JpaRepository<DotGiamGia, Long> {
     Boolean existsByTen(String ten);
 
     Boolean existsByTenAndIdNot(String ten, Long id);
+
+    @Query("select new luckystore.datn.model.response.DotGiamGiaResponse(dgg) " +
+            "from DotGiamGia dgg where dgg.ngayBatDau < current_date " +
+            "and dgg.ngayKetThuc > current_date and dgg.trangThai = 1")
+    List<DotGiamGiaResponse> getAllActive();
 }
 

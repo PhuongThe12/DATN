@@ -106,7 +106,7 @@ public class GiayServiceImpl implements GiayService {
         for (GiayResponse giayResponse : giayResponses) {
             if (result.containsKey(giayResponse.getId()) && !giayResponse.getLstBienTheGiay().isEmpty()) {
                 GiayResponse giay = result.get(giayResponse.getId());
-                giay.getLstBienTheGiay().add(giay.getLstBienTheGiay().get(0));
+                giay.getLstBienTheGiay().add(giayResponse.getLstBienTheGiay().get(0));
             } else {
                 result.put(giayResponse.getId(), giayResponse);
             }
@@ -987,6 +987,13 @@ public class GiayServiceImpl implements GiayService {
     @Override
     public List<BienTheGiayResponse> getBienTheGiayByListId(List<Long> ids) {
         return bienTheGiayRepository.findAllByIdIn(ids);
+    }
+
+    @Override
+    public Page<GiayResponse> findSimpleBySearch(GiaySearch giaySearch) {
+        Pageable pageable = PageRequest.of(giaySearch.getCurrentPage() - 1, giaySearch.getPageSize());
+        return giayRepository.findPageForSearch(giaySearch, pageable);
+
     }
 
     @Override

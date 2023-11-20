@@ -1,6 +1,5 @@
 package luckystore.datn.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import luckystore.datn.model.request.GiayExcelRequest;
 import luckystore.datn.model.request.GiayRequest;
 import luckystore.datn.model.request.GiaySearch;
@@ -44,4 +43,5 @@ public interface GiayService {
 
     List<BienTheGiayResponse> getBienTheGiayByListId(List<Long> ids);
 
+    Page<GiayResponse> findSimpleBySearch(GiaySearch giaySearch);
 }
