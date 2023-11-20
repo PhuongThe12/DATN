@@ -2,6 +2,7 @@ package luckystore.datn.rest;
 
 import luckystore.datn.model.request.AddOrderProcuctRequest;
 import luckystore.datn.model.request.HoaDonSearch;
+import luckystore.datn.model.request.HoaDonThanhToanTaiQuayRequest;
 import luckystore.datn.model.response.HoaDonBanHangResponse;
 import luckystore.datn.service.HoaDonChiTietService;
 import luckystore.datn.service.HoaDonService;
@@ -76,6 +77,16 @@ public class RestHoaDonController {
     @PostMapping("/add-new-hdct")
     public ResponseEntity<?> addNewHdct(@RequestBody AddOrderProcuctRequest addOrderProcuctRequest) {
         return ResponseEntity.ok(hoaDonService.addNewHDCT(addOrderProcuctRequest));
+    }
+
+    @PostMapping("/add-khach-hang")
+    public ResponseEntity<?> addKhachHang(@RequestBody AddOrderProcuctRequest addOrderProcuctRequest) {
+        return ResponseEntity.ok(hoaDonService.addKhachHang(addOrderProcuctRequest));
+    }
+
+    @PostMapping("/thanh-toan")
+    public ResponseEntity<?> thanhToanHoaDonTaiQuay(@RequestBody HoaDonThanhToanTaiQuayRequest request) {
+        return ResponseEntity.ok(hoaDonService.thanhToanHoaDonTaiQuay(request));
     }
 
     @DeleteMapping("/{id}")
