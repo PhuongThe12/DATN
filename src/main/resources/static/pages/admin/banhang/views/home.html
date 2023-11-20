@@ -291,7 +291,7 @@
                         <div class="row">
                             <div class="mb-3">
                                 <label class="form-label" style="margin-bottom: 0">Tiền phải trả:</label>
-                                <span ng-show="tongTien > 0"><strong class="text-success">- {{tongTienPhaiTra | number : 0}}<sup
+                                <span ng-show="tongTien > 0"><strong class="text-success">{{tongTienPhaiTra | number : 0}}<sup
                                         class="text-danger">(vnđ)</sup></strong></span>
                             </div>
                         </div>
@@ -338,12 +338,12 @@
                             <div class="col-12">
                                 <div class="mb-3">
                                     <label class="form-label" style="margin-bottom: 0">Ghi chú</label>
-                                    <textarea class="form-control" rows="3" ng-model="hoaDon.ghiChu"></textarea>
+                                    <textarea class="form-control" rows="3" ng-model="ghiChuTaiQuay" ng-maxlength="255"></textarea>
                                 </div>
                             </div>
                         </div>
                         <div>
-                            <button type="submit" class="btn btn-outline-dark">Thanh toán</button>
+                            <button type="submit" class="btn btn-outline-dark" ng-click="thanhToanTaiQuay()">Thanh toán</button>
                         </div>
                     </form>
                 </div>
@@ -479,7 +479,7 @@
                             <div class="col-12">
                                 <div class="mb-3">
                                     <label class="form-label" style="margin-bottom: 0">Ghi chú</label>
-                                    <textarea class="form-control" rows="3" ng-model="hoaDon.ghiChu"></textarea>
+                                    <textarea class="form-control" rows="3" ng-model="ghiChuChuyenKhoan"></textarea>
                                 </div>
                             </div>
                         </div>
