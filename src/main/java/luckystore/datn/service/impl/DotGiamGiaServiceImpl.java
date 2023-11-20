@@ -1,10 +1,8 @@
 package luckystore.datn.service.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import luckystore.datn.constraints.ErrorMessage;
 import luckystore.datn.entity.DieuKien;
 import luckystore.datn.entity.DotGiamGia;
-import luckystore.datn.entity.KhuyenMai;
 import luckystore.datn.exception.DuplicateException;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.model.request.DieuKienRequest;
@@ -96,8 +94,14 @@ public class DotGiamGiaServiceImpl implements DotGiamGiaService {
         return new DotGiamGiaResponse(dotGiamGiaRepository.save(dotGiamGia));
     }
 
+    @Override
+    public void deleteDieuKien(Long id) {
+        DieuKien dieuKien = dieuKienRepository.findById(id).orElseThrow(() -> new RuntimeException());
+        dieuKienRepository.delete(dieuKien);
+    }
 
-        @Override
+
+    @Override
     public DotGiamGiaResponse findById(Long id) {
         return new DotGiamGiaResponse(dotGiamGiaRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND)));
     }

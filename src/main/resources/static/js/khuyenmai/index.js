@@ -30,14 +30,23 @@ app.controller("addKhuyenMaiController", function ($scope, $http, $location) {
     $scope.khuyenMai = {};
     $scope.khuyenMai.khuyenMaiChiTietRequests = [];
 
-    $scope.loadGiay = function () {
-        // Make an HTTP GET request to your API to fetch product data.
-        $http.get('http://localhost:8080/mock/abc')
+    $scope.curPage = 1,
+        $scope.itemsPerPage = 5,
+        $scope.maxSize = 5;
+
+    let giaySearch = {};
+
+    $scope.loadGiay = function (currentPage) {
+
+        giaySearch.currentPage = currentPage;
+        giaySearch.pageSize = $scope.itemsPerPage;
+
+
+        $http.post('http://localhost:8080/admin/rest/giay/get-all-giay',giaySearch)
             .then(function (response) {
-                // The data has been successfully retrieved from the API.
-                $scope.giays = response.data;
-                // Cập nhật trạng thái checkbox dựa trên selectedGiays
-                $scope.giays.forEach(function (giay) {
+                $scope.giays = response.data.content;
+                console.log("Load giày: ", $scope.giays);
+                $$scope.giays.forEach(function (giay) {
                     giay.selected = $scope.selectedGiays.some(function (selectedGiay) {
                         return selectedGiay.id === giay.id;
                     });
@@ -46,10 +55,13 @@ app.controller("addKhuyenMaiController", function ($scope, $http, $location) {
                 $('#myModal').modal('show');
             })
             .catch(function (error) {
-                // Handle any errors that may occur during the API request.
                 console.error('Error fetching data: ' + error);
             });
     };
+
+    $scope.$watch('curPage + numPerPage', function () {
+        $scope.loadGiay($scope.curPage);
+    });
 
     //Hàm chọn select tất cả.
     $scope.toggleSelectAllGiay = function () {
@@ -261,7 +273,6 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
             angular.forEach(giay.lstBienTheGiay, function (bienTheGiay) {
                 if (bienTheGiay.selected) {
                     bienTheGiay.phanTramGiam = giamPhanTram;
-
                 }
             });
         });
@@ -292,10 +303,21 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
         input.$dirty = true;
     }
 
-    $scope.loadGiay = function () {
-        $http.get('http://localhost:8080/mock/abc')
+    $scope.curPage = 1,
+        $scope.itemsPerPage = 5,
+        $scope.maxSize = 5;
+
+    let giaySearch = {};
+
+    $scope.loadGiay = function (currentPage) {
+
+        giaySearch.currentPage = currentPage;
+        giaySearch.pageSize = $scope.itemsPerPage;
+
+
+        $http.post('http://localhost:8080/admin/rest/giay/get-all-giay',giaySearch)
             .then(function (response) {
-                $scope.giays = response.data;
+                $scope.giays = response.data.content;
                 console.log("Load giày: ", $scope.giays);
                 $scope.xacNhan();
                 $scope.khuyenMai.khuyenMaiChiTietResponses.forEach(function (item) {
@@ -310,13 +332,16 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
                         selectedGiay.selected = true;
                     }
                 });
-
                 // $('#myModal').modal('show');
             })
             .catch(function (error) {
                 console.error('Error fetching data: ' + error);
             });
     };
+
+    $scope.$watch('curPage + numPerPage', function () {
+        $scope.loadGiay($scope.curPage);
+    });
 
     $scope.updateDotGiamGia = function () {
 
