@@ -56,6 +56,11 @@ public class KhachHangServiceImpl implements KhachHangService {
         return new KhachHangRestponse(khachHangRepo.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND)));
     }
 
+    @Override
+    public List<KhachHangRestponse> searchByName(String searchText) {
+        return khachHangRepo.searchByName(searchText);
+    }
+
     private KhachHang getKhachHang(KhachHang khachHang, KhachHangRequest khachHangRequest) {
         khachHang.setHoTen(khachHangRequest.getHoTen());
         khachHang.setGioiTinh(khachHangRequest.getGioiTinh());

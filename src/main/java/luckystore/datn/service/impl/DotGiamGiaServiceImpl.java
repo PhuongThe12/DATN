@@ -102,6 +102,11 @@ public class DotGiamGiaServiceImpl implements DotGiamGiaService {
         return new DotGiamGiaResponse(dotGiamGiaRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND)));
     }
 
+    @Override
+    public List<DotGiamGiaResponse> getAllActive() {
+        return dotGiamGiaRepository.getAllActive();
+    }
+
     private void checkWhenInsert(DotGiamGiaRequest dotGiamGiaRequest) {
         if (dotGiamGiaRepository.existsByTen(dotGiamGiaRequest.getTen())) {
             String errorObject = JsonString.errorToJsonObject("ten", "Tên đã tồn tại");

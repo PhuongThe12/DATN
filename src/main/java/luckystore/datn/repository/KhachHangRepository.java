@@ -22,4 +22,8 @@ public interface KhachHangRepository extends JpaRepository<KhachHang,Long> {
     Boolean existsByHoTen(String ten);
 
     Boolean existsByHoTenAndIdNot(String ten, Long id);
+
+    @Query("select new luckystore.datn.model.response.KhachHangRestponse(kh) from KhachHang kh " +
+            "where kh.hoTen like %:searchText% or kh.soDienThoai like %:searchText%")
+    List<KhachHangRestponse> searchByName(String searchText);
 }

@@ -3,6 +3,7 @@ package luckystore.datn.service;
 import luckystore.datn.model.request.DotGiamGiaRequest;
 import luckystore.datn.model.response.DotGiamGiaResponse;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,4 +21,5 @@ public interface DotGiamGiaService {
 
     DotGiamGiaResponse findById(Long id);
 
+    List<DotGiamGiaResponse> getAllActive();
 }

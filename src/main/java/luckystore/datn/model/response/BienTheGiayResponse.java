@@ -9,6 +9,7 @@ import luckystore.datn.entity.BienTheGiay;
 import luckystore.datn.service.impl.ImageHubServiceImpl;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
@@ -83,4 +84,16 @@ public class BienTheGiayResponse {
         this.soLuong = soLuong;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BienTheGiayResponse that = (BienTheGiayResponse) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
