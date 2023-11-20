@@ -397,7 +397,7 @@
                                                ng-change="changeInput(msIndex, ktIndex, 'soLuong')"
                                                ng-blur="blurInput(msIndex, ktIndex, 'soLuong')" name="soLuong"
                                                onkeypress="nextInput(event)"
-                                               ng-init="kichThuoc.soLuong = 0">
+                                               ng-init="kichThuoc.soLuong ? kichThuoc.soLuong : 0">
                                     </div>
                                     <div>
                                         <small class="text-danger"

@@ -39,7 +39,6 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
         for (let i = 0; i < length; i++) {
             selectedMauSacsCopy[i].hinhAnh = $scope.selectedMauSacs[i].hinhAnh;
         }
-
         // Kiểm tra và cập nhật selectedMauSacs dựa trên selectedMauSac
         $scope.selectedMauSac.forEach(function (mauSac) {
             let existingMauSac = selectedMauSacsCopy.find(function (ms) {
@@ -97,7 +96,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                         imageElement.parentElement.nextElementSibling.style.display = 'none';
                         imageElement.parentElement.parentElement.nextElementSibling.style.display = 'block';
                     }
-                } else if (mauSac.hinhAnh === 1) {
+                } else if (mauSac.hinhAnh !== 1 && mauSac.hinhAnh) {
                     loadImage(mauSac.hinhAnh, 'selectedColorImage' + mauSac.id);
                     const imageElement = document.getElementById('selectedColorImage' + mauSac.id);
                     imageElement.parentElement.nextElementSibling.style.display = 'none';
@@ -109,7 +108,6 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                 });
             })
         }, 0);
-
 
     }
 
@@ -649,7 +647,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.barcode = null;
         }
         if (model === 'soLuong' && $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.soLuong) {
-            $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.barcode = null;
+            $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.soLuong = null;
         }
 
     }
@@ -1147,7 +1145,6 @@ app.directive('customInputUpdate', function () {
             $scope.selectedItem = "";
             $scope.items.forEach(function (item) {
                 item.status = 'disabled';
-                item.canRemove = true;
             });
 
             $scope.isItemSelected = function (item) {
@@ -1172,6 +1169,7 @@ app.directive('customInputUpdate', function () {
                         // $scope.selectedTags.push(item);
                     }
 
+                    $scope.selectedItem = "";
                     const index = $scope.items.indexOf(item);
                     if (index !== -1) {
                         $scope.items.splice(index, 1);
@@ -1193,7 +1191,7 @@ app.directive('customInputUpdate', function () {
                     // Thực hiện các tác vụ tương ứng với sự thay đổi trong ngModel (danh sách)
                     newNgModel.forEach((element) => {
                         if (element) {
-                            var selectedItem = $scope.items.find((item) => item.id === element.id);
+                            var selectedItem = $scope.items.find((item) => item.id === element.id && item.status === 'active' || item.canRemove === false);
                             $scope.selectItem(selectedItem);
                         }
                     });

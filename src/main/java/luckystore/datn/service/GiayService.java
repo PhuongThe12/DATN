@@ -42,4 +42,5 @@ public interface GiayService {
 
     BienTheGiayResponse getBienTheByBarcode(String barCode);
 
+    Page<GiayResponse> findSimpleBySearch(GiaySearch giaySearch);
 }
