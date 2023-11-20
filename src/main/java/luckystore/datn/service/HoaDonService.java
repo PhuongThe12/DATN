@@ -24,7 +24,7 @@ public interface HoaDonService {
 
     HoaDonResponse findById(Long id);
 
-    HoaDonResponse updateListHoaDon(List<HoaDonRequest> hoaDonRequestList);
+    void updateListHoaDon(List<HoaDonRequest> hoaDonRequestList);
     List<HoaDonBanHangResponse> getAllChuaThanhToan();
 
     HoaDonBanHangResponse getAllById(Long id);

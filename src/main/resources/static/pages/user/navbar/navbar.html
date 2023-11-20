@@ -1,0 +1,67 @@
+<style>
+    .title-cart{
+        text-align: center;
+        padding: 4px 0px;
+    }
+    .navbar{
+        border-bottom: 1px solid #d9d9d9;
+    }
+</style>
+<nav class="navbar navbar-expand-lg p-3">
+    <div class="container-fluid">
+        <a class="navbar-brand text-decoration-none fw-light text-dark" href="#"><img src="/img/logo_datn.png" width="50px" class="rounded" alt=""> LUCKY STORE</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class=" collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav ms-auto ">
+
+                <div class="btn-group"  style="cursor: pointer;">
+                    <div data-bs-toggle="dropdown" class="position-relative" ng-click="openCartDropdown()">
+                        <i class="fas fa-shopping-cart" style="color: black;font-size: 23px;"></i>
+                        <span style="position: absolute;top: -7px;padding: 4px 7px; background: #e50000;left: 20px;" class="badge badge-light">{{ gioHang.length }}</span>
+                    </div>
+
+                    <ul class="dropdown-menu" style="
+                            right: 0px !important;
+                            left: unset !important;">
+                        <div >
+                            <h5 class="title-cart fw-light">GIỎ HÀNG</h5>
+                        </div>
+                        <div style="width: 386px;
+                            height: 500px;
+                            overflow: auto;">
+                            <div class="" ng-repeat="giay in listBienTheGiayLocalStorage">
+                                <div class="d-flex align-items-center justify-content-between p-3">
+                                    <div class="d-flex align-items-center">
+                                        <img src="https://product.hstatic.net/1000230642/product/hsm003900cam__2__39859caf0fc04712b137e47f7132a4e9_1024x1024.jpg"
+                                             width="70px" alt="">
+                                        <div class="ps-2">
+                                            <p class="font-size-12-ncl fw-bold">{{giay.giayResponse.ten}} </p>
+                                            <p class="font-size-14 ">({{giay.kichThuoc.ten}} x {{giay.mauSac.ten}} )</p>
+                                            <p class="font-size-12-ncl">Số lượng : {{giay.soLuongMua}}</p>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p class="font-size-14-ncl">{{giay.giaBan}}</p>
+                                    </div>
+                                </div>
+                                <hr>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="d-flex align-items-center justify-content-between p-3">
+                                <h5>Tổng tiền</h5>
+                                <h5 class="text-danger">{{tongTien}}</h5>
+                            </div>
+                            <button class="btn btn-custom ms-3 w-100">Xem giỏ hàng</button>
+                        </div>
+                    </ul>
+
+                </div>
+            </ul>
+        </div>
+    </div>
+</nav>

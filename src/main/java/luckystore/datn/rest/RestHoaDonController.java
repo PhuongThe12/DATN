@@ -45,11 +45,18 @@ public class RestHoaDonController {
     public ResponseEntity getHoaDonYeuCauPage(@PathVariable("id") Long id) {
         return new ResponseEntity(hoaDonService.getHoaDonYeuCau(id), HttpStatus.OK);
     }
+
     @PostMapping("/update-list-hdct")
     public ResponseEntity updateListHoaDon(@RequestBody List<HoaDonRequest> hoaDonRequestList) {
-        System.out.println("11111111111111111111111111111111111111111111111111111111111111111111111111111111");
-        return new ResponseEntity("2", HttpStatus.OK);
+        hoaDonService.updateListHoaDon(hoaDonRequestList);
+        return new ResponseEntity(HttpStatus.OK);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity getOne(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(hoaDonService.findById(id));
+    }
+
     @GetMapping("/chua-thanh-toan")
     public ResponseEntity<?> getAllChuaThanhToan() {
         return ResponseEntity.ok(hoaDonService.getAllChuaThanhToan());

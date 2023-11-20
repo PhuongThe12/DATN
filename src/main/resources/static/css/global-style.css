@@ -397,6 +397,7 @@ input:focus{
     border: 1px solid white;
 }
 
-.click-select{
-
+.click-button{
+    background-color: black;
+    color: white;
 }

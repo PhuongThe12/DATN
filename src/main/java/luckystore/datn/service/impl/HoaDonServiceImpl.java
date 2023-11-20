@@ -77,7 +77,7 @@ public class HoaDonServiceImpl implements HoaDonService {
     }
 
     @Override
-    public HoaDonResponse updateListHoaDon(List<HoaDonRequest> hoaDonRequestList) {
+    public void updateListHoaDon(List<HoaDonRequest> hoaDonRequestList) {
 
         List<HoaDon> hoaDonList = new ArrayList<>();
         for (HoaDonRequest hoaDonRequest : hoaDonRequestList) {
@@ -86,15 +86,15 @@ public class HoaDonServiceImpl implements HoaDonService {
 
             hoaDonList.add(hoaDon);
         }
-        return new HoaDonResponse((HoaDon) hoaDonRepository.saveAll(hoaDonList));
+        hoaDonRepository.saveAll(hoaDonList);
     }
 
     private HoaDon getHoaDon(HoaDon hoaDon, HoaDonRequest hoaDonRequest) {
 
         NhanVien nhanVien = nhanVienRepository.findById(hoaDonRequest.getNhanVien().getId()).orElseThrow(() -> new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("nhanVien", "Không tồn tại nhân viên này"))));
-        KhachHang khachHang = khachHangRepository.findById(hoaDonRequest.getNhanVien().getId()).orElseThrow(() -> new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("khachHang", "Không tồn tại khách hàng này"))));
+        KhachHang khachHang = khachHangRepository.findById(hoaDonRequest.getKhachHang().getId()).orElseThrow(() -> new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("khachHang", "Không tồn tại khách hàng này"))));
         hoaDon.setId(hoaDonRequest.getId());
-        hoaDon.setHoaDonGoc(hoaDonRequest.getHoaDonGoc());
+//        hoaDon.setHoaDonGoc(hoaDonRequest.getHoaDonGoc());
         hoaDon.setKhachHang(khachHang);
         hoaDon.setNhanVien(nhanVien);
         hoaDon.setNgayTao(hoaDonRequest.getNgayTao());

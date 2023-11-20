@@ -15,7 +15,6 @@
     <!--AngularJS-->
     <script src="/angular-1.8.2/angular.min.js"></script>
     <script src="/angular-1.8.2/angular-route.min.js"></script>
-    <script src="/angular-1.8.2/angular-cookies.js"><</script>
     <!--Toastr-->
     <script src="/toastr/jquery/dist/jquery.min.js"></script>
     <link rel="stylesheet" href="/toastr/toastr/build/toastr.min.css">
@@ -31,14 +30,20 @@
     <!-- Global -->
     <script src="/js/global.js"></script>
     <link rel="stylesheet" href="/css/global-style.css">
+    <script src="/js/httpInterceptor.js" defer></script>
+
+    <link rel="stylesheet" href="/css/base_sidebar/style.min.css">
+
+    <link rel="stylesheet" href="/css/giay/style.css">
+
+    <script src="/excel/xlsx.full.min.js"></script>
 </head>
 
 <body>
-<div ng-controller="abc">
-    <div ng-include="'/pages/user/navbar/navbar.html'"></div>
-    <div ng-view></div>
-</div>
+        <main class="main">
+            <div ng-view></div>
+        </main>
 <script src="/sweetalert2/dist/sweetalert2.min.js"></script>
-<script src="/js/customer/index.js"></script>
+
 </body>
 

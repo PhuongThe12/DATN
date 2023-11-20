@@ -47,10 +47,10 @@
                                 <!--                                    <label class="radio-label" for="all">Tất cả</label>-->
                                 <!--                                </div>-->
 
-                                <div class="custom-radio">
+                                <div class="custom-radio" ng-init="status = 4">
                                     <input type="radio" id="choThanhToan" name="status" ng-model="status" value="1"
-                                           ng-checked="status == 1"
-                                           ng-change="changeRadio(1)">
+                                           ng-checked="status == 4"
+                                           ng-change="changeRadio(4)">
                                     <label class="radio-label" for="choThanhToan">Chờ xác nhận</label>
                                 </div>
 
@@ -68,15 +68,15 @@
                                 </div>
                                 <div class="custom-radio">
                                     <input type="radio" id="choGiaoHang" name="status" ng-model="status" value="4"
-                                           ng-checked="status == 4"
-                                           ng-change="changeRadio(4)">
+                                           ng-checked="status == 1"
+                                           ng-change="changeRadio(1)">
                                     <label class="radio-label" for="choGiaoHang">Hoàn thành</label>
                                 </div>
                                 <div class="custom-radio">
                                     <input type="radio" id="dangGiaoHang" name="status" ng-model="status" value="5"
-                                           ng-checked="status == 5"
-                                           ng-change="changeRadio(5)">
-                                    <label class="radio-label" for="dangGiaoHang">Chờ xác nhận</label>
+                                           ng-checked="status == 0"
+                                           ng-change="changeRadio(0)">
+                                    <label class="radio-label" for="dangGiaoHang">Chờ thanh toán</label>
                                 </div>
 
                             </div>
@@ -112,17 +112,17 @@
                                 <td>{{hoaDon.nhanVien.hoTen}}</td>
                                 <td><h5>
                <span ng-class="{
-                  'badge bd-blueDark-custom': hoaDon.trangThai == 1,
+                  'badge bd-blueDark-custom': hoaDon.trangThai == 4,
                   'badge bd-redOrange-custom': hoaDon.trangThai == 2,
                   'badge bd-info-custom': hoaDon.trangThai == 3,
-                  'badge bd-success-custom': hoaDon.trangThai == 4,
-                  'badge bd-warning-custom': hoaDon.trangThai == 5
+                  'badge bd-success-custom': hoaDon.trangThai == 1,
+                  'badge bd-warning-custom': hoaDon.trangThai == 0
                 }">
-              <span ng-if="hoaDon.trangThai == 1">Chờ xác nhận</span>
+              <span ng-if="hoaDon.trangThai == 4">Chờ xác nhận</span>
               <span ng-if="hoaDon.trangThai == 2">Chờ giao</span>
               <span ng-if="hoaDon.trangThai == 3">Đang giao</span>
-              <span ng-if="hoaDon.trangThai == 4">Hoàn thành</span>
-              <span ng-if="hoaDon.trangThai == 5">Chờ thanh toán</span>
+              <span ng-if="hoaDon.trangThai == 1">Hoàn thành</span>
+              <span ng-if="hoaDon.trangThai == 0">Chờ thanh toán</span>
 </span>
                                 </h5></td>
                                 <td>
@@ -130,7 +130,7 @@
                                 </td>
                                 <td>
                                     <div class="d-sm-inline-flex">
-                                        <button class="btn btn-custom" ng-click="detailHoaDon(hoaDon.id)"
+                                        <button class="btn btn-custom" ng-click="detailHoaDon()"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#showHoaDon" data-bs-placement="top"
                                                 title="Xem Chi Tiết">

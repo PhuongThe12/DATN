@@ -24,7 +24,7 @@ public interface GiayService {
 
     Page<GiayResponse> findAllForList(GiaySearch giaySearch);
 
-    Page<GiayResponse>  getPage();
+    Page<GiayResponse> getPage();
 
     GiayResponse updateSoLuong(GiayRequest giayRequest);
 
@@ -41,5 +41,7 @@ public interface GiayService {
     Integer getSoLuong(Long id);
 
     BienTheGiayResponse getBienTheByBarcode(String barCode);
+
+    List<BienTheGiayResponse> getBienTheGiayByListId(List<Long> ids);
 
 }

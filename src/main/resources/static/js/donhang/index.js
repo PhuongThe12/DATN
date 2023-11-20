@@ -22,6 +22,7 @@ app.controller("donHangListController", function ($scope, $http, $window, $locat
     $scope.curPage = 1,
         $scope.itemsPerPage = 5,
         $scope.maxSize = 5;
+    $scope.statusCurrently = null;
 
     let searchText;
 
@@ -41,7 +42,7 @@ app.controller("donHangListController", function ($scope, $http, $window, $locat
 
     function getData(currentPage) {
         $scope.hoaDon = {
-            hoaDonChiTiets : []
+            hoaDonChiTiets: []
         }
         let apiUrl = host + '/admin/rest/hoa-don?page=' + currentPage;
         if (searchText) {
@@ -62,6 +63,7 @@ app.controller("donHangListController", function ($scope, $http, $window, $locat
             apiUrl += '&status=' + 1;
         }
 
+
         $http.get(apiUrl)
             .then(function (response) {
                 $scope.hoaDons = response.data.content;
@@ -78,31 +80,58 @@ app.controller("donHangListController", function ($scope, $http, $window, $locat
     });
 
     $scope.updateSelected = function () {
+        console.log($scope.status);
+        var updateStatus = $scope.status;
+        if (updateStatus == 4) {
+            updateStatus = 2;
+        } else if (updateStatus == 2) {
+            updateStatus == 3
+        } else if (updateStatus == 3) {
+            updateStatus == 1;
+        }
+        console.log(updateStatus);
         var selectedRows = $scope.hoaDons.filter(function (hoaDon) {
             return hoaDon.isSelected;
         });
+
+        function convertStringToDateTime(dateTimeString) {
+            // Chuyển đổi định dạng của chuỗi ngày
+            var formattedDateTime = dateTimeString.replace(' ', 'T');
+            return formattedDateTime;
+        }
+
+        selectedRows.forEach(function (hoaDon) {
+            hoaDon.ngayTao = convertStringToDateTime(hoaDon.ngayTao);
+            hoaDon.ngayShip = convertStringToDateTime(hoaDon.ngayShip);
+            hoaDon.ngayNhan = convertStringToDateTime(hoaDon.ngayNhan);
+            hoaDon.ngayThanhToan = convertStringToDateTime(hoaDon.ngayThanhToan);
+        })
+
+
         selectedRows.forEach(function (selectedRow) {
             $http.get(host + '/admin/rest/hoa-don-chi-tiet/find-by-id-hoa-don/' + selectedRow.id)
                 .then(function (response) {
-                    selectedRow.listHoaDonChiTiet= response.data;
+                    selectedRow.listHoaDonChiTiet = response.data;
                 }).catch(function (error) {
                 toastr["error"]("Lấy dữ liệu thất bại");
                 $location.path("/list");
             });
 
-            selectedRow.trangThai += 1;
-            console.log(selectedRow);
+            selectedRow.trangThai == updateStatus;
         });
-        console.log(selectedRows);
-        $http.put(host + '/admin/rest/hoa-don/updateListHoaDon',selectedRows)
+
+        $http.post(host + '/admin/rest/hoa-don/update-list-hdct', selectedRows)
             .then(function (response) {
                 console.log(response);
                 toastr["success"]("Cập nhật thành công");
                 $location.path("/list");
-            }).catch(function (error){
-                console.log(error);
-        })
+            }).catch(function (error) {
+            console.log(error);
+        });
+
+        console.log(selectedRows);
     };
+
 
     $scope.detailHoaDon = function (id) {
         $http.get(host + '/admin/rest/hoa-don/' + id)

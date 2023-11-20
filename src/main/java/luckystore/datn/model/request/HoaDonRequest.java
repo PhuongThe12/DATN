@@ -1,5 +1,6 @@
 package luckystore.datn.model.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +18,7 @@ public class HoaDonRequest {
 
     private Long id;
 
-    private HoaDon hoaDonGoc;
+    private HoaDonRequest hoaDonGoc;
 
     private KhachHangRequest khachHang;
 

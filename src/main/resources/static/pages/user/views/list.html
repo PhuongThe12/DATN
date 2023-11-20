@@ -1,0 +1,26 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-9">
+            <div class="row mb-3">
+                <div class="col-md-3 mb-3" ng-repeat="giay in giays">
+                    <a href="#/detail/{{giay.id}}">
+                        <div class="card">
+                            <div>
+                                <img src="https://walker.vn/wp-content/uploads/2020/01/Gi%C3%A0y-Vans-Old-Skool.jpg" width="100%" alt="">
+                            </div>
+                            <div class="">
+                                <h5>{{giay.ten}}</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+            </div>
+            <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages" data-current-page="curPage"
+                 data-max-size="maxSize"
+                 data-boundary-links="true">
+            </div>
+        </div>
+    </div>
+</div>

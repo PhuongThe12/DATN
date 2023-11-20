@@ -4,6 +4,7 @@ import luckystore.datn.entity.BienTheGiay;
 import luckystore.datn.model.response.BienTheGiayResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.Optional;
 public interface BienTheGiayRepository extends JpaRepository<BienTheGiay, Long> {
 
     Boolean existsByHinhAnh(String link);
-    
+
     @Query("select new luckystore.datn.model.response.BienTheGiayResponse(bt.id, bt.kichThuoc.ten, bt.mauSac.ten, bt.soLuong, bt.giaBan) " +
             "  from BienTheGiay bt where bt.giay.id = :idGiay order by bt.mauSac.ten, bt.kichThuoc.ten")
     List<BienTheGiayResponse> getSimpleByIdGiay(Long idGiay);
@@ -33,4 +34,8 @@ public interface BienTheGiayRepository extends JpaRepository<BienTheGiay, Long> 
 
     @Query("select new luckystore.datn.model.response.BienTheGiayResponse(bt.id, bt.soLuong) from BienTheGiay bt where bt.barCode = :barCode")
     Optional<BienTheGiayResponse> getBienTheGiayByBarCode(String barCode);
+
+    @Query("select new luckystore.datn.model.response.BienTheGiayResponse(bt.id, bt.kichThuoc.ten, bt.mauSac.ten, bt.soLuong, bt.giaBan, bt.giay) " +
+            "  from BienTheGiay bt where bt.id IN  :ids")
+    List<BienTheGiayResponse> findAllByIdIn(@Param("ids") List<Long> ids);
 }
