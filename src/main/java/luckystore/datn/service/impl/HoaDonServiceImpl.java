@@ -349,11 +349,12 @@ public class HoaDonServiceImpl implements HoaDonService {
             throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Hóa đơn đã được thanh toán")));
         }
 
-        DieuKien dieuKien = dieuKienRepository.findById(request.getIdDieuKien())
-                .orElseThrow(() -> new NotFoundException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Điều kiện không tồn tại"))));
+        if (request.getIdDieuKien() != null) {
+            DieuKien dieuKien = dieuKienRepository.findById(request.getIdDieuKien())
+                    .orElseThrow(() -> new NotFoundException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Điều kiện không tồn tại"))));
+            hoaDon.setDieuKien(dieuKien);
+        }
 
-
-        hoaDon.setDieuKien(dieuKien);
         hoaDon.setTrangThai(TrangThaiHoaDon.DA_THANH_TOAN);
         hoaDon.setTienGiam(request.getTienGiam());
 
@@ -382,7 +383,6 @@ public class HoaDonServiceImpl implements HoaDonService {
         hoaDon.setKenhBan(1);
         hoaDon.setChiTietThanhToans(chiTietThanhToans);
         hoaDon.setGhiChu(request.getGhiChu());
-
         hoaDonRepository.save(hoaDon);
 
         return hoaDon.getId();

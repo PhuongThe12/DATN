@@ -38,4 +38,11 @@ public interface BienTheGiayRepository extends JpaRepository<BienTheGiay, Long> 
     @Query("select new luckystore.datn.model.response.BienTheGiayResponse(bt.id, bt.kichThuoc.ten, bt.mauSac.ten, bt.soLuong, bt.giaBan, bt.giay) " +
             "  from BienTheGiay bt where bt.id IN  :ids")
     List<BienTheGiayResponse> findAllByIdIn(@Param("ids") List<Long> ids);
+
+    @Query("select distinct new luckystore.datn.model.response.BienTheGiayResponse(bt.id, bt.giaBan, km.phanTramGiam, bt.trangThai) from BienTheGiay bt " +
+            "left join bt.khuyenMaiChiTietList km " +
+            "where bt.id in :ids")
+    List<BienTheGiayResponse> bienTheGiay(List<Long> ids);
 }
+
+

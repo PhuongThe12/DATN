@@ -94,6 +94,13 @@ public class BienTheGiayResponse {
         this.soLuong = soLuong;
     }
 
+    public BienTheGiayResponse(Long id, BigDecimal giaBan, Integer khuyenMai, Integer trangThai) {
+        this.id = id;
+        this.giaBan = giaBan;
+        this.khuyenMai = khuyenMai;
+        this.trangThai = trangThai;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
