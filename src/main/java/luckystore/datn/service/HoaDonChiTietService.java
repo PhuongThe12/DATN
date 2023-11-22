@@ -1,15 +1,15 @@
 package luckystore.datn.service;
 
+import luckystore.datn.model.response.DonMuaResponse;
 import luckystore.datn.entity.BienTheGiay;
 import luckystore.datn.entity.HoaDonChiTiet;
 import luckystore.datn.model.response.HoaDonChiTietResponse;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public interface HoaDonChiTietService {
+    Page<DonMuaResponse> getAll(int page, Integer status);
 
     List<HoaDonChiTietResponse> getAll();
 

@@ -1,0 +1,81 @@
+<style>
+    .form-input {
+        background-color: white;
+        padding: 20px;
+        margin: 20px;
+        box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    }
+
+    .error-message {
+        color: red;
+        font-weight: bold;
+    }
+</style>
+
+<div class="row">
+    <h1>Thêm Địa chỉ</h1>
+    <div class="col-md-2"></div>
+    <div class="col-md-10">
+        <div class="form-input">
+            <form name="diaChiNhanHangForm" ng-submit="addDiaChiNhanHang()">
+                <div class="form-group">
+                    <label for="hoTenKhachHang">Tên khách</label>
+                    <input type="text" class="form-control" id="hoTenKhachHang" name="hoTen" ng-model="diaChiNhanHang.hoTen"
+                           ng-maxlength="50" ng-required="true" ng-change="change(diaChiNhanHangForm.hoTen)">
+                    <small class="error-message"
+                           ng-show="(diaChiNhanHangForm.hoTen.$dirty || diaChiNhanHangForm.hoTen.$touched) && diaChiNhanHangForm.hoTen.$error.required">Không
+                        được để
+                        trống họ tên</small>
+                    <small class="error-message" ng-show="errors.hoTen">{{errors.ten}}</small>
+
+
+                    <div class="form-group">
+                        <label for="SoDienThoaiNhan">Số điện thoại: </label>
+                        <input type="text" class="form-control" id="SoDienThoaiNhan" name="soDienThoaiNhan" ng-model="diaChiNhanHang.soDienThoaiNhan" ng-required="true"
+                               ng-change="change(diaChiNhanHangForm.soDienThoaiNhan)">
+                        <small class="error-message" ng-show="(diaChiNhanHangForm.soDienThoaiNhan.$dirty || diaChiNhanHangForm.soDienThoaiNhan.$touched) && diaChiNhanHangForm.soDienThoaiNhan.$error.required">
+                            Không được để trống số điện thoại</small>
+                        <small class="error-message" ng-show="errors.soDienThoaiNhan && !diaChiNhanHangForm.soDienThoaiNhan.$dirty">{{errors.soDienThoaiNhan}}</small>
+                    </div>
+
+
+<!---->
+                    <div class="form-group">
+
+                        <div class="col-md-3">
+                            <label >Tỉnh: </label>
+                            <select class="form-select" aria-label="Default select example" name="provinces" ng-model="diaChiNhanHang.provinces" ng-options="province.ten for province in provinces" ng-change="changeProvince()" ></select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label >Huyện: </label>
+                            <select class="form-select" aria-label="Default select example" name="districts" ng-model="diaChiNhanHang.districts" ng-options="district.ten for district in districts" ng-change="changeDistrict()"  >
+
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label >Xã: </label>
+                            <select class="form-select" aria-label="Default select example" name="wards"  ng-model="diaChiNhanHang.wards" ng-options="ward.ten for ward in wards">
+                            </select>
+                        </div>
+
+                    </div>
+<!---->
+<!--                    <div class="form-group">-->
+<!--                        <label for="khachHangTrangThai">Trạng thái: </label>-->
+<!--                        <div class="form-check form-switch">-->
+<!--                            <input class="form-check-input" type="checkbox" id="khachHangTrangThai" name="trangThai" ng-model="diaChiNhanHang.trangThai" ng-true-value="1"-->
+<!--                                   ng-false-value="0" ng-init="diaChiNhanHang.trangThai = 1">-->
+<!--                            <label class="form-check-label" for="khachHangTrangThai">Áp dụng</label>-->
+<!--                        </div>-->
+<!--                        <small class="error-message" ng-show="errors.trangThai && !diaChiNhanHangForm.trangThai.$dirty">{{errors.trangThai}}</small>-->
+<!--                    </div>-->
+
+                    <button type="submit" class="btn btn-primary">Tạo mới</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

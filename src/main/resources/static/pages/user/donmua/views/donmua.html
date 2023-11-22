@@ -1,0 +1,126 @@
+<div ng-show="isLoading" class="loading-spinner">
+    <div class="text-center" style="  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Màu nền đục để làm mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; ">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<div class="title-page">
+    <h5>Đơn mua</h5>
+    <div class="d-flex">
+        <p class="text-secondary m-0">Trang chủ - Khách hàng - Hoá đơn</p>
+    </div>
+</div>
+<div class="box-shadow-page" style="margin: 20px">
+    <div class="card-body">
+        <div class="d-flex add-search-custom">
+        </div>
+        <div>
+            <div class="card rounded-md bg-white">
+                <main class="card-body p-6">
+                    <div class="d-md-flex justify-content-between align-items-center mb-6">
+                        <div>
+                            <h4 class="card-title fw-bold">
+                                Thông tin đơn mua
+                            </h4>
+                            <div class="d-flex justify-content-start radio-filter">
+                                <div class="custom-radio">
+                                    <input type="radio" id="all" name="status" ng-model="status" value="-1"
+                                           ng-checked="status != 1 && status != 2"
+                                           ng-change="changeRadio(-1)">
+                                    <label class="radio-label" for="all">Tất cả</label>
+                                </div>
+
+                                <div class="custom-radio">
+                                    <input type="radio" id="choThanhToan" name="status" ng-model="status" value="1"
+                                           ng-checked="status == 1"
+                                           ng-change="changeRadio(1)">
+                                    <label class="radio-label" for="choThanhToan">Chờ xác nhận</label>
+                                </div>
+
+                                <div class="custom-radio">
+                                    <input type="radio" id="daThanhToan" name="status" ng-model="status" value="2"
+                                           ng-checked="status == 2"
+                                           ng-change="changeRadio(2)">
+                                    <label class="radio-label" for="daThanhToan">Đang giao</label>
+                                </div>
+                                <div class="custom-radio">
+                                    <input type="radio" id="choDongGoi" name="status" ng-model="status" value="3"
+                                           ng-checked="status == 3"
+                                           ng-change="changeRadio(3)">
+                                    <label class="radio-label" for="choDongGoi">Đã giao</label>
+                                </div>
+                                <div class="custom-radio">
+                                    <input type="radio" id="choGiaoHang" name="status" ng-model="status" value="4"
+                                           ng-checked="status == 4"
+                                           ng-change="changeRadio(4)">
+                                    <label class="radio-label" for="choGiaoHang">Đã huỷ</label>
+                                </div>
+                                <div class="custom-radio">
+                                    <input type="radio" id="dangGiaoHang" name="status" ng-model="status" value="5"
+                                           ng-checked="status == 5"
+                                           ng-change="changeRadio(5)">
+                                    <label class="radio-label" for="dangGiaoHang">Trả hàng</label>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <table  border="1">
+
+                            <tr ng-repeat="donmua in donMuas">
+
+                                    <td>
+                                        <h4>ID: {{donmua.idHoaDon}}</h4>
+                                        <strong>{{donmua.tenGiay}} | {{donmua.thuongHieu}}</strong>
+                                        <h6>Số lượng: {{donmua.soLuong}}</h6>
+                                        <h6>đơn Giá: {{donmua.donGia}}đ</h6>
+                                        <h6>Tổng tiền: {{donmua.tongTien}}đ</h6>
+                                   <h5>
+                                        <span ng-class="{
+                                              'badge bd-warning-custom': donmua.trangThai == 1,
+                                              'badge bd-success-custom': donmua.trangThai == 2,
+                                              'badge bd-info-custom': donmua.trangThai == 3,
+                                              'badge bd-redOrange-custom': donmua.trangThai == 4,
+                                              'badge bd-blueDark-custom': donmua.trangThai == 5
+                                            }">
+                                          <span ng-if="donmua.trangThai == 1">Chờ xác nhận </span>
+                                          <span ng-if="donmua.trangThai == 2">Đang giao </span>
+                                          <span ng-if="donmua.trangThai == 3">Đã giao</span>
+                                          <span ng-if="donmua.trangThai == 4">Đã huỷ</span>
+                                          <span ng-if="donmua.trangThai == 5">Trả hàng</span>
+                                        </span>
+                                    </h5>
+                                        <div class="d-sm-inline-flex">
+                                            <a class="btn btn-outline-primary" ng-href="#/detail/{{donmua.idHoaDon}}"
+                                               data-bs-placement="top"
+                                               title="Chi Tiết">Xem chi tiết</a>
+                                            <a class="btn btn-outline-primary" ng-href="#/update/{{hoaDon.id}}"
+                                               data-bs-placement="top"
+                                               title="Huỷ Đơn hàng">Huỷ đơn</a>
+                                        </div>
+                                    </td>
+                            </tr>
+                        </table>
+                    </div>
+                </main>
+            </div>
+            <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages" data-current-page="curPage"
+                 data-max-size="maxSize"
+                 data-boundary-links="true">
+            </div>
+
+        </div>
+    </div>
+</div>

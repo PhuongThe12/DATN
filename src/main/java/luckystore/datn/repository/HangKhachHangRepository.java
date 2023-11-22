@@ -1,6 +1,7 @@
 package luckystore.datn.repository;
 
 import luckystore.datn.entity.HangKhachHang;
+import luckystore.datn.entity.TaiKhoan;
 import luckystore.datn.model.response.HangKhachHangResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,4 +21,19 @@ public interface HangKhachHangRepository extends JpaRepository<HangKhachHang,Lon
     Boolean existsByTenHang(String ten);
 
     Boolean existsByTenHangAndIdNot(String ten, Long id);
+
+    @Query(value = "SELECT * FROM  HangKhachHang WHERE ID =1" , nativeQuery = true)
+    HangKhachHang findHangVip1(HangKhachHang hangKhachHang);
+
+    @Query(value = "SELECT * FROM  HangKhachHang WHERE ID =2" , nativeQuery = true)
+    HangKhachHang findHangVip2(HangKhachHang hangKhachHang);
+
+    @Query(value = "SELECT * FROM  HangKhachHang WHERE ID =3" , nativeQuery = true)
+    HangKhachHang findHangVip3(HangKhachHang hangKhachHang);
+
+    @Query(value = "SELECT * FROM  HangKhachHang WHERE ID =4" , nativeQuery = true)
+    HangKhachHang findHangVip4(HangKhachHang hangKhachHang);
+
+    @Query(value = "SELECT * FROM  HangKhachHang WHERE ID =5" , nativeQuery = true)
+    HangKhachHang findHangVip5(HangKhachHang hangKhachHang);
 }

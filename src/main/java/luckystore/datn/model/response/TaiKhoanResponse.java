@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import luckystore.datn.entity.TaiKhoan;
+import org.springframework.stereotype.Component;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/admin/don-hang")
 public class DonHangController {
-
     @GetMapping()
     public String getIndex() {
         return "/admin/donhang/index";

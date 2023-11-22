@@ -37,6 +37,7 @@ public class RestYeuCauController {
         if (errorJson != null) return errorJson;
         return new ResponseEntity(yeuCauService.addYeuCau(yeuCauRequest), HttpStatus.OK);
     }
+
     @PutMapping("/update")
     public ResponseEntity updateYeuCau(@Valid @RequestBody YeuCauRequest yeuCauRequest, BindingResult result) {
         System.out.println(yeuCauRequest);
