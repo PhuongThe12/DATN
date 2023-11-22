@@ -37,12 +37,12 @@ public class RestYeuCauController {
         if (errorJson != null) return errorJson;
         return new ResponseEntity(yeuCauService.addYeuCau(yeuCauRequest), HttpStatus.OK);
     }
-    @PutMapping("/{id}")
-    public ResponseEntity updateYeuCau(@PathVariable("id") Long id, @Valid @RequestBody YeuCauRequest yeuCauRequest, BindingResult result) {
+    @PutMapping("/update")
+    public ResponseEntity updateYeuCau(@Valid @RequestBody YeuCauRequest yeuCauRequest, BindingResult result) {
+        System.out.println(yeuCauRequest);
         ResponseEntity errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
-
-        return new ResponseEntity(yeuCauService.updateYeuCau(id, yeuCauRequest), HttpStatus.OK);
+        return new ResponseEntity(yeuCauService.updateYeuCau(yeuCauRequest), HttpStatus.OK);
     }
 
 
@@ -50,6 +50,7 @@ public class RestYeuCauController {
     public ResponseEntity findByStatus(){
         return new ResponseEntity(yeuCauService.findByStatus(), HttpStatus.OK);
     }
+
     @GetMapping(("/{id}"))
     public ResponseEntity getOne(@PathVariable Long id) {
         return new ResponseEntity(yeuCauService.findById(id), HttpStatus.OK);
@@ -60,8 +61,7 @@ public class RestYeuCauController {
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "ngayBatDau", required = false) String ngayBatDauStr,
             @RequestParam(value = "ngayKetThuc", required = false) String ngayKetThucStr,
-            @RequestParam(value = "searchText", required = false) String searchText,
-            @RequestParam(value = "loaiYeuCau", required = false) Integer loaiYeuCau,
+            @RequestParam(value = "searchText", required = false) Long searchText,
             @RequestParam(value = "trangThai", required = false) Integer trangThai) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         java.sql.Date ngayBatDau = null;
@@ -83,7 +83,9 @@ public class RestYeuCauController {
                 calendar.set(Calendar.SECOND, 59);
                 ngayKetThuc = new java.sql.Date(calendar.getTime().getTime());
             }
-            return new ResponseEntity(yeuCauService.getPage(page,searchText,ngayBatDau,ngayKetThuc,loaiYeuCau,trangThai), HttpStatus.OK);
+            System.out.println(ngayBatDau);
+            System.out.println(ngayKetThuc);
+            return new ResponseEntity(yeuCauService.getPage(page,searchText,ngayBatDau,ngayKetThuc,trangThai), HttpStatus.OK);
         } catch (ParseException e) {
             // Xử lý lỗi nếu ngày không đúng định dạng
             return new ResponseEntity("Ngày không đúng định dạng (yyyy-MM-dd)", HttpStatus.BAD_REQUEST);

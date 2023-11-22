@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 @Setter
 @Builder
 @Entity
-@ToString
 @Table(name = "HoaDonChiTiet")
 public class HoaDonChiTiet {
     @Id
