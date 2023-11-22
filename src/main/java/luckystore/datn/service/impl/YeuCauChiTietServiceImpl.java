@@ -1,11 +1,11 @@
 package luckystore.datn.service.impl;
 
 
-import luckystore.datn.entity.AnhGiayTra;
-import luckystore.datn.entity.YeuCauChiTiet;
+import luckystore.datn.entity.*;
 import luckystore.datn.model.request.YeuCauChiTietRequest;
 import luckystore.datn.model.response.YeuCauChiTietResponse;
-import luckystore.datn.repository.YeuCauChiTietRepository;
+import luckystore.datn.model.response.YeuCauResponse;
+import luckystore.datn.repository.*;
 import luckystore.datn.service.ImageHubService;
 import luckystore.datn.service.YeuCauChiTietService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,26 +18,34 @@ import java.util.List;
 public class YeuCauChiTietServiceImpl implements YeuCauChiTietService {
 
     private final YeuCauChiTietRepository yeuCauChiTietRepository;
-
+    private final LyDoRepository lyDoRepository;
+    private final BienTheGiayRepository bienTheGiayRepository;
+    private final HoaDonChiTietRepository hoaDonChiTietRepository;
+    private final YeuCauRepository yeuCauRepository;
     private final ImageHubService imageHubService;
     @Autowired
-    public YeuCauChiTietServiceImpl(YeuCauChiTietRepository yeuCauChiTietRepository, ImageHubService imageHubService) {
+    public YeuCauChiTietServiceImpl(YeuCauChiTietRepository yeuCauChiTietRepository, ImageHubService imageHubService, LyDoRepository lyDoRepository, BienTheGiayRepository bienTheGiayRepository, HoaDonChiTietRepository hoaDonChiTietRepository, YeuCauRepository yeuCauRepository) {
         this.yeuCauChiTietRepository = yeuCauChiTietRepository;
         this.imageHubService = imageHubService;
+        this.lyDoRepository = lyDoRepository;
+        this.bienTheGiayRepository = bienTheGiayRepository;
+        this.hoaDonChiTietRepository = hoaDonChiTietRepository;
+        this.yeuCauRepository = yeuCauRepository;
     }
 
     @Override
-    public YeuCauChiTietResponse addYeuCauChiTiet(YeuCauChiTietRequest yeuCauChiTietRequest) {
-        YeuCauChiTiet yeuCauChiTiet = new YeuCauChiTiet(yeuCauChiTietRequest);
-
-        List<AnhGiayTra> anhGiayTras = new ArrayList<>();
-
-        if(yeuCauChiTietRequest.getListAnhGiayTra() != null){
-            for (String anh : yeuCauChiTietRequest.getListAnhGiayTra()) {
-                String file = imageHubService.base64ToFile(anh);
-                anhGiayTras.add(AnhGiayTra.builder().yeuCauChiTiet(yeuCauChiTiet).link(file).build());
-            }
-        }
+    public YeuCauChiTietResponse addYeuCauChiTiet(YeuCauChiTietRequest yeuCauChiTietRequest, YeuCau yeuCau) {
+        LyDo lyDo =lyDoRepository.findById(yeuCauChiTietRequest.getLyDo()).orElse(null);
+        BienTheGiay bienTheGiay = bienTheGiayRepository.findById(yeuCauChiTietRequest.getBienTheGiay()).orElse(null);
+        HoaDonChiTiet hoaDonChiTiet  = hoaDonChiTietRepository.findById(yeuCauChiTietRequest.getHoaDonChiTiet()).orElse(null);
+        YeuCauChiTiet yeuCauChiTiet = new YeuCauChiTiet(yeuCauChiTietRequest,hoaDonChiTiet,bienTheGiay!= null ? bienTheGiay : null,lyDo,yeuCau);
+        yeuCauChiTiet.setTrangThai(1);
+        yeuCauChiTiet.setSoLuong(0);
         return new YeuCauChiTietResponse(yeuCauChiTietRepository.save(yeuCauChiTiet));
+    }
+
+    @Override
+    public List<YeuCauChiTietResponse> getAllYeuCauChiTietResponse(Long id) {
+        return  yeuCauChiTietRepository.getPageResponse(id);
     }
 }

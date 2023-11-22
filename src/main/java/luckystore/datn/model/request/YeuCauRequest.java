@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import luckystore.datn.validation.groups.CreateGroup;
 import luckystore.datn.validation.groups.UpdateGroup;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -27,12 +27,13 @@ public class YeuCauRequest {
     private Long hoaDon;
 
     @NotNull(message = "Không được để trống", groups = {UpdateGroup.class, CreateGroup.class})
-    private Integer loaiYeuCau;
-
-    @NotNull(message = "Không được để trống", groups = {UpdateGroup.class, CreateGroup.class})
     private Integer trangThai;
 
     private String ghiChu;
+
+    private Date ngaySua;
+
+    private Date ngayTao;
 
     private List<YeuCauChiTietRequest> listYeuCauChiTiet;
 

@@ -6,8 +6,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -16,7 +17,6 @@ import java.util.Set;
 @Setter
 @Builder
 @Entity
-@ToString
 @Table(name = "HoaDon")
 public class HoaDon {
 
@@ -32,10 +32,12 @@ public class HoaDon {
 
     @ManyToOne
     @JoinColumn(name = "ID_KHACH_HANG")
+    @JsonBackReference
     private KhachHang khachHang;
 
     @ManyToOne
     @JoinColumn(name = "ID_NHAN_VIEN")
+    @JsonBackReference
     private NhanVien nhanVien;
 
     @Column(name = "NGAY_TAO")
@@ -81,4 +83,7 @@ public class HoaDon {
     @JsonManagedReference
     private Set<HoaDonChiTiet> listHoaDonChiTiet;
 
+    @OneToMany(mappedBy = "hoaDon", fetch =FetchType.LAZY)
+    @JsonManagedReference
+    private List<YeuCau> listYeuCau = new ArrayList<>();
 }

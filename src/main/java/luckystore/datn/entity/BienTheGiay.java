@@ -67,5 +67,4 @@ public class BienTheGiay {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_MAU_SAC")
     private MauSac mauSac;
-
 }

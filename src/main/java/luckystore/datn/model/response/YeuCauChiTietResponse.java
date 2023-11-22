@@ -33,9 +33,11 @@ public class YeuCauChiTietResponse {
 
     private Integer trangThai;
 
+    private Integer loaiYeuCauChiTiet;
+
     private String ghiChu;
 
-    private List<String> listAnhGiayTra = new ArrayList<>();
+//    private List<String> listAnhGiayTra = new ArrayList<>();
 
     public YeuCauChiTietResponse(YeuCauChiTiet yeuCauChiTiet) {
         if(yeuCauChiTiet != null){
@@ -46,8 +48,10 @@ public class YeuCauChiTietResponse {
             this.lyDo = new LyDoResponse(yeuCauChiTiet.getLyDo());
             this.soLuong = yeuCauChiTiet.getSoLuong();
             this.trangThai = yeuCauChiTiet.getTrangThai();
+            this.loaiYeuCauChiTiet = yeuCauChiTiet.getLoaiYeuCauChiTiet();
             this.ghiChu = yeuCauChiTiet.getGhiChu();
-            this.listAnhGiayTra = yeuCauChiTiet.getListAnhGiayTra().stream().map(anhGiayTra -> ImageHubServiceImpl.getBase64FromFileStatic(anhGiayTra.getLink())).collect(Collectors.toList());
+//            this.listAnhGiayTra = yeuCauChiTiet.getListAnhGiayTra().stream().map(anhGiayTra -> ImageHubServiceImpl.getBase64FromFileStatic(anhGiayTra.getLink())).collect(Collectors.toList());
         }
     }
+
 }

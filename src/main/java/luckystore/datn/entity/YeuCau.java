@@ -1,5 +1,6 @@
 package luckystore.datn.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,10 +29,8 @@ public class YeuCau {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_HOA_DON")
+    @JsonBackReference
     private HoaDon hoaDon;
-
-    @Column(name = "LOAI_YEU_CAU")
-    private Integer loaiYeuCau;
 
     @Column(name = "TRANG_THAI")
     private Integer trangThai;
@@ -45,21 +44,20 @@ public class YeuCau {
     @Column(name = "GHI_CHU")
     private String ghiChu;
 
-    @OneToMany(mappedBy = "yeuCau",cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
-    @Column(nullable = true)
+    @OneToMany(mappedBy = "yeuCau",cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private Set<YeuCauChiTiet> listYeuCauChiTiet;
+    private List<YeuCauChiTiet> listYeuCauChiTiet;
 
     public YeuCau(YeuCauRequest YeuCauRequest,HoaDon hoaDon,Date ngayTao,Date ngaySua) {
         if (YeuCauRequest != null) {
             this.nguoiThucHien = YeuCauRequest.getNguoiThucHien();
             this.hoaDon = hoaDon;
-            this.loaiYeuCau = YeuCauRequest.getLoaiYeuCau();
             this.trangThai = YeuCauRequest.getTrangThai();
             this.ngayTao = ngayTao;
             this.ngaySua = ngaySua;
             this.ghiChu = YeuCauRequest.getGhiChu();
         }
     }
+
 }
 

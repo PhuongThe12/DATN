@@ -27,16 +27,26 @@ public class YeuCauChiTietRequest {
     private Long bienTheGiay;
 
     @NotBlank(message = "Không được để trống", groups = {UpdateGroup.class, CreateGroup.class})
-    private String lyDo;
+    private Long lyDo;
 
     @NotNull(message = "Không được để trống", groups = {UpdateGroup.class, CreateGroup.class})
     private Integer soLuong;
 
     @NotNull(message = "Không được để trống", groups = {UpdateGroup.class, CreateGroup.class})
+    private Long bienTheGiayTra;
+
+    @NotNull(message = "Không được để trống", groups = {UpdateGroup.class, CreateGroup.class})
+    private Integer soLuongTra;
+
+    private Integer loaiYeuCauChiTiet;
+
     private Integer trangThai;
 
     private String ghiChu;
 
-    @NotNull(message = "Không được để trống hình ảnh", groups = {UpdateGroup.class, CreateGroup.class})
-    List<String> listAnhGiayTra = new ArrayList<>();
+    private int sanPhamLoi;
+
+
+//    @NotNull(message = "Không được để trống hình ảnh", groups = {UpdateGroup.class, CreateGroup.class})
+//    List<String> listAnhGiayTra = new ArrayList<>();
 }
