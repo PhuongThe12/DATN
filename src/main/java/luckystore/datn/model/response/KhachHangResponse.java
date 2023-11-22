@@ -51,7 +51,7 @@ public class KhachHangResponse {
         }
     }
 
-    public KhachHangRestponse(Long id, String ten) {
+    public KhachHangResponse(Long id, String ten) {
         this.id = id;
         this.hoTen = ten;
     }

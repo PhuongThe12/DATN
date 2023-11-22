@@ -15,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class DiaChiNhanHangServiceImpl implements DiaChiNhanHangService {
 
@@ -33,21 +35,49 @@ public class DiaChiNhanHangServiceImpl implements DiaChiNhanHangService {
     public DiaChiNhanHangResponse addDiaChiNhanHang(DiaChiNhanHangRequest diaChiNhanHangRequest) {
         DiaChiNhanHang diaChiNhanHang = getDiaChiNhanHang(new DiaChiNhanHang(), diaChiNhanHangRequest);
         diaChiNhanHang.setIdKhachHang(khachHangRepo.findIdKH(new KhachHang()));
-//        diaChiNhanHang.setProvince();
+        diaChiNhanHang.setTrangThai(0);
         return new DiaChiNhanHangResponse(diaChiNhanHangRepo.save(diaChiNhanHang));
     }
 
-    @Override
-    public DiaChiNhanHangResponse updateDiaChiNhanHang(Long id, DiaChiNhanHangRequest diaChiNhanHangRequest) {
-        DiaChiNhanHang diaChiNhanHang;
-        if (id == null) {
-            throw new NullException();
-        } else {
-            diaChiNhanHang = diaChiNhanHangRepo.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND));
-        }
-        diaChiNhanHang = getDiaChiNhanHang(diaChiNhanHang, diaChiNhanHangRequest);
-        return new DiaChiNhanHangResponse(diaChiNhanHangRepo.save(diaChiNhanHang));
+//    @Override
+//    public DiaChiNhanHangResponse updateDiaChiNhanHang(Long id, DiaChiNhanHangRequest diaChiNhanHangRequest) {
+//        DiaChiNhanHang diaChiNhanHang;
+//        if (id == null) {
+//            throw new NullException();
+//        } else {
+//            diaChiNhanHang = diaChiNhanHangRepo.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND));
+//        }
+//        diaChiNhanHang = getDiaChiNhanHang(diaChiNhanHang, diaChiNhanHangRequest);
+//        return new DiaChiNhanHangResponse(diaChiNhanHangRepo.save(diaChiNhanHang));
+//    }
+@Override
+public DiaChiNhanHangResponse updateDiaChiNhanHang(Long id, DiaChiNhanHangRequest diaChiNhanHangRequest) {
+
+    // Cập nhật tất cả các đối tượng khác có trạng thái khác nhau
+    List<DiaChiNhanHang> diaChiNhanHangList = diaChiNhanHangRepo.findByTrangThaiNot(0);
+    for (DiaChiNhanHang diaChi : diaChiNhanHangList) {
+        diaChi.setTrangThai(0); // hoặc cập nhật giá trị mong muốn
+        diaChiNhanHangRepo.save(diaChi);
     }
+    if (id == null || diaChiNhanHangRequest == null) {
+        throw new NullException();
+    }
+
+    DiaChiNhanHang diaChiNhanHangToUpdate = diaChiNhanHangRepo.findById(id)
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND));
+
+    // Cập nhật đối tượng cần
+    diaChiNhanHangToUpdate = getDiaChiNhanHang(diaChiNhanHangToUpdate, diaChiNhanHangRequest);
+
+    // Cập nhật trạng thái của đối tượng cần
+    diaChiNhanHangToUpdate.setTrangThai(1);
+
+    // Lưu lại đối tượng cần
+    diaChiNhanHangRepo.save(diaChiNhanHangToUpdate);
+
+    return new DiaChiNhanHangResponse(diaChiNhanHangToUpdate);
+}
+
 
     @Override
     public DiaChiNhanHangResponse findById(Long id) {

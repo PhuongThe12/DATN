@@ -48,10 +48,5 @@ public class KichThuoc {
     @Column(name = "TRANG_THAI")
     private Integer trangThai;
 
-<<<<<<< HEAD
-//    @Column(name = "NGAY_TAO")
-//    private LocalDateTime ngayTao;
 
-=======
->>>>>>> 2ef72cb438619f0a75df9dfc3d7dfeef7b8e9fec
 }

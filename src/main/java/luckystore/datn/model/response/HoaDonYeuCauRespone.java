@@ -22,7 +22,7 @@ public class HoaDonYeuCauRespone {
 
     private Long hoaDonGoc;
 
-    private KhachHangRestponse khachHang;
+    private KhachHangResponse khachHang;
 
     private NhanVienResponse nhanVien;
 
@@ -41,7 +41,7 @@ public class HoaDonYeuCauRespone {
     public HoaDonYeuCauRespone(HoaDon hoaDon, Long idHoaDonGoc) {
         this.id = hoaDon.getId();
         this.hoaDonGoc = idHoaDonGoc;
-        this.khachHang = new KhachHangRestponse(hoaDon.getKhachHang().getId(), hoaDon.getKhachHang().getHoTen());
+        this.khachHang = new KhachHangResponse(hoaDon.getKhachHang().getId(), hoaDon.getKhachHang().getHoTen());
         this.nhanVien = new NhanVienResponse(hoaDon.getNhanVien().getId(), hoaDon.getNhanVien().getHoTen());
         this.kenhBan = hoaDon.getKenhBan();
         this.trangThai = hoaDon.getTrangThai();
