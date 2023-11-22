@@ -24,6 +24,8 @@ public class HoaDonBanHangResponse {
 
     private Integer trangThai;
 
+    private KhachHangRestponse khachHangRestponse;
+
     public HoaDonBanHangResponse(Long id, HoaDonChiTiet hoaDonChiTiet, Integer trangThai) {
         this.id = id;
         if (hoaDonChiTiet != null) {
@@ -35,5 +37,9 @@ public class HoaDonBanHangResponse {
     public HoaDonBanHangResponse(HoaDon hoaDon, Integer trangThai) {
         this.id = hoaDon.getId();
         this.trangThai = trangThai;
+    }
+
+    public HoaDonBanHangResponse(Long id) {
+        this.id = id;
     }
 }

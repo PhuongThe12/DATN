@@ -16,4 +16,6 @@ public interface KhachHangService {
     KhachHangRestponse updateKhachHang(Long id, KhachHangRequest khachHangRequest);
 
     KhachHangRestponse findById(Long id);
+
+    List<KhachHangRestponse> searchByName(String searchText);
 }

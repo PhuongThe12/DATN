@@ -22,6 +22,21 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
     @Query("select new luckystore.datn.model.response.GiayResponse(g) from Giay g where g.id = :id")
     GiayResponse findResponseById(Long id);
 
+//    @Query("select new luckystore.datn.model.response.GiayResponse(g.id, g.ten, chatLieu, coGiay, dayGiay, deGiay) " +
+//            "from Giay g " +
+//            "inner join g.chatLieu chatLieu " +
+//            "inner join g.coGiay coGiay " +
+//            "inner join g.dayGiay dayGiay " +
+//            "inner join g.deGiay deGiay " +
+//            "left join g.lstBienTheGiay bienThe " +
+//            "left join bienThe.khuyenMaiChiTiet kmct " +
+//            "left join kmct.khuyenMai km " +
+//            "where g.id = :id " +
+//            "and (km is null or km.trangThai = 1) " +
+//            "and (km is null or km.ngayBatDau < current_date) " +
+//            "and (km is null or km.ngayKetThuc > current_date)")
+//    List<GiayResponse> findGiayResponseFullById(Long id);
+
     @Query("select new luckystore.datn.model.response.GiayResponse(g) from Giay g  where g.trangThai = 1")
     List<GiayResponse> findAllByTrangThai(Integer trangThai);
 
@@ -33,39 +48,23 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
             "and (:#{#giaySearch.tenThuongHieu} is null or g.thuongHieu.ten like %:#{#giaySearch.tenThuongHieu}%) " +
             "and (:#{#giaySearch.thuongHieuIds} is null or g.thuongHieu.id in :#{#giaySearch.thuongHieuIds}) " +
             "and (:#{#giaySearch.trangThai} is null or g.trangThai = :#{#giaySearch.trangThai}) " +
+            "or (bienThe.barCode = :#{#giaySearch.ten})" +
             "order by g.id desc"
     )
     Page<GiayResponse> findPageForList(GiaySearch giaySearch, Pageable pageable);
 
-//    @Query("select new luckystore.datn.model.response.GiayResponse(g.id, g.ten, b, anh.link) " +
-//            "from Giay g left join g.lstBienTheGiay b left join g.lstAnh anh " +
-//            "where g.id in :lstId and anh.uuTien = 1"
-//    )
-//    List<GiayResponse> findListByInList(List<Long> lstId);
-
-
-//    @Query("select distinct new luckystore.datn.model.response.GiayResponse(g.id) from Giay g " +
-//            "left join g.lstBienTheGiay bienThe " +
-//            "where (:#{#giaySearch.ten} is null or g.ten like %:#{#giaySearch.ten}%) " +
-//            "and (:#{#giaySearch.giaTu} is null or bienThe.giaBan >= :#{#giaySearch.giaTu}) " +
-//            "and (:#{#giaySearch.giaDen} is null or bienThe.giaBan <= :#{#giaySearch.giaDen}) " +
-//            "and (:#{#giaySearch.tenThuongHieu} is null or g.thuongHieu.ten like %:#{#giaySearch.tenThuongHieu}%) " +
-//            "and (:#{#giaySearch.thuongHieuIds} is null or g.thuongHieu.id in :#{#giaySearch.thuongHieuIds}) " +
-//            "and (:#{#giaySearch.trangThai} is null or g.trangThai = :#{#giaySearch.trangThai}) "
-//    )
-//    Page<GiayResponse> findGiayBySearchForList(GiaySearch giaySearch, Pageable pageable);
-
-
     @Query("select distinct new luckystore.datn.model.response.GiayResponse(g.id, g.ten, anh.link) from Giay g " +
-            "inner join g.lstAnh anh " +
-            "inner join g.lstBienTheGiay bienThe " +
-            "where anh.uuTien = 1 " +
+            "left join g.lstAnh anh " +
+            "left join g.lstBienTheGiay bienThe " +
+            "where (anh.uuTien = 1 or anh.id = null) " +
             "and (:#{#giaySearch.ten} is null or g.ten like %:#{#giaySearch.ten}%) " +
             "and (:#{#giaySearch.giaTu} is null or bienThe.giaBan >= :#{#giaySearch.giaTu}) " +
             "and (:#{#giaySearch.giaDen} is null or bienThe.giaBan <= :#{#giaySearch.giaDen}) " +
-            "and (:#{#giaySearch.tenThuongHieu} is null or g.thuongHieu.ten like %:#{#giaySearch.tenThuongHieu}%) "
+            "and (:#{#giaySearch.tenThuongHieu} is null or g.thuongHieu.ten like %:#{#giaySearch.tenThuongHieu}%) " +
+            "or (bienThe.barCode = :#{#giaySearch.ten})" +
+            "order by g.id desc"
     )
-    Page<GiayResponse> findPageForSearch(GiaySearch giaySearch, Pageable pageable);//Hàm này sử dụng cho người dùng
+    Page<GiayResponse> findPageForSearch(GiaySearch giaySearch, Pageable pageable);
 
 
 //    @Query("select new luckystore.datn.model.response.GiayResponse(g.id, g.ten, anh.link, bienThe) from Giay g " +
@@ -85,7 +84,8 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
             "from Giay g " +
             "left join g.lstAnh anh " +
             "inner join g.lstBienTheGiay bienThe " +
-            "where g.id in :ids and bienThe.trangThai = 1 and (anh.link = null or anh.uuTien = 1)")
+            "where g.id in :ids and bienThe.trangThai = 1 and (anh.link = null or anh.uuTien = 1) " +
+            "order by g.id desc")
     List<GiayResponse> findAllContains(List<Long> ids);
 
     Boolean existsByTen(String ten);

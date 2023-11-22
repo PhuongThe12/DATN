@@ -1,5 +1,6 @@
 package luckystore.datn.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,6 +39,7 @@ public class KhuyenMai {
     private String ghiChu;
 
     @OneToMany(mappedBy = "khuyenMai", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<KhuyenMaiChiTiet> khuyenMaiChiTiets;
 
 }

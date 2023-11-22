@@ -40,6 +40,10 @@ public class HoaDon {
     @JsonBackReference
     private NhanVien nhanVien;
 
+    @ManyToOne
+    @JoinColumn(name = "ID_KHUYEN_MAI_THEO_DIEU_KIEN")
+    private DieuKien dieuKien;
+
     @Column(name = "NGAY_TAO")
     private LocalDateTime ngayTao;
 
@@ -79,6 +83,12 @@ public class HoaDon {
     @Column(name = "MO_TA")
     private String ghiChu;
 
+    @Column(name = "TIEN_GIAM")
+    private BigDecimal tienGiam;
+
+    @Column(name = "UU_DAI")
+    private Integer uuDai;
+
     @OneToMany(mappedBy = "hoaDon", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonManagedReference
     private Set<HoaDonChiTiet> listHoaDonChiTiet;
@@ -86,4 +96,9 @@ public class HoaDon {
     @OneToMany(mappedBy = "hoaDon", fetch =FetchType.LAZY)
     @JsonManagedReference
     private List<YeuCau> listYeuCau = new ArrayList<>();
+
+    @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<ChiTietThanhToan> chiTietThanhToans;
+
 }

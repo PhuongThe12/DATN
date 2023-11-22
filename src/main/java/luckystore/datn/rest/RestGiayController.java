@@ -75,9 +75,19 @@ public class RestGiayController {
         return new ResponseEntity<>(giayService.findAllForList(giaySearch), HttpStatus.OK);
     }
 
+    @PostMapping("/get-simple-by-search")
+    public ResponseEntity<?> findSimpleBySearch(@RequestBody GiaySearch giaySearch) {
+        return new ResponseEntity<>(giayService.findSimpleBySearch(giaySearch), HttpStatus.OK);
+    }
+
     @PostMapping("/find-all-by-search")
     public ResponseEntity<?> findAllBySearch(@RequestBody GiaySearch giaySearch) {
         return new ResponseEntity<>(giayService.findAllBySearch(giaySearch), HttpStatus.OK);
+    }
+
+    @GetMapping("/bien-the/{barcode}")
+    public ResponseEntity<?> findBienTheByBarcode(@PathVariable("barcode") String barcode) {
+        return new ResponseEntity<>(giayService.getBienTheByBarcode(barcode), HttpStatus.OK);
     }
 
     @PostMapping("/get-giay-contains")

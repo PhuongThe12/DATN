@@ -2,6 +2,7 @@ package luckystore.datn.rest;
 
 import luckystore.datn.model.request.AddOrderProcuctRequest;
 import luckystore.datn.model.request.HoaDonSearch;
+import luckystore.datn.model.request.HoaDonThanhToanTaiQuayRequest;
 import luckystore.datn.model.response.HoaDonBanHangResponse;
 import luckystore.datn.service.HoaDonChiTietService;
 import luckystore.datn.service.HoaDonService;
@@ -57,6 +58,11 @@ public class RestHoaDonController {
         return ResponseEntity.ok(hoaDonService.getAllChuaThanhToan());
     }
 
+    @GetMapping("/get-full-response/{id}")
+    public ResponseEntity<?> getFullResponse(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(hoaDonService.getAllById(id));
+    }
+
     @PostMapping("/new-hoa-don")
     public ResponseEntity<?> createNewHoadon() {
         return ResponseEntity.ok(hoaDonService.createNewHoaDon());
@@ -65,6 +71,21 @@ public class RestHoaDonController {
     @PostMapping("/add-product")
     public ResponseEntity<?> addProduct(@RequestBody AddOrderProcuctRequest addOrderProcuctRequest) {
         return ResponseEntity.ok(hoaDonService.addProduct(addOrderProcuctRequest));
+    }
+
+    @PostMapping("/add-new-hdct")
+    public ResponseEntity<?> addNewHdct(@RequestBody AddOrderProcuctRequest addOrderProcuctRequest) {
+        return ResponseEntity.ok(hoaDonService.addNewHDCT(addOrderProcuctRequest));
+    }
+
+    @PostMapping("/add-khach-hang")
+    public ResponseEntity<?> addKhachHang(@RequestBody AddOrderProcuctRequest addOrderProcuctRequest) {
+        return ResponseEntity.ok(hoaDonService.addKhachHang(addOrderProcuctRequest));
+    }
+
+    @PostMapping("/thanh-toan")
+    public ResponseEntity<?> thanhToanHoaDonTaiQuay(@RequestBody HoaDonThanhToanTaiQuayRequest request) {
+        return ResponseEntity.ok(hoaDonService.thanhToanHoaDonTaiQuay(request));
     }
 
     @DeleteMapping("/{id}")
