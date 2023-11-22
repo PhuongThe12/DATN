@@ -379,7 +379,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
         $http.post(host + '/admin/rest/hoa-don/new-hoa-don')
             .then(function (response) {
                 $scope.hoaDons.push(response.data);
-                $scope.selectedHoaDon = response.data;
+                $scope.selecteHoaDon(response.data.id)
                 toastr["success"]("Tạo mới thành công");
             })
             .catch(function (error) {
@@ -476,7 +476,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
     }
 
     $scope.thanhToanTaiQuay = function () {
-        if (!$scope.tienThuaTaiQuay || $scope.tienMatTaiQuay < 0) {
+        if ($scope.tienThuaTaiQuay === null || $scope.tienMatTaiQuay < 0) {
             toastr["error"]("Tiền khách trả chưa đủ");
             return;
         }
@@ -521,9 +521,17 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                         $scope.isLoading = false;
                     })
                     .catch(err => {
-                        console.log(err);
-                        toastr["error"]("Có lỗi vui lòng thử lại");
-                        $scope.isLoading = false;
+                        if (err.status === 409) {
+                            toastr["error"]("Đơn hàng không ở trạng thái chưa thanh toán");
+                            const index = $scope.hoaDons.findIndex(item => item.id === request.idHoaDon);
+                            if (index && index !== -1) {
+                                $scope.hoaDons.splice(index, 1);
+                            }
+                            $scope.isLoading = false;
+                        } else {
+                            toastr["error"]("Có lỗi vui lòng thử lại");
+                            $scope.isLoading = false;
+                        }
                     });
             }
         });
@@ -533,6 +541,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
         $scope.listGiaySelected = [];
         $scope.dotGiamGias = [];
 
+        $scope.selectedHoaDon = null;
         $scope.khachHangs = [];
         $scope.selectedKhachHang = {};
 
