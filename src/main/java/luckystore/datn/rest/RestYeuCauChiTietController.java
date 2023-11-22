@@ -1,10 +1,9 @@
 package luckystore.datn.rest;
 
-import jakarta.validation.Valid;
 import luckystore.datn.entity.HoaDonChiTiet;
-import luckystore.datn.model.request.YeuCauChiTietRequest;
+import luckystore.datn.model.response.YeuCauChiTietResponse;
 import luckystore.datn.repository.HoaDonChiTietRepository;
-import luckystore.datn.service.YeuCauChiTietService;
+import luckystore.datn.repository.YeuCauChiTietRepository;
 import luckystore.datn.util.JsonString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,23 +19,17 @@ import java.util.List;
 @RequestMapping("/admin/rest/yeu-cau-chi-tiet")
 public class RestYeuCauChiTietController {
 
-    @Autowired
-    private YeuCauChiTietService yeuCauChiTietService;
 
+    private final YeuCauChiTietRepository yeuCauChiTietRepository;
     @Autowired
-    private HoaDonChiTietRepository hoaDonChiTietRepository;
-    @GetMapping("/Hoa-Don-Chi-Tiet/{id}")
-    public HoaDonChiTiet getHoaDonChiTiet(@PathVariable Long id) {
-        System.out.println(hoaDonChiTietRepository.findById(id).get().toString());
-        return hoaDonChiTietRepository.findById(id).get();
+    public RestYeuCauChiTietController(HoaDonChiTietRepository hoaDonChiTietRepository, YeuCauChiTietRepository yeuCauChiTietRepository) {
+        this.yeuCauChiTietRepository = yeuCauChiTietRepository;
     }
 
-    @PostMapping("/add")
-    public ResponseEntity addYeuCauChiTiet(@RequestBody List<YeuCauChiTietRequest> yeuCauChiTietRequest){
-        System.out.println(yeuCauChiTietRequest);
 
-//        return new ResponseEntity(yeuCauChiTietService.addYeuCauChiTiet(yeuCauChiTietRequest),HttpStatus.OK);
-        return null;
+    @GetMapping("/list/{id}")
+    public List<YeuCauChiTietResponse> getHoaDonChiTiet(@PathVariable Long id) {
+        return yeuCauChiTietRepository.getPageResponse(id);
     }
 
     private ResponseEntity getErrorJson(BindingResult result) {
