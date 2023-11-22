@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import luckystore.datn.entity.TaiKhoan;
+import luckystore.datn.infrastructure.Role;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,7 +19,7 @@ public class TaiKhoanResponse {
 
     private Integer trangThai;
 
-    private Integer role;
+    private Role role;
 
     public TaiKhoanResponse(TaiKhoan taiKhoan) {
         if (taiKhoan != null) {

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhân Viên</title>
+
+    <!-- Pagination -->
+    <link rel="stylesheet" href="/pagination/pagination.css">
+    <script src="/pagination/pagination.min.js" defer></script>
+    <!--Boostrap-->
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!--AngularJS-->
+    <script src="/angular-1.8.2/angular.min.js"></script>
+    <script src="/angular-1.8.2/angular-route.min.js"></script>
+    <script src="/angular-1.8.2/angular-cookies.js"></script>
+    <!--Toastr-->
+    <script src="/toastr/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="/toastr/toastr/build/toastr.min.css">
+    <script src="/toastr/toastr/build/toastr.min.js"></script>
+    <script src="/toastr/toastr/build/toastr.min.js"></script>
+
+    <!-- Icon -->
+    <link rel="stylesheet" href="/icon/css/all.min.css">
+
+    <!-- Global -->
+    <script src="/js/global.js"></script>
+    <link rel="stylesheet" href="/css/global-style.css">
+    <script src="/js/httpInterceptor.js" defer></script>
+
+</head>
+
+<body ng-controller="loginController">
+<form name="user" ng-submit="loginUser()">
+    <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Email address</label>
+        <input type="email" ng-model="userLogin.tenDangNhap" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Password</label>
+        <input ng-model="userLogin.matKhau" type="password" class="form-control" id="exampleInputPassword1">
+    </div>
+    <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+        <label class="form-check-label" for="exampleCheck1">Check me out</label>
+    </div>
+    <button type="submit" class="btn btn-primary" >Submit</button>
+</form>
+<script src="/js/user/index1.js"></script>
+</body>
+
+</html>

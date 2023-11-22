@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 public interface TaiKhoanRepository extends JpaRepository<TaiKhoan,Long> {
     Boolean existsByTenDangNhap(String tenDangNhap);
 
+    TaiKhoan findByTenDangNhap(String tenDangNhap);
+
     @Query(value = "SELECT TOP 1 * FROM TaiKhoan WHERE TEN_DANG_NHAP = ?1 AND MAT_KHAU = ?2" , nativeQuery = true)
     TaiKhoan findByTenDangNhapAndMatKhau(String tenDangNhap , String matKhau);
 

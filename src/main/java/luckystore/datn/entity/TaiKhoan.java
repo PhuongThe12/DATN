@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import luckystore.datn.infrastructure.Role;
 
 @Entity
 @Table(name = "TaiKhoan")
@@ -29,5 +30,5 @@ public class TaiKhoan {
     private Integer trangThai;
 
     @Column(name = "ROLE")
-    private Integer role;
+    private Role role;
 }
