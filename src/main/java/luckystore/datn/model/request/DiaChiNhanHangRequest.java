@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import luckystore.datn.entity.Districts;
 import luckystore.datn.entity.KhachHang;
+import luckystore.datn.entity.Provinces;
+import luckystore.datn.entity.Wards;
 
 import java.util.Date;
 
@@ -28,5 +31,11 @@ public class DiaChiNhanHangRequest {
 
     private Integer trangThai;
 
-    private KhachHang idKhachHang;
+    private KhachHang khachHang;
+
+    private String provinces;
+
+    private String districts;
+
+    private String wards;
 }

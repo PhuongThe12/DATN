@@ -23,7 +23,7 @@
                     <td hidden >{{diaChiNhanHang.id}}</td>
                     <td>
                         <strong>{{diaChiNhanHang.hoTen}}</strong> | {{diaChiNhanHang.soDienThoaiNhan}} <br>
-                        {{diaChiNhanHang.diaChiNhan}}
+                        {{diaChiNhanHang.wards}},{{diaChiNhanHang.districts}},{{diaChiNhanHang.provinces}}
                         <h6>
                          <span ng-class="{'badge bd-success-custom': diaChiNhanHang.trangThai == 1, 'badge bd-danger-custom': diaChiNhanHang.trangThai != 1}">
                             {{diaChiNhanHang.trangThai == 1 ? 'Áp Dụng' : 'không Áp dụng'}}
@@ -34,6 +34,7 @@
                     <td>
                         <div class="d-sm-inline-flex">
                             <a class="btn btn-custom" ng-href="#/update/{{diaChiNhanHang.id}}"><i class="far fa-edit"></i></a>
+                            <button ng-click="removeDieuKien(diaChiNhanHang.id)" class="btn btn-custom">Xóa</button>
                         </div>
                     </td>
                 </tr>

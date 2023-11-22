@@ -13,7 +13,7 @@
 </style>
 
 <div class="row">
-    <h1>Cập nhập Địa chỉ</h1>
+    <h1>Thêm Địa chỉ</h1>
     <div class="col-md-2"></div>
     <div class="col-md-10">
         <div class="form-input">
@@ -38,19 +38,34 @@
                         <small class="error-message" ng-show="errors.soDienThoaiNhan && !diaChiNhanHangForm.soDienThoaiNhan.$dirty">{{errors.soDienThoaiNhan}}</small>
                     </div>
 
-                    <div class="form-group">
-                        <label for="diaChiNhan">Địa chỉ nhận: </label>
-                        <input type="text" class="form-control" id="diaChiNhan" name="diaChiNhan" ng-model="diaChiNhanHang.diaChiNhan" ng-required="true"
-                               ng-change="change(diaChiNhanHangForm.diaChiNhan)">
-                        <small class="error-message" ng-show="(diaChiNhanHangForm.diaChiNhan.$dirty || diaChiNhanHangForm.diaChiNhan.$touched) && diaChiNhanHangForm.diaChiNhan.$error.required">
-                            Không được để trống số điện thoại</small>
-                        <small class="error-message" ng-show="errors.diaChiNhan && !diaChiNhanHangForm.diaChiNhan.$dirty">{{errors.diaChiNhan}}</small>
-                    </div>
 
+                    <!---->
+                    <div class="form-group">
+
+                        <div class="col-md-3">
+                            <label >Tỉnh: </label>
+                            <select class="form-select" aria-label="Default select example" name="provinces" ng-model="diaChiNhanHang.provinces" ng-options="province.ten for province in provinces" ng-change="changeProvince()" ></select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label >Huyện: </label>
+                            <select class="form-select" aria-label="Default select example" name="districts" ng-model="diaChiNhanHang.districts" ng-options="district.ten for district in districts" ng-change="changeDistrict()"  >
+
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label >Xã: </label>
+                            <select class="form-select" aria-label="Default select example" name="wards"  ng-model="diaChiNhanHang.wards" ng-options="ward.ten for ward in wards">
+                            </select>
+                        </div>
+
+                    </div>
+                    <!---->
                     <div class="form-group">
                         <label for="khachHangTrangThai">Trạng thái: </label>
                         <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="khachHangTrangThai" name="diaChiNhanHang" ng-model="diaChiNhanHang.trangThai" ng-true-value="1"
+                            <input class="form-check-input" type="checkbox" id="khachHangTrangThai" name="trangThai" ng-model="diaChiNhanHang.trangThai" ng-true-value="1"
                                    ng-false-value="0" ng-init="diaChiNhanHang.trangThai = 1">
                             <label class="form-check-label" for="khachHangTrangThai">Áp dụng</label>
                         </div>

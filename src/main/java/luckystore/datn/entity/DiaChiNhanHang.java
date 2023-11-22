@@ -14,7 +14,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.Instant;
 
 @Entity
 @Table(name = "DiaChiNhanHang")
@@ -33,7 +33,7 @@ public class DiaChiNhanHang {
     private String diaChiNhan;
 
     @Column(name = "NGAY_TAO")
-    private Date ngayTao;
+    private Instant ngayTao;
 
     @Column(name = "SO_DIEN_THOAI_NHAN", length = 20)
     private String soDienThoaiNhan;
@@ -48,5 +48,13 @@ public class DiaChiNhanHang {
     @JoinColumn(name = "ID_KHACH_HANG")
     private KhachHang idKhachHang;
 
+    @Column(name = "PROVINCE", length = 20)
+    private String province;
+
+    @Column(name = "DISTRICT", length = 20)
+    private String district;
+
+    @Column(name = "WARD", length = 20)
+    private String ward;
 
 }

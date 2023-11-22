@@ -15,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 @Service
 public class DiaChiNhanHangServiceImpl implements DiaChiNhanHangService {
 
@@ -34,6 +33,7 @@ public class DiaChiNhanHangServiceImpl implements DiaChiNhanHangService {
     public DiaChiNhanHangResponse addDiaChiNhanHang(DiaChiNhanHangRequest diaChiNhanHangRequest) {
         DiaChiNhanHang diaChiNhanHang = getDiaChiNhanHang(new DiaChiNhanHang(), diaChiNhanHangRequest);
         diaChiNhanHang.setIdKhachHang(khachHangRepo.findIdKH(new KhachHang()));
+//        diaChiNhanHang.setProvince();
         return new DiaChiNhanHangResponse(diaChiNhanHangRepo.save(diaChiNhanHang));
     }
 
@@ -55,12 +55,22 @@ public class DiaChiNhanHangServiceImpl implements DiaChiNhanHangService {
         return new DiaChiNhanHangResponse(diaChiNhanHangRepo.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND)));
     }
 
+    @Override
+    public void deleteDieuKien(Long id) {
+        DiaChiNhanHang diaChiNhanHang = diaChiNhanHangRepo.findById(id).orElseThrow(() -> new RuntimeException());
+        diaChiNhanHangRepo.delete(diaChiNhanHang);
+    }
+
+
     private DiaChiNhanHang getDiaChiNhanHang(DiaChiNhanHang diaChiNhanHang, DiaChiNhanHangRequest diaChiNhanHangRequest) {
+//        System.out.println(diaChiNhanHangRequest);
         diaChiNhanHang.setHoTen(diaChiNhanHangRequest.getHoTen());
         diaChiNhanHang.setDiaChiNhan(diaChiNhanHangRequest.getDiaChiNhan());
-        diaChiNhanHang.setNgayTao(diaChiNhanHangRequest.getNgayTao());
         diaChiNhanHang.setSoDienThoaiNhan(diaChiNhanHangRequest.getSoDienThoaiNhan());
-        diaChiNhanHang.setIdKhachHang(diaChiNhanHangRequest.getIdKhachHang());
+        diaChiNhanHang.setIdKhachHang(diaChiNhanHangRequest.getKhachHang());
+        diaChiNhanHang.setProvince(diaChiNhanHangRequest.getProvinces());
+        diaChiNhanHang.setDistrict(diaChiNhanHangRequest.getDistricts());
+        diaChiNhanHang.setWard(diaChiNhanHangRequest.getWards());
         diaChiNhanHang.setTrangThai(diaChiNhanHangRequest.getTrangThai() == null || diaChiNhanHangRequest.getTrangThai() == 0 ? 0 : 1);
         return diaChiNhanHang;
     }

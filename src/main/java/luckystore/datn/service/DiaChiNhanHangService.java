@@ -17,4 +17,7 @@ public interface DiaChiNhanHangService {
     DiaChiNhanHangResponse updateDiaChiNhanHang(Long id, DiaChiNhanHangRequest diaChiNhanHangRequest);
 
     DiaChiNhanHangResponse findById(Long id);
+
+    void deleteDieuKien(Long id);
+
 }

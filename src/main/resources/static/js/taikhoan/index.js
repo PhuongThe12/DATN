@@ -69,14 +69,42 @@ app.controller("taiKhoanListController", function ($scope, $http, $window, $loca
                 toastr["error"]("Lấy dữ liệu thất bại");
                 // window.location.href = feHost + '/trang-chu';
             });
-    }
 
+    }
 
     $scope.$watch('curPage + numPerPage', function () {
         getData($scope.curPage);
     });
 
+//    login
+    $scope.userLogin = {
+        tenDangNhap: '',
+        matKhau: ''
+    };
+    $scope.loginUser = function() {
+        // Make sure to replace the URL with the correct endpoint
+        var apiUrl = 'http://localhost:8080/admin/rest/tai-khoan/login';
+        $http.post(apiUrl, $scope.userLogin)
+            .then(function(response) {
+                // Successful login
+                console.log(response.data);
+                $window.location.href = '/khach-hang/dia-chi-nhan-hang';
+            })
+            .catch(function(error) {
+                // Error handling
+                if (error.status === 404) {
+                    console.log('User not found');
+                    // Handle the case where the user is not found
+                } else {
+                    console.error('An error occurred:', error);
+                    // Handle other errors
+                }
+            });
+    };
+
+
 });
+
 
 
 

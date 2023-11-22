@@ -1,7 +1,5 @@
 package luckystore.datn.repository;
 
-import luckystore.datn.entity.DiaChiNhanHang;
-import luckystore.datn.entity.HangKhachHang;
 import luckystore.datn.entity.KhachHang;
 import luckystore.datn.model.response.KhachHangResponse;
 import org.springframework.data.domain.Page;

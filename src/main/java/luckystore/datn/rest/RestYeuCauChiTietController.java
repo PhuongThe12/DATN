@@ -1,6 +1,5 @@
 package luckystore.datn.rest;
 
-import jakarta.validation.Valid;
 import luckystore.datn.entity.HoaDonChiTiet;
 import luckystore.datn.model.request.YeuCauChiTietRequest;
 import luckystore.datn.repository.HoaDonChiTietRepository;

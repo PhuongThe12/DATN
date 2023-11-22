@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,7 +37,8 @@ public class RestDiaChiNhanHangController {
     }
 
     @PostMapping
-    public ResponseEntity addDiaChiNhanHang(@Valid @RequestBody DiaChiNhanHangRequest diaChiNhanHangRequest, BindingResult result) {
+    public ResponseEntity addDiaChiNhanHang( @RequestBody DiaChiNhanHangRequest diaChiNhanHangRequest, BindingResult result) {
+        System.out.println(diaChiNhanHangRequest.toString());
         ResponseEntity errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
@@ -67,5 +69,9 @@ public class RestDiaChiNhanHangController {
             return new ResponseEntity(errorJson, HttpStatus.BAD_REQUEST);
         }
         return null;
+    }
+    @DeleteMapping("/delete/{id}")
+    public void deleteDieuKien(@PathVariable("id") Long id) {
+        diaChiNhanHangService.deleteDieuKien(id);
     }
 }

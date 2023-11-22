@@ -6,7 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import luckystore.datn.entity.DiaChiNhanHang;
+import luckystore.datn.entity.Districts;
 import luckystore.datn.entity.KhachHang;
+import luckystore.datn.entity.Provinces;
+import luckystore.datn.entity.Wards;
 
 import java.sql.Date;
 
@@ -29,7 +32,13 @@ public class DiaChiNhanHangResponse {
 
     private Integer trangThai;
 
-    private KhachHang idKhachHang;
+    private KhachHang khachHang;
+
+    private String provinces;
+
+    private String districts;
+
+    private String wards;
 
     public DiaChiNhanHangResponse(DiaChiNhanHang diaChiNhanHang) {
         if(diaChiNhanHang != null){
@@ -38,7 +47,10 @@ public class DiaChiNhanHangResponse {
             this.soDienThoaiNhan= diaChiNhanHang.getSoDienThoaiNhan();
             this.hoTen = diaChiNhanHang.getHoTen();
             this.trangThai =diaChiNhanHang.getTrangThai();
-            this.idKhachHang=diaChiNhanHang.getIdKhachHang();
+            this.khachHang=diaChiNhanHang.getIdKhachHang();
+            this.provinces = diaChiNhanHang.getProvince();
+            this.districts = diaChiNhanHang.getDistrict();
+            this.wards = diaChiNhanHang.getWard();
         }
     }
 }

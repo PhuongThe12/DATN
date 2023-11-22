@@ -1,7 +1,10 @@
 package luckystore.datn.rest;
 
 import jakarta.validation.Valid;
+import luckystore.datn.entity.TaiKhoan;
+import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.model.request.TaiKhoanRequest;
+import luckystore.datn.model.response.TaiKhoanResponse;
 import luckystore.datn.service.TaiKhoanKhachHangService;
 import luckystore.datn.util.JsonString;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +43,17 @@ public class RestTaiKhoanKhachHangController {
 
         return new ResponseEntity(taiKhoanKhachHangService.addTaiKhoan(taiKhoanRequest), HttpStatus.OK);
     }
+
+
+        @PostMapping("/login")
+        public ResponseEntity<TaiKhoanResponse> khachHangLogin(@RequestBody TaiKhoanRequest taiKhoanRequest) {
+            try {
+                TaiKhoanResponse response = taiKhoanKhachHangService.khachHanglogin(taiKhoanRequest);
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } catch (NotFoundException e) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }
 
 
     private ResponseEntity getErrorJson(BindingResult result) {

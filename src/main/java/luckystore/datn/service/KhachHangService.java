@@ -1,6 +1,5 @@
 package luckystore.datn.service;
 
-import luckystore.datn.entity.HoaDonChiTiet;
 import luckystore.datn.model.request.KhachHangRequest;
 import luckystore.datn.model.response.KhachHangResponse;
 import org.springframework.data.domain.Page;

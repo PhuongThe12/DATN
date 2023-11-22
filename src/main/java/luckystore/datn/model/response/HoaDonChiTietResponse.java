@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import luckystore.datn.entity.BienTheGiay;
 import luckystore.datn.entity.HoaDon;
 import luckystore.datn.entity.HoaDonChiTiet;
+
+import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,11 +16,11 @@ import luckystore.datn.entity.HoaDonChiTiet;
 public class HoaDonChiTietResponse {
     private Long id;
 
-    private HoaDon idHoaDon;
+    private HoaDon hoaDon;
 
     private BienTheGiay bienTheGiay;
 
-    private Long donGia;
+    private BigDecimal donGia;
 
     private Integer soLuong;
 
@@ -26,17 +28,26 @@ public class HoaDonChiTietResponse {
 
     private String ghiChu;
 
+    private Integer soLuongTra;
+
     public HoaDonChiTietResponse(HoaDonChiTiet hoaDonChiTiet) {
 
         if (hoaDonChiTiet != null) {
             this.id = hoaDonChiTiet.getId();
-            this.idHoaDon = hoaDonChiTiet.getIdHoaDon();
-            this.bienTheGiay = hoaDonChiTiet.getBienTheGiay();
+            HoaDon hoaDon = new HoaDon();
+            hoaDon.setId(hoaDonChiTiet.getHoaDon().getId());
+            hoaDon.setKhachHang(hoaDonChiTiet.getHoaDon().getKhachHang());
+            this.hoaDon = hoaDon;
+            BienTheGiay bienTheGiay = new BienTheGiay();
+            bienTheGiay.setId(hoaDonChiTiet.getBienTheGiay().getId());
+            bienTheGiay.setHinhAnh(hoaDonChiTiet.getBienTheGiay().getHinhAnh());
+            bienTheGiay.setGiay(hoaDonChiTiet.getBienTheGiay().getGiay());
+            this.bienTheGiay =bienTheGiay;
             this.donGia = hoaDonChiTiet.getDonGia();
-            this.soLuong=hoaDonChiTiet.getSoLuong();
+            this.soLuong = hoaDonChiTiet.getSoLuong();
             this.trangThai = hoaDonChiTiet.getTrangThai();
             this.ghiChu = hoaDonChiTiet.getGhiChu();
+
         }
     }
-
 }
