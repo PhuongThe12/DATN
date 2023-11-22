@@ -8,11 +8,20 @@ app.config(function ($routeProvider, $locationProvider) {
         }).when("/detail/:id", {
         templateUrl: '/pages/user/views/detail-product.html',
         controller: 'detailProductController'
+    }).when("/cart", {
+        templateUrl: '/pages/user/views/cart.html',
+        controller: 'cartProductController'
+    }).when("/don-hang", {
+        templateUrl: '/pages/user/views/donhang.html',
+        controller: 'donHangListController'
+    }).when("/don-hang/detail/:id", {
+        templateUrl: '/pages/user/views/don-hang-detail.html',
+        controller: 'detailDonHangController'
     })
         .otherwise({redirectTo: '/list'});
 });
 
-app.controller('abc', function ($scope, $http, $location, $cookies) {
+app.controller('navbarController', function ($scope, $http, $location, $cookies) {
 
     $scope.listBienTheGiayLocalStorage = [];
     $scope.tongTien = 0;
@@ -56,11 +65,11 @@ app.controller('abc', function ($scope, $http, $location, $cookies) {
 })
 app.controller('listProductController', function ($scope, $http, $location) {
     $scope.giays = [];
-    $scope.curPage = 1, $scope.itemsPerPage = 12, $scope.maxSize = 5;
+    $scope.curPage = 1, $scope.itemsPerPage = 999, $scope.maxSize = 9999;
 
     $scope.curPage = 1,
-        $scope.itemsPerPage = 12,
-        $scope.maxSize = 5;
+        $scope.itemsPerPage = 9999,
+        $scope.maxSize = 9999;
 
     let giaySearch = {};
 
@@ -301,3 +310,193 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
 
 
 })
+
+
+app.controller('cartProductController', function ($scope, $http, $location, $cookies){
+    $scope.listBienTheGiayLocalStorage = [];
+    $scope.tongTien = 0;
+    $scope.loadLocalStorage = function () {
+        var gioHangFromCookies = localStorage.getItem('gioHang') || '[]';
+        $scope.gioHang = JSON.parse(gioHangFromCookies);
+        $scope.gioHang.sort(function (a, b) {
+            return a.idBienTheGiay - b.idBienTheGiay;
+        });
+
+        var idList = $scope.gioHang.map(function (item) {
+            return item.idBienTheGiay || item.bienTheGiay;
+        });
+        var resultJson = {"ids": idList};
+        $http.post("http://localhost:8080/admin/rest/giay/bien-the/get-all-by-list-id", resultJson)
+            .then(function (response) {
+                $scope.listBienTheGiayLocalStorage = response.data;
+                $scope.gioHang.forEach(function (item1) {
+                    var correspondingObject = $scope.listBienTheGiayLocalStorage.find(function (item2) {
+                        return item2.id === item1.idBienTheGiay;
+                    });
+                    if (correspondingObject) {
+                        correspondingObject.soLuongMua = item1.soLuong;
+                    }
+                });
+                $scope.tongTien = 0;
+                $scope.listBienTheGiayLocalStorage.forEach(function (item) {
+                    $scope.tongTien += item.soLuongMua * item.giaBan;
+                });
+
+                console.log($scope.listBienTheGiayLocalStorage);
+
+            })
+            .catch(function (error) {
+                console.log(error);
+                toastr["error"]("Lấy dữ liệu thất bại");
+                $scope.isLoading = false;
+            });
+    }
+
+    $scope.loadLocalStorage();
+});
+
+
+app.controller("donHangListController", function ($scope, $http, $window, $location) {
+    $scope.curPage = 1,
+        $scope.itemsPerPage = 9999,
+        $scope.maxSize = 9999;
+    $scope.statusCurrently = null;
+
+    let searchText;
+
+    $scope.search = function () {
+        if (!$scope.searchText) {
+            toastr["error"]("Vui lòng nhập tên muốn tìm kiếm");
+            return;
+        }
+        searchText = $scope.searchText;
+        getData(1, searchText);
+    };
+
+    $scope.changeRadio = function (status) {
+        $scope.status = status;
+        getData(1);
+    }
+
+    function getData(currentPage) {
+        $scope.hoaDon = {
+            hoaDonChiTiets: []
+        }
+        let apiUrl = host + '/admin/rest/hoa-don/khach-hang/1?page=' + currentPage;
+        if (searchText) {
+            apiUrl += '&search=' + searchText;
+        }
+
+        if ($scope.status == 1) {
+            apiUrl += '&status=' + 1;
+        } else if ($scope.status == 2) {
+            apiUrl += '&status=' + 2;
+        } else if ($scope.status == 3) {
+            apiUrl += '&status=' + 3;
+        } else if ($scope.status == 4) {
+            apiUrl += '&status=' + 4;
+        } else if ($scope.status == 5) {
+            apiUrl += '&status=' + 5;
+        } else {
+            apiUrl += '&status=' + 1;
+        }
+
+
+        $http.get(apiUrl)
+            .then(function (response) {
+                $scope.hoaDons = response.data.content;
+                $scope.numOfPages = response.data.totalPages;
+            })
+            .catch(function (error) {
+                toastr["error"]("Lấy dữ liệu thất bại");
+                // window.location.href = feHost + '/trang-chu';
+            });
+    }
+
+    $scope.$watch('curPage + numPerPage', function () {
+        getData($scope.curPage);
+    });
+
+    $scope.updateSelected = function () {
+        console.log($scope.status);
+        var updateStatus = $scope.status;
+        if (updateStatus == 4) {
+            updateStatus = 2;
+        } else if (updateStatus == 2) {
+            updateStatus == 3
+        } else if (updateStatus == 3) {
+            updateStatus == 1;
+        }
+        console.log(updateStatus);
+        var selectedRows = $scope.hoaDons.filter(function (hoaDon) {
+            return hoaDon.isSelected;
+        });
+
+        function convertStringToDateTime(dateTimeString) {
+            // Chuyển đổi định dạng của chuỗi ngày
+            var formattedDateTime = dateTimeString.replace(' ', 'T');
+            return formattedDateTime;
+        }
+
+        selectedRows.forEach(function (hoaDon) {
+            hoaDon.ngayTao = convertStringToDateTime(hoaDon.ngayTao);
+            hoaDon.ngayShip = convertStringToDateTime(hoaDon.ngayShip);
+            hoaDon.ngayNhan = convertStringToDateTime(hoaDon.ngayNhan);
+            hoaDon.ngayThanhToan = convertStringToDateTime(hoaDon.ngayThanhToan);
+        })
+
+
+        selectedRows.forEach(function (selectedRow) {
+            $http.get(host + '/admin/rest/hoa-don-chi-tiet/find-by-id-hoa-don/' + selectedRow.id)
+                .then(function (response) {
+                    selectedRow.listHoaDonChiTiet = response.data;
+                }).catch(function (error) {
+                toastr["error"]("Lấy dữ liệu thất bại");
+                $location.path("/list");
+            });
+
+            selectedRow.trangThai == updateStatus;
+        });
+
+        $http.post(host + '/admin/rest/hoa-don/update-list-hdct', selectedRows)
+            .then(function (response) {
+                console.log(response);
+                toastr["success"]("Cập nhật thành công");
+                $location.path("/list");
+            }).catch(function (error) {
+            console.log(error);
+        });
+
+        console.log(selectedRows);
+    };
+
+
+    $scope.detailHoaDon = function (id) {
+        $http.get(host + '/admin/rest/hoa-don/' + id)
+            .then(function (response) {
+                $scope.hoaDon = response.data;
+            }).catch(function (error) {
+            toastr["error"]("Lấy dữ liệu thất bại");
+            $location.path("/list");
+        });
+
+        $http.get(host + '/admin/rest/hoa-don-chi-tiet/find-by-id-hoa-don/' + id)
+            .then(function (response) {
+                $scope.hoaDonChiTiets = response.data;
+            }).catch(function (error) {
+            toastr["error"]("Lấy dữ liệu thất bại");
+            $location.path("/list");
+        });
+    }
+});
+
+app.controller("detailDonHangController", function ($scope, $http, $window, $location,  $routeParams){
+    const id = $routeParams.id;
+    $http.get("http://localhost:8080/admin/rest/hoa-don-chi-tiet/find-by-id-hoa-don/"+id)
+        .then(function (response) {
+            $scope.lstHoaDonChiTiet = response.data;
+        }).catch(function (error) {
+        toastr["error"]("Lấy dữ liệu thất bại");
+        $location.path("/list");
+    });
+});

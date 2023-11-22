@@ -36,7 +36,8 @@ public class GioHang {
     @Column(name = "TRANG_THAI")
     private Integer trangThai;
 
-//    @OneToMany(mappedBy = "gioHang",  cascade = CascadeType.ALL)
-//    private List<GioHangChiTiet> gioHangChiTiets;
+    @OneToMany(mappedBy = "gioHang",  cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<GioHangChiTiet> gioHangChiTiets;
 
 }

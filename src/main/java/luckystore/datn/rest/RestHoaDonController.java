@@ -111,4 +111,13 @@ public class RestHoaDonController {
         return ResponseEntity.ok(HttpEntity.EMPTY);
     }
 
+
+    @GetMapping("/khach-hang/{idKhachHang}")
+    public ResponseEntity getDonHangByIdKhachHang(@RequestParam(value = "page", defaultValue = "1") Integer page,
+                                                  @RequestParam(value = "search", required = false) String searchText,
+                                                  @RequestParam(value = "status", required = false) Integer status,
+                                                  @PathVariable("idKhachHang") Long idKhachHang) {
+        return new ResponseEntity(hoaDonService.getPageByIdKhachHang(page, searchText, status,idKhachHang), HttpStatus.OK);
+    }
+
 }

@@ -28,7 +28,7 @@ public class GioHangResponse {
 
     private Integer trangThai;
 
-//    private List<GioHangChiTietResponse> gioHangChiTietResponses ;
+    private List<GioHangChiTietResponse> gioHangChiTietResponses ;
 
     public GioHangResponse(GioHang gioHang){
         this.id = gioHang.getId();
@@ -36,7 +36,7 @@ public class GioHangResponse {
         this.ngayTao = gioHang.getNgayTao();
         this.ghiChu = gioHang.getGhiChu();
         this.trangThai = gioHang.getTrangThai();
-//        this.gioHangChiTietResponses =(gioHang.getGioHangChiTiets().stream().map(GioHangChiTietResponse::new).collect(Collectors.toList()));
+        this.gioHangChiTietResponses =(gioHang.getGioHangChiTiets().stream().map(GioHangChiTietResponse::new).collect(Collectors.toList()));
     }
 
 }

@@ -44,4 +44,6 @@ public interface HoaDonService {
     KhachHangRestponse addKhachHang(AddOrderProcuctRequest addOrderProcuctRequest);
 
     Long thanhToanHoaDonTaiQuay(HoaDonThanhToanTaiQuayRequest request);
+
+    Page<HoaDonResponse> getPageByIdKhachHang(int page, String searchText, Integer status, Long idKhachHang);
 }

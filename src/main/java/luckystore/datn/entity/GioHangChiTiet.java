@@ -23,12 +23,14 @@ public class GioHangChiTiet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @ManyToOne()
-//    @JoinColumn(name = "ID_GIO_HANG")
-//    private GioHang gioHang;
+    @ManyToOne()
+    @JoinColumn(name = "ID_GIO_HANG")
+    @JsonBackReference
+    private GioHang gioHang;
 
     @ManyToOne
     @JoinColumn(name = "ID_BIEN_THE_GIAY")
+    @JsonBackReference
     private BienTheGiay bienTheGiay;
 
     @Column(name = "SO_LUONG_SAN_PHAM")

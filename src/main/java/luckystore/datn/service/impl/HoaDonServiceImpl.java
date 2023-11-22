@@ -387,4 +387,9 @@ public class HoaDonServiceImpl implements HoaDonService {
 
         return hoaDon.getId();
     }
+
+    @Override
+    public Page<HoaDonResponse> getPageByIdKhachHang(int page, String searchText, Integer status, Long idKhachHang) {
+        return hoaDonRepository.getPageResponseByIdKhachHang(searchText, status, PageRequest.of((page - 1), 9999),idKhachHang);
+    }
 }
