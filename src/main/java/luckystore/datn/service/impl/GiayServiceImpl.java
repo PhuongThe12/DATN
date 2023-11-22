@@ -985,9 +985,15 @@ public class GiayServiceImpl implements GiayService {
     }
 
     @Override
+    public List<BienTheGiayResponse> getBienTheGiayByListId(List<Long> ids) {
+        return bienTheGiayRepository.findAllByIdIn(ids);
+    }
+
+    @Override
     public Page<GiayResponse> findSimpleBySearch(GiaySearch giaySearch) {
         Pageable pageable = PageRequest.of(giaySearch.getCurrentPage() - 1, giaySearch.getPageSize());
         return giayRepository.findPageForSearch(giaySearch, pageable);
+
     }
 
     @Override

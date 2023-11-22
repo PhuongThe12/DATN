@@ -1,0 +1,42 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="">
+                <div class="d-flex align-items-center justify-content-between box-shadow-page p-2">
+
+                    <p class="sanPham"><input type="checkbox" class="ckbox"> Sản phẩm</p>
+                    <p class="donGia">Đơn Giá</p>
+                    <p class="soLuong">Số Lượng</p>
+                    <p class="soTien">Số Tiền</p>
+                    <p class="thaoTac">Thao Tác</p>
+                </div>
+                <div class="box-shadow-page p-2" ng-repeat="bienTheGiay in listBienTheGiayLocalStorage">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center" style="width: 41%;">
+                            <input type="checkbox" class="ckbox">
+                            <img src="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lmhfy354c34v5a" width="80px" alt="">
+                            <div class="d-flex ">
+                                <p class="font-size-14-ncl" style="width: 60%">{{bienTheGiay.giayResponse.ten}}</p>
+                                <p class="ps-5 w-100 font-size-13-ncl">({{bienTheGiay.mauSac.ten}} - {{bienTheGiay.kichThuoc.ten}})</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center d-flex">
+<!--                            <p class="text-decoration-line-through font-size-13-ncl">{{bienTheGiay.giaBan}}</p>-->
+                            <p class="font-size-13-ncl ps-2">{{bienTheGiay.giaBan}}</p>
+                        </div>
+                        <div class="soLuong">
+                            <input type="number" value="1" ng-model="bienTheGiay.soLuongMua">
+                        </div>
+                        <div class="soTien">
+                            <p>{{bienTheGiay.soLuongMua * bienTheGiay.giaBan}}</p>
+                        </div>
+                        <div class="thaoTac">
+                            <button class="btn btn-danger">Xóa</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+</div>

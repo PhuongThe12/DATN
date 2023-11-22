@@ -2,6 +2,7 @@ package luckystore.datn.service.impl;
 
 import jakarta.transaction.Transactional;
 import luckystore.datn.constraints.ErrorMessage;
+import luckystore.datn.entity.*;
 import luckystore.datn.constraints.TrangThaiHoaDon;
 import luckystore.datn.entity.BienTheGiay;
 import luckystore.datn.entity.ChiTietThanhToan;
@@ -10,8 +11,11 @@ import luckystore.datn.entity.HoaDon;
 import luckystore.datn.entity.HoaDonChiTiet;
 import luckystore.datn.entity.KhachHang;
 import luckystore.datn.exception.ConflictException;
+import luckystore.datn.exception.InvalidIdException;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.model.request.AddOrderProcuctRequest;
+import luckystore.datn.model.request.HoaDonChiTietRequest;
+import luckystore.datn.model.request.HoaDonRequest;
 import luckystore.datn.model.request.HoaDonSearch;
 import luckystore.datn.model.request.HoaDonThanhToanTaiQuayRequest;
 import luckystore.datn.model.response.BienTheGiayResponse;
@@ -21,6 +25,7 @@ import luckystore.datn.model.response.HoaDonResponse;
 import luckystore.datn.model.response.HoaDonYeuCauRespone;
 import luckystore.datn.model.response.KhachHangResponse;
 import luckystore.datn.model.response.KhuyenMaiChiTietResponse;
+import luckystore.datn.repository.*;
 import luckystore.datn.repository.BienTheGiayRepository;
 import luckystore.datn.repository.DieuKienRepository;
 import luckystore.datn.repository.HoaDonChiTietRepository;
@@ -36,6 +41,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,15 +56,22 @@ public class HoaDonServiceImpl implements HoaDonService {
 
     @Autowired
     HoaDonRepository hoaDonRepository;
+
+    @Autowired
+    NhanVienRepository nhanVienRepository;
+
+    @Autowired
+    KhachHangRepository khachHangRepository;
+
     @Autowired
     BienTheGiayRepository bienTheGiayRepository;
 
     @Autowired
     KhuyenMaiChiTietRepository khuyenMaiChiTietRepository;
+
     @Autowired
     private HoaDonChiTietRepository hoaDonChiTietRepository;
-    @Autowired
-    private KhachHangRepository khachHangRepository;
+
     @Autowired
     private DieuKienRepository dieuKienRepository;
 
@@ -89,6 +102,63 @@ public class HoaDonServiceImpl implements HoaDonService {
     }
 
     @Override
+    public void updateListHoaDon(List<HoaDonRequest> hoaDonRequestList) {
+
+        List<HoaDon> hoaDonList = new ArrayList<>();
+        for (HoaDonRequest hoaDonRequest : hoaDonRequestList) {
+            HoaDon hoaDon = new HoaDon();
+            hoaDon = getHoaDon(hoaDon, hoaDonRequest);
+
+            hoaDonList.add(hoaDon);
+        }
+        hoaDonRepository.saveAll(hoaDonList);
+    }
+
+    private HoaDon getHoaDon(HoaDon hoaDon, HoaDonRequest hoaDonRequest) {
+
+        NhanVien nhanVien = nhanVienRepository.findById(hoaDonRequest.getNhanVien().getId()).orElseThrow(() -> new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("nhanVien", "Không tồn tại nhân viên này"))));
+        KhachHang khachHang = khachHangRepository.findById(hoaDonRequest.getKhachHang().getId()).orElseThrow(() -> new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("khachHang", "Không tồn tại khách hàng này"))));
+        hoaDon.setId(hoaDonRequest.getId());
+//        hoaDon.setHoaDonGoc(hoaDonRequest.getHoaDonGoc());
+        hoaDon.setKhachHang(khachHang);
+        hoaDon.setNhanVien(nhanVien);
+        hoaDon.setNgayTao(hoaDonRequest.getNgayTao());
+        hoaDon.setNgayShip(hoaDonRequest.getNgayShip());
+        hoaDon.setNgayNhan(hoaDonRequest.getNgayNhan());
+        hoaDon.setNgayThanhToan(hoaDonRequest.getNgayThanhToan());
+        hoaDon.setKenhBan(hoaDonRequest.getKenhBan());
+        hoaDon.setLoaiHoaDon(hoaDonRequest.getLoaiHoaDon());
+        hoaDon.setMaVanDon(hoaDonRequest.getMaVanDon());
+        hoaDon.setEmail(hoaDonRequest.getEmail());
+        hoaDon.setPhiShip(hoaDonRequest.getPhiShip());
+        hoaDon.setSoDienThoaiNhan(hoaDonRequest.getSoDienThoaiNhan());
+        hoaDon.setDiaChiNhan(hoaDonRequest.getDiaChiNhan());
+        hoaDon.setTrangThai(hoaDonRequest.getTrangThai());
+        hoaDon.setGhiChu(hoaDonRequest.getGhiChu());
+        hoaDon.setListHoaDonChiTiet(getHoaDonChiTiet(hoaDonRequest.getListHoaDonChiTiet(), hoaDon));
+
+        return hoaDon;
+    }
+
+    private Set<HoaDonChiTiet> getHoaDonChiTiet(Set<HoaDonChiTietRequest> hoaDonChiTietRequests, HoaDon hoaDon) {
+        Set<HoaDonChiTiet> hoaDonChiTiets = new HashSet<>();
+        for (HoaDonChiTietRequest h : hoaDonChiTietRequests) {
+            HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
+            hoaDonChiTiet.setId(h.getId());
+            hoaDonChiTiet.setHoaDon(hoaDon);
+
+            BienTheGiay bienTheGiay = bienTheGiayRepository.findById(h.getBienTheGiay().getId()).orElseThrow(() -> new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("bienTheGiay", "Không tồn tại biến thể giày này"))));
+            System.out.println(bienTheGiay.toString());
+            hoaDonChiTiet.setBienTheGiay(bienTheGiay);
+            hoaDonChiTiet.setDonGia(h.getDonGia());
+            hoaDonChiTiet.setSoLuong(h.getSoLuong());
+            hoaDonChiTiet.setSoLuongTra(h.getSoLuongTra());
+            hoaDonChiTiet.setTrangThai(h.getTrangThai());
+            hoaDonChiTiet.setGhiChu(h.getGhiChu());
+        }
+        return hoaDonChiTiets;
+    }
+
     public List<HoaDonBanHangResponse> getAllChuaThanhToan() {
         return hoaDonRepository.getAllChuaThanhToan();
     }
@@ -316,5 +386,10 @@ public class HoaDonServiceImpl implements HoaDonService {
         hoaDonRepository.save(hoaDon);
 
         return hoaDon.getId();
+    }
+
+    @Override
+    public Page<HoaDonResponse> getPageByIdKhachHang(int page, String searchText, Integer status, Long idKhachHang) {
+        return hoaDonRepository.getPageResponseByIdKhachHang(searchText, status, PageRequest.of((page - 1), 9999),idKhachHang);
     }
 }
