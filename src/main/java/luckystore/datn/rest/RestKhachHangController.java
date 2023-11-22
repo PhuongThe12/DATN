@@ -31,6 +31,7 @@ public class RestKhachHangController {
     public ResponseEntity getAll() {
         return new ResponseEntity(khachHangService.getAll(), HttpStatus.OK);
     }
+
     @GetMapping
     public ResponseEntity getHangKhachHangPage(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                                @RequestParam(value = "search", required = false) String searchText,

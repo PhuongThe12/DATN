@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import luckystore.datn.entity.BienTheGiay;
 import luckystore.datn.entity.HoaDon;
-
 import java.math.BigDecimal;
 
 @Data
@@ -30,4 +29,5 @@ public class HoaDonChiTietRequest {
     private Integer trangThai;
 
     private String ghiChu;
+
 }

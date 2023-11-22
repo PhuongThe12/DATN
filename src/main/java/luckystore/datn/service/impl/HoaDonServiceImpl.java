@@ -23,7 +23,7 @@ import luckystore.datn.model.response.HoaDonBanHangResponse;
 import luckystore.datn.model.response.HoaDonChiTietResponse;
 import luckystore.datn.model.response.HoaDonResponse;
 import luckystore.datn.model.response.HoaDonYeuCauRespone;
-import luckystore.datn.model.response.KhachHangRestponse;
+import luckystore.datn.model.response.KhachHangResponse;
 import luckystore.datn.model.response.KhuyenMaiChiTietResponse;
 import luckystore.datn.repository.*;
 import luckystore.datn.repository.BienTheGiayRepository;
@@ -204,7 +204,7 @@ public class HoaDonServiceImpl implements HoaDonService {
         }
 
         KhachHang khachHang = khachHangRepository.findByHDId(id);
-        hoaDonBanHangResponse.setKhachHangRestponse(new KhachHangRestponse(khachHang));
+        hoaDonBanHangResponse.setKhachHangRestponse(new KhachHangResponse(khachHang));
 
         return hoaDonBanHangResponse;
     }
@@ -328,7 +328,7 @@ public class HoaDonServiceImpl implements HoaDonService {
     }
 
     @Override
-    public KhachHangRestponse addKhachHang(AddOrderProcuctRequest addOrderProcuctRequest) {
+    public KhachHangResponse addKhachHang(AddOrderProcuctRequest addOrderProcuctRequest) {
         KhachHang khachHang = khachHangRepository.findById(addOrderProcuctRequest.getIdGiay())
                 .orElseThrow(() -> new NotFoundException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không tìm thấy khách hàng"))));
 
@@ -337,7 +337,7 @@ public class HoaDonServiceImpl implements HoaDonService {
 
         hoaDon.setKhachHang(khachHang);
         hoaDonRepository.save(hoaDon);
-        return new KhachHangRestponse(khachHang);
+        return new KhachHangResponse(khachHang);
     }
 
     @Override

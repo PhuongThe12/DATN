@@ -24,7 +24,7 @@ public class HoaDonBanHangResponse {
 
     private Integer trangThai;
 
-    private KhachHangRestponse khachHangRestponse;
+    private KhachHangResponse khachHangRestponse;
 
     public HoaDonBanHangResponse(Long id, HoaDonChiTiet hoaDonChiTiet, Integer trangThai) {
         this.id = id;
