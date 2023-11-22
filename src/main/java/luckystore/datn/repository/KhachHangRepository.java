@@ -30,4 +30,10 @@ public interface KhachHangRepository extends JpaRepository<KhachHang,Long> {
     @Query(value = "SELECT * FROM KhachHang WHERE ID=5" , nativeQuery = true)
     KhachHang findIdKH(KhachHang khachHang);
 
+    @Query("select new luckystore.datn.model.response.KhachHangResponse(kh) from KhachHang kh " +
+            "where kh.hoTen like %:searchText% or kh.soDienThoai like %:searchText%")
+    List<KhachHangResponse> searchByName(String searchText);
+
+    @Query("select hd.khachHang from HoaDon hd where hd.id = :id")
+    KhachHang findByHDId(Long id);
 }

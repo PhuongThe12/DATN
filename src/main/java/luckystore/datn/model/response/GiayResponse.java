@@ -6,8 +6,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import luckystore.datn.entity.BienTheGiay;
+import luckystore.datn.entity.ChatLieu;
+import luckystore.datn.entity.CoGiay;
+import luckystore.datn.entity.DayGiay;
+import luckystore.datn.entity.DeGiay;
 import luckystore.datn.entity.Giay;
+import luckystore.datn.entity.HashTagChiTiet;
 import luckystore.datn.entity.HinhAnh;
+import luckystore.datn.entity.KhuyenMaiChiTiet;
 import luckystore.datn.service.impl.ImageHubServiceImpl;
 
 import java.math.BigDecimal;
@@ -31,6 +37,8 @@ public class GiayResponse {
     private Integer namSX;
 
     private List<String> lstAnh = new ArrayList<>();
+
+    private HinhAnh hinhAnh;
 
     private Integer trangThai;
 

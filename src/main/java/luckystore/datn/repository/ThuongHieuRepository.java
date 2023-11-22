@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface ThuongHieuRepository extends JpaRepository<ThuongHieu, Long> {
@@ -29,5 +31,10 @@ public interface ThuongHieuRepository extends JpaRepository<ThuongHieu, Long> {
     Boolean existsByTen(String ten);
 
     Boolean existsByTenAndIdNot(String ten, Long id);
+
+    @Query("select new luckystore.datn.model.response.ThuongHieuResponse(g.id, g.ten) from ThuongHieu g where g.ten in :names")
+    List<ThuongHieuResponse> getIdsByName(Set<String> names);
+
+    Optional<ThuongHieu> findByTen(String ten);
 
 }

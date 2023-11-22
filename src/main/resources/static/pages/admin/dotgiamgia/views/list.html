@@ -1,0 +1,137 @@
+
+<div class="card" style="margin: 20px">
+    <h5 class="card-header">Danh sách đợt giảm giá</h5>
+    <div class="card-body">
+        <div class="d-flex add-search-custom">
+            <div class="input-group w-25">
+                <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
+                <input id="seachText" class="form-control" type="text" ng-model="searchText"
+                       placeholder="Nhập từ khóa">
+                <button class="btn btn-custom " ng-click="search()">Tìm kiếm</button>
+            </div>
+            <a class="btn btn-primary" href="#/add">Thêm đợt khuyến mại</a>
+        </div>
+
+        <div class="d-flex justify-content-start radio-filter">
+            <div class="custom-radio">
+                <input type="radio" id="all" name="status" ng-model="status" value="-1" ng-checked="status != 0 && status != 1"
+                       ng-change="changeRadio(-1)">
+                <label class="radio-label" for="all">Tất cả</label>
+            </div>
+
+            <div class="custom-radio">
+                <input type="radio" id="active" name="status" ng-model="status" value="1" ng-checked="status == 1"
+                       ng-change="changeRadio(1)">
+                <label class="radio-label" for="active">Kích hoạt</label>
+            </div>
+
+            <div class="custom-radio">
+                <input type="radio" id="disable" name="status" ng-model="status" value="0" ng-checked="status == 0"
+                       ng-change="changeRadio(0)">
+                <label class="radio-label" for="disable">Chưa kích hoạt</label>
+            </div>
+        </div>
+
+
+        <div>
+            <table class="table" border="1">
+                <tr class="table-secondary">
+                    <th>Tên chương trình</th>
+                    <th>Ngày bắt đầu</th>
+                    <th>Ngày kết thúc</th>
+                    <th>Ghi chú</th>
+                    <th>Trạng thái</th>
+                    <th>Action</th>
+                </tr>
+
+                <tr ng-repeat="dotGiamGia in dotGiamGias">
+                    <td>{{dotGiamGia.ten}}</td>
+                    <td>{{dotGiamGia.ngayBatDau}}</td>
+                    <td>{{dotGiamGia.ngayKetThuc}}</td>
+                    <td>{{dotGiamGia.ghiChu}}</td>
+                    <td>
+                        <h5>
+                <span ng-class="{'badge bd-success-custom': dotGiamGia.trangThai == 1, 'badge bd-danger-custom': dotGiamGia.trangThai != 1}">
+                    {{dotGiamGia.trangThai == 1 ? 'Kích hoạt' : 'Chưa kích hoạt'}}
+                </span>
+                        </h5>
+                    <td>
+                        <div class="d-sm-inline-flex">
+                            <button class="btn btn-custom" ng-click="detailDotGiamGia(dotGiamGia.id)"><i class="fas fa-eye"></i>
+                            </button>
+                            <a class="btn btn-custom" ng-href="#/update/{{dotGiamGia.id}}"><i class="far fa-edit"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Button trigger modal -->
+            <button type="button" hidden class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#showDotGiamGia">
+
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="showDotGiamGia" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Chi Tiết Đợt Giảm Giá</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <table>
+                                <tr>
+                                    <td>ID :</td>
+                                    <th>{{dotGiamGiaDetail.id}}</th>
+                                </tr>
+                                <tr>
+                                    <td>Tên :</td>
+                                    <th>{{dotGiamGiaDetail.ten}}</th>
+                                </tr>
+                                <tr>
+                                    <td>Ghi chú :</td>
+                                    <th>{{dotGiamGiaDetail.ghiChu}}</th>
+                                </tr>
+                                <tr>
+                                    <td>Ngày Bắt Đầu :</td>
+                                    <th>{{dotGiamGiaDetail.ngayBatDau}}</th>
+                                </tr>
+                                <tr>
+                                    <td>Ngày Kết Thúc :</td>
+                                    <th>{{dotGiamGiaDetail.ngayKetThuc}}</th>
+                                </tr>
+                                <tr>
+                                    <td> Trạng Thái :</td>
+                                    <th>{{dotGiamGiaDetail.trangThai == 1 ? "Kích hoạt" : "Chưa kích hoạt"}}</th>
+                                </tr>
+                                <tr>
+                                    <td> Điều kiện :</td>
+                                    <!--                                    <th>{{dotGiamGiaDetail.dieuKienResponses}}</th>-->
+                                    <th> <p ng-repeat="dieuKien in dotGiamGiaDetail.dieuKienResponses" style="padding-right: 10px;">
+                                        Tổng hóa đơn: {{dieuKien.tongHoaDon}}, {{dieuKien.phanTramGiam}}%
+                                    </p></th>
+                                </tr>
+                                <!--                                <tr>-->
+                                <!--                                    <td>Địa Chỉ :</td>-->
+                                <!--                                    <th>{{nhanVienDetail.xa}} - {{nhanVienDetail.huyen}} - {{nhanVienDetail.tinh}}</th>-->
+                                <!--                                </tr>-->
+                                <!--                                <tr>-->
+                                <!--                                    <td>Chức Vụ : </td>-->
+                                <!--                                    <th>{{nhanVienDetail.chucVu == 1 ? "Nhân Viên" : "Chủ Cửa Hàng"}}</th>-->
+                                <!--                                </tr>-->
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages" data-current-page="curPage"
+                 data-max-size="maxSize"
+                 data-boundary-links="true">
+            </div>
+        </div>
+
+    </div>
+</div>

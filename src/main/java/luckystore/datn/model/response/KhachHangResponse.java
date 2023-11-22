@@ -50,4 +50,9 @@ public class KhachHangResponse {
             this.taiKhoan = khachHang.getTaiKhoan();
         }
     }
+
+    public KhachHangRestponse(Long id, String ten) {
+        this.id = id;
+        this.hoTen = ten;
+    }
 }

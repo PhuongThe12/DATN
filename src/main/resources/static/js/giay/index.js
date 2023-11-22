@@ -14,6 +14,12 @@ app.config(function ($routeProvider, $locationProvider) {
     }).when("/add", {
         templateUrl: '/pages/admin/giay/views/add.html',
         controller: 'addGiayController'
+    }).when("/excel", {
+        templateUrl: '/pages/admin/giay/views/excel.html',
+        controller: 'excelController'
+    }).when("/excelUpdate", {
+        templateUrl: '/pages/admin/giay/views/excel-update.html',
+        controller: 'excelUpdateController'
     })
         .otherwise({redirectTo: '/list'});
 });
@@ -29,19 +35,17 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
     $scope.selectedMauSacs = [];
     $scope.selectedKichThuocs = [];
 
-
     $scope.changeSelectedKichThuoc = function () {
         // Sao chép selectedMauSacs
-        let selectedMauSacsCopy = angular.copy($scope.selectedMauSacs.filter(mauSac => mauSac.status === 'active'));
+        let selectedMauSacsCopy = angular.copy($scope.selectedMauSacs);
         const length = $scope.selectedMauSacs.length;
         for (let i = 0; i < length; i++) {
             selectedMauSacsCopy[i].hinhAnh = $scope.selectedMauSacs[i].hinhAnh;
         }
-
         // Kiểm tra và cập nhật selectedMauSacs dựa trên selectedMauSac
         $scope.selectedMauSac.forEach(function (mauSac) {
-            const existingMauSac = selectedMauSacsCopy.find(function (ms) {
-                return ms.id === mauSac.id && ms.status === 'active';
+            let existingMauSac = selectedMauSacsCopy.find(function (ms) {
+                return ms.id === mauSac.id || mauSac.status === 'disabled';
             });
 
             if (!existingMauSac) {
@@ -50,21 +54,13 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
                 selectedMauSacsCopy.push(angular.copy(mauSac));
             }
 
-            //update cần
-            // var existingMauSac = selectedMauSacsCopy.find(function (ms) {
-            //     return ms.id === mauSac.id && mauSac.status == 'disabled';
-            // });
-
-            // if (existingMauSac) {
-            //     existingMauSac.status = 'disabled';
-            // }
-
         });
+
 
         // Xóa các màu không tồn tại trong selectedMauSac
         selectedMauSacsCopy = selectedMauSacsCopy.filter(function (mauSac) {
             return $scope.selectedMauSac.some(function (ms) {
-                return ms.id === mauSac.id && ms.status === 'active'; // update thì bỏ && ...
+                return ms.id === mauSac.id && ms.status === 'active';
             });
         });
 
@@ -72,7 +68,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
         $scope.selectedKichThuoc.forEach(function (kichThuoc) {
             selectedMauSacsCopy.forEach(function (mauSac) {
                 var existingKichThuoc = mauSac.selectedKichThuocs.find(function (kt) {
-                    return kt.id === kichThuoc.id && kt.status === 'active';
+                    return kt.id === kichThuoc.id;
                 });
 
                 if (!existingKichThuoc) {
@@ -90,7 +86,6 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
             });
         });
 
-
         // Cập nhật $scope.selectedMauSacs
         $scope.selectedMauSacs = selectedMauSacsCopy;
 
@@ -107,7 +102,6 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
                 });
             })
         }, 0);
-
 
     }
 
@@ -376,6 +370,23 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
             });
     }, 0);
 
+    $scope.comfirmAdd = function () {
+        Swal.fire({
+            text: "Xác nhận thêm?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $scope.submitData();
+            }
+
+        });
+    }
+
     $scope.submitData = function () {
         $scope.isLoading = true;
 
@@ -531,7 +542,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
         $scope.selectedMauSacs.forEach(mauSac => {
             mauSac.selectedKichThuocs.forEach(kichThuoc => {
 
-                    if (isNaN(kichThuoc.giaBan) || !kichThuoc.giaBan) {
+                    if (isNaN(kichThuoc.giaBan)) {
                         kichThuoc.giaBan = null;
                         kichThuoc.errors.giaBan = 'Không được bỏ trống giá bán';
                         valid = false;
@@ -595,7 +606,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
             $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.barcode = null;
         }
         if (model === 'soLuong' && $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.soLuong) {
-            $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.barcode = null;
+            $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.soLuong = null;
         }
 
     }
@@ -603,7 +614,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
     $scope.blurInput = function (msIndex, ktIndex, model) {
 
         if (model === 'giaBan') {
-            if (isNaN($scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan) || !$scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan) {
+            if (isNaN($scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan)) {
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaBan = 'Giá bán không được để trống';
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan = null;
             } else if ($scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan < 0) {

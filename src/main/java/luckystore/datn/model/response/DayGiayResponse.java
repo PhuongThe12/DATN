@@ -34,4 +34,9 @@ public class DayGiayResponse {
         }
     }
 
+    public DayGiayResponse(Long id, String ten) {
+        this.id = id;
+        this.ten = ten;
+    }
+
 }

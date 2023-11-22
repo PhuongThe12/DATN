@@ -84,8 +84,20 @@
                     <label class="radio-label" for="disable">Đã ẩn</label>
                 </div>
             </div>
-            <div class="px-3">
-                <a class="btn btn-primary" href="#/add"><i class="fas fa-plus px-2 small"></i> Thêm 1 giày mới</a>
+
+            <div class="d-flex flex-row">
+                <div class="px-3">
+                    <a class="btn btn-primary" href="#/excel"><i class="fas fa-file-excel px-2"></i>Thêm với excel</a>
+                </div>
+
+                <div>
+                    <a class="btn btn-primary" href="#/excelUpdate"><i class="fas fa-file-excel px-2"></i>Cập nhật với
+                        excel</a>
+                </div>
+
+                <div class="px-3">
+                    <a class="btn btn-primary" href="#/add"><i class="fas fa-plus px-2 small"></i> Thêm 1 giày mới</a>
+                </div>
             </div>
         </div>
 
@@ -151,18 +163,20 @@
                             <div class="col col-3">
                                 <ul class="variants mb-0 ">
                                     <div ng-repeat="bienThe in giay.lstBienTheGiay" ng-show="$index < 5"
-                                         class="border-botton-005 li-height-50 d-flex align-items-end justify-content-center py-1" data-bs-toggle="modal" data-bs-target="#giaModal"
+                                         class="border-botton-005 li-height-50 d-flex align-items-end justify-content-center py-1"
+                                         data-bs-toggle="modal" data-bs-target="#giaModal"
                                          ng-click="focusInputModal('giaBan', index, $index)">
-                                        <span class="bienTheField">{{bienThe.giaBan}} <i
+                                        <span class="bienTheField">{{bienThe.giaBan|number:0}} <sup class="text-danger">vnđ</sup><i
                                                 class="fas fa-pen edit-icon"></i></span>
                                     </div>
                                 </ul>
                                 <div class="collapse" id="collapseVarients{{index}}">
                                     <ul class="variants">
                                         <div ng-repeat="bienThe in giay.lstBienTheGiay" ng-show="$index >= 5"
-                                             class="border-botton-005 li-height-50 d-flex align-items-end justify-content-center py-1" data-bs-toggle="modal" data-bs-target="#giaModal"
+                                             class="border-botton-005 li-height-50 d-flex align-items-end justify-content-center py-1"
+                                             data-bs-toggle="modal" data-bs-target="#giaModal"
                                              ng-click="focusInputModal('giaBan', index, $index)">
-                                            <span class="bienTheField">{{bienThe.giaBan}}<i
+                                            <span class="bienTheField">{{bienThe.giaBan|number:0}}<sup class="text-danger">vnđ</sup><i
                                                     class="fas fa-pen edit-icon"></i></span>
                                         </div>
                                     </ul>
@@ -194,7 +208,6 @@
                                 <div class="d-flex flex-column">
                                     <a class="btn btn-primary mb-2" ng-href="#/update/{{giay.id}}">Cập nhật</a>
                                     <a class="btn btn-primary mb-2" ng-href="#/detail/{{giay.id}}">Xem chi tiết</a>
-                                    <a class="btn btn-primary" >Lịch sử cập nhật</a>
                                 </div>
                             </div>
                             <div ng-show="giay.lstBienTheGiay.length > 5 && !looped" class="w-100 text-center">

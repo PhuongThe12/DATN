@@ -14,6 +14,7 @@ import java.util.List;
 
 @Repository
 public interface HoaDonChiTietRepository extends JpaRepository<HoaDonChiTiet,Long> {
+<<<<<<< HEAD
     @Query("select new luckystore.datn.model.response.HoaDonChiTietResponse(hdct) from HoaDonChiTiet hdct")
     List<HoaDonChiTietResponse> findAllResponse();
 
@@ -42,5 +43,10 @@ public interface HoaDonChiTietRepository extends JpaRepository<HoaDonChiTiet,Lon
                 "AND (:status IS NULL OR HoaDonChiTiet.TRANG_THAI = :status)) AS total",
         nativeQuery = true)
     Page<DonMuaResponse> donMua(Integer status, Pageable pageable);
+=======
+
+    @Query("SELECT hd.id FROM HoaDonChiTiet hd where hd.id = :id")
+    Long getIdById(Long id);
+>>>>>>> 2ef72cb438619f0a75df9dfc3d7dfeef7b8e9fec
 
 }

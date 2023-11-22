@@ -1,11 +1,14 @@
 package luckystore.datn.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,6 +16,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @Entity
+@ToString
 @Table(name = "HoaDon")
 public class HoaDon {
 
@@ -21,8 +25,9 @@ public class HoaDon {
     @Column(name = "ID")
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "ID_HOA_DON_GOC")
+    @JsonBackReference
     private HoaDon hoaDonGoc;
 
     @ManyToOne
@@ -32,6 +37,10 @@ public class HoaDon {
     @ManyToOne
     @JoinColumn(name = "ID_NHAN_VIEN")
     private NhanVien nhanVien;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_KHUYEN_MAI_THEO_DIEU_KIEN")
+    private DieuKien dieuKien;
 
     @Column(name = "NGAY_TAO")
     private LocalDateTime ngayTao;
@@ -47,6 +56,9 @@ public class HoaDon {
 
     @Column(name = "KENH_BAN")
     private Integer kenhBan;
+
+    @Column(name = "LOAI_HOA_DON")
+    private Integer loaiHoaDon;
 
     @Column(name = "MA_VAN_DON")
     private String maVanDon;
@@ -68,5 +80,19 @@ public class HoaDon {
 
     @Column(name = "MO_TA")
     private String ghiChu;
+
+    @Column(name = "TIEN_GIAM")
+    private BigDecimal tienGiam;
+
+    @Column(name = "UU_DAI")
+    private Integer uuDai;
+
+    @OneToMany(mappedBy = "hoaDon", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<HoaDonChiTiet> listHoaDonChiTiet;
+
+    @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<ChiTietThanhToan> chiTietThanhToans;
 
 }

@@ -39,7 +39,6 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
         for (let i = 0; i < length; i++) {
             selectedMauSacsCopy[i].hinhAnh = $scope.selectedMauSacs[i].hinhAnh;
         }
-
         // Kiểm tra và cập nhật selectedMauSacs dựa trên selectedMauSac
         $scope.selectedMauSac.forEach(function (mauSac) {
             let existingMauSac = selectedMauSacsCopy.find(function (ms) {
@@ -97,7 +96,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                         imageElement.parentElement.nextElementSibling.style.display = 'none';
                         imageElement.parentElement.parentElement.nextElementSibling.style.display = 'block';
                     }
-                } else if (mauSac.hinhAnh === 1) {
+                } else if (mauSac.hinhAnh !== 1 && mauSac.hinhAnh) {
                     loadImage(mauSac.hinhAnh, 'selectedColorImage' + mauSac.id);
                     const imageElement = document.getElementById('selectedColorImage' + mauSac.id);
                     imageElement.parentElement.nextElementSibling.style.display = 'none';
@@ -109,7 +108,6 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                 });
             })
         }, 0);
-
 
     }
 
@@ -146,7 +144,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                 }
                 switch (image) {
                     case 2:
-                        if(file.size > 5 * 1024 * 1024){
+                        if (file.size > 5 * 1024 * 1024) {
                             toastr["error"]("File không được vượt quá 5MB");
                             break;
                         }
@@ -154,7 +152,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                         loadImage($scope.image2, 'selectedImage2');
                         break;
                     case 3:
-                        if(file.size > 5 * 1024 * 1024){
+                        if (file.size > 5 * 1024 * 1024) {
                             toastr["error"]("File không được vượt quá 5MB");
                             break;
                         }
@@ -162,7 +160,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                         loadImage($scope.image3, 'selectedImage3');
                         break;
                     case 4:
-                        if(file.size > 5 * 1024 * 1024){
+                        if (file.size > 5 * 1024 * 1024) {
                             toastr["error"]("File không được vượt quá 5MB");
                             break;
                         }
@@ -170,7 +168,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                         loadImage($scope.image4, 'selectedImage4');
                         break;
                     case 5:
-                        if(file.size > 5 * 1024 * 1024){
+                        if (file.size > 5 * 1024 * 1024) {
                             toastr["error"]("File không được vượt quá 5MB");
                             break;
                         }
@@ -178,7 +176,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                         loadImage($scope.image5, 'selectedImage5');
                         break;
                     default:
-                        if(file.size > 5 * 1024 * 1024){
+                        if (file.size > 5 * 1024 * 1024) {
                             toastr["error"]("File không được vượt quá 5MB");
                             break;
                         }
@@ -231,23 +229,26 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
 
     //remove selected image
     $scope.removeImage = function (image) {
-        for (let i = image; i <= 5; i++) {
-            if (i === 5) {
-                $scope['image' + i] = null;
-                document.getElementById('selectedImage' + i).src = '';
-                document.getElementById('selectedImage' + i).style.display = 'none';
-            } else if ($scope['image' + (i + 1)]) {
-                $scope['image' + i] = $scope['image' + (i + 1)];
-                loadImage($scope['image' + i], 'selectedImage' + i);
-            } else {
-                $scope['image' + i] = null;
-                document.getElementById('selectedImage' + i).src = '';
-                document.getElementById('selectedImage' + i).style.display = 'none';
-            }
-        }
+        $scope['image' + image] = null;
+        document.getElementById('selectedImage' + image).src = '';
+        document.getElementById('selectedImage' + image).style.display = 'none';
+        // for (let i = image; i <= 5; i++) {
+        // if (i === 5) {
+        // $scope['image' + i] = null;
+        // document.getElementById('selectedImage' + i).src = '';
+        // document.getElementById('selectedImage' + i).style.display = 'none';
+        // } else if ($scope['image' + (i + 1)]) {
+        //     $scope['image' + i] = $scope['image' + (i + 1)];
+        //     loadImage($scope['image' + i], 'selectedImage' + i);
+        // } else {
+        //     $scope['image' + i] = null;
+        //     document.getElementById('selectedImage' + i).src = '';
+        //     document.getElementById('selectedImage' + i).style.display = 'none';
+        // }
+        // }
     };
 
-    //Select lot giay
+//Select lot giay
     $scope.lotGiays = [];
     setTimeout(function () {
         $http.get(host + "/admin/rest/lot-giay/get-all")
@@ -260,7 +261,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }, 0);
 
-    //Select de giay
+//Select de giay
     $scope.deGiays = [];
     setTimeout(function () {
         $http.get(host + "/admin/rest/de-giay/get-all")
@@ -272,7 +273,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                 // window.location.href = feHost + '/trang-chu';
             });
     }, 0);
-    //Select mui giay
+//Select mui giay
     $scope.muiGiays = [];
     setTimeout(function () {
         $http.get(host + "/admin/rest/mui-giay/get-all")
@@ -286,7 +287,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }, 0);
 
-    //Select co giay
+//Select co giay
     $scope.coGiays = [];
     setTimeout(function () {
         $http.get(host + "/admin/rest/co-giay/get-all")
@@ -300,7 +301,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }, 0);
 
-    //Select thuong hieu
+//Select thuong hieu
     $scope.thuongHieus = [];
     setTimeout(function () {
         $http.get(host + "/admin/rest/thuong-hieu/get-all")
@@ -314,7 +315,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }, 0);
 
-    //Select chat lieu
+//Select chat lieu
     $scope.chatLieus = [];
     setTimeout(function () {
         $http.get(host + "/admin/rest/chat-lieu/get-all")
@@ -328,7 +329,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }, 0);
 
-    //Select day giay
+//Select day giay
     $scope.dayGiays = [];
     setTimeout(function () {
         $http.get(host + "/admin/rest/day-giay/get-all")
@@ -342,7 +343,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }, 0);
 
-    //Select mau sac
+//Select mau sac
     $scope.mauSacs = [];
     setTimeout(function () {
         $http.get(host + "/admin/rest/mau-sac/get-all")
@@ -355,7 +356,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }, 0);
 
-    //Select size
+//Select size
     $scope.kichThuocs = [];
     setTimeout(function () {
         $http.get(host + "/admin/rest/kich-thuoc/get-all")
@@ -368,7 +369,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }, 0);
 
-    //Select hashtag
+//Select hashtag
     $scope.hashTags = [];
     setTimeout(function () {
         $http.get(host + "/admin/rest/hash-tag/get-all")
@@ -386,6 +387,23 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
         $scope.blurInput(msIndex, ktIndex, 'barcode');
     }
 
+    $scope.comfirmUpdate = function () {
+        Swal.fire({
+            text: "Xác nhận cập nhật?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $scope.submitData();
+            }
+
+        });
+    }
+
     $scope.submitData = function () {
         $scope.isLoading = true;
         if (!isValid()) {
@@ -398,37 +416,37 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
         let imagePromises = [];
         if ($scope.image1 !== 1 && $scope.image1) {
             imagePromises.push(getBase64($scope.image1).then(data => giayRequest.image1 = data + ""));
-        } else if(!$scope.image1){
+        } else if (!$scope.image1) {
             giayRequest.image1 = null;
-        }else {
+        } else {
             giayRequest.image1 = 1;
         }
         if ($scope.image2 !== 1 && $scope.image2) {
             imagePromises.push(getBase64($scope.image2).then(data => giayRequest.image2 = data + ""));
-        } else if(!$scope.image2){
+        } else if (!$scope.image2) {
             giayRequest.image2 = null;
-        }else {
+        } else {
             giayRequest.image2 = 1;
         }
         if ($scope.image3 !== 1 && $scope.image3) {
             imagePromises.push(getBase64($scope.image3).then(data => giayRequest.image3 = data + ""));
-        } else if(!$scope.image3){
+        } else if (!$scope.image3) {
             giayRequest.image3 = null;
-        }else {
+        } else {
             giayRequest.image3 = 1;
         }
         if ($scope.image4 !== 1 && $scope.image4) {
             imagePromises.push(getBase64($scope.image4).then(data => giayRequest.image4 = data + ""));
-        } else if(!$scope.image4){
+        } else if (!$scope.image4) {
             giayRequest.image4 = null;
-        }else {
+        } else {
             giayRequest.image4 = 1;
         }
         if ($scope.image5 !== 1 && $scope.image5) {
             imagePromises.push(getBase64($scope.image5).then(data => giayRequest.image5 = data + ""));
-        } else if(!$scope.image5){
+        } else if (!$scope.image5) {
             giayRequest.image5 = null;
-        }else {
+        } else {
             giayRequest.image5 = 1;
         }
 
@@ -453,9 +471,9 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             if (mauSac.hinhAnh !== 1 && mauSac.hinhAnh) {
                 let mauSacImage = await getBase64(mauSac.hinhAnh);
                 giayRequest.mauSacImages[mauSac.id] = mauSacImage + "";
-            } else if(!mauSac.hinhAnh) {
+            } else if (!mauSac.hinhAnh) {
                 giayRequest.mauSacImages[mauSac.id] = null;
-            }else {
+            } else {
                 giayRequest.mauSacImages[mauSac.id] = 1;
             }
             mauSac.selectedKichThuocs.forEach(kichThuoc => {
@@ -566,7 +584,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
         $scope.selectedMauSacs.forEach(mauSac => {
             mauSac.selectedKichThuocs.forEach(kichThuoc => {
 
-                if (isNaN(kichThuoc.giaBan) || !kichThuoc.giaBan) {
+                if (isNaN(kichThuoc.giaBan)) {
                     kichThuoc.giaBan = null;
                     kichThuoc.errors.giaBan = 'Không được bỏ trống giá bán';
                     valid = false;
@@ -629,7 +647,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.barcode = null;
         }
         if (model === 'soLuong' && $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.soLuong) {
-            $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.barcode = null;
+            $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.soLuong = null;
         }
 
     }
@@ -637,13 +655,13 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
     $scope.blurInput = function (msIndex, ktIndex, model) {
 
         if (model === 'giaBan') {
-            if (isNaN($scope.selectedMauSacs[0].selectedKichThuocs[0].giaBan) || !$scope.selectedMauSacs[0].selectedKichThuocs[0].giaBan) {
+            if (isNaN($scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan)) {
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaBan = 'Giá bán không được để trống';
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan = null;
-            } else if ($scope.selectedMauSacs[0].selectedKichThuocs[0].giaBan < 0) {
+            } else if ($scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan < 0) {
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaBan = 'Giá bán không được âm';
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].giaBan = null;
-            }  else {
+            } else {
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.giaBan = null;
             }
         }
@@ -670,10 +688,10 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                 }
             }
 
-        }
 
+        }
         if (model === 'soLuong') {
-            if (isNaN($scope.selectedMauSacs[0].selectedKichThuocs[0].soLuong) || !$scope.selectedMauSacs[0].selectedKichThuocs[0].soLuong) {
+            if (isNaN($scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].soLuong)) {
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.soLuong = 'Số lượng không được để trống';
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].soLuong = null;
             } else {
@@ -784,10 +802,17 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                 $scope.selectedMauSacs.forEach((ms, msIndex) => {
                     ms.selectedKichThuocs.forEach((kt, ktIndex) => {
                         const bt = $scope.giay.lstBienTheGiay.find(bienThe => bienThe.mauSac.id === ms.id && bienThe.kichThuoc.id === kt.id);
-                        kt.giaBan = bt.giaBan;
-                        kt.trangThai = bt.trangThai;
-                        kt.barcode = bt.barCode;
-                        kt.soLuong = bt.soLuong;
+                        if (bt) {
+                            kt.giaBan = bt.giaBan;
+                            kt.trangThai = bt.trangThai;
+                            kt.barcode = bt.barCode;
+                            kt.soLuong = bt.soLuong;
+                        } else {
+                            kt.giaBan = 0;
+                            kt.trangThai = 0;
+                            kt.barcode = new Date().getTime();
+                            kt.soLuong = 0;
+                        }
                     });
                 });
 
@@ -834,7 +859,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
     }
 
 
-    //////////////for modal
+//////////////for modal
     $scope.addChatLieu = function () {
         if ($scope.chatLieuForm.$invalid) {
             return;
@@ -860,7 +885,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }
 
-    //modal lot giay
+//modal lot giay
     $scope.addLotGiay = function () {
         if ($scope.lotGiayForm.$invalid) {
             return;
@@ -886,7 +911,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }
 
-    //modal mui giay
+//modal mui giay
     $scope.addMuiGiay = function () {
         if ($scope.muiGiayForm.$invalid) {
             return;
@@ -912,7 +937,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }
 
-    //modal co giay
+//modal co giay
     $scope.addCoGiay = function () {
         if ($scope.coGiayForm.$invalid) {
             return;
@@ -938,7 +963,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }
 
-    //modal thuong hieu
+//modal thuong hieu
     $scope.addThuongHieu = function () {
         if ($scope.thuongHieuForm.$invalid) {
             return;
@@ -965,7 +990,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
     }
 
 
-    //modal day giay
+//modal day giay
     $scope.addDayGiay = function () {
         if ($scope.dayGiayForm.$invalid) {
             return;
@@ -991,7 +1016,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }
 
-    //modal de giay
+//modal de giay
     $scope.addDeGiay = function () {
         if ($scope.deGiayForm.$invalid) {
             return;
@@ -1017,7 +1042,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }
 
-    //modal hash tag
+//modal hash tag
     $scope.addHashTag = function () {
         if ($scope.hashTagForm.$invalid) {
             return;
@@ -1044,7 +1069,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
     }
 
 
-    //modal kichThuoc
+//modal kichThuoc
     $scope.addKichThuoc = function () {
 
         if ($scope.kichThuocForm.$invalid) {
@@ -1072,7 +1097,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }
 
-    //modal mau sac
+//modal mau sac
     $scope.addMauSac = function () {
 
         if ($scope.mauSacForm.$invalid) {
@@ -1099,7 +1124,8 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             });
     }
 
-});
+})
+;
 
 
 //input chung
@@ -1119,7 +1145,6 @@ app.directive('customInputUpdate', function () {
             $scope.selectedItem = "";
             $scope.items.forEach(function (item) {
                 item.status = 'disabled';
-                item.canRemove = true;
             });
 
             $scope.isItemSelected = function (item) {
@@ -1144,6 +1169,7 @@ app.directive('customInputUpdate', function () {
                         // $scope.selectedTags.push(item);
                     }
 
+                    $scope.selectedItem = "";
                     const index = $scope.items.indexOf(item);
                     if (index !== -1) {
                         $scope.items.splice(index, 1);
@@ -1165,7 +1191,7 @@ app.directive('customInputUpdate', function () {
                     // Thực hiện các tác vụ tương ứng với sự thay đổi trong ngModel (danh sách)
                     newNgModel.forEach((element) => {
                         if (element) {
-                            var selectedItem = $scope.items.find((item) => item.id === element.id);
+                            var selectedItem = $scope.items.find((item) => item.id === element.id && item.status === 'active' || item.canRemove === false);
                             $scope.selectItem(selectedItem);
                         }
                     });
@@ -1214,11 +1240,11 @@ app.directive('customInputUpdate', function () {
         $scope.blurInput(msIndex, ktIndex, 'barcode');
     }
 
-    $scope.scanQR =  function (e, element) {
+    $scope.scanQR = function (e, element) {
 
         const msIndex = parseInt(element.getAttribute("ms-index"));
         const ktIndex = parseInt(element.getAttribute("kt-index"));
-        if(isNaN(msIndex) || isNaN(ktIndex)) {
+        if (isNaN(msIndex) || isNaN(ktIndex)) {
             toastr["error"]("Lỗi bất định!");
             return;
         }
@@ -1274,10 +1300,10 @@ app.directive('customInputUpdate', function () {
 
     let scanning = false;
 
-    $scope.startScanning =  function(msIndex, ktIndex) {
+    $scope.startScanning = function (msIndex, ktIndex) {
         scanning = true;
         if (scanning) {
-            navigator.mediaDevices.getUserMedia({ video: true })
+            navigator.mediaDevices.getUserMedia({video: true})
                 .then((stream) => {
                     video.srcObject = stream;
                     video.play();
@@ -1293,7 +1319,7 @@ app.directive('customInputUpdate', function () {
 
                             if (code) {
                                 // Thực hiện các hành động với mã QR tại đây
-                                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].barcode =  code.data;
+                                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].barcode = code.data;
                                 $scope.blurInput(msIndex, ktIndex, 'barcode');
                                 document.getElementById('barcode' + msIndex + ktIndex).value = code.data;
                                 document.getElementById('closeModalCamera').click();
@@ -1307,7 +1333,7 @@ app.directive('customInputUpdate', function () {
                                     },
                                 }, function (result) {
                                     if (result && result.codeResult) {
-                                        $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].barcode =  result.codeResult.code;
+                                        $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].barcode = result.codeResult.code;
                                         $scope.blurInput(msIndex, ktIndex, 'barcode');
                                         document.getElementById('barcode' + msIndex + ktIndex).value = result.codeResult.code;
                                         document.getElementById('closeModalCamera').click();
@@ -1341,7 +1367,7 @@ app.directive('customInputUpdate', function () {
 
     function updateVideoStream() {
         navigator.mediaDevices.getUserMedia({
-            video: { deviceId: selectedCamera, width: 1920, height: 1080 }
+            video: {deviceId: selectedCamera, width: 1920, height: 1080}
         })
             .then((stream) => {
                 video.srcObject = stream;
@@ -1353,7 +1379,7 @@ app.directive('customInputUpdate', function () {
     }
 
 
-    $scope.stopScanning = function() {
+    $scope.stopScanning = function () {
         video.pause();
         video.srcObject.getTracks().forEach(track => track.stop());
     }

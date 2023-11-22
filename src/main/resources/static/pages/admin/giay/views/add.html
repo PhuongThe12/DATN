@@ -397,7 +397,7 @@
                                                ng-change="changeInput(msIndex, ktIndex, 'soLuong')"
                                                ng-blur="blurInput(msIndex, ktIndex, 'soLuong')" name="soLuong"
                                                onkeypress="nextInput(event)"
-                                               ng-init="kichThuoc.soLuong = 0">
+                                               ng-init="kichThuoc.soLuong ? kichThuoc.soLuong : 0">
                                     </div>
                                     <div>
                                         <small class="text-danger"
@@ -425,13 +425,10 @@
                                                ng-blur="blurInput(msIndex, ktIndex, 'barcode')" name="barcode"
                                                onkeypress="nextInput(event)"
                                                ng-required="true">
-                                        <button type="button" role="button" class="input-group-text barcodeButton"><i
+                                        <button type="button" role="button" class="input-group-text barcodeButton"
+                                                ng-click="setBarcode(msIndex, ktIndex)"><i
                                                 class="fas fa-qrcode"></i>
                                             <div id="barcode-options1" class="barcode-options">
-                                                <div>
-                                                    <label class="btn btn-outline-secondary my-2"
-                                                           ng-click="setBarcode(msIndex, ktIndex)">Tự động</label>
-                                                </div>
                                                 <div>
                                                     <label for="imageBarcode{{msIndex}}{{ktIndex}}"
                                                            class="btn btn-outline-secondary my-2">Chọn ảnh</label>
@@ -467,7 +464,7 @@
                     <div class="modal-dialog modal-dialog-centered modal-xl">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                                <h5 class="modal-title" id="staticBackdropLabel">Máy quét</h5>
                                 <button type="button" class="btn-close" id="closeModalCamera"
                                         ng-click="closeModalCamera()" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
@@ -559,7 +556,7 @@
 
 
                 <div class="px-3 py-2">
-                    <button ng-click="submitData()" type="submit" class="btn btn-primary">Tạo mới</button>
+                    <button ng-click="comfirmAdd()" type="submit" class="btn btn-primary">Tạo mới</button>
                 </div>
 
             </form>
