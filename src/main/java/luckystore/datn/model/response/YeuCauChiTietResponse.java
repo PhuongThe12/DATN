@@ -5,10 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import luckystore.datn.entity.BienTheGiay;
-import luckystore.datn.entity.HoaDonChiTiet;
-import luckystore.datn.entity.YeuCau;
 import luckystore.datn.entity.YeuCauChiTiet;
+import luckystore.datn.service.impl.ImageHubServiceImpl;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @AllArgsConstructor
@@ -30,7 +33,11 @@ public class YeuCauChiTietResponse {
 
     private Integer trangThai;
 
+    private Integer loaiYeuCauChiTiet;
+
     private String ghiChu;
+
+//    private List<String> listAnhGiayTra = new ArrayList<>();
 
     public YeuCauChiTietResponse(YeuCauChiTiet yeuCauChiTiet) {
         if(yeuCauChiTiet != null){
@@ -41,7 +48,10 @@ public class YeuCauChiTietResponse {
             this.lyDo = new LyDoResponse(yeuCauChiTiet.getLyDo());
             this.soLuong = yeuCauChiTiet.getSoLuong();
             this.trangThai = yeuCauChiTiet.getTrangThai();
+            this.loaiYeuCauChiTiet = yeuCauChiTiet.getLoaiYeuCauChiTiet();
             this.ghiChu = yeuCauChiTiet.getGhiChu();
+//            this.listAnhGiayTra = yeuCauChiTiet.getListAnhGiayTra().stream().map(anhGiayTra -> ImageHubServiceImpl.getBase64FromFileStatic(anhGiayTra.getLink())).collect(Collectors.toList());
         }
     }
+
 }

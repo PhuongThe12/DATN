@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin/rest/hoa-don")
 public class RestHoaDonController {
 
-    @Autowired
     private final HoaDonService hoaDonService;
 
     @Autowired
     private HoaDonChiTietService hoaDonChiTietService;
 
+    @Autowired
     public RestHoaDonController(HoaDonService hoaDonService) {
         this.hoaDonService = hoaDonService;
     }
@@ -35,7 +35,6 @@ public class RestHoaDonController {
 
     @PostMapping("/yeu-cau")
     public ResponseEntity getPageHoaDonYeuCauPage(@RequestBody HoaDonSearch hoaDonSearch) {
-        System.out.println(hoaDonSearch);
         return new ResponseEntity<>(hoaDonService.getPageHoaDonYeuCau(hoaDonSearch), HttpStatus.OK);
     }
 
