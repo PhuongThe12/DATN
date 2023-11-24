@@ -31,7 +31,7 @@ import java.math.BigDecimal;
 public class ChiTietThanhToan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", nullable = false)
+    @Column(name = "ID")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -39,14 +39,17 @@ public class ChiTietThanhToan {
     @JsonBackReference
     private HoaDon hoaDon;
 
-    @Column(name = "HINH_THUC_THANH_TOAN", nullable = false)
+    @Column(name = "HINH_THUC_THANH_TOAN")
     private Integer hinhThucThanhToan;
 
-    @Column(name = "TIEN_THANH_TOAN", nullable = false)
+    @Column(name = "TIEN_THANH_TOAN")
     private BigDecimal tienThanhToan;
 
-    @Column(name = "TRANG_THAI", nullable = false)
+    @Column(name = "TRANG_THAI")
     private Integer trangThai;
+
+    @Column(name = "MA_GIAO_DICH")
+    private String maGiaoDich;
 
     @Column(name = "GHI_CHU")
     private String ghiChu;
