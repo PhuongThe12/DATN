@@ -1002,6 +1002,13 @@ public class GiayServiceImpl implements GiayService {
         if (giayResponse == null) {
             throw new NotFoundException("Không tìm thấy giày này");
         }
+
+        for(int i = 0; i < giayResponse.getLstBienTheGiay().size(); i ++) {
+            if(giayResponse.getLstBienTheGiay().get(i).getTrangThai() != 1) {
+                giayResponse.getLstBienTheGiay().remove(i);
+            }
+        }
+
         Map<Long, String> mauSacImages = new HashMap<>();
 
         List<Long> idBienThes = new ArrayList<>();

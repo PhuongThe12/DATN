@@ -45,5 +45,8 @@ public interface HoaDonService {
 
     Long thanhToanHoaDonTaiQuay(HoaDonThanhToanTaiQuayRequest request);
 
+    Long thanhToanHoaDonTaiQuayBanking(HoaDonThanhToanTaiQuayRequest request);
+
     Page<HoaDonResponse> getPageByIdKhachHang(int page, String searchText, Integer status, Long idKhachHang);
+
 }
