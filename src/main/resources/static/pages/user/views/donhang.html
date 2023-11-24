@@ -2,6 +2,10 @@
     .modal table td {
         white-space: unset !important;
     }
+
+    .nav-menu i {
+        width: 31px;
+    }
 </style>
 <div ng-show="isLoading" class="loading-spinner">
     <div class="text-center" style="  position: fixed;
@@ -20,6 +24,35 @@
     </div>
 </div>
 
+<div class="container mt-3">
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="p-5" style="border-radius: 14px;background: #f6f6f6;">
+                <div>
+                    <h5 class="font-size-14-ncl pb-3">Xin chào <span class="text-primary">Quân Minh</span></h5>
+                </div>
+                <div class="d-flex align-items-center mb-3 nav-menu">
+                    <i class="fas fa-user-circle pe-3"></i>
+                    <a href="" class=" text-decoration-none text-dark">Thông tin tài khoản</a>
+                </div>
+                <div class="d-flex align-items-center mb-3 nav-menu">
+                    <i class="fas fa-truck pe-3"></i>
+                    <a href="" class=" text-decoration-none text-dark">Quản lý đơn hàng</a>
+                </div>
+                <div class="d-flex align-items-center mb-3 nav-menu">
+                    <i class="fas fa-map-marker-alt pe-3"></i>
+                    <a href="" class=" text-decoration-none text-dark">Danh sách địa chỉ</a>
+                </div>
+                <div class="d-flex align-items-center mb-3 nav-menu">
+                    <i class="fas fa-sign-out-alt pe-3"></i>
+                    <a href="" class=" text-decoration-none text-dark">Đăng xuất</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9"></div>
+    </div>
+</div>
 
 <div class="container">
     <div class="box-shadow-page" style="margin: 20px">
@@ -97,11 +130,13 @@
                                     <div class="d-flex align-items-center justify-content-between">
                                         <div>
                                             <p>Mã vận đơn : {{hoaDon.maVanDon}}</p>
-                                            <a href="#/don-hang/detail/{{hoaDon.id}}" class="btn btn-custom">Chi Tiết Đơn Hàng</a>
+                                            <a href="#/don-hang/detail/{{hoaDon.id}}" class="btn btn-custom">Chi Tiết
+                                                Đơn Hàng</a>
                                         </div>
                                         <div class="">
                                             <div class="align-content-end">
-                                                <p class="font-size-14-ncl">Phí vận chuyển : <span>{{hoaDon.phiShip}}</span></p>
+                                                <p class="font-size-14-ncl">Phí vận chuyển :
+                                                    <span>{{hoaDon.phiShip}}</span></p>
                                                 <p class="font-size-14-ncl">Tổng tiền : <span>110.000 đ</span></p>
                                             </div>
                                         </div>

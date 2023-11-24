@@ -1,0 +1,26 @@
+.badge{
+    padding: 5px 10px !important;
+}
+
+.text-none{
+    text-decoration: none;
+}
+
+.product-name h5{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+    padding: 0px 8px;
+    color: black;
+}
+
+.product-price div{
+    padding: 0px 8px;
+    color: black;
+}
+
+.product-variant p{
+    padding: 0px 8px;
+    color: black;
+}

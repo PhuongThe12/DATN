@@ -1,0 +1,185 @@
+<style>
+    .show {
+        height: max-content;
+        transition: 0.3s ease;
+        overflow: hidden;
+    }
+
+    .hidden {
+        transition: 0.3s ease;
+        height: 0;
+        overflow: hidden;
+    }
+
+    .cart-selected-list {
+        transition: 0.3s ease;
+    }
+
+    .cart-click {
+        cursor: pointer;
+        border-bottom: 1px solid #dedede;
+        border-top: 1px solid #dedede;
+        padding: 18px 0px 10px 0px;
+        margin-bottom: 10px;
+    }
+    .rotate-icon {
+        transform: rotate(180deg); /* Xoay 180 độ */
+        transition: 0.3s ease-in-out;
+    }
+
+</style>
+<div class="container pt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <p class="fw-bold">Thông Tin Khách Hàng</p>
+            <div>
+                <form action="">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label for="nhanVienTen" class="form-label">Họ và tên</label>
+                                <input type="text" class="form-control">
+
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label for="nhanVienTen" class="form-label">Số điện thoại</label>
+                                <input type="text" class="form-control">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label for="nhanVienTen" class="form-label">Email </label>
+                                <input type="text" class="form-control">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label class="form-label">Tỉnh / Thành Phố </label>
+                                <select class="form-select" aria-label="Default select example">
+                                    <option selected>Open this select menu</option>
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                    <option value="3">Three</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label class="form-label">Quận / Huyện </label>
+                                <select class="form-select" aria-label="Default select example">
+                                    <option selected>Open this select menu</option>
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                    <option value="3">Three</option>
+                                </select>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label class="form-label">Xã / Phường </label>
+                                <select class="form-select" aria-label="Default select example">
+                                    <option selected>Open this select menu</option>
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                    <option value="3">Three</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label for="exampleFormControlTextarea1" class="form-label">Địa chỉ chi tiết</label>
+                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-custom w-100 mb-5">Thanh Toán</button>
+                </form>
+            </div>
+
+        </div>
+        <div class="col-md-4">
+            <div>
+                <div ng-click="toggleHeight()" class="cart-click d-flex align-items-center justify-content-between">
+                    <h5 class="font-size-14-ncl">Giỏ hàng ( {{listBienTheGiayLocalStorage.length}} )</h5> <i style="margin-bottom: 8px;" class="fas fa-caret-down " id="icon-drop-down"></i>
+                </div>
+                <div class="cart-selected-list" id="cart">
+                    <div ng-repeat="bienTheGiay in listBienTheGiayLocalStorage">
+                        <p class="font-size-14-ncl fw-bold text-dark mb-2 text-wrap-none">
+                            {{bienTheGiay.giayResponse.ten}}</p>
+                        <div class="d-flex mb-3">
+                            <div>
+                                <a href="#/detail/{{bienTheGiay.id}}">
+                                    <img class="rounded" width="70px"
+                                         src="https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg"
+                                         alt="">
+                                </a>
+                            </div>
+                            <div class="w-75 ps-3">
+
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <p class="font-size-14-ncl text-secondary mb-1">Kích cỡ :
+                                        {{bienTheGiay.kichThuoc.ten}} / Màu Sắc : {{bienTheGiay.mauSac.ten}}</p>
+
+                                </div>
+                                <div class=" d-flex">
+                                    <p class="font-size-12-ncl text-dark mb-1">Số lượng : {{bienTheGiay.soLuongMua}}</p>
+                                </div>
+                                <div class=" d-flex  mb-3">
+                                    <p class="font-size-13-ncl fw-bold text-dark mb-1">{{bienTheGiay.giaBan | number}}
+                                        ₫</p>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div>
+                    <p class="font-size-14-ncl border-bottom-1 py-2 fw-bold">Thông Tin Thanh Toán</p>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <p class=" font-size-14-ncl py-1">Tổng tiền sản phẩm</p>
+                        <p class="fw-bold font-size-14-ncl">3,100,000 ₫</p>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between border-bottom-1">
+                        <p class=" font-size-14-ncl py-1">Phí ship</p>
+                        <p class="fw-bold font-size-14-ncl">3,100 ₫</p>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <p class=" font-size-14-ncl py-1">Tổng thanh toán</p>
+                        <p class="fw-bold font-size-14-ncl">3,100,000 ₫</p>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <p class=" font-size-14-ncl py-1">Khuyến Mại</p>
+                        <p class="fw-bold font-size-14-ncl">100,000 ₫</p>
+                    </div>
+                    <div class="mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                Khi nhận hàng
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                            <label class="form-check-label" for="flexRadioDefault2">
+                                Banking
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

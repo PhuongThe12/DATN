@@ -32,12 +32,14 @@
     <script src="/js/global.js"></script>
     <link rel="stylesheet" href="/css/global-style.css">
     <link rel="stylesheet" href="/css/cart/style.css">
+    <link rel="stylesheet" href="/css/home/style.css">
 </head>
 
 <body>
 <div ng-controller="navbarController">
     <div ng-include="'/pages/user/navbar/navbar.html'"></div>
     <div ng-view></div>
+    <div ng-include="'/pages/user/footer/footer.html'"></div>
 </div>
 <script src="/sweetalert2/dist/sweetalert2.min.js"></script>
 <script src="/js/customer/index.js"></script>

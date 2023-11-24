@@ -1,16 +1,144 @@
-<div class="container">
+<style>
+    .custom-dropbtn {
+        color: black;
+        padding: 10px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        background: white;
+    }
+
+    .custom-dropdown-content {
+        display: none;
+        min-width: 160px;
+        z-index: 1;
+    }
+
+    .custom-dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        cursor: pointer;
+    }
+
+    .custom-dropdown-content a:hover {
+        background-color: #ddd;
+    }
+
+    .custom-dropdown-content.show {
+        display: block;
+    }
+
+    .rotate {
+        transform: rotate(180deg);
+        transition: transform 0.3s ease; /* Thêm hiệu ứng chuyển động */
+    }
+
+    .checkbox-label {
+        border: 1px solid;
+        border-radius: 4px;
+        margin: 1px;
+        padding: 4px 11px !important;
+    }
+
+    .pd-left-10 {
+        padding-left: 10px;
+    }
+    .label-search{
+        margin: 2px;
+        border: 1px solid #dddddd;
+        padding: 2px 9px;
+        border-radius: 5px;
+    }
+    .label-search:hover{
+        background: grey;
+        cursor: pointer;
+    }
+
+</style>
+<div class="container  pt-5">
+    <div class="d-flex align-items-center justify-content-between">
+        <div class="mb-3">
+            <p class="font-size-13-ncl">Trang Chủ / Sản Phẩm</p>
+        </div>
+        <div>
+            <select class="form-select" aria-label="Default select example">
+                <option selected>Tất Cả</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+            </select>
+        </div>
+
+    </div>
     <div class="row">
-        <div class="col-md-3"></div>
+        <div class="col-md-3 sticky-top" style="align-self: flex-start;height: auto;">
+            <!--            <button ng-click="submitForm()">a</button>-->
+            <div class="d-flex" style="flex-wrap: wrap-reverse;">
+                <div class="" ng-repeat="searchChooes in lstSearchChoosed">
+                    <div class="label-search">{{searchChooes.selectedValue}} <i class="fas ps-1 fa-times"></i></div>
+                </div>
+            </div>
+
+            <div class="search-price">
+            </div>
+            <div class="search-price">
+
+            </div>
+            <div class="row">
+                <div ng-repeat="dropdown in dropdowns" class="custom-dropdown">
+                    <button style="border-top: 1px solid #ebe9e9;"
+                            class="custom-dropbtn font-size-14-ncl d-flex align-items-center justify-content-between w-100"
+                            ng-click="toggleDropdown($index)"><span>{{ dropdown.ten }}</span> <i
+                            class="fas fa-chevron-down" ng-class="{ 'rotate': dropdown.isOpen }"></i></button>
+                    <div class="custom-dropdown-content"
+                         ng-class="{ 'show': dropdown.isOpen,'d-flex pd-left-10 flex-wrap': dropdown.ten === 'Kích Cỡ' && dropdown.isOpen }">
+                        <!-- Các phần tử trong dropdown -->
+                        <div class="form-check p-0" ng-repeat="value in dropdown.listValue">
+                            <input ng-class="{ 'd-none': dropdown.ten === 'Kích Cỡ' }" ng-change="changeSearch()" class="form-check-input"
+                                   style="margin-left: 10px;" type="checkbox" ng-model="value.selected"
+                                   id="{{ 'checkbox_' + $parent.$index + '_' + $index }}">
+                            <label ng-class="{ 'checkbox-label': dropdown.ten === 'Kích Cỡ' }"
+                                   class="form-check-label ps-2"
+                                   for="{{ 'checkbox_' + $parent.$index + '_' + $index }}">
+                                {{value.name}}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col-md-9">
             <div class="row mb-3">
                 <div class="col-md-3 mb-3" ng-repeat="giay in giays">
-                    <a href="#/detail/{{giay.id}}">
-                        <div class="card">
-                            <div>
-                                <img src="https://walker.vn/wp-content/uploads/2020/01/Gi%C3%A0y-Vans-Old-Skool.jpg" width="100%" alt="">
+                    <a href="#/detail/{{giay.id}}" class="text-none">
+                        <div class=" position-relative">
+                            <div class="mb-2">
+                                <img src="https://product.hstatic.net/1000361048/product/dz0482_001_a_d718733fb6d344febec840aee172ca23_master.jpg"
+                                     width="100%" alt="">
                             </div>
-                            <div class="">
-                                <h5>{{giay.ten}}</h5>
+                            <div class="product-name">
+                                <h5 class="font-size-14-ncl" title="{{giay.ten}}">{{giay.ten}}</h5>
+                            </div>
+                            <div class="product-price">
+                                <div class="d-flex align-items-center">
+                                    <p class="font-size-14-ncl text-danger m-0">
+                                        {{ '₫' + (giay.giaThapNhat | number) + (giay.giaThapNhat !== giay.giaLonNhat ? '
+                                        - ₫' + (giay.giaLonNhat | number) : '') }}
+                                    </p>
+
+                                </div>
+                            </div>
+                            <div class="product-variant">
+                                <p class="font-size-14-ncl">{{giay.lstMauSac.length }} Màu </p>
+                            </div>
+                            <div class="position-absolute top-0 right-0">
+                                <p class="font-size-14-ncl fw-bold"><span style="    padding: 10px;font-size: 13px;color: red;"
+                                                                          class="">-36%</span></p>
+                            </div>
+                            <div class="position-absolute " style="color: black;right: 8px;top: 3px;">
+                                <i class="far fa-heart" style="font-size: 20px;"></i>
                             </div>
                         </div>
                     </a>
