@@ -2,6 +2,8 @@ package luckystore.datn.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
@@ -14,6 +16,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 
@@ -26,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Table(name = "HoaDonChiTiet")
 public class HoaDonChiTiet {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     private Long id;
 
@@ -53,6 +58,5 @@ public class HoaDonChiTiet {
     @Lob
     @Column(name = "GHI_CHU")
     private String ghiChu;
-
 
 }

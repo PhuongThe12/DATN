@@ -111,7 +111,6 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
     }
 
     $scope.showSelectedColorImage = function (e, input) {
-
         $scope.$apply(function () {
             if (e.target.files && e.target.files[0]) {
                 const file = e.target.files[0];
@@ -223,13 +222,16 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
                 $scope['image' + i] = null;
                 document.getElementById('selectedImage' + i).src = '';
                 document.getElementById('selectedImage' + i).style.display = 'none';
+                document.getElementById('imageInput' + i).value = '';
             } else if ($scope['image' + (i + 1)]) {
                 $scope['image' + i] = $scope['image' + (i + 1)];
                 loadImage($scope['image' + i], 'selectedImage' + i);
+                document.getElementById('imageInput' + (i+1)).value = '';
             } else {
                 $scope['image' + i] = null;
                 document.getElementById('selectedImage' + i).src = '';
                 document.getElementById('selectedImage' + i).style.display = 'none';
+                document.getElementById('imageInput' + i).value = '';
             }
         }
     };

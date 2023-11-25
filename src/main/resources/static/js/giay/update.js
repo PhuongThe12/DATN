@@ -18,19 +18,21 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
     let giayClone;
 
     $scope.isLoading = true;
-    $http.get(host + '/admin/rest/giay/' + id)
-        .then(function (response) {
-            $scope.giay = response.data;
-            setData();
-            giayClone = angular.copy($scope.giay);
-            $scope.isLoading = false;
-        })
-        .catch(function (error) {
-            console.log(error);
-            toastr["error"]("Lấy dữ liệu thất bại");
-            $location.path("/list");
-            // $scope.isLoading = false;
-        });
+    setTimeout(function() {
+        $http.get(host + '/admin/rest/giay/' + id)
+            .then(function (response) {
+                $scope.giay = response.data;
+                setData();
+                giayClone = angular.copy($scope.giay);
+                $scope.isLoading = false;
+            })
+            .catch(function (error) {
+                console.log(error);
+                toastr["error"]("Lấy dữ liệu thất bại");
+                $location.path("/list");
+                // $scope.isLoading = false;
+            });
+    }, 10);
 
     $scope.changeSelectedKichThuoc = function () {
         // Sao chép selectedMauSacs
@@ -229,23 +231,32 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
 
     //remove selected image
     $scope.removeImage = function (image) {
-        $scope['image' + image] = null;
-        document.getElementById('selectedImage' + image).src = '';
-        document.getElementById('selectedImage' + image).style.display = 'none';
-        // for (let i = image; i <= 5; i++) {
-        // if (i === 5) {
-        // $scope['image' + i] = null;
-        // document.getElementById('selectedImage' + i).src = '';
-        // document.getElementById('selectedImage' + i).style.display = 'none';
-        // } else if ($scope['image' + (i + 1)]) {
-        //     $scope['image' + i] = $scope['image' + (i + 1)];
-        //     loadImage($scope['image' + i], 'selectedImage' + i);
-        // } else {
-        //     $scope['image' + i] = null;
-        //     document.getElementById('selectedImage' + i).src = '';
-        //     document.getElementById('selectedImage' + i).style.display = 'none';
-        // }
-        // }
+        // $scope['image' + image] = null;
+        // document.getElementById('selectedImage' + image).src = '';
+        // document.getElementById('selectedImage' + image).style.display = 'none';
+        for (let i = image; i <= 5; i++) {
+            if (i === 5) {
+                $scope['image' + i] = null;
+                document.getElementById('selectedImage' + i).src = '';
+                document.getElementById('selectedImage' + i).style.display = 'none';
+                document.getElementById('imageInput' + i).value = '';
+            } else if ($scope['image' + (i + 1)]) {
+                $scope['image' + i] = $scope['image' + (i + 1)];
+                if ($scope['image' + i] === 1) {
+                    const img = document.getElementById('selectedImage' + i);
+                    img.src = $scope.giay.lstAnh[i];
+                    img.style.display = 'block';
+                } else {
+                    loadImage($scope['image' + i], 'selectedImage' + i);
+                }
+                document.getElementById('imageInput' + (i + 1)).value = '';
+            } else {
+                $scope['image' + i] = null;
+                document.getElementById('selectedImage' + i).src = '';
+                document.getElementById('selectedImage' + i).style.display = 'none';
+                document.getElementById('imageInput' + i).value = '';
+            }
+        }
     };
 
 //Select lot giay
@@ -822,12 +833,12 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                     }
                 })
 
-                document.getElementById('tenGiay').click();
 
             }, 0);
 
 
         }
+                document.getElementById('tenGiay').click();
 
         fetchDataAndProcess();
 
