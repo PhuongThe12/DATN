@@ -254,6 +254,7 @@ public class HoaDonServiceImpl implements HoaDonService {
         }
         bienTheGiayRepository.save(bienTheGiay);
 
+        hdct.setTrangThai(1);
         hdct = hoaDonChiTietRepository.save(hdct);
 
         HoaDonChiTietResponse hoaDonChiTietResponse = new HoaDonChiTietResponse(hdct);
@@ -291,6 +292,7 @@ public class HoaDonServiceImpl implements HoaDonService {
 
         hdct.setHoaDon(hoaDon);
         hdct.setBienTheGiay(bienTheGiay);
+        hdct.setTrangThai(1);
         hdct = hoaDonChiTietRepository.save(hdct);
 
         HoaDonChiTietResponse hoaDonChiTietResponse = new HoaDonChiTietResponse(hdct.getId(), hoaDon.getId(), new BienTheGiayResponse(bienTheGiay), hdct.getSoLuong());
