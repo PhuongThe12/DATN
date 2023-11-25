@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import luckystore.datn.entity.BienTheGiay;
 import luckystore.datn.entity.Giay;
-import luckystore.datn.service.impl.ImageHubServiceImpl;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -28,7 +27,7 @@ public class BienTheGiayResponse {
     private String hinhAnh;
 
     private BigDecimal giaBan;
-    
+
     private Integer khuyenMai = 0;
 
     private String barCode;
@@ -41,7 +40,7 @@ public class BienTheGiayResponse {
 
     private GiayResponse giayResponse;
 
-    public BienTheGiayResponse(BienTheGiay bienTheGiay, int ...level) {
+    public BienTheGiayResponse(BienTheGiay bienTheGiay, int... level) {
         if (bienTheGiay != null) {
             this.id = bienTheGiay.getId();
             this.soLuong = bienTheGiay.getSoLuong();
@@ -52,7 +51,7 @@ public class BienTheGiayResponse {
             this.trangThai = bienTheGiay.getTrangThai();
             this.mauSac = new MauSacResponse(bienTheGiay.getMauSac());
             this.kichThuoc = new KichThuocResponse(bienTheGiay.getKichThuoc());
-            if(bienTheGiay.getGiay() != null && level != null) {
+            if (bienTheGiay.getGiay() != null && level != null) {
                 giayResponse = new GiayResponse();
                 giayResponse.setId(bienTheGiay.getGiay().getId());
                 giayResponse.setLstAnh(null);

@@ -86,9 +86,14 @@ public class RestHoaDonController {
         return ResponseEntity.ok(hoaDonService.addKhachHang(addOrderProcuctRequest));
     }
 
-    @PostMapping("/thanh-toan")
+    @PostMapping("/thanh-toan-tai-quay")
     public ResponseEntity<?> thanhToanHoaDonTaiQuay(@RequestBody HoaDonThanhToanTaiQuayRequest request) {
         return ResponseEntity.ok(hoaDonService.thanhToanHoaDonTaiQuay(request));
+    }
+
+    @PostMapping("/thanh-toan-tai-quay-banking")
+    public ResponseEntity<?> thanhToanTaiQuayBanking(@RequestBody HoaDonThanhToanTaiQuayRequest request) {
+        return ResponseEntity.ok(hoaDonService.thanhToanHoaDonTaiQuayBanking(request));
     }
 
     @DeleteMapping("/{id}")

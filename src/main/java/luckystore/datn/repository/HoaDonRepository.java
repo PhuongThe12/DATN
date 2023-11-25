@@ -31,10 +31,11 @@ public interface HoaDonRepository extends JpaRepository<HoaDon,Long> {
             "left JOIN hd.khachHang kh " +
             "left JOIN hd.nhanVien nv " +
             "INNER JOIN hd.listHoaDonChiTiet hdct " +
-            "WHERE (hd.loaiHoaDon = 1 OR hd.loaiHoaDon = 2) "+
+            "WHERE (hd.loaiHoaDon = 1 OR hd.loaiHoaDon = 2 OR hdct.soLuong > hdct.soLuongTra) "+
             "AND (:#{#hoaDonSearch.idHoaDon} IS NULL OR hd.id  = :#{#hoaDonSearch.idHoaDon}) "+
             "AND (:#{#hoaDonSearch.loaiHoaDon} IS NULL OR hd.loaiHoaDon = :#{#hoaDonSearch.loaiHoaDon}) "+
             "AND (:#{#hoaDonSearch.email} IS NULL OR hd.email like %:#{#hoaDonSearch.email}%) "+
+            "AND (:#{#hoaDonSearch.soDienThoaiKhacHang} IS NULL OR kh.soDienThoai = :#{#hoaDonSearch.soDienThoaiKhacHang}) "+
             "AND (:#{#hoaDonSearch.kenhBan} IS NULL OR hd.kenhBan = :#{#hoaDonSearch.kenhBan}) "+
             "AND (:#{#hoaDonSearch.trangThai} IS NULL OR hd.trangThai = :#{#hoaDonSearch.trangThai}) "+
             "AND (:#{#hoaDonSearch.khachHang} IS NULL OR kh.hoTen = :#{#hoaDonSearch.khachHang}) "+

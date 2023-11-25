@@ -42,6 +42,8 @@ public class HoaDonSearch {
 
     private String soDienThoaiNhan;
 
+    private String soDienThoaiKhacHang;
+
     private String diaChiNhan;
 
     private Integer trangThai;

@@ -268,6 +268,7 @@
                 </div>
 
 
+
                 <div class="modal fade" id="exampleModalToggle" aria-hidden="true"
                      aria-labelledby="exampleModalToggleLabel"
                      tabindex="-1">
@@ -279,9 +280,9 @@
                                         aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-
                                 <div class="box-shadow-page">
                                     <div class="card-body">
+
                                         <div class="d-flex add-search-custom">
                                             <div class="input-group w-60">
                                             <span class="input-group-text" id="basic-addon1"><i
@@ -294,52 +295,57 @@
                                                 </button>
                                             </div>
                                         </div>
-                                        <div class="d-flex justify-content-start">
-                                            <div class="custom-radio">
-                                                <input type="radio" id="all" name="loaiHoaDon" ng-model="loaiHoaDon"
-                                                       value="0" ng-checked="loaiHoaDon != 1 && loaiHoaDon != 2"
-                                                       ng-change="changeRadio(0)">
-                                                <label class="radio-label" for="all">Tất cả</label>
-                                            </div>
 
-                                            <div class="custom-radio">
-                                                <input type="radio" id="active" name="loaiHoaDon" ng-model="loaiHoaDon"
-                                                       value="1" ng-checked="loaiHoaDon == 1"
-                                                       ng-change="changeRadio(1)">
-                                                <label class="radio-label" for="active">Hóa Đơn Mua</label>
-                                            </div>
+<!--                                        <div>-->
+<!--                                            <table class="table align-middle text-center" border="1">-->
+<!--                                                <thead>-->
+<!--                                                <tr>-->
+<!--                                                    <th>Mã Sản Phẩm</th>-->
+<!--                                                    <th>Tên</th>-->
+<!--                                                    <th>Thao Tác</th>-->
+<!--                                                </tr>-->
+<!--                                                </thead>-->
+<!--                                                <tbody style="max-height: 350px;overflow: auto">-->
+<!--                                                <tr ng-repeat="(index,giay) in listGiay">-->
+<!--                                                    <td>SP{{giay.id}}</td>-->
+<!--                                                    <td>{{giay.ten}}</td>-->
+<!--                                                    <td>-->
+<!--                                                        <button class="btn btn-primary"-->
+<!--                                                                data-bs-target="#exampleModalToggle2"-->
+<!--                                                                data-bs-toggle="modal"-->
+<!--                                                                data-bs-dismiss="modal" ng-click="chonGiayDoi(giay)">-->
+<!--                                                            Chọn-->
+<!--                                                        </button>-->
+<!--                                                    </td>-->
+<!--                                                </tr>-->
+<!--                                                </tbody>-->
+<!--                                            </table>-->
+<!--                                        </div>-->
 
-                                            <div class="custom-radio">
-                                                <input type="radio" id="disable" name="loaiHoaDon" ng-model="loaiHoaDon"
-                                                       value="2" ng-checked="loaiHoaDon == 2"
-                                                       ng-change="changeRadio(2)">
-                                                <label class="radio-label" for="disable">Hóa Đơn Đổi</label>
+                                        <div class="item row">
+                                            <div class="col-md-2 mb-2" ng-repeat="giay in listGiay">
+                                                <button data-bs-toggle="modal" data-bs-target="#showGiaySelect" id="buttonModalSanPham"
+                                                        hidden=""></button>
+                                                <div class="p-2 hover-item" ng-click="addOrder(giay.id)" data-bs-toggle="tooltip"
+                                                     data-bs-placement="right" title="{{giay.ten}}">
+                                                    <div class="position-relative" style="text-align: center;">
+                                                        <img width="60%" class="rounded-3"
+                                                             style="height: 85px; width: 85px; object-fit: contain"
+                                                             ng-src="{{giay.lstAnh && giay.lstAnh.length > 0 ? giay.lstAnh[0] : 'https://product.hstatic.net/1000361048/product/giay_co_lung_forum_trang_fy4976_02_standard_hover_1af12c21fb0a498eb38c9d41c04e4514_grande.jpg'}}"
+                                                             alt="Ảnh giày">
+                                                    </div>
+                                                    <p class="mt-1"
+                                                       style="text-wrap: nowrap;overflow: hidden;text-align: center;text-overflow: ellipsis;">
+                                                        {{giay.ten}}</p>
+                                                </div>
                                             </div>
                                         </div>
                                         <div>
-                                            <table class="table align-middle text-center" border="1">
-                                                <thead>
-                                                <tr>
-                                                    <th>Mã Sản Phẩm</th>
-                                                    <th>Tên</th>
-                                                    <th>Thao Tác</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody style="max-height: 350px;overflow: auto">
-                                                <tr ng-repeat="(index,giay) in listGiay">
-                                                    <td>SP{{giay.id}}</td>
-                                                    <td>{{giay.ten}}</td>
-                                                    <td>
-                                                        <button class="btn btn-primary"
-                                                                data-bs-target="#exampleModalToggle2"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-dismiss="modal" ng-click="chonGiayDoi(giay)">
-                                                            Chọn
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
+                                            <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages"
+                                                 data-current-page="curPage"
+                                                 data-max-size="maxSize"
+                                                 data-boundary-links="true">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
