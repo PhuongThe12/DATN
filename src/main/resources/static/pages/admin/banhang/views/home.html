@@ -70,7 +70,6 @@
         </div>
     </div>
 </div>
-<button ng-click="check()">Check</button>
 <div style="margin: 20px;">
     <div class="row">
         <div class="col-md-8 position-relative">
@@ -167,7 +166,7 @@
                             <div class="col-md-2 mb-2" ng-repeat="giay in giays">
                                 <button data-bs-toggle="modal" data-bs-target="#showGiaySelect" id="buttonModalSanPham"
                                         hidden=""></button>
-                                <div class="p-2 hover-item" ng-click="addOrder(giay.id)" data-bs-toggle="tooltip"
+                                <div  class="p-2 hover-item" ng-click="addOrder(giay.id)" data-bs-toggle="tooltip"
                                      data-bs-placement="right" title="{{giay.ten}}">
                                     <div class="position-relative" style="text-align: center;">
                                         <img width="60%" class="rounded-3"
@@ -453,16 +452,18 @@
 
                         <div class="row mb-3">
                             <div>
-                                <label class="form-label" style="margin-bottom: 0">Phí Vận Chuyển</label>
-                                <input type="checkbox" ng-model="phiVanChuyen">
-                                <input type="text" class="form-control" ng-disabled="!phiVanChuyen">
+                                <label class="form-label" style="margin-bottom: 0">Phí Vận Chuyển: </label>
+                                <span ng-show="phiVanChuyen > 0"><strong class="text-success">{{phiVanChuyen | number : 0}}<sup
+                                        class="text-danger">(vnđ)</sup></strong></span>
+                                <input type="checkbox" ng-model="checkPhiVanChuyen">
+                                <input type="number" ng-change="chagePhiVanChuyen()" class="form-control" ng-disabled="!checkPhiVanChuyen" ng-model="phiVanChuyen" step="1">
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="mb-3">
                                 <label class="form-label" style="margin-bottom: 0">Tiền phải trả:</label>
-                                <span ng-show="tongTien > 0"><strong class="text-success">{{tongTienPhaiTra | number : 0}}<sup
+                                <span ng-show="tongTien > 0"><strong class="text-success">{{tongTienPhaiTraDatHang | number : 0}}<sup
                                         class="text-danger">(vnđ)</sup></strong></span>
                             </div>
                         </div>
@@ -476,7 +477,7 @@
                             </div>
                         </div>
                         <div>
-                            <button type="submit" class="btn btn-outline-dark">Thanh toán</button>
+                            <button type="button" ng-click="datHang()" class="btn btn-outline-dark">Xác nhận</button>
                         </div>
                     </form>
                 </div>
@@ -579,7 +580,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                        ng-click="closeModalCamera()">Close
+                        id="closeModalCamer"
+                        ng-click="closeModalCamera()"
+                        aria-label="Close">Close
                 </button>
             </div>
         </div>

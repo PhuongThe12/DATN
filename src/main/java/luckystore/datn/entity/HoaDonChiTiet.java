@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 
@@ -56,6 +58,5 @@ public class HoaDonChiTiet {
     @Lob
     @Column(name = "GHI_CHU")
     private String ghiChu;
-
 
 }
