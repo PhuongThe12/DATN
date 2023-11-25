@@ -3,6 +3,7 @@ package luckystore.datn.rest;
 import jakarta.validation.Valid;
 import luckystore.datn.model.request.DiaChiNhanHangRequest;
 import luckystore.datn.model.request.KhachHangRequest;
+import luckystore.datn.model.response.DiaChiNhanHangResponse;
 import luckystore.datn.service.DiaChiNhanHangService;
 import luckystore.datn.util.JsonString;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,12 @@ public class RestDiaChiNhanHangController {
         if (errorJson != null) return errorJson;
 
         return new ResponseEntity(diaChiNhanHangService.updateDiaChiNhanHang(id, diaChiNhanHangRequest), HttpStatus.OK);
+    }
+
+    @PutMapping("/update-trang-thai/{id}")
+    public DiaChiNhanHangResponse updateDiaChiNhanHang(@PathVariable Long id,
+                                                       @RequestBody DiaChiNhanHangRequest diaChiNhanHangRequest) {
+        return diaChiNhanHangService.updateTrangThaiDiaChiNhan(id, diaChiNhanHangRequest);
     }
 
     @GetMapping("/{id}")
