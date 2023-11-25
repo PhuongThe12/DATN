@@ -20,7 +20,7 @@ public class GioHangResponse {
 
     private Long id;
 
-    private KhachHangRestponse khachHang;
+    private KhachHangResponse khachHang;
 
     private LocalDateTime ngayTao;
 
@@ -32,7 +32,7 @@ public class GioHangResponse {
 
     public GioHangResponse(GioHang gioHang){
         this.id = gioHang.getId();
-        this.khachHang = new KhachHangRestponse(gioHang.getKhachHang());
+        this.khachHang = new KhachHangResponse(gioHang.getKhachHang());
         this.ngayTao = gioHang.getNgayTao();
         this.ghiChu = gioHang.getGhiChu();
         this.trangThai = gioHang.getTrangThai();
