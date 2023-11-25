@@ -63,4 +63,9 @@ public class HoaDonChiTietServiceImpl implements HoaDonChiTietService {
         hoaDonChiTietRepository.deleteById(idHdct);
     }
 
+    @Override
+    public HoaDonChiTiet getHoaDonChiTiet(Long id) {
+        return hoaDonChiTietRepository.getHoaDonChiTietWithBienTheGiay(id);
+    }
+
 }

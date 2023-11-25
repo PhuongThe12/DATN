@@ -160,6 +160,34 @@ app.controller("diaChiNhanHangListController", function ($scope, $http, $window,
         $location.path("/list");
     };
 
+    $scope.updateTrangThai = function (dieuKien) {
+        console.log(dieuKien)
+        $scope.trangThai = {
+            "id": dieuKien,
+            // "trangThai": 0
+        }
+
+        $http({
+            method: 'PUT',
+            url: 'http://localhost:8080/admin/rest/dia-chi-nhan-hang/update-trang-thai/' + dieuKien ,
+            data:$scope.trangThai
+        }).then(function successCallback(response) {
+            // Xử lý khi API UPDATE thành công
+            console.log('UPDATE điều kiện giảm giá thành công', response);
+            getData(1);
+        }, function errorCallback(response) {
+            // Xử lý khi có lỗi xảy ra trong quá trình gọi API DELETE
+            console.error('Lỗi', response);
+        });
+        console.log("Điều kiện: ", dieuKien)
+        $location.path("/list");
+    };
+
+
+
+
+
+
 });
 
 app.controller("updateDiaChiNhanHangController", function ($scope, $http, $routeParams, $location) {
@@ -206,10 +234,49 @@ app.controller("updateDiaChiNhanHangController", function ($scope, $http, $route
     $http.get(host + '/admin/rest/dia-chi-nhan-hang/' + id)
         .then(function (response) {
             $scope.diaChiNhanHang = response.data;
+            setData();
         }).catch(function (error) {
         toastr["error"]("Lấy dữ liệu thất bại");
-        $location.path("/list");
+        // $location.path("/list");
     });
+
+    function setData ()  {
+        for(let i = 0; i < $scope.provinces.length; i++) {
+            if($scope.provinces[i].ten === $scope.diaChiNhanHang.provinces) {
+                $scope.diaChiNhanHang.provinces = $scope.provinces[i];
+                break;
+            }
+        }
+
+        $http.get(host + "/rest/districts/" + $scope.diaChiNhanHang.provinces.id)
+            .then(function (response) {
+                $scope.districts = response.data;
+                for(let j = 0; j < $scope.districts.length; j++) {
+                    if($scope.districts[j].ten === $scope.diaChiNhanHang.districts) {
+                        $scope.diaChiNhanHang.districts = $scope.districts[j];
+                        $http.get(host + "/rest/wards/" + $scope.diaChiNhanHang.districts.id)
+                            .then(function (response) {
+                                $scope.wards = response.data;
+                                for(let k = 0; k < $scope.wards.length; k++) {
+                                    if($scope.wards[k].ten === $scope.diaChiNhanHang.wards) {
+                                        $scope.diaChiNhanHang.wards = $scope.wards[k];
+                                        break;
+                                    }
+                                }
+                            })
+                            .catch(function (error) {
+                                toastr["error"]("Lấy dữ liệu xã thất bại");
+                            });
+                        break;
+                    }
+                }
+            })
+            .catch(function (error) {
+                toastr["error"]("Lấy dữ huyện thất bại");
+            });
+
+
+    }
 
     $scope.updateDiaChiNhanHang = function () {
         if ($scope.diaChiNhanHangForm.$invalid) {
@@ -218,6 +285,7 @@ app.controller("updateDiaChiNhanHangController", function ($scope, $http, $route
         $scope.diaChiNhanHang.districts = $scope.diaChiNhanHang.districts.ten;
         $scope.diaChiNhanHang.provinces = $scope.diaChiNhanHang.provinces.ten;
         $scope.diaChiNhanHang.wards = $scope.diaChiNhanHang.wards.ten;
+
         $http.put(host + '/admin/rest/dia-chi-nhan-hang/' + id, $scope.diaChiNhanHang)
             .then(function (response) {
                 if (response.status == 200) {

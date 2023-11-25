@@ -275,20 +275,21 @@ public class HoaDonServiceImpl implements HoaDonService {
         HoaDon hoaDon = hoaDonRepository.findById(request.getIdHoaDon())
                 .orElseThrow(() -> new NotFoundException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không tìm thấy hóa đơn"))));
 
-        if(hoaDon.getTrangThai() != 0) {
+        if (hoaDon.getTrangThai() != 0) {
             throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Hóa đơn đã được thanh toán")));
         }
 
-        DieuKien dieuKien = dieuKienRepository.findById(request.getIdDieuKien())
-                .orElseThrow(() -> new NotFoundException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Điều kiện không tồn tại"))));
+        if (request.getIdDieuKien() != null) {
+            DieuKien dieuKien = dieuKienRepository.findById(request.getIdDieuKien())
+                    .orElseThrow(() -> new NotFoundException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Điều kiện không tồn tại"))));
+            hoaDon.setDieuKien(dieuKien);
+        }
 
-
-        hoaDon.setDieuKien(dieuKien);
         hoaDon.setTrangThai(TrangThaiHoaDon.DA_THANH_TOAN);
         hoaDon.setTienGiam(request.getTienGiam());
 
         Set<ChiTietThanhToan> chiTietThanhToans = new HashSet<>();
-        if(request.getPhuongThuc() == 1 || request.getPhuongThuc() == 3) {
+        if (request.getPhuongThuc() == 1 || request.getPhuongThuc() == 3) {
             ChiTietThanhToan chiTietThanhToan = ChiTietThanhToan.builder()
                     .hoaDon(hoaDon)
                     .hinhThucThanhToan(1)
@@ -297,7 +298,7 @@ public class HoaDonServiceImpl implements HoaDonService {
                     .build();
 
             chiTietThanhToans.add(chiTietThanhToan);
-        } else if(request.getPhuongThuc() == 2 || request.getPhuongThuc() == 3) {
+        } else if (request.getPhuongThuc() == 2 || request.getPhuongThuc() == 3) {
             ChiTietThanhToan chiTietThanhToan = ChiTietThanhToan.builder()
                     .hoaDon(hoaDon)
                     .hinhThucThanhToan(2)
@@ -312,7 +313,6 @@ public class HoaDonServiceImpl implements HoaDonService {
         hoaDon.setKenhBan(1);
         hoaDon.setChiTietThanhToans(chiTietThanhToans);
         hoaDon.setGhiChu(request.getGhiChu());
-
         hoaDonRepository.save(hoaDon);
 
         return hoaDon.getId();
