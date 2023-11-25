@@ -38,14 +38,19 @@ public class RestYeuCauController {
         return new ResponseEntity(yeuCauService.addYeuCau(yeuCauRequest), HttpStatus.OK);
     }
 
-    @PutMapping("/update")
+    @PutMapping("/confirm")
+    public ResponseEntity confirmYeuCau(@Valid @RequestBody YeuCauRequest yeuCauRequest, BindingResult result) {
+        ResponseEntity errorJson = getErrorJson(result);
+        if (errorJson != null) return errorJson;
+        return new ResponseEntity(yeuCauService.confirmYeuCau(yeuCauRequest), HttpStatus.OK);
+    }
+
+    @PutMapping("/change")
     public ResponseEntity updateYeuCau(@Valid @RequestBody YeuCauRequest yeuCauRequest, BindingResult result) {
-        System.out.println(yeuCauRequest);
         ResponseEntity errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
         return new ResponseEntity(yeuCauService.updateYeuCau(yeuCauRequest), HttpStatus.OK);
     }
-
 
     @GetMapping("/find-by-status")
     public ResponseEntity findByStatus(){

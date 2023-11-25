@@ -33,6 +33,7 @@ public class YeuCauChiTietResponse {
 
     private Integer trangThai;
 
+    private Boolean tinhTrangSanPham;
     private Integer loaiYeuCauChiTiet;
 
     private String ghiChu;
@@ -48,6 +49,7 @@ public class YeuCauChiTietResponse {
             this.lyDo = new LyDoResponse(yeuCauChiTiet.getLyDo());
             this.soLuong = yeuCauChiTiet.getSoLuong();
             this.trangThai = yeuCauChiTiet.getTrangThai();
+            this.tinhTrangSanPham = yeuCauChiTiet.getTinhTrangSanPham();
             this.loaiYeuCauChiTiet = yeuCauChiTiet.getLoaiYeuCauChiTiet();
             this.ghiChu = yeuCauChiTiet.getGhiChu();
 //            this.listAnhGiayTra = yeuCauChiTiet.getListAnhGiayTra().stream().map(anhGiayTra -> ImageHubServiceImpl.getBase64FromFileStatic(anhGiayTra.getLink())).collect(Collectors.toList());
