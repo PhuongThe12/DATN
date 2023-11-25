@@ -6,6 +6,7 @@
         border: none;
         cursor: pointer;
         background: white;
+        font-weight: bold;
     }
 
     .custom-dropdown-content {
@@ -36,10 +37,15 @@
     }
 
     .checkbox-label {
-        border: 1px solid;
+        border: 1px solid #dbdbdb;
         border-radius: 4px;
-        margin: 1px;
+        margin: 5px;
         padding: 4px 11px !important;
+        cursor: pointer;
+    }
+
+    .checkbox-label:hover{
+        border: 1px solid black;
     }
 
     .pd-left-10 {
@@ -55,9 +61,16 @@
         background: grey;
         cursor: pointer;
     }
+    .checkbox-label-mau-sac{
+        margin: 8px;
+        border-radius: 18px;
+        width: 29px;
+        height: 29px;
+        border: 1px solid #e5e5e5;
+    }
 
 </style>
-<div class="container  pt-5">
+<div class="container-fluid  pt-5">
     <div class="d-flex align-items-center justify-content-between">
         <div class="mb-3">
             <p class="font-size-13-ncl">Trang Chủ / Sản Phẩm</p>
@@ -87,23 +100,27 @@
 
             </div>
             <div class="row">
-                <div ng-repeat="dropdown in dropdowns" class="custom-dropdown">
+                <div ng-repeat="dropdown in dropdowns" class="custom-dropdown" style="    padding-top: 3px;">
                     <button style="border-top: 1px solid #ebe9e9;"
                             class="custom-dropbtn font-size-14-ncl d-flex align-items-center justify-content-between w-100"
                             ng-click="toggleDropdown($index)"><span>{{ dropdown.ten }}</span> <i
                             class="fas fa-chevron-down" ng-class="{ 'rotate': dropdown.isOpen }"></i></button>
                     <div class="custom-dropdown-content"
-                         ng-class="{ 'show': dropdown.isOpen,'d-flex pd-left-10 flex-wrap': dropdown.ten === 'Kích Cỡ' && dropdown.isOpen }">
+                         ng-class="{ 'show': dropdown.isOpen,'d-flex pd-left-10 flex-wrap': (dropdown.ten === 'Kích Cỡ' && dropdown.isOpen) || (dropdown.ten === 'Màu Sắc' && dropdown.isOpen)}">
                         <!-- Các phần tử trong dropdown -->
                         <div class="form-check p-0" ng-repeat="value in dropdown.listValue">
-                            <input ng-class="{ 'd-none': dropdown.ten === 'Kích Cỡ' }" ng-change="changeSearch()" class="form-check-input"
+                            <input ng-class="{ 'd-none': dropdown.ten === 'Kích Cỡ' || dropdown.ten === 'Màu Sắc' }" ng-change="changeSearch()" class="form-check-input"
                                    style="margin-left: 10px;" type="checkbox" ng-model="value.selected"
                                    id="{{ 'checkbox_' + $parent.$index + '_' + $index }}">
-                            <label ng-class="{ 'checkbox-label': dropdown.ten === 'Kích Cỡ' }"
-                                   class="form-check-label ps-2"
-                                   for="{{ 'checkbox_' + $parent.$index + '_' + $index }}">
-                                {{value.name}}
-                            </label>
+                                <label ng-class="{ 'checkbox-label': dropdown.ten === 'Kích Cỡ' ,
+                                                    'checkbox-label-mau-sac': dropdown.ten === 'Màu Sắc'
+                                }"
+                                       class="form-check-label ps-2"
+                                       for="{{ 'checkbox_' + $parent.$index + '_' + $index }}"
+                                       ng-style="dropdown.ten === 'Màu Sắc' && {'background-color': value.name}"
+                                       ng-bind="dropdown.ten !== 'Màu Sắc' ? value.name : ''"
+                                >
+                                </label>
                         </div>
                     </div>
                 </div>
@@ -119,7 +136,7 @@
                                      width="100%" alt="">
                             </div>
                             <div class="product-name">
-                                <h5 class="font-size-14-ncl" title="{{giay.ten}}">{{giay.ten}}</h5>
+                                <h5 class="font-size-14-ncl fw-bold" title="{{giay.ten}}">{{giay.ten}}</h5>
                             </div>
                             <div class="product-price">
                                 <div class="d-flex align-items-center">

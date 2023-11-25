@@ -20,6 +20,9 @@ app.config(function ($routeProvider, $locationProvider) {
     }).when("/thanh-toan", {
         templateUrl: '/pages/user/views/thanh-toan.html',
         controller: 'thanhToanController'
+    }).when("/thong-tin-tai-khoan", {
+        templateUrl: '/pages/user/views/thong-tin-tai-khoan.html',
+        controller: 'thongTinTaiKhoanController'
     })
         .otherwise({redirectTo: '/list'});
 });
@@ -140,6 +143,19 @@ app.controller('listProductController', function ($scope, $http, $location) {
     $scope.lstSearchChoosed = [];
     $scope.dropdowns = [
         {
+            ten: "Màu Sắc",
+            listValue: [
+                {name: "#FF0000", selected: false},  // Đỏ
+                {name: "#00FF00", selected: false},  // Xanh lá cây
+                {name: "#0000FF", selected: false},  // Xanh dương
+                {name: "#FFFF00", selected: false},  // Vàng
+                {name: "#FF00FF", selected: false},  // Hồng
+                {name: "#00FFFF", selected: false},  // Lam
+                {name: "#000000", selected: false}   // Đen
+            ],
+            isOpen: true
+        },
+        {
             ten: "Kích Cỡ", listValue: [
                 {
                     name: 35, selected: false
@@ -193,7 +209,8 @@ app.controller('listProductController', function ($scope, $http, $location) {
                 {
                     name: 40, selected: false
                 }
-            ]
+            ],
+            isOpen: true
         },
         {
             ten: "Chất Liệu",
@@ -201,7 +218,7 @@ app.controller('listProductController', function ($scope, $http, $location) {
                 name: "Canvas",
                 selected: false
             }],
-            isOpen: false
+            isOpen: true
         },
         {
             ten: "Thương Hiệu",
@@ -209,12 +226,12 @@ app.controller('listProductController', function ($scope, $http, $location) {
                 name: "Puma",
                 selected: false
             }],
-            isOpen: false
+            isOpen: true
         },
         {
             ten: "Cổ Giày",
             listValue: [{name: "Low-top", selected: false}, {name: "High-top", selected: false}],
-            isOpen: false
+            isOpen: true
         },
         {
             ten: "Đế Giày",
@@ -222,12 +239,12 @@ app.controller('listProductController', function ($scope, $http, $location) {
                 name: "Phylon",
                 selected: false
             }],
-            isOpen: false
+            isOpen: true
         },
         {
             ten: "Mũi Giày",
             listValue: [{name: "Round Toe", selected: false}, {name: "Square Toe", selected: false}],
-            isOpen: false
+            isOpen: true
         },
         {
             ten: "Lót Giày",
@@ -235,7 +252,7 @@ app.controller('listProductController', function ($scope, $http, $location) {
                 name: "Ortholite",
                 selected: false
             }],
-            isOpen: false
+            isOpen: true
         },
         {
             ten: "Dây Giày",
@@ -243,7 +260,7 @@ app.controller('listProductController', function ($scope, $http, $location) {
                 name: "Waxed",
                 selected: false
             }],
-            isOpen: false
+            isOpen: true
         },
 
     ];
@@ -908,3 +925,7 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
         $scope.isExpanded = !$scope.isExpanded;
     };
 })
+app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $location, $routeParams){
+
+
+});
