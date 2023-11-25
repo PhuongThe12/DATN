@@ -279,13 +279,12 @@ table tbody:hover tr td[rowspan]:hover {
 
 .remove-icon,
 .tag-remove-icon {
-    background-color: rgba(255, 0, 0, 0.5);
-    color: white;
-    border-radius: 50%;
+    color: rgba(255, 0, 0, 0.5);
     cursor: pointer;
     z-index: 999;
 }
 
+.remove-icon:hover,
 .tag-remove-icon:hover {
     color: red !important;
 }

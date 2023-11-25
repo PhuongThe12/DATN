@@ -89,7 +89,7 @@ public class HoaDon {
     @Column(name = "UU_DAI")
     private Integer uuDai;
 
-    @OneToMany(mappedBy = "hoaDon", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private Set<HoaDonChiTiet> listHoaDonChiTiet;
 
@@ -97,7 +97,7 @@ public class HoaDon {
     @JsonManagedReference
     private List<YeuCau> listYeuCau = new ArrayList<>();
 
-    @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private Set<ChiTietThanhToan> chiTietThanhToans;
 
