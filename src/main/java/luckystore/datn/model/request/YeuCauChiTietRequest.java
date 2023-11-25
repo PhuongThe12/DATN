@@ -20,22 +20,16 @@ public class YeuCauChiTietRequest {
 
     private Long id;
 
-    @NotNull(message = "Không được để trống", groups = {UpdateGroup.class, CreateGroup.class})
     private Long hoaDonChiTiet;
 
-    @NotNull(message = "Không được để trống", groups = {UpdateGroup.class, CreateGroup.class})
     private Long bienTheGiay;
 
-    @NotBlank(message = "Không được để trống", groups = {UpdateGroup.class, CreateGroup.class})
     private Long lyDo;
 
-    @NotNull(message = "Không được để trống", groups = {UpdateGroup.class, CreateGroup.class})
     private Integer soLuong;
 
-    @NotNull(message = "Không được để trống", groups = {UpdateGroup.class, CreateGroup.class})
     private Long bienTheGiayTra;
 
-    @NotNull(message = "Không được để trống", groups = {UpdateGroup.class, CreateGroup.class})
     private Integer soLuongTra;
 
     private Integer loaiYeuCauChiTiet;
@@ -44,7 +38,7 @@ public class YeuCauChiTietRequest {
 
     private String ghiChu;
 
-    private int sanPhamLoi;
+    private Boolean tinhTrangSanPham;
 
 
 //    @NotNull(message = "Không được để trống hình ảnh", groups = {UpdateGroup.class, CreateGroup.class})

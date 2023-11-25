@@ -31,6 +31,7 @@ public class HoaDonChiTietResponse {
 
     private String ghiChu;
 
+    private Integer soLuongDuocTra;
     public HoaDonChiTietResponse(HoaDonChiTiet hoaDonChiTiet) {
         if(hoaDonChiTiet != null){
             this.id = hoaDonChiTiet.getId();
@@ -41,6 +42,7 @@ public class HoaDonChiTietResponse {
             this.trangThai = hoaDonChiTiet.getTrangThai();
             this.soLuongTra = hoaDonChiTiet.getSoLuongTra();
             this.ghiChu = hoaDonChiTiet.getGhiChu();
+            this.soLuongDuocTra = hoaDonChiTiet.getSoLuong()-hoaDonChiTiet.getSoLuongTra();
         }
     }
 
