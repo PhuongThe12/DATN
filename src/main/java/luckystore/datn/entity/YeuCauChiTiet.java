@@ -1,13 +1,11 @@
 package luckystore.datn.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import luckystore.datn.model.request.YeuCauChiTietRequest;
 import org.hibernate.annotations.Nationalized;
 
-import java.util.List;
 
 
 @AllArgsConstructor
@@ -28,12 +26,12 @@ public class YeuCauChiTiet {
     @JsonBackReference
     private YeuCau yeuCau;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ID_HOA_DON_CHI_TIET")
     @JsonBackReference
     private HoaDonChiTiet hoaDonChiTiet;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "ID_BIEN_THE_GIAY")
     @JsonBackReference
     private BienTheGiay bienTheGiay;
@@ -45,19 +43,21 @@ public class YeuCauChiTiet {
     @Column(name = "SO_LUONG")
     private Integer soLuong;
 
-    @Column(name = "TRANG_THAI")
+    @Column(name = "TRANG_THAI") // 0 : "Chờ xét duyệt" / 1 : "Đã xác nhận" / 2 : "Đã Hủy" / 3 : "Chờ xét duyệt - Hủy đổi" / 4 : "Đã xác nhận - Hủy đổi"
     private Integer trangThai;
 
     @Column(name = "LOAI_YEU_CAU_CHI_TIET")
     private Integer loaiYeuCauChiTiet;
 
+    @Column(name = "TINH_TRANG_SAN_PHAM")
+    private Boolean tinhTrangSanPham;
     @Column(name = "GHI_CHU")
     @Nationalized
     private String ghiChu;
 
-    @OneToMany(mappedBy = "yeuCauChiTiet", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<AnhGiayTra> listAnhGiayTra;
+//    @OneToMany(mappedBy = "yeuCauChiTiet", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JsonManagedReference
+//    private List<AnhGiayTra> listAnhGiayTra;
 
     public YeuCauChiTiet(YeuCauChiTietRequest yeuCauChiTietRequest,HoaDonChiTiet hoaDonChiTiet,BienTheGiay bienTheGiay,LyDo lyDo,YeuCau yeuCau) {
         if (yeuCauChiTietRequest != null) {
@@ -67,6 +67,7 @@ public class YeuCauChiTiet {
             this.lyDo = lyDo;
             this.soLuong = yeuCauChiTietRequest.getSoLuong();
             this.trangThai = yeuCauChiTietRequest.getTrangThai();
+            this.tinhTrangSanPham = yeuCauChiTietRequest.getTinhTrangSanPham();
             this.loaiYeuCauChiTiet = yeuCauChiTietRequest.getLoaiYeuCauChiTiet();
             this.ghiChu = yeuCauChiTietRequest.getGhiChu();
         }

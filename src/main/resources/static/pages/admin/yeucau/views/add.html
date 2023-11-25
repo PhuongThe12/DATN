@@ -135,7 +135,9 @@
                                         <td>{{hoaDonChiTiet.bienTheGiay.giayResponse.ten}}</td>
                                         <td>
                                             <input type="number" ng-model="hoaDonChiTiet.soLuongTra" min="0"
-                                                   max="{{hoaDonChiTiet.soLuongTraMax}}" ng-change="updateTongTienTra()">
+                                                   ng-init="hoaDonChiTiet.soLuongTra = 0"
+                                                   max="{{hoaDonChiTiet.soLuongDuocTra}}"
+                                                   ng-change="updateTongTienTra()">
                                             <span>/ {{hoaDonChiTiet.soLuongTraMax}}</span>
                                         </td>
                                         <td>{{hoaDonChiTiet.bienTheGiay.kichThuoc.ten}}</td>
@@ -240,7 +242,8 @@
                                     </div>
                                     <div class="mb-3">
                                         <div class="form-floating">
-                                            <textarea class="form-control" placeholder="Hãy mô tả chi tiết lý do đổi/trả"
+                                            <textarea class="form-control"
+                                                      placeholder="Hãy mô tả chi tiết lý do đổi/trả"
                                                       id="floatingTextarea2" style="height: 100px"
                                                       ng-model="ghiChu">
                                             </textarea>
