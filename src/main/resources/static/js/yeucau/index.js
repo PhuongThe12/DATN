@@ -122,6 +122,9 @@ app.controller("yeuCauListController", function ($scope, $http, $window, $locati
             apiUrl += '&trangThai=' + trangThai;
         }
 
+        console.log(
+            apiUrl
+        );
         $http.get(apiUrl)
             .then(function (response) {
                 $scope.listYeuCau = response.data.content;
@@ -566,6 +569,10 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
             throw error; // Đẩy lỗi để xử lý ở nơi gọi hàm
             $scope.isLoading = false;
         });
+
+        $('#exampleModalToggle2').modal('show');
+        $('#exampleModalToggle').modal('hide');
+
     };
 
     //Sau khi chọn được biến thể giày
