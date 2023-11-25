@@ -417,7 +417,7 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
     $scope.giaySearch = {}, $scope.giaySearch.curPage = 1, $scope.giaySearch.itemsPerPage = 5, $scope.giaySearch.maxSize = 5, $scope.giaySearch.pageSize = 6;
 
     $scope.yeuCau = {};
-
+    let giaySearch = {};
     $scope.change = function (input) {
         input.$dirty = true;
     }
@@ -849,17 +849,54 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
         });
     }
 
-    function searchGiay(giaySearch) {
-        $http.post(host + '/admin/rest/giay/find-all-by-search', giaySearch)
+    $scope.reset = function () {
+        if ($scope.searching) {
+            $scope.searchText = "";
+            searchGiay(1);
+        } else {
+            toastr["warning"]("Bạn đang không tìm kiếm");
+        }
+        $scope.searching = false;
+
+    }
+
+    function searchGiay(currentPage) {
+        $scope.isLoading = true;
+
+        let apiUrl = host + '/admin/rest/giay/get-all-giay';
+
+        if ($scope.searchText && $scope.searchText.length > 0) {
+            giaySearch.ten = ($scope.searchText + "").trim();
+        } else {
+            giaySearch.ten = null;
+        }
+
+        giaySearch.trangThai = 1;
+
+        giaySearch.currentPage = currentPage;
+        giaySearch.pageSize = $scope.itemsPerPage;
+
+        $http.post(apiUrl, giaySearch)
             .then(function (response) {
-                $scope.listGiay = response.data;
+                $scope.listGiay = response.data.content;
                 $scope.numOfPages = response.data.totalPages;
                 $scope.isLoading = false;
-            }).catch(function (error) {
-            toastr["error"]("Lấy dữ liệu thất bại 1");
-            // $location.path("/list");
-            $scope.isLoading = false;
-        });
+            })
+            .catch(function (error) {
+                console.log(error);
+                toastr["error"]("Lấy dữ liệu thất bại");
+            });
+
+        // $http.post(host + '/admin/rest/giay/find-all-by-search', giaySearch)
+        //     .then(function (response) {
+        //         $scope.listGiay = response.data;
+        //         $scope.numOfPages = response.data.totalPages;
+        //         $scope.isLoading = false;
+        //     }).catch(function (error) {
+        //     toastr["error"]("Lấy dữ liệu thất bại 1");
+        //     // $location.path("/list");
+        //     $scope.isLoading = false;
+        // });
     }
 
     function getAllLyDo() {
