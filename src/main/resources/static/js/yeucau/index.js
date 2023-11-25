@@ -167,12 +167,12 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
 
 
     $scope.confirmDeleteGiayDoi = function (item) {
-        if (confirm('Bạn có chắc chắn muốn hủy đổi giày này không bạn không thể hoàn tác thao tác này?')) {
+        if (confirm('Bạn có chắc chắn muốn hủy đổi giày này không? Bạn không thể hoàn tác thao tác này.')) {
             let index = $scope.listYeuCauChiTietResponse.indexOf(item);
             if (index !== -1) {
                 $scope.listYeuCauChiTietResponse[index].loaiYeuCauChiTiet = 2;
                 $scope.listYeuCauChiTietResponse[index].trangThai = 3;
-                $scope.listYeuCauChiTietResponse[index].isBienTheGiayHidden = true; // Thêm thuộc tính để ẩn bienTheGiay
+                $scope.listYeuCauChiTietResponse[index].isDeleted = true; // Thêm thuộc tính isDeleted
                 $scope.soLuongDoi = $scope.soLuongDoi - 1;
             }
         }
@@ -184,7 +184,7 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
         $scope.yeuCauChiTiet = item;
         $scope.lyDo = "" + item.lyDo.id;
         $scope.ghiChu = item.ghiChu;
-        $scope.sanPhamLoi = item.sanPhamLoi == 1 ? true : false;
+        $scope.tinhTrangSanPham = item.tinhTrangSanPham == null ? false : item.tinhTrangSanPham;
     }
 
 
@@ -195,7 +195,7 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
         if (foundIndex !== -1) {
             $scope.listYeuCauChiTietResponse[foundIndex].lyDo = foundLyDo;
             $scope.listYeuCauChiTietResponse[foundIndex].ghiChu = $scope.ghiChu;
-            $scope.listYeuCauChiTietResponse[foundIndex].sanPhamLoi = $scope.sanPhamLoi ? 1:0;
+            $scope.listYeuCauChiTietResponse[foundIndex].tinhTrangSanPham = $scope.tinhTrangSanPham;
         }
     }
 
@@ -240,18 +240,19 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
                 loaiYeuCauChiTiet: item.loaiYeuCauChiTiet,
                 lyDo: item.lyDo.id,
                 soLuong: item.soLuong,
-                sanPhamLoi: item.sanPhamLoi,
-                bienTheGiayTra: item.hoaDonChiTiet.bienTheGiay.id
+                trangThai: item.trangThai,
+                tinhTrangSanPham: item.tinhTrangSanPham == null ? false : item.tinhTrangSanPham,
+                bienTheGiayTra: item.hoaDonChiTiet.bienTheGiay.id,
+                soLuongTra : item.soLuongTra == null ? 1 : item.soLuongTra,
             };
             return yeuCauChiTietRequest;
         });
 
+        $scope.yeuCau.trangThai = 2;
         $scope.yeuCau.listYeuCauChiTiet = listYeuCauChiTiet;
 
-        console.log($scope.yeuCau)
-
         // Gửi yêu cầu POST đến máy chủ Spring Boot
-        $http.put(host + '/admin/rest/yeu-cau/update', JSON.stringify($scope.yeuCau))
+        $http.put(host + '/admin/rest/yeu-cau/confirm', JSON.stringify($scope.yeuCau))
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Đã xác nhận yêu cầu!");
@@ -268,7 +269,71 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
 
     }
 
+    $scope.luuYeuCau = function (){
+        let listYeuCauChiTietUpdate = $scope.listYeuCauChiTietResponse.map(item => {
+            let yeuCauChiTietRequest = {
+                id: item.id,
+                ghiChu: item.ghiChu,
+                lyDo: item.lyDo.id,
+                tinhTrangSanPham: item.tinhTrangSanPham == null ? false : item.tinhTrangSanPham,
+                bienTheGiayTra: item.hoaDonChiTiet.bienTheGiay.id,
+            };
+            return yeuCauChiTietRequest;
+        });
 
+        $scope.yeuCau.listYeuCauChiTiet = listYeuCauChiTietUpdate;
+
+        console.log($scope.yeuCau)
+        // Gửi yêu cầu POST đến máy chủ Spring Boot
+        $http.put(host + '/admin/rest/yeu-cau/change', JSON.stringify($scope.yeuCau))
+            .then(function (response) {
+                if (response.status === 200) {
+                    toastr["success"]("Đã lưu yêu cầu!");
+                }
+                $location.path("/list");
+            })
+            .catch(function (error) {
+                toastr["error"]("Xác nhận yêu cầu thất bại!");
+                if (error.status === 400) {
+                    $scope.addYeuCauForm.hoaDon.$dirty = false;
+                    $scope.errors = error.data;
+                }
+            });
+    }
+
+
+    $scope.tuChoiNhanYeuCau = function () {
+        let listYeuCauChiTietUncomfim = $scope.listYeuCauChiTietResponse.map(item => {
+            let yeuCauChiTietRequest = {
+                id: item.id,
+                bienTheGiay: item.bienTheGiay ? item.bienTheGiay.id : null,
+                loaiYeuCauChiTiet: 3,
+                soLuong: 1,
+                trangThai: 2,
+                tinhTrangSanPham: false,
+            };
+            return yeuCauChiTietRequest;
+        });
+
+        $scope.yeuCau.listYeuCauChiTiet = listYeuCauChiTietUncomfim;
+
+        console.log($scope.yeuCau)
+        // Gửi yêu cầu POST đến máy chủ Spring Boot
+        $http.put(host + '/admin/rest/yeu-cau/unconfirm', JSON.stringify($scope.yeuCau))
+            .then(function (response) {
+                if (response.status === 200) {
+                    toastr["success"]("Đã từ chối yêu cầu!");
+                }
+                $location.path("/list");
+            })
+            .catch(function (error) {
+                toastr["error"]("Xác nhận yêu cầu thất bại!");
+                if (error.status === 400) {
+                    $scope.addYeuCauForm.hoaDon.$dirty = false;
+                    $scope.errors = error.data;
+                }
+            });
+    }
     $scope.quayVe = function () {
         window.location.href = feHost + '/list';
     }
@@ -335,18 +400,6 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 app.controller("addYeuCauController", function ($scope, $http, $location, $routeParams) {
 
     const idHoaDon = $routeParams.id;
@@ -368,7 +421,6 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
 
     getHoaDon(idHoaDon);
     getAllNhanVien();
-
 
 
     //add sản phẩm vào map trả
@@ -620,7 +672,7 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
                     trangThai: 0,
                     lyDo: sanPhamTra.lyDo,
                     soLuong: 1,
-                    sanPhamLoi: 0,
+                    tinhTrangSanPham: sanPhamTra.tinhTrangSanPham,
                     ghiChu: sanPhamTra.ghiChu,
                     loaiYeuCauChiTiet: entry.bienTheGiay ? 1 : 2
                 });
@@ -771,13 +823,13 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
 
     //các hàm get/insert
     function getHoaDon(id) {
-        $http.get(host + '/admin/rest/hoa-don/yeu-cau/'+ id)
+        $http.get(host + '/admin/rest/hoa-don/yeu-cau/' + id)
             .then(function (response) {
                 $scope.hoaDon = response.data;
                 $scope.khachHang = response.data.khachHang;
                 $scope.yeuCau.hoaDon = response.data.id;
                 $scope.numOfPages = response.data.totalPages;
-                $scope.hoaDon.listHoaDonChiTiet.forEach(function(hoaDonChiTiet) {
+                $scope.hoaDon.listHoaDonChiTiet.forEach(function (hoaDonChiTiet) {
                     hoaDonChiTiet.soLuongTraMax = hoaDonChiTiet.soLuong - hoaDonChiTiet.soLuongTra;
                 });
                 $scope.isLoading = false;
@@ -817,6 +869,7 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
         $http.get(host + '/admin/rest/nhan-vien/get-all')
             .then(function (response) {
                 $scope.listNhanVien = response.data;
+                $scope.nguoiThucHien = response.data[0].id;
             }).catch(function (error) {
             toastr["error"]("Lấy dữ liệu thất bại 3");
             throw error; // Đẩy lỗi để xử lý ở nơi gọi hàm

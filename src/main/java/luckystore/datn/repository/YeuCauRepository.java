@@ -23,7 +23,7 @@ public interface YeuCauRepository extends JpaRepository<YeuCau,Long> {
             "AND (:ngayKetThuc is NULL or yc.ngayTao <= :ngayKetThuc)" +
             "AND (:trangThai is NULL or yc.trangThai = :trangThai) " +
             "AND (:searchText IS NULL OR yc.id = :searchText) " +
-            "ORDER BY yc.ngayTao DESC" )
+            "ORDER BY yc.id DESC" )
     Page<YeuCauResponse> getPageResponse(Pageable pageable,Long searchText,Date ngayBatDau,Date ngayKetThuc,Integer trangThai);
 
     @Query("select new luckystore.datn.model.response.YeuCauResponse(yc) from YeuCau yc  where yc.trangThai = 0")

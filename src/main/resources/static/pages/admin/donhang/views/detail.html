@@ -14,20 +14,18 @@
         <hr>
         <div class="d-flex align-items-center ">
             <p class="font-size-14-ncl fw-bold text-black-50 pe-4">{{hoaDon.ngayTao}}</p>
-            <p class="font-size-14-ncl fw-bold text-black-50 pe-4">Số lượng 0</p>
+            <p class="font-size-14-ncl fw-bold text-black-50 pe-4">Số lượng -</p>
             <p class="font-size-14-ncl fw-bold text-black-50 pe-4">Tổng tiền 100.000 đ</p>
             <h5 class="fw-bold text-black-50 pe-4"><span ng-class="{
-                  'badge bd-warning-custom': hoaDon.trangThai == 1,
-                  'badge bd-success-custom': hoaDon.trangThai == 2,
+                  'badge bd-blueDark-custom': hoaDon.trangThai == 1,
+                  'badge bd-redOrange-custom': hoaDon.trangThai == 2,
                   'badge bd-info-custom': hoaDon.trangThai == 3,
-                  'badge bd-redOrange-custom': hoaDon.trangThai == 4,
-                  'badge bd-blueDark-custom': hoaDon.trangThai == 5
+                  'badge bd-success-custom': hoaDon.trangThai == 4
                     }">
-                  <span ng-if="hoaDon.trangThai == 1">Chờ thanh toán</span>
-                  <span ng-if="hoaDon.trangThai == 2">Đã thanh toán</span>
-                  <span ng-if="hoaDon.trangThai == 3">Chờ đóng gói</span>
-                  <span ng-if="hoaDon.trangThai == 4">Chờ giao hàng</span>
-                  <span ng-if="hoaDon.trangThai == 5">Đang giao hàng</span>
+                  <span ng-if="hoaDon.trangThai == 1">Chờ xác nhận</span>
+                  <span ng-if="hoaDon.trangThai == 2">Chờ giao hàng</span>
+                  <span ng-if="hoaDon.trangThai == 3">Đang giao hàng</span>
+                  <span ng-if="hoaDon.trangThai == 4">Đã hoàn thành</span>
                                 </span></h5>
         </div>
         <hr>
@@ -41,61 +39,23 @@
                     <th>Giá</th>
                     <th>Đơn giá</th>
                 </tr>
-                <tr>
+                <tr ng-repeat="hdct in hoaDonChiTiets">
                     <td>
                         <div class="d-flex align-items-center">
                             <img class="rounded-3 pe-3"
                                  src="https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/786867c8-f1f7-4dfd-9a7e-039d92406715/air-jordan-1-low-shoes-6Q1tFM.png"
                                  width="80px" alt="">
-                            <p>Giày 1</p>
+                            <p> {{hdct.bienTheGiay.giayResponse.ten}} ( {{hdct.bienTheGiay.kichThuoc.ten}} - {{hdct.bienTheGiay.mauSac.ten}} )</p>
                         </div>
                     </td>
                     <td>
-                        <p>1</p>
+                        <p>{{hdct.soLuong}}</p>
                     </td>
                     <td>
-                        <p>100.000 đ</p>
+                        <p>{{hdct.donGia}}</p>
                     </td>
                     <td>
-                        <p>100.000 đ</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <img class="rounded-3 pe-3"
-                                 src="https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/786867c8-f1f7-4dfd-9a7e-039d92406715/air-jordan-1-low-shoes-6Q1tFM.png"
-                                 width="80px" alt="">
-                            <p>Giày 1</p>
-                        </div>
-                    </td>
-                    <td>
-                        <p>1</p>
-                    </td>
-                    <td>
-                        <p>100.000 đ</p>
-                    </td>
-                    <td>
-                        <p>100.000 đ</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <img class="rounded-3 pe-3"
-                                 src="https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/786867c8-f1f7-4dfd-9a7e-039d92406715/air-jordan-1-low-shoes-6Q1tFM.png"
-                                 width="80px" alt="">
-                            <p>Giày 1</p>
-                        </div>
-                    </td>
-                    <td>
-                        <p>1</p>
-                    </td>
-                    <td>
-                        <p>100.000 đ</p>
-                    </td>
-                    <td>
-                        <p>100.000 đ</p>
+                        <p>{{hdct.soLuong * hdct.donGia}}</p>
                     </td>
                 </tr>
             </table>
@@ -112,56 +72,83 @@
                 <div>
                     <div class="d-flex ">
                         <div>
-                            <i class="fas fa-check li-status"></i>
-                            <div class="line-status"></div>
+                            <i class="fas fa-check" ng-class="{
+                            'li-status': hoaDon.trangThai >= 1,
+                            'line-status-unactive': hoaDon.trangThai < 1
+                            }"></i>
+                            <div ng-class="{
+                            'line-status': hoaDon.trangThai >= 1 ,
+                            'line-status-unactive': hoaDon.trangThai < 1
+                            }"></div>
                         </div>
                         <h5 class="font-size-14-ncl mt-2 ms-2">Chờ Xác nhận</h5>
                     </div>
 
                     <div class="d-flex mt-a4">
                         <div>
-                            <i class="fas fa-check li-status"></i>
-                            <div class="line-status"></div>
-                        </div>
-                        <h5 class="font-size-14-ncl mt-2 ms-2">Chờ đóng gói</h5>
-                    </div>
-                    <div class="d-flex mt-a4">
-                        <div>
-                            <i class="fas fa-check li-status"></i>
-                            <div class="line-status-unactive"></div>
+                            <i class="fas fa-check" ng-class="{
+                            'li-status': hoaDon.trangThai >= 2,
+                            'li-status-unactive': hoaDon.trangThai < 2
+                            }"></i>
+                            <div ng-class="{
+                            'line-status': hoaDon.trangThai >= 2 ,
+                            'line-status-unactive': hoaDon.trangThai < 2
+                            }"></div>
                         </div>
                         <h5 class="font-size-14-ncl mt-2 ms-2">Chờ giao hàng</h5>
                     </div>
                     <div class="d-flex mt-a4">
                         <div>
-                            <i class="fas fa-check li-status-unactive"></i>
-                            <div class="line-status-unactive"></div>
+                            <i class="fas fa-check" ng-class="{
+                            'li-status': hoaDon.trangThai >= 3,
+                            'li-status-unactive': hoaDon.trangThai < 3
+                            }"></i>
+                            <div ng-class="{
+                            'line-status': hoaDon.trangThai >= 3 ,
+                            'line-status-unactive': hoaDon.trangThai < 3
+                            }"></div>
                         </div>
                         <h5 class="font-size-14-ncl mt-2 ms-2">Đang giao hàng</h5>
                     </div>
                     <div class="d-flex mt-a4">
                         <div>
-                            <i class="fas fa-check li-status-unactive"></i>
+                            <i class="fas fa-check" ng-class="{
+                            'li-status': hoaDon.trangThai >= 4,
+                            'li-status-unactive': hoaDon.trangThai < 4
+                            }"></i>
+<!--                            <div ng-class="{-->
+<!--                            'line-status': hoaDon.trangThai >= 4 ,-->
+<!--                            'line-status-unactive': hoaDon.trangThai < 4-->
+<!--                            }"></div>-->
                         </div>
-                        <h5 class="font-size-14-ncl mt-2 ms-2">Đã thanh toán</h5>
+                        <h5 class="font-size-14-ncl mt-2 ms-2">Đã hoàn thành</h5>
                     </div>
+<!--                    <div class="d-flex mt-a4">-->
+<!--                        <div>-->
+<!--                            <i class="fas fa-check " ng-class="{-->
+<!--                            'li-status': hoaDon.trangThai >= 5,-->
+<!--                            'li-status-unactive': hoaDon.trangThai < 5-->
+<!--                            }"></i>-->
+<!--                        </div>-->
+<!--                        <h5 class="font-size-14-ncl mt-2 ms-2">Đã thanh toán</h5>-->
+<!--                    </div>-->
                 </div>
             </div>
 
             <div class="box-shadow-page rounded-3 p-3 mb-3">
                 <h5 class="font-size-14-ncl fw-bold mb-3">Thông tin khách hàng</h5>
                 <hr>
-                <h4 class="font-size-14-ncl fw-bold mb-3">Nguyễn Đăng Cường</h4>
-                <p class="font-size-14-ncl mb-3">quanchun11022@gmail.com</p>
-                <p class="font-size-14-ncl">0396189965</p>
+                <h4 class="font-size-14-ncl fw-bold mb-3">{{hoaDon.khachHang.hoTen}}</h4>
+                <p class="font-size-14-ncl mb-3">{{hoaDon.khachHang.email}}</p>
+                <p class="font-size-14-ncl">{{hoaDon.khachHang.soDienThoai}}</p>
             </div>
 
             <div class="box-shadow-page rounded-3 p-3 mb-3">
-                <h5 class="font-size-14-ncl fw-bold mb-3">Địa chỉ nhận hàng</h5>
+                <h5 class="font-size-14-ncl fw-bold mb-3">{{hoaDon.khachHang.diaChiNhan}}</h5>
                 <hr>
                 <div>
                     <p class="font-size-14-ncl mb-3">Tân Hòa - Quốc Oai - Hà Nội</p>
-                    <p class="font-size-14-ncl">0396189965</p>
+                    <p class="font-size-14-ncl">{{hoaDon.khachHang.soDienThoai}}</p>
                 </div>
             </div>
         </div>

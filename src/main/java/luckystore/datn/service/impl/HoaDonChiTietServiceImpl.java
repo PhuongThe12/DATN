@@ -6,9 +6,11 @@ import luckystore.datn.entity.HoaDonChiTiet;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.model.response.DonMuaResponse;
 import luckystore.datn.model.response.HoaDonChiTietResponse;
+import luckystore.datn.model.response.HoaDonResponse;
 import luckystore.datn.repository.BienTheGiayRepository;
 import luckystore.datn.repository.HoaDonChiTietRepository;
 import luckystore.datn.service.HoaDonChiTietService;
+import luckystore.datn.service.HoaDonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,7 +37,12 @@ public class HoaDonChiTietServiceImpl implements HoaDonChiTietService {
 
     @Override
     public List<HoaDonChiTietResponse> getAll() {
-        return null;
+        return hoaDonChiTietRepository.findAllResponse();
+    }
+
+    @Override
+    public List<HoaDonChiTietResponse> getAllByIdHoaDon(Long id) {
+        return hoaDonChiTietRepository.findAllResponse(id);
     }
 
     @Override

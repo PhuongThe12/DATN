@@ -1,8 +1,11 @@
 package luckystore.datn.service;
 
+import luckystore.datn.model.response.DonMuaResponse;
 import luckystore.datn.entity.BienTheGiay;
 import luckystore.datn.entity.HoaDonChiTiet;
+
 import luckystore.datn.model.response.DonMuaResponse;
+
 import luckystore.datn.model.response.HoaDonChiTietResponse;
 import org.springframework.data.domain.Page;
 
@@ -12,6 +15,8 @@ public interface HoaDonChiTietService {
     Page<DonMuaResponse> getAll(int page, Integer status);
 
     List<HoaDonChiTietResponse> getAll();
+
+    List<HoaDonChiTietResponse> getAllByIdHoaDon(Long id);
 
     Page<HoaDonChiTietResponse> getPage(int page, String searchText, Integer status);
 

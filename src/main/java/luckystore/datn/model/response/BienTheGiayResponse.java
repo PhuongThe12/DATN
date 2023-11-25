@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import luckystore.datn.entity.BienTheGiay;
-import luckystore.datn.service.impl.ImageHubServiceImpl;
+import luckystore.datn.entity.Giay;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -27,7 +27,7 @@ public class BienTheGiayResponse {
     private String hinhAnh;
 
     private BigDecimal giaBan;
-    
+
     private Integer khuyenMai = 0;
 
     private String barCode;
@@ -40,7 +40,7 @@ public class BienTheGiayResponse {
 
     private GiayResponse giayResponse;
 
-    public BienTheGiayResponse(BienTheGiay bienTheGiay, int ...level) {
+    public BienTheGiayResponse(BienTheGiay bienTheGiay, int... level) {
         if (bienTheGiay != null) {
             this.id = bienTheGiay.getId();
             this.soLuong = bienTheGiay.getSoLuong();
@@ -51,7 +51,7 @@ public class BienTheGiayResponse {
             this.trangThai = bienTheGiay.getTrangThai();
             this.mauSac = new MauSacResponse(bienTheGiay.getMauSac());
             this.kichThuoc = new KichThuocResponse(bienTheGiay.getKichThuoc());
-            if(bienTheGiay.getGiay() != null && level != null) {
+            if (bienTheGiay.getGiay() != null && level != null) {
                 giayResponse = new GiayResponse();
                 giayResponse.setId(bienTheGiay.getGiay().getId());
                 giayResponse.setLstAnh(null);
@@ -70,6 +70,15 @@ public class BienTheGiayResponse {
         this.giaBan = giaBan;
         this.mauSac = MauSacResponse.builder().ten(tenMS).build();
         this.kichThuoc = KichThuocResponse.builder().ten(tenKT).build();
+    }
+
+    public BienTheGiayResponse(Long id, String tenKT, String tenMS, Integer soLuong, BigDecimal giaBan, Giay giay) {
+        this.id = id;
+        this.soLuong = soLuong;
+        this.giaBan = giaBan;
+        this.mauSac = MauSacResponse.builder().ten(tenMS).build();
+        this.kichThuoc = KichThuocResponse.builder().ten(tenKT).build();
+        this.giayResponse = GiayResponse.builder().ten(giay.getTen()).build();
     }
 
     public BienTheGiayResponse(Long id, Long idMauSac, Long idKichThuoc, String barCode) {

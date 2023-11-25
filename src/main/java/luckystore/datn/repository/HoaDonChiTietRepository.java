@@ -15,9 +15,12 @@ import java.util.List;
 @Repository
 public interface HoaDonChiTietRepository extends JpaRepository<HoaDonChiTiet,Long> {
 
+
     @Query("select new luckystore.datn.model.response.HoaDonChiTietResponse(hdct) from HoaDonChiTiet hdct")
     List<HoaDonChiTietResponse> findAllResponse();
 
+    @Query("select new luckystore.datn.model.response.HoaDonChiTietResponse(hdct) from HoaDonChiTiet hdct where hdct.hoaDon.id = :id")
+    List<HoaDonChiTietResponse> findAllResponse(Long id);
 
     @Query(value = "SELECT HoaDon.ID as[ID_HOA_DON], BienTheGiay.HINH_ANH, Giay.TEN as [TEN_GIAY], " +
         "ThuongHieu.TEN as[TEN_THUONG_HIEU], HoaDonChiTiet.ID_BIEN_THE_GIAY, HoaDon.ID_KHACH_HANG, " +

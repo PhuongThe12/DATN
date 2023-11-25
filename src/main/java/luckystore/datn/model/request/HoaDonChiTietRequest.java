@@ -1,6 +1,5 @@
 package luckystore.datn.model.request;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,22 +12,22 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-
 public class HoaDonChiTietRequest {
 
     private Long id;
 
-    private HoaDon hoaDon;
+    private HoaDonRequest hoaDon;
 
-    private BienTheGiay bienTheGiay;
+    private BienTheGiayRequest bienTheGiay;
 
     private BigDecimal donGia;
 
     private Integer soLuong;
 
+    private Integer soLuongTra;
+
     private Integer trangThai;
 
     private String ghiChu;
 
-    private Integer soLuongTra;
 }

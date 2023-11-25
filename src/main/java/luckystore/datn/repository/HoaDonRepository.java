@@ -10,6 +10,7 @@ import luckystore.datn.model.response.MuiGiayResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -58,6 +59,11 @@ public interface HoaDonRepository extends JpaRepository<HoaDon,Long> {
     @Query("select new luckystore.datn.model.response.HoaDonYeuCauRespone(hd, hd.hoaDonGoc.id) from HoaDon hd " +
             "WHERE hd.id = :id")
     HoaDonYeuCauRespone getHoaDonYeuCauResponse(Long id);
+
+    @Query("select new luckystore.datn.model.response.HoaDonResponse(hd) from HoaDon hd " +
+            "WHERE (:searchText IS NULL OR hd.ghiChu LIKE %:searchText%) AND (:status IS NULL OR hd.trangThai = :status)" +
+            "AND hd.khachHang.id = :idKhachHang")
+    Page<HoaDonResponse> getPageResponseByIdKhachHang(String searchText, Integer status, Pageable pageable, Long idKhachHang);
 }
 
 

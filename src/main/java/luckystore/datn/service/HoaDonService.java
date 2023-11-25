@@ -1,6 +1,7 @@
 package luckystore.datn.service;
 
 import luckystore.datn.model.request.AddOrderProcuctRequest;
+import luckystore.datn.model.request.HoaDonRequest;
 import luckystore.datn.model.request.HoaDonSearch;
 import luckystore.datn.model.request.HoaDonThanhToanTaiQuayRequest;
 import luckystore.datn.model.response.HoaDonBanHangResponse;
@@ -25,6 +26,7 @@ public interface HoaDonService {
 
     HoaDonResponse findById(Long id);
 
+    void updateListHoaDon(List<HoaDonRequest> hoaDonRequestList);
     List<HoaDonBanHangResponse> getAllChuaThanhToan();
 
     HoaDonBanHangResponse getAllById(Long id);
@@ -42,4 +44,9 @@ public interface HoaDonService {
     KhachHangResponse addKhachHang(AddOrderProcuctRequest addOrderProcuctRequest);
 
     Long thanhToanHoaDonTaiQuay(HoaDonThanhToanTaiQuayRequest request);
+
+    Long thanhToanHoaDonTaiQuayBanking(HoaDonThanhToanTaiQuayRequest request);
+
+    Page<HoaDonResponse> getPageByIdKhachHang(int page, String searchText, Integer status, Long idKhachHang);
+
 }
