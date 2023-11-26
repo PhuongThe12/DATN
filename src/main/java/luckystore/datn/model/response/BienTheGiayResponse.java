@@ -5,17 +5,20 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import luckystore.datn.entity.BienTheGiay;
+import luckystore.datn.entity.HinhAnh;
 import luckystore.datn.service.impl.ImageHubServiceImpl;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class BienTheGiayResponse {
+@SuperBuilder
+public class BienTheGiayResponse extends BaseBienTheResponse {
 
     private Long id;
 
@@ -53,7 +56,7 @@ public class BienTheGiayResponse {
             if(bienTheGiay.getGiay() != null && level != null) {
                 giayResponse = new GiayResponse();
                 giayResponse.setId(bienTheGiay.getGiay().getId());
-                giayResponse.setLstAnh(null);
+                giayResponse.setLstAnh(bienTheGiay.getGiay().getLstAnh().stream().map(HinhAnh::getLink).toList());
                 giayResponse.setTen(bienTheGiay.getGiay().getTen());
 //                giayResponse.getLstAnh().add(bienTheGiay.getGiay().getLstAnh().isEmpty() ? null :
 //                        ImageHubServiceImpl.getBase64FromFileStatic(bienTheGiay.getGiay().getLstAnh().get(0).getLink()));
@@ -83,4 +86,16 @@ public class BienTheGiayResponse {
         this.soLuong = soLuong;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BienTheGiayResponse that = (BienTheGiayResponse) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

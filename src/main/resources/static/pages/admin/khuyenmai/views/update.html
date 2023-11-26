@@ -1,5 +1,5 @@
-<form name="khuyenMaiForm" ng-submit="updateKhuyenMai()">
-    <button type="submit" class="btn btn-primary" ng-disabled="khuyenMaiForm.$invalid" >Thêm</button>
+<form name="khuyenMaiForm" ng-submit="addKhuyenMai()">
+    <button type="submit" class="btn btn-primary" ng-disabled="khuyenMaiForm.$invalid">Thêm</button>
     <div class="form-group">
         <label for="ten">Tên chương trình: </label>
         <input type="text" class="form-control" id="ten" name="ten" ng-model="khuyenMai.ten" ng-maxlength="50"
@@ -42,91 +42,7 @@
         ng-click="loadGiay()">
     Thêm sản phẩm
 </button>
-<div ng-show="isTableVisible">
-    <div style="margin-left: 1114px;" class="row">
-        <input type="text" class="form-control" id="thiet-lap-hang-loat" name="thiet-lap-hang-loat" placeholder="% giảm" ng-model="giamPhanTram" style="width: 175px;">
-
-
-        <button type="button" class="btn btn-primary col-md-3" ng-click="thietLapHangLoat()">Thiết lập hàng loạt</button>
-
-    </div>
-    <div ng-repeat="giay in selectedGiays">
-        <table class="table table-bordered table-striped">
-            <thead>
-            <tr>
-                <th class="header-checkbox">
-                    <input type="checkbox" ng-model="giay.selectAll" ng-change="toggleAll(giay)">
-                </th>
-
-                <th>
-                    Tên sản phẩm
-                    <br>
-                    {{giay.ten}}
-                </th>
-                <th>Giá bán</th>
-                <th>% giảm</th>
-                <th>Giá sau giảm</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="bienTheGiay in giay.lstBienTheGiay">
-                <td><input type="checkbox" ng-model="bienTheGiay.selected" ng-checked="giay.selectAll" ng-change="addToKhuyenMaiChiTiet(bienTheGiay)"></td>
-                <td>
-                    {{bienTheGiay.mauSac.ten}},{{bienTheGiay.kichThuoc.ten}}
-                </td>
-                <td>{{bienTheGiay.giaBan}}</td>
-                <td>
-                    <input type="number" ng-model="bienTheGiay.phanTramGiam">
-                </td>
-                <td ng-if="bienTheGiay.phanTramGiam !== null && bienTheGiay.phanTramGiam !== undefined">
-                    {{ bienTheGiay.giaBan - (bienTheGiay.giaBan * bienTheGiay.phanTramGiam / 100) }}
-                </td>
-                <td ng-if="bienTheGiay.phanTramGiam === null || bienTheGiay.phanTramGiam === undefined">
-                    {{bienTheGiay.giaBan}}
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-<div ng-repeat="giay in selectedGiays">
-    <table class="table table-bordered table-striped">
-        <thead>
-        <tr>
-            <th class="header-checkbox">
-                <input type="checkbox" ng-model="giay.selectAll" ng-change="toggleAll(giay)">
-            </th>
-
-            <th>
-                Tên sản phẩm
-                <br>
-                {{giay.ten}}
-            </th>
-            <th>Giá bán</th>
-            <th>% giảm</th>
-            <th>Giá sau giảm</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="bienTheGiay in khuyenMai.khuyenMaiChiTietResponses">
-            <td><input type="checkbox" ng-model="bienTheGiay.selected" ng-checked="giay.selectAll" ng-change="addToKhuyenMaiChiTiet(bienTheGiay)"></td>
-            <td>
-                {{bienTheGiay.bienTheGiayResponsel.mauSac.ten}},{{bienTheGiay.bienTheGiayResponsel.kichThuoc.ten}}
-            </td>
-            <td>{{bienTheGiay.bienTheGiayResponsel.giaBan}}</td>
-            <td>
-                <input type="number" ng-model="bienTheGiay.phanTramGiam">
-            </td>
-            <td ng-if="bienTheGiay.phanTramGiam !== null && bienTheGiay.phanTramGiam !== undefined">
-                {{ bienTheGiay.giaBan - (bienTheGiay.giaBan * bienTheGiay.phanTramGiam / 100) }}
-            </td>
-            <td ng-if="bienTheGiay.phanTramGiam === null || bienTheGiay.phanTramGiam === undefined">
-                {{bienTheGiay.giaBan}}
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+<br>
 <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -135,12 +51,21 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+
+                <div class="col-4">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Tên giày"
+                               aria-label="Recipient's username" aria-describedby="button-addon2">
+                        <button class="btn btn-outline-secondary" type="button" id="button-addon2">Tìm</button>
+                    </div>
+                </div>
+
                 <div>
                     <table class="table table-bordered table-striped">
                         <thead>
                         <tr>
                             <th scope="col">
-                                <input type="checkbox" ng-model="selectAll" ng-change="toggleSelectAllGiay()">
+                                <input type="checkbox" ng-model="selectAll" ng-change="selectAllGiay()">
                             </th>
                             <th scope="col">Sản phẩm</th>
                             <th scope="col">Giá</th>
@@ -148,21 +73,110 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="giay in giays">
-                            <td><input type="checkbox" ng-model="giay.selected"></td>
+                            <td><input type="checkbox" ng-model="giay.selected" ng-disabled="giay.disabled"
+                                       ng-click="selectAllChanged = true; checkAllSelected()"></td>
+
                             <td style="display: none;">{{giay.id}}</td>
-                            <td>{{giay.ten}}</td>
-                            <td>500000</td>
+                            <td>{{giay.lstAnh}} {{giay.ten}}</td>
+                            <td class="col-3">
+                                {{giay.giaTu == giay.giaDen ? giay.giaTu + 'đ' : giay.giaTu + 'đ' + ' - ' +
+                                giay.giaDen + 'đ'}}
+                            </td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                <button type="button" class="btn btn-primary" ng-disabled="isXacNhanDisabled()"
-                        data-bs-dismiss="modal" ng-click="xacNhan()">Xác nhận
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" ng-click="xacNhan()">Xác nhận
                 </button>
             </div>
         </div>
     </div>
+</div>
+
+<br>
+
+<div ng-show="selectedGiayTableData.length > 0" class="mb-4">
+    <form class="row">
+        <div class="col-md-5">
+            <div class="form-check">
+                <label class="form-check-label" for="autoSizingCheck">
+                    Chọn tất cả
+                </label>
+                <input class="form-check-input" type="checkbox" id="autoSizingCheck">
+            </div>
+        </div>
+        <div class="col-md-1">
+            <div class="input-group">
+                <input type="text" class="form-control" id="autoSizingInputGroup" ng-model="giamPhanTram">
+                <div class="input-group-text">%</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-primary" ng-click="thietLapHangLoat()">Thiết lập hàng loạt</button>
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-success">Xóa</button>
+        </div>
+    </form>
+
+    <table class="table table-hover table-striped" ng-repeat="giay in selectedGiayTableData">
+        <thead>
+        <tr>
+            <th scope="col">Tên giày</th>
+            <th scope="col">Giá bán</th>
+            <th scope="col">% giảm</th>
+            <th scope="col">Giá sau giảm</th>
+            <th scope="col">Bật/Tắt</th>
+            <th scope="col">Thao tác</th>
+        </tr>
+        <tr>
+            <th>
+                <input type="checkbox" ng-model="giay.selected">
+                {{giay.lstAnh}} {{giay.ten}}
+            </th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col">
+                <button class="btn btn-success" ng-click="xoaDong(giay)">Xóa</button>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="bienTheGiay in giay.lstBienTheGiay">
+            <td class="col-3">
+                <br>
+                {{bienTheGiay.mauSac.ten}}, {{bienTheGiay.kichThuoc.ten}}
+            </td>
+            <td class="col-2">
+                {{bienTheGiay.giaBan}}
+            </td>
+            <td class="col-2">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" ng-model="bienTheGiay.phanTramGiam"
+                           aria-label="Recipient's username" aria-describedby="basic-addon2" placeholder="0">
+                    <span class="input-group-text" id="basic-addon2">%</span>
+                </div>
+            </td>
+            <td class="col-2"
+                ng-if="bienTheGiay.phanTramGiam !== null && bienTheGiay.phanTramGiam !== undefined">
+                {{bienTheGiay.giaBan - (bienTheGiay.giaBan * bienTheGiay.phanTramGiam / 100)}}
+            </td>
+            <td class="col-2"
+                ng-if="bienTheGiay.phanTramGiam === null || bienTheGiay.phanTramGiam === undefined">
+                {{bienTheGiay.giaBan}}
+            </td>
+            <td class="col-2">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>

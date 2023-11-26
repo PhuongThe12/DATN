@@ -20,6 +20,9 @@ app.config(function ($routeProvider, $locationProvider) {
 
 app.controller("addKhuyenMaiController", function ($scope, $http, $location) {
 
+    $scope.khuyenMai = {};
+    $scope.khuyenMai.khuyenMaiChiTietRequests = [];
+
     $scope.change = function (input) {
         input.$dirty = true;
     }
@@ -27,8 +30,6 @@ app.controller("addKhuyenMaiController", function ($scope, $http, $location) {
         input.$dirty = true;
     }
 
-    $scope.khuyenMai = {};
-    $scope.khuyenMai.khuyenMaiChiTietRequests = [];
 
     $scope.curPage = 1,
         $scope.itemsPerPage = 5,
@@ -41,15 +42,14 @@ app.controller("addKhuyenMaiController", function ($scope, $http, $location) {
         giaySearch.currentPage = currentPage;
         giaySearch.pageSize = $scope.itemsPerPage;
 
-
-        $http.post('http://localhost:8080/admin/rest/giay/get-all-giay',giaySearch)
+        $http.post('http://localhost:8080/admin/rest/giay/find-all-by-search', giaySearch)
             .then(function (response) {
-                $scope.giays = response.data.content;
+                $scope.giays = response.data;
                 console.log("Load giày: ", $scope.giays);
-                $$scope.giays.forEach(function (giay) {
-                    giay.selected = $scope.selectedGiays.some(function (selectedGiay) {
-                        return selectedGiay.id === giay.id;
-                    });
+
+                angular.forEach($scope.giays, function (giay) {
+                    giay.selected = $scope.selectedGiay.includes(giay.id);
+                    giay.disabled = giay.selected;
                 });
                 // Show the modal
                 $('#myModal').modal('show');
@@ -59,81 +59,79 @@ app.controller("addKhuyenMaiController", function ($scope, $http, $location) {
             });
     };
 
-    $scope.$watch('curPage + numPerPage', function () {
-        $scope.loadGiay($scope.curPage);
-    });
-
-    //Hàm chọn select tất cả.
-    $scope.toggleSelectAllGiay = function () {
-        angular.forEach($scope.giays, function (giay) {
-            giay.selected = $scope.selectAll;
+    $scope.selectAllGiay = function () {
+        // Kiểm tra xem tất cả các checkbox đã được chọn và disabled chưa
+        var allSelectedAndDisabled = $scope.giays.every(function (giay) {
+            return giay.selected && giay.disabled;
         });
-    };
-
-    $scope.selectedGiays = [];
-    $scope.giays = [];
-
-    //Hàm xác nhận
-    $scope.isXacNhanDisabled = function () {
-        $scope.selectedGiays = $scope.giays.filter(function (giay) {
-            return giay.selected;
-        });
-        return $scope.selectedGiays.length === 0;
-    };
-
-    $scope.isTableVisible = false;
-    $scope.xacNhan = function () {
-        $scope.selectedGiays = $scope.giays.filter(function (giay) {
-            return giay.selected;
-        });
-
-        $scope.isTableVisible = true;
-        console.log($scope.selectedGiays)
-    };
-
-
-    ///////////////////////
-    $scope.thietLapHangLoat = function () {
-        var giamPhanTram = parseFloat($scope.giamPhanTram); // Chuyển giá trị thành số
-        angular.forEach($scope.selectedGiays, function (giay) {
-            angular.forEach(giay.lstBienTheGiay, function (bienTheGiay) {
-                if (bienTheGiay.selected) {
-                    bienTheGiay.phanTramGiam = giamPhanTram;
-                }
+        // Nếu tất cả đã được chọn và disabled, không thay đổi trạng thái
+        if (!allSelectedAndDisabled) {
+            angular.forEach($scope.giays, function (giay) {
+                giay.selected = $scope.selectAll;
             });
-        });
+        }
+
     };
-    $scope.toggleAll = function (giay) {
-        angular.forEach(giay.lstBienTheGiay, function (bienTheGiay) {
-            bienTheGiay.selected = giay.selectAll;
+
+    $scope.$watch('giays', function (newGiays, oldGiays) {
+        // Kiểm tra xem tất cả các checkbox trong tbody đã được chọn và không bị disabled chưa
+        var allSelectedAndNotDisabled = newGiays.every(function (giay) {
+            return giay.selected && !giay.disabled;
         });
+
+        // Nếu tất cả đã được chọn và không bị disabled, cập nhật trạng thái cho checkbox ở thead
+        if (allSelectedAndNotDisabled) {
+            $scope.selectAll = true;
+        } else {
+            $scope.selectAll = false;
+        }
+    }, true);
+
+    $scope.selectedGiay = [];
+    $scope.selectedGiayTableData = [];
+
+    $scope.xacNhan = function () {
+        $scope.giays.forEach(function (giay) {
+            if (giay.selected === true) {
+                $scope.selectedGiay.push(giay);
+            }
+        });
+
+        $scope.selectedGiay = $scope.selectedGiay.filter(function (giay) {
+            return giay.selected;
+        }).map(function (giay) {
+            return giay.id;
+        });
+        $http.post('http://localhost:8080/admin/rest/giay/get-giay-contains', $scope.selectedGiay)
+            .then(function (response) {
+                // Xử lý dữ liệu từ API ở đây
+                $scope.selectedGiayTableData = response.data;
+                console.log("Load biến thể: ", $scope.selectedGiayTableData);
+            })
+            .catch(function (error) {
+                // Xử lý lỗi ở đây
+                console.error('Error fetching data:', error);
+            });
+        console.log("Id giày ", $scope.selectedGiay);
     };
-    ///////
+
     $scope.addKhuyenMai = function () {
 
         if ($scope.khuyenMaiForm.$invalid) {
             return;
         }
 
-        // $scope.handleCheckboxChange = function (bienTheGiay) {
-        //     if (bienTheGiay.selected) {
-        //         var khuyenMaiChiTiet = {
-        //             bienTheGiayId: bienTheGiay.id,
-        //             phanTramGiam: bienTheGiay.phanTramGiam
-        //         };
-        //         $scope.khuyenMai.khuyenMaiChiTietRequests.push(khuyenMaiChiTiet);
-        //     }
-        // };
-        angular.forEach($scope.selectedGiays, function (giay) {
+        angular.forEach($scope.selectedGiayTableData, function (giay) {
             angular.forEach(giay.lstBienTheGiay, function (bienTheGiay) {
-                var khuyenMaiChiTietRequest = {
-                    bienTheGiayId: bienTheGiay.id,
-                    phanTramGiam: bienTheGiay.phanTramGiam
-                };
-
-                $scope.khuyenMai.khuyenMaiChiTietRequests.push(khuyenMaiChiTietRequest);
+                if (giay.selected) {
+                    var khuyenMaiChiTietRequest = {
+                        bienTheGiayId: bienTheGiay.id,
+                        phanTramGiam: bienTheGiay.phanTramGiam
+                    };
+                    $scope.khuyenMai.khuyenMaiChiTietRequests.push(khuyenMaiChiTietRequest);
+                }
             });
-        });
+        })
 
         console.log("Khuyến mại chi tiết: ", $scope.khuyenMai.khuyenMaiChiTietRequests)
         $http.post(host + '/admin/rest/khuyen-mai', $scope.khuyenMai)
@@ -154,6 +152,30 @@ app.controller("addKhuyenMaiController", function ($scope, $http, $location) {
             });
     }
 
+    $scope.thietLapHangLoat = function () {
+        var giamPhanTram = parseFloat($scope.giamPhanTram); // Chuyển giá trị thành số
+        angular.forEach($scope.selectedGiayTableData, function (giay) {
+            angular.forEach(giay.lstBienTheGiay, function (bienTheGiay) {
+                if (giay.selected) {
+                    bienTheGiay.phanTramGiam = giamPhanTram
+                }
+            });
+
+        })
+        console.log("Khuyến mại chi tiết: ", $scope.khuyenMai.khuyenMaiChiTietRequests)
+    }
+    $scope.xoaDong = function (giay) {
+        var indexGiay = $scope.selectedGiay.findIndex(function (item) {
+            return item === giay.id;
+        });
+
+        $scope.selectedGiay.splice(indexGiay, 1);
+        console.log(giay, $scope.selectedGiay);
+
+        $scope.selectedGiayTableData = $scope.selectedGiayTableData.filter(function (item) {
+            return item.id !== giay.id;
+        });
+    };
     $scope.hasErrorInItems = false;
     $scope.checkErrorsInItems = function () {
         $scope.hasErrorInItems = false;
@@ -239,69 +261,41 @@ app.controller("khuyenMaiListController", function ($scope, $http, $window, $loc
 app.controller("updateKhuyenMaiController", function ($scope, $http, $location, $routeParams) {
 
     $scope.khuyenMai = {};
-    $scope.khuyenMai.id = $routeParams.id;
     $scope.khuyenMai.khuyenMaiChiTietRequests = [];
-
-    //Hàm chọn select tất cả.
-    $scope.toggleSelectAllGiay = function () {
-        angular.forEach($scope.giays, function (giay) {
-            giay.selected = $scope.selectAll;
-        });
-    };
-    $scope.selectedGiays = [];
-
-    //Hàm xác nhận
-    $scope.isXacNhanDisabled = function () {
-        $scope.selectedGiays = $scope.giays.filter(function (giay) {
-            return giay.selected;
-        });
-        return $scope.selectedGiays.length === 0;
-    };
-    console.log($scope.giays);
-
-
-    $scope.isTableVisible = false;
-    $scope.xacNhan = function () {
-        $scope.isTableVisible = true;
-        console.log($scope.selectedGiays)
-    };
-
-    ///////////////////////
-    $scope.thietLapHangLoat = function () {
-        var giamPhanTram = parseFloat($scope.giamPhanTram); // Chuyển giá trị thành số
-        angular.forEach($scope.selectedGiays, function (giay) {
-            angular.forEach(giay.lstBienTheGiay, function (bienTheGiay) {
-                if (bienTheGiay.selected) {
-                    bienTheGiay.phanTramGiam = giamPhanTram;
-                }
-            });
-        });
-    };
-    $scope.toggleAll = function (giay) {
-        angular.forEach(giay.lstBienTheGiay, function (bienTheGiay) {
-            bienTheGiay.selected = giay.selectAll;
-        });
-    };
+    $scope.khuyenMai.id = $routeParams.id;
     $scope.init = function () {
-        $http.get(host + '/admin/rest/khuyen-mai/' + $scope.khuyenMai.id)
+        $http.get(host + '/admin/rest/khuyen-mai/giay/' + $scope.khuyenMai.id)
             .then(function (response) {
                 if (response.status === 200) {
                     $scope.khuyenMai = response.data;
                     console.log("Detail khuyến mại: ", $scope.khuyenMai)
                     console.log("Detail khuyến mại chi tiết: ", $scope.khuyenMai.khuyenMaiChiTietResponses)
-                    $scope.loadGiay();
+                    console.log("Giày", $scope.khuyenMai.khuyenMaiChiTietResponses.giays)
+                    angular.forEach($scope.khuyenMai.khuyenMaiChiTietResponses.giays, function (giay) {
+                        console.log("Biến thể", giay.lstBienTheGiay)
+                    });
+
+                    angular.forEach($scope.khuyenMai.khuyenMaiChiTietResponses.giays, function (giay) {
+                        $scope.selectedGiay.push(giay.id);
+                        $scope.selectedGiayTableData.push(giay)
+                        console.log("Biến thể detail:", $scope.selectedGiayTableData)
+                        console.log("Id giày:", giay.id)
+                    });
+
                 }
             })
             .catch(function (error) {
                 toastr["error"]("Lấy dữ liệu thất bại");
             });
     };
+
     $scope.change = function (input) {
         input.$dirty = true;
     }
     $scope.changeGhiChu = function (input) {
         input.$dirty = true;
     }
+
 
     $scope.curPage = 1,
         $scope.itemsPerPage = 5,
@@ -314,70 +308,141 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
         giaySearch.currentPage = currentPage;
         giaySearch.pageSize = $scope.itemsPerPage;
 
-
-        $http.post('http://localhost:8080/admin/rest/giay/get-all-giay',giaySearch)
+        $http.post('http://localhost:8080/admin/rest/giay/find-all-by-search', giaySearch)
             .then(function (response) {
-                $scope.giays = response.data.content;
+                $scope.giays = response.data;
                 console.log("Load giày: ", $scope.giays);
-                $scope.xacNhan();
-                $scope.khuyenMai.khuyenMaiChiTietResponses.forEach(function (item) {
-                    var giayResponseId = item.bienTheGiayResponsel.giayResponse.id;
-                    console.log("abc", giayResponseId);
 
-                    var selectedGiay = $scope.giays.find(function (giay) {
-                        return giay.id === giayResponseId;
-                    });
-
-                    if (selectedGiay) {
-                        selectedGiay.selected = true;
-                    }
+                angular.forEach($scope.giays, function (giay) {
+                    giay.selected = $scope.selectedGiay.includes(giay.id);
+                    giay.disabled = giay.selected;
                 });
-                // $('#myModal').modal('show');
+                // Show the modal
+                $('#myModal').modal('show');
             })
             .catch(function (error) {
                 console.error('Error fetching data: ' + error);
             });
     };
 
-    $scope.$watch('curPage + numPerPage', function () {
-        $scope.loadGiay($scope.curPage);
-    });
-
-    $scope.updateDotGiamGia = function () {
-
-        if ($scope.dotGiamGiaForm.$invalid) {
-            return;
+    $scope.selectAllGiay = function () {
+        // Kiểm tra xem tất cả các checkbox đã được chọn và disabled chưa
+        var allSelectedAndDisabled = $scope.giays.every(function (giay) {
+            return giay.selected && giay.disabled;
+        });
+        // Nếu tất cả đã được chọn và disabled, không thay đổi trạng thái
+        if (!allSelectedAndDisabled) {
+            angular.forEach($scope.giays, function (giay) {
+                giay.selected = $scope.selectAll;
+            });
         }
-        console.log($scope.dotGiamGia);
-        console.log($scope.dotGiamGia.dieuKienRequests);
-        // Gửi danh sách các điều kiện lên backend
-        $scope.dotGiamGia.dieuKienRequests = $scope.dotGiamGia.dieuKienResponses.map(function (dieuKien) {
-            return {
-                id: dieuKien.id,
-                tongHoaDon: dieuKien.tongHoaDon,
-                phanTramGiam: dieuKien.phanTramGiam
-            };
+
+    };
+
+    $scope.$watch('giays', function (newGiays, oldGiays) {
+        // Kiểm tra xem tất cả các checkbox trong tbody đã được chọn và không bị disabled chưa
+        var allSelectedAndNotDisabled = newGiays.every(function (giay) {
+            return giay.selected && !giay.disabled;
         });
 
-        console.log($scope.dotGiamGia);
+        // Nếu tất cả đã được chọn và không bị disabled, cập nhật trạng thái cho checkbox ở thead
+        if (allSelectedAndNotDisabled) {
+            $scope.selectAll = true;
+        } else {
+            $scope.selectAll = false;
+        }
+    }, true);
 
-        $http.put(host + '/admin/rest/dot-giam-gia/' + $scope.dotGiamGia.id, $scope.dotGiamGia)
+    $scope.selectedGiay = [];
+    $scope.selectedGiayTableData = [];
+
+    $scope.xacNhan = function () {
+        $scope.giays.forEach(function (giay) {
+            if (giay.selected === true) {
+                $scope.selectedGiay.push(giay);
+            }
+        });
+
+        $scope.selectedGiay = $scope.selectedGiay.filter(function (giay) {
+            return giay.selected;
+        }).map(function (giay) {
+            return giay.id;
+        });
+        $http.post('http://localhost:8080/admin/rest/giay/get-giay-contains', $scope.selectedGiay)
+            .then(function (response) {
+                // Xử lý dữ liệu từ API ở đây
+                $scope.selectedGiayTableData = response.data;
+                console.log("Load biến thể: ", $scope.selectedGiayTableData);
+            })
+            .catch(function (error) {
+                // Xử lý lỗi ở đây
+                console.error('Error fetching data:', error);
+            });
+        console.log("Id giày ", $scope.selectedGiay);
+
+    };
+
+    $scope.addKhuyenMai = function () {
+
+        if ($scope.khuyenMaiForm.$invalid) {
+            return;
+        }
+
+        angular.forEach($scope.selectedGiayTableData, function (giay) {
+            angular.forEach(giay.lstBienTheGiay, function (bienTheGiay) {
+                if (giay.selected) {
+                    var khuyenMaiChiTietRequest = {
+                        bienTheGiayId: bienTheGiay.id,
+                        phanTramGiam: bienTheGiay.phanTramGiam
+                    };
+                    $scope.khuyenMai.khuyenMaiChiTietRequests.push(khuyenMaiChiTietRequest);
+                }
+            });
+        })
+
+        console.log("Khuyến mại chi tiết: ", $scope.khuyenMai.khuyenMaiChiTietRequests)
+        $http.post(host + '/admin/rest/khuyen-mai', $scope.khuyenMai)
             .then(function (response) {
                 if (response.status === 200) {
-                    toastr["success"]("Cập nhật thành công");
+                    toastr["success"]("Thêm thành công");
                 }
                 $location.path("/list");
             })
             .catch(function (error) {
-                toastr["error"]("Cập nhật thất bại");
+                console.log(error)
+                toastr["error"]("Thêm thất bại");
                 if (error.status === 400) {
-                    $scope.dotGiamGiaForm.ten.$dirty = false;
-                    $scope.dotGiamGiaForm.ghiChu.$dirty = false;
+                    $scope.khuyenMaiForm.ten.$dirty = false;
+                    $scope.khuyenMaiForm.ghiChu.$dirty = false;
                     $scope.errors = error.data;
                 }
             });
     }
 
+    $scope.thietLapHangLoat = function () {
+        var giamPhanTram = parseFloat($scope.giamPhanTram); // Chuyển giá trị thành số
+        angular.forEach($scope.selectedGiayTableData, function (giay) {
+            angular.forEach(giay.lstBienTheGiay, function (bienTheGiay) {
+                if (giay.selected) {
+                    bienTheGiay.phanTramGiam = giamPhanTram
+                }
+            });
+
+        })
+        console.log("Khuyến mại chi tiết: ", $scope.khuyenMai.khuyenMaiChiTietRequests)
+    }
+    $scope.xoaDong = function (giay) {
+        var indexGiay = $scope.selectedGiay.findIndex(function (item) {
+            return item === giay.id;
+        });
+
+        $scope.selectedGiay.splice(indexGiay, 1);
+        console.log(giay, $scope.selectedGiay);
+
+        $scope.selectedGiayTableData = $scope.selectedGiayTableData.filter(function (item) {
+            return item.id !== giay.id;
+        });
+    };
     $scope.hasErrorInItems = false;
     $scope.checkErrorsInItems = function () {
         $scope.hasErrorInItems = false;
@@ -391,7 +456,6 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
     $scope.$watch('items', function (newItems, oldItems) {
         $scope.checkErrorsInItems();
     }, true);
-
     $scope.init();
 
 });
