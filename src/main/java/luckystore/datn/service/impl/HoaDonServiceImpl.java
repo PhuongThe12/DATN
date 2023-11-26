@@ -14,6 +14,7 @@ import luckystore.datn.exception.ConflictException;
 import luckystore.datn.exception.InvalidIdException;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.model.request.AddOrderProcuctRequest;
+import luckystore.datn.model.request.DatHangTaiQuayRequest;
 import luckystore.datn.model.request.HoaDonChiTietRequest;
 import luckystore.datn.model.request.HoaDonRequest;
 import luckystore.datn.model.request.HoaDonSearch;
@@ -166,6 +167,7 @@ public class HoaDonServiceImpl implements HoaDonService {
     @Override
     public HoaDonBanHangResponse getAllById(Long id) {
         List<HoaDonBanHangResponse> list = hoaDonRepository.getAllById(id);
+        System.out.println("Vào" + list.size());
 
         if (list.isEmpty()) {
             throw new NotFoundException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không tìm thấy hóa đơn")));
@@ -231,10 +233,10 @@ public class HoaDonServiceImpl implements HoaDonService {
         HoaDonChiTiet hdct;
         if (hoaDonChiTiet.isPresent()) {
             hdct = hoaDonChiTiet.get();
-            if(hdct.getHoaDon().getTrangThai() != 0) {
+            if (hdct.getHoaDon().getTrangThai() != 0) {
                 throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Hóa đơn đã được xử lý. Không hợp lệ")));
             }
-            if(hdct.getHoaDon().getNgayThanhToan() != null && hdct.getHoaDon().getNgayThanhToan().isAfter(LocalDateTime.now())) {
+            if (hdct.getHoaDon().getNgayThanhToan() != null && hdct.getHoaDon().getNgayThanhToan().isAfter(LocalDateTime.now())) {
                 throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Hóa đơn đang được thanh toán vui lòng thử lại")));
             }
             if (addOrderProcuctRequest.getSoLuong() == 0) {
@@ -254,6 +256,7 @@ public class HoaDonServiceImpl implements HoaDonService {
         }
         bienTheGiayRepository.save(bienTheGiay);
 
+        hdct.setTrangThai(1);
         hdct = hoaDonChiTietRepository.save(hdct);
 
         HoaDonChiTietResponse hoaDonChiTietResponse = new HoaDonChiTietResponse(hdct);
@@ -268,10 +271,10 @@ public class HoaDonServiceImpl implements HoaDonService {
     @Override
     public HoaDonChiTietResponse addNewHDCT(AddOrderProcuctRequest addOrderProcuctRequest) {
         HoaDon hoaDon = hoaDonRepository.findById(addOrderProcuctRequest.getIdHoaDon()).orElseThrow(() -> new NotFoundException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không tìm thấy hóa đơn"))));
-        if(hoaDon.getTrangThai() != 0) {
+        if (hoaDon.getTrangThai() != 0) {
             throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Hóa đơn đã được xử lý. Không hợp lệ")));
         }
-        if(hoaDon.getNgayThanhToan() != null && hoaDon.getNgayThanhToan().isAfter(LocalDateTime.now())) {
+        if (hoaDon.getNgayThanhToan() != null && hoaDon.getNgayThanhToan().isAfter(LocalDateTime.now())) {
             throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Hóa đơn đang được thanh toán vui lòng thử lại")));
         }
         BienTheGiay bienTheGiay = bienTheGiayRepository.findById(addOrderProcuctRequest.getIdGiay()).orElseThrow(() -> new NotFoundException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không tìm thấy giày"))));
@@ -291,6 +294,7 @@ public class HoaDonServiceImpl implements HoaDonService {
 
         hdct.setHoaDon(hoaDon);
         hdct.setBienTheGiay(bienTheGiay);
+        hdct.setTrangThai(1);
         hdct = hoaDonChiTietRepository.save(hdct);
 
         HoaDonChiTietResponse hoaDonChiTietResponse = new HoaDonChiTietResponse(hdct.getId(), hoaDon.getId(), new BienTheGiayResponse(bienTheGiay), hdct.getSoLuong());
@@ -308,10 +312,10 @@ public class HoaDonServiceImpl implements HoaDonService {
     public String deleteHoaDon(Long id) {
         HoaDon hoaDon = hoaDonRepository.findById(id).orElseThrow(() -> new NotFoundException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không tìm thấy hóa đơn"))));
 
-        if(hoaDon.getTrangThai() != 0) {
+        if (hoaDon.getTrangThai() != 0) {
             throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Hóa đơn đã được xử lý. Không hợp lệ")));
         }
-        if(hoaDon.getNgayThanhToan() != null && hoaDon.getNgayThanhToan().isAfter(LocalDateTime.now())) {
+        if (hoaDon.getNgayThanhToan() != null && hoaDon.getNgayThanhToan().isAfter(LocalDateTime.now())) {
             throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Hóa đơn đang được thanh toán tại một nơi khác vui lòng thử lại")));
         }
 
@@ -332,11 +336,11 @@ public class HoaDonServiceImpl implements HoaDonService {
     public void deleteAllHoaDonChiTiet(Long idHd) {
         HoaDon hoaDon = hoaDonRepository.findById(idHd).orElseThrow(() -> new NotFoundException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không tìm thấy hóa đơn"))));
 
-        if(hoaDon.getTrangThai() != 0) {
+        if (hoaDon.getTrangThai() != 0) {
             throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Hóa đơn đã được xử lý. Không hợp lệ")));
         }
 
-        if(hoaDon.getNgayThanhToan() != null && hoaDon.getNgayThanhToan().isAfter(LocalDateTime.now())) {
+        if (hoaDon.getNgayThanhToan() != null && hoaDon.getNgayThanhToan().isAfter(LocalDateTime.now())) {
             throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Hóa đơn đang được thanh toán tại một nơi khác vui lòng thử lại")));
         }
         Set<HoaDonChiTiet> lstHoaDonCT = hoaDon.getListHoaDonChiTiet();
@@ -377,7 +381,7 @@ public class HoaDonServiceImpl implements HoaDonService {
             throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Hóa đơn đã được thanh toán")));
         }
 
-        if(hoaDon.getNgayThanhToan() != null && hoaDon.getNgayThanhToan().isAfter(LocalDateTime.now())) {
+        if (hoaDon.getNgayThanhToan() != null && hoaDon.getNgayThanhToan().isAfter(LocalDateTime.now())) {
             throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Hóa đơn đang được thanh toán tại một nơi khác vui lòng thử lại")));
         }
 
@@ -396,7 +400,7 @@ public class HoaDonServiceImpl implements HoaDonService {
         hoaDon.setTienGiam(request.getTienGiam());
 
         Set<ChiTietThanhToan> chiTietThanhToans = hoaDon.getChiTietThanhToans();
-        if(chiTietThanhToans == null) {
+        if (chiTietThanhToans == null) {
             chiTietThanhToans = new HashSet<>();
         } else {
             chiTietThanhToans.removeIf(item -> item.getId() != null);
@@ -411,7 +415,7 @@ public class HoaDonServiceImpl implements HoaDonService {
 
             chiTietThanhToans.add(chiTietThanhToan);
             hoaDon.setNgayThanhToan(LocalDateTime.now());
-        } else if(request.getPhuongThuc() == 3) {
+        } else if (request.getPhuongThuc() == 3) {
             ChiTietThanhToan chiTietThanhToan = ChiTietThanhToan.builder()
                     .hoaDon(hoaDon)
                     .hinhThucThanhToan(1)
@@ -448,6 +452,10 @@ public class HoaDonServiceImpl implements HoaDonService {
     public Long thanhToanHoaDonTaiQuayBanking(HoaDonThanhToanTaiQuayRequest request) {
         HoaDon hoaDon = hoaDonRepository.findById(Long.valueOf(request.getIdHoaDon()))
                 .orElseThrow(() -> new NotFoundException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không tìm thấy hóa đơn"))));
+        if (hoaDon.getTrangThai() != 0) {
+            throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Hóa đơn đã được thanh toán")));
+        }
+
         Set<ChiTietThanhToan> chiTietThanhToans = hoaDon.getChiTietThanhToans();
 
         if (request.getPhuongThuc() == 3) {
@@ -476,7 +484,127 @@ public class HoaDonServiceImpl implements HoaDonService {
     }
 
     @Override
+    public Long datHangTaiQuay(DatHangTaiQuayRequest request) {
+        HoaDon hoaDon = hoaDonRepository.findById(Long.valueOf(request.getId()))
+                .orElseThrow(() -> new NotFoundException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không tìm thấy hóa đơn"))));
+
+        if (hoaDon.getTrangThai() != 0) {
+            throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Hóa đơn đã được thanh toán")));
+        }
+
+        if (hoaDon.getNgayThanhToan() != null && hoaDon.getNgayThanhToan().isAfter(LocalDateTime.now())) {
+            throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Hóa đơn đang được thanh toán tại một nơi khác vui lòng thử lại")));
+        }
+
+        if (hoaDon.getListHoaDonChiTiet().isEmpty()) {
+            throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Chưa có sản phẩm trong hóa đơn")));
+        }
+
+        Set<ChiTietThanhToan> chiTietThanhToans = hoaDon.getChiTietThanhToans();
+        if (chiTietThanhToans == null) {
+            chiTietThanhToans = new HashSet<>();
+        } else {
+            chiTietThanhToans.removeIf(item -> item.getId() != null);
+        }
+        if (request.getPhuongThuc() == 1) {
+            ChiTietThanhToan chiTietThanhToan = ChiTietThanhToan.builder()
+                    .hoaDon(hoaDon)
+                    .hinhThucThanhToan(1)
+                    .tienThanhToan(request.getTongTien())
+                    .trangThai(1)
+                    .build();
+
+            chiTietThanhToans.add(chiTietThanhToan);
+            hoaDon.setNgayThanhToan(LocalDateTime.now());
+            hoaDon.setTrangThai(TrangThaiHoaDon.CHO_GIAO_HANG);
+        } else {
+            ChiTietThanhToan chiTietThanhToan = ChiTietThanhToan.builder()
+                    .hoaDon(hoaDon)
+                    .hinhThucThanhToan(2)
+                    .tienThanhToan(request.getTongTien())
+                    .trangThai(0)
+                    .build();
+
+            chiTietThanhToans.add(chiTietThanhToan);
+            hoaDon.setNgayThanhToan(LocalDateTime.now().plusMinutes(10));
+        }
+
+        hoaDon.setTienGiam(request.getTienGiam());
+        hoaDon.setKenhBan(1);
+        hoaDon.setDiaChiNhan(request.getDiaChiNhan());
+        hoaDon.setSoDienThoaiNhan(request.getSdtNhan());
+        hoaDon.setPhiShip(request.getTienShip());
+        hoaDon.setChiTietThanhToans(chiTietThanhToans);
+        hoaDon.setGhiChu(request.getGhiChu());
+        List<Long> idsBienThe = hoaDon.getListHoaDonChiTiet().stream().map(hdct -> hdct.getBienTheGiay().getId()).toList();
+        List<BienTheGiayResponse> bienTheGiayResponses = bienTheGiayRepository.bienTheGiay(idsBienThe);
+        for (BienTheGiayResponse btR : bienTheGiayResponses) {
+            for (HoaDonChiTiet hdct : hoaDon.getListHoaDonChiTiet()) {
+                if (Objects.equals(btR.getId(), hdct.getBienTheGiay().getId())) {
+                    hdct.setDonGia(btR.getGiaBan().subtract(btR.getGiaBan().multiply(BigDecimal.valueOf(btR.getKhuyenMai() == null ? 0 : btR.getKhuyenMai()).divide(BigDecimal.valueOf(100)))));
+                }
+            }
+        }
+        hoaDonRepository.save(hoaDon);
+        return hoaDon.getId();
+    }
+
+    @Override
+    public Long datHangHoaDonTaiQuayBanking(HoaDonThanhToanTaiQuayRequest request) {
+        HoaDon hoaDon = hoaDonRepository.findById(Long.valueOf(request.getIdHoaDon()))
+                .orElseThrow(() -> new NotFoundException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không tìm thấy hóa đơn"))));
+        if (hoaDon.getTrangThai() != 0) {
+            throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Hóa đơn đã được thanh toán")));
+        }
+
+        if (hoaDon.getListHoaDonChiTiet().isEmpty()) {
+            throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Chưa có sản phẩm trong hóa đơn")));
+        }
+
+        Set<ChiTietThanhToan> chiTietThanhToans = hoaDon.getChiTietThanhToans();
+        if (chiTietThanhToans == null) {
+            chiTietThanhToans = new HashSet<>();
+        } else if (!chiTietThanhToans.isEmpty()) {
+            chiTietThanhToans.removeIf(item -> item.getId() != null);
+        }
+
+        ChiTietThanhToan chiTietThanhToan = ChiTietThanhToan.builder()
+                .hoaDon(hoaDon)
+                .hinhThucThanhToan(2)
+                .tienThanhToan(request.getTienChuyenKhoan())
+                .maGiaoDich(request.getMaGiaoDich())
+                .trangThai(1)
+                .build();
+
+        chiTietThanhToans.add(chiTietThanhToan);
+
+        hoaDon.setTrangThai(TrangThaiHoaDon.CHO_GIAO_HANG);
+        hoaDon.setChiTietThanhToans(chiTietThanhToans);
+        hoaDonRepository.save(hoaDon);
+
+        return hoaDon.getId();
+    }
+
+    @Override
+    public void cancelBanking(Long id) {
+        HoaDon hoaDon = hoaDonRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không tìm thấy hóa đơn"))));
+
+        if (hoaDon.getTrangThai() != 0) {
+            throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Hóa đơn đã được thanh toán")));
+        }
+
+        if (hoaDon.getNgayThanhToan() != null && hoaDon.getNgayThanhToan().isBefore(LocalDateTime.now())) {
+            throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Hóa đơn đã được xử lý")));
+        }
+
+        hoaDon.setNgayThanhToan(LocalDateTime.now());
+        hoaDonRepository.save(hoaDon);
+    }
+
+    @Override
     public Page<HoaDonResponse> getPageByIdKhachHang(int page, String searchText, Integer status, Long idKhachHang) {
         return hoaDonRepository.getPageResponseByIdKhachHang(searchText, status, PageRequest.of((page - 1), 9999), idKhachHang);
     }
+
 }

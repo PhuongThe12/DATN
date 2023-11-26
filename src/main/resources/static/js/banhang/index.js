@@ -118,8 +118,11 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
     if (Object.keys(container).length > 2) {
         console.log(container, container["vnp_OrderInfo"], container["vnp_OrderInfo"].split("x"));
         const info = container["vnp_OrderInfo"].split("x");
-        if (info.length !== 2 && (info[1] !== 2 || info[1] !== 3)) {
-            toastr["error"]("Không hợp lệ");
+        if (info.length < 2 && (info[1] !== '2' || info[1] !== '3')) {
+            window.location.href = window.location.origin + window.location.pathname + "?status=02&hd=" + info[0] + "#home";
+            return;
+        } else if (info.length === 3 && (info[1] !== '2' || info[1] !== '3') && info[2] !== '1') {
+            window.location.href = window.location.origin + window.location.pathname + "?status=02&hd=" + info[0] + "#home";
             return;
         }
         if (container["vnp_TransactionStatus"] === "00") {
@@ -129,16 +132,32 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                 tienChuyenKhoan: container["vnp_Amount"] / 100,
                 maGiaoDich: container["vnp_TxnRef"]
             }
-            console.log(request);
-            $http.post(host + "/admin/rest/hoa-don/thanh-toan-tai-quay-banking", request)
+            if (info.length === 2) {
+                $http.post(host + "/admin/rest/hoa-don/thanh-toan-tai-quay-banking", request)
+                    .then(response => {
+                        window.location.href = window.location.origin + window.location.pathname + "?status=00#home";
+                    })
+                    .catch(err => {
+                        window.location.href = window.location.origin + window.location.pathname + "?status=02#home";
+                    })
+            } else if(info.length === 3) {
+                $http.post(host + "/admin/rest/hoa-don/dat-hang-tai-quay-banking", request)
+                    .then(response => {
+                        window.location.href = window.location.origin + window.location.pathname + "?status=00#home";
+                    })
+                    .catch(err => {
+                        window.location.href = window.location.origin + window.location.pathname + "?status=02#home";
+                    })
+            }
+
+        }else {
+            $http.get(host + "/vnpay/cancel-banking/" + info[0])
                 .then(response => {
-                    window.location.href = window.location.origin + window.location.pathname + "?status=00#home";
+                    window.location.href = window.location.origin + window.location.pathname + "?status=02#home";
                 })
                 .catch(err => {
                     window.location.href = window.location.origin + window.location.pathname + "?status=02#home";
                 })
-        } else {
-            window.location.href = window.location.origin + window.location.pathname + "?status=02&hd=" + info[0] + "#home";
         }
     }
 
@@ -638,9 +657,11 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                     $http.post(host + "/admin/rest/hoa-don/thanh-toan-tai-quay", request)
                         .then(response => {
                             const index = $scope.hoaDons.findIndex(item => item.id === response.data);
-                            $scope.hoaDons.splice(index, 1);
-                            toastr["success"]("Thanh toán thành công");
-                            resetHoaDon();
+                            if (index !== -1) {
+                                $scope.hoaDons.splice(index, 1);
+                                toastr["success"]("Thanh toán thành công");
+                                resetHoaDon();
+                            }
                             $scope.isLoading = false;
                         })
                         .catch(err => {
@@ -670,7 +691,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                 $http.post(host + "/admin/rest/hoa-don/thanh-toan-tai-quay", request)
                     .then(response => {
                         // const index = $scope.hoaDons.findIndex(item => item.id === response.data);
-                        request.idHoaDon = response.data + "x2";
+                        request.idHoaDon = response.data + "x" + request.phuongThuc;
                         $http.post(host + "/vnpay/create-vnpay-order-tai-quay", request)
                             .then(response => {
                                 window.location.href = response.data;
@@ -710,6 +731,10 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
         $scope.uuDai = {uuDai: 0};
         $scope.tienMatTaiQuay = null;
         $scope.tienThuaTaiQuay = null;
+
+        $scope.tenNguoiNhan = '';
+        $scope.diaChiNhan = '';
+        $scope.sdtNhan = '';
     }
 
     function detailGiayChiTiet(productData) {
@@ -1304,9 +1329,9 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
 
         let soDonHang = 0;
         if ($scope.soLuong % 30 === 0) {
-            soDonHang = $scope.soLuong / 30;
+            soDonHang = parseInt($scope.soLuong / 30);
         } else {
-            soDonHang = $scope.soLuong / 30 + 1;
+            soDonHang = parseInt($scope.soLuong / 30) + 1;
         }
 
         $scope.phiVanChuyen = Math.round(soDonHang * $scope.feeShippingPerOne);
@@ -1319,6 +1344,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
         $scope.sdtNhan = '';
         $scope.diaChiNhan = '';
         $scope.phiVanChuyen = null;
+        $scope.feeShippingPerOne = 0;
     }
 
     let logisticInfo = {
@@ -1361,13 +1387,80 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
             return;
         }
 
-        if (!$scope.diaChi || !$scope.diaChi.xa || !$scope.diaChi.huyen || !$scope.diaChi.tinh || !$scope.diaChi.xa
-            || !$scope.diaChi.sdtNguoiNhan || $scope.diaChi.tenNguoiNhan || !$scope.diaChi.detailAdress) {
+        if (!$scope.diaChi || !$scope.diaChi.xa || !$scope.diaChi.huyen || !$scope.diaChi.tinh || !$scope.diaChi.xa || !$scope.diaChi.sdtNguoiNhan || !$scope.diaChi.tenNguoiNhan || !$scope.diaChi.detailAdress) {
             toastr["error"]("Chưa có địa chỉ giao hàng hoặc địa chỉ không hợp lệ");
             return;
         }
 
-        console.log($scope.feeShippingPerOne, $scope.tongTienPhaiTra, $scope.soLuong, $scope.diaChi);
+        if ($scope.tongTienPhaiTra < 10001) {
+            toastr["error"]("Tiền đơn hàng không được nhỏ hơn 10,001 vnđ");
+            return;
+        }
+
+        if ($scope.tongTienPhaiTra > 999999999) {
+            toastr["error"]("Tiền đơn hàng không được nhỏ hơn 999,999,999 vnđ");
+            return;
+        }
+
+        const request = {
+            id: $scope.selectedHoaDon.id,
+            phuongThuc: $scope.phuongThucDatHang.id,
+            tienGiam: $scope.tongTienGiam,
+            tienShip: $scope.phiVanChuyen,
+            tongTien: $scope.tongTienPhaiTra,
+            diaChiNhan: $scope.diaChiNhan,
+            sdtNhan: $scope.sdtNhan,
+            nguoiNhan: $scope.tenNguoiNhan,
+            ghiChu: $scope.ghiChuDatHang
+        }
+
+        Swal.fire({
+            text: "Xác nhận xóa thanh toán ?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                $http.post(host + "/admin/rest/hoa-don/dat-hang-tai-quay", request)
+                    .then(response => {
+                        if (request.phuongThuc === 1) {
+                            const index = $scope.hoaDons.findIndex(item => item.id === response.data);
+                            if (index !== -1) {
+                                $scope.hoaDons.splice(index, 1);
+                                toastr["success"]("Thanh toán thành công");
+                                resetHoaDon();
+                            }
+                        } else {
+                            request.idHoaDon = response.data + "x" + request.phuongThuc + "x1";
+                            request.tienChuyenKhoan = request.tongTien;
+                            request.phuongThuc = request.phuongThuc;
+                            $http.post(host + "/vnpay/create-vnpay-order-tai-quay", request)
+                                .then(response => {
+                                    window.location.href = response.data;
+                                })
+                                .catch(err => {
+                                    console.log(err);
+                                })
+                        }
+
+                        $scope.isLoading = false;
+                    })
+                    .catch(err => {
+                        if (err.status === 409) {
+                            toastr["error"](err.data.data);
+                            $location.path("#home");
+                        } else {
+                            toastr["error"]("Có lỗi vui lòng thử lại");
+                        }
+                        $scope.isLoading = false;
+                    });
+            }
+        });
+
     }
 
 });

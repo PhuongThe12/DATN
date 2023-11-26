@@ -10,6 +10,7 @@ import luckystore.datn.entity.HoaDonChiTiet;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
@@ -30,6 +31,8 @@ public class HoaDonBanHangResponse {
         this.id = id;
         if (hoaDonChiTiet != null) {
             this.hoaDonChiTiets.add(new HoaDonChiTietResponse(hoaDonChiTiet));
+            System.out.println(hoaDonChiTiet.getId() + ": id");
+            System.out.print(hoaDonChiTiet.getSoLuongTra());
         }
         this.trangThai = trangThai;
     }
