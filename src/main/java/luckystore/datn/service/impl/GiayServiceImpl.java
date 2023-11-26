@@ -32,6 +32,7 @@ import luckystore.datn.model.response.DeGiayResponse;
 import luckystore.datn.model.response.ExcelError;
 import luckystore.datn.model.response.GiayResponse;
 import luckystore.datn.model.response.HashTagResponse;
+import luckystore.datn.model.response.KhuyenMaiChiTietResponse;
 import luckystore.datn.model.response.KichThuocResponse;
 import luckystore.datn.model.response.LotGiayResponse;
 import luckystore.datn.model.response.MauSacResponse;
@@ -45,6 +46,7 @@ import luckystore.datn.repository.DeGiayRepository;
 import luckystore.datn.repository.GiayRepository;
 import luckystore.datn.repository.HashTagRepository;
 import luckystore.datn.repository.HinhAnhRepository;
+import luckystore.datn.repository.KhuyenMaiChiTietRepository;
 import luckystore.datn.repository.KichThuocRepository;
 import luckystore.datn.repository.LotGiayRepository;
 import luckystore.datn.repository.MauSacRepository;
@@ -88,6 +90,7 @@ public class GiayServiceImpl implements GiayService {
     private final ImageHubService imageHubService;
     private final BienTheGiayRepository bienTheGiayRepository;
     private final HinhAnhRepository hinhAnhRepository;
+    private final KhuyenMaiChiTietRepository khuyenMaiChiTietRepository;
 
     @Override
     public Page<GiayResponse> getAllActive(GiaySearch giaySearch) {
@@ -103,7 +106,7 @@ public class GiayServiceImpl implements GiayService {
         for (GiayResponse giayResponse : giayResponses) {
             if (result.containsKey(giayResponse.getId()) && !giayResponse.getLstBienTheGiay().isEmpty()) {
                 GiayResponse giay = result.get(giayResponse.getId());
-                giay.getLstBienTheGiay().add(giay.getLstBienTheGiay().get(0));
+                giay.getLstBienTheGiay().add(giayResponse.getLstBienTheGiay().get(0));
             } else {
                 result.put(giayResponse.getId(), giayResponse);
             }
@@ -940,7 +943,7 @@ public class GiayServiceImpl implements GiayService {
                     hinhAnhs.add(HinhAnh.builder().giay(giay).link(file).uuTien(4).build());
                 }
             }
-           if (request.getImage5() != null) {
+            if (request.getImage5() != null) {
                 String file = imageHubService.base64ToFile(request.getImage5());
                 boolean finded = false;
                 for (int i = 0; i < hinhAnhs.size(); i++) {
@@ -976,6 +979,24 @@ public class GiayServiceImpl implements GiayService {
     }
 
     @Override
+    public BienTheGiayResponse getBienTheByBarcode(String barCode) {
+        return bienTheGiayRepository.getBienTheGiayByBarCode(barCode)
+                .orElseThrow(() -> new NotFoundException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không tồn tại"))));
+    }
+
+    @Override
+    public List<BienTheGiayResponse> getBienTheGiayByListId(List<Long> ids) {
+        return bienTheGiayRepository.findAllByIdIn(ids);
+    }
+
+    @Override
+    public Page<GiayResponse> findSimpleBySearch(GiaySearch giaySearch) {
+        Pageable pageable = PageRequest.of(giaySearch.getCurrentPage() - 1, giaySearch.getPageSize());
+        return giayRepository.findPageForSearch(giaySearch, pageable);
+
+    }
+
+    @Override
     public GiayResponse getResponseById(Long id) {
         GiayResponse giayResponse = giayRepository.findResponseById(id);
         if (giayResponse == null) {
@@ -983,12 +1004,23 @@ public class GiayServiceImpl implements GiayService {
         }
         Map<Long, String> mauSacImages = new HashMap<>();
 
+        List<Long> idBienThes = new ArrayList<>();
         giayResponse.getLstBienTheGiay().forEach(bienThe -> {
+            idBienThes.add(bienThe.getId());
             if (!mauSacImages.containsKey(bienThe.getMauSac().getId())) {
                 mauSacImages.put(bienThe.getMauSac().getId(), imageHubService.getBase64FromFile(bienThe.getHinhAnh()));
             }
         });
         giayResponse.setMauSacImages(mauSacImages);
+
+        List<KhuyenMaiChiTietResponse> khuyenMaiChiTiets = khuyenMaiChiTietRepository.getAllByIdBienThe(idBienThes);
+        for (KhuyenMaiChiTietResponse kmct : khuyenMaiChiTiets) {
+            for (BienTheGiayResponse bienTheGiayResponse : giayResponse.getLstBienTheGiay()) {
+                if (bienTheGiayResponse.getId().equals(kmct.getBienTheGiayResponsel().getId())) {
+                    bienTheGiayResponse.setKhuyenMai(kmct.getPhanTramGiam());
+                }
+            }
+        }
 
         return giayResponse;
     }

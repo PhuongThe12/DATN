@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface HoaDonRepository extends JpaRepository<HoaDon,Long> {
@@ -31,7 +32,7 @@ public interface HoaDonRepository extends JpaRepository<HoaDon,Long> {
             "left JOIN hd.nhanVien nv " +
             "INNER JOIN hd.listHoaDonChiTiet hdct " +
             "WHERE (hd.loaiHoaDon = 1 OR hd.loaiHoaDon = 2) "+
-            "AND (:#{#hoaDonSearch.idHoaDon} IS NULL OR CAST(hd.id AS string) like %:#{#hoaDonSearch.idHoaDon}%) "+
+            "AND (:#{#hoaDonSearch.idHoaDon} IS NULL OR hd.id  = :#{#hoaDonSearch.idHoaDon}) "+
             "AND (:#{#hoaDonSearch.loaiHoaDon} IS NULL OR hd.loaiHoaDon = :#{#hoaDonSearch.loaiHoaDon}) "+
             "AND (:#{#hoaDonSearch.email} IS NULL OR hd.email like %:#{#hoaDonSearch.email}%) "+
             "AND (:#{#hoaDonSearch.kenhBan} IS NULL OR hd.kenhBan = :#{#hoaDonSearch.kenhBan}) "+
@@ -39,13 +40,16 @@ public interface HoaDonRepository extends JpaRepository<HoaDon,Long> {
             "AND (:#{#hoaDonSearch.khachHang} IS NULL OR kh.hoTen = :#{#hoaDonSearch.khachHang}) "+
             "AND (:#{#hoaDonSearch.nhanVien} IS NULL OR nv.hoTen = :#{#hoaDonSearch.nhanVien}) "+
             "AND (:#{#hoaDonSearch.giaTu} IS NULL OR (SELECT SUM(ct.donGia * ct.soLuong) FROM HoaDonChiTiet ct WHERE ct.hoaDon = hd) >= :#{#hoaDonSearch.giaTu})"+
-            "AND (:#{#hoaDonSearch.giaDen} IS NULL OR (SELECT SUM(ct.donGia * ct.soLuong) FROM HoaDonChiTiet ct WHERE ct.hoaDon = hd) <= :#{#hoaDonSearch.giaDen})"+
-            "order by hd.id desc ")
+            "AND (:#{#hoaDonSearch.giaDen} IS NULL OR (SELECT SUM(ct.donGia * ct.soLuong) FROM HoaDonChiTiet ct WHERE ct.hoaDon = hd) <= :#{#hoaDonSearch.giaDen})")
     Page<HoaDonYeuCauRespone> getPageHoaDonYeuCauResponse(HoaDonSearch hoaDonSearch, Pageable pageable);
 
     @Query("SELECT new luckystore.datn.model.response.HoaDonBanHangResponse(hd.id, hdct, hd.trangThai)  FROM HoaDon hd " +
             "left join hd.listHoaDonChiTiet hdct " +
-            "where hd.trangThai = 0 order by hd.id desc")
+            "where hd.id = :id")
+    List<HoaDonBanHangResponse> getAllById(Long id);
+
+    @Query("SELECT new luckystore.datn.model.response.HoaDonBanHangResponse(hd.id)  FROM HoaDon hd " +
+            "where hd.trangThai = 0")
     List<HoaDonBanHangResponse> getAllChuaThanhToan();
 
     @Query("SELECT hd.id FROM HoaDon hd where hd.id = :id")
@@ -54,6 +58,11 @@ public interface HoaDonRepository extends JpaRepository<HoaDon,Long> {
     @Query("select new luckystore.datn.model.response.HoaDonYeuCauRespone(hd, hd.hoaDonGoc.id) from HoaDon hd " +
             "WHERE hd.id = :id")
     HoaDonYeuCauRespone getHoaDonYeuCauResponse(Long id);
+
+    @Query("select new luckystore.datn.model.response.HoaDonResponse(hd) from HoaDon hd " +
+            "WHERE (:searchText IS NULL OR hd.ghiChu LIKE %:searchText%) AND (:status IS NULL OR hd.trangThai = :status)" +
+            "AND hd.khachHang.id = :idKhachHang")
+    Page<HoaDonResponse> getPageResponseByIdKhachHang(String searchText, Integer status, Pageable pageable, Long idKhachHang);
 }
 
 

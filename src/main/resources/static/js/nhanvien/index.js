@@ -62,22 +62,22 @@ app.controller("addNhanVienController", function ($scope, $http, $location, $win
     }
 
 });
-app.controller("indexController", function ($scope, $http, $location, $cookies, $window) {
-    $http.get(host + '/admin/rest/nhan-vien/check-logged')
-        .then(function (response) {
-            if (response.status == 200) {
-                $scope.nhanVienLogged = response.data;
-                if ($scope.nhanVienLogged.chucVu == 2) {
-                    $scope.chuCuaHangLogged = true;
-                } else if ($scope.nhanVienLogged.chucVu == 1) {
-                    $scope.chuCuaHangLogged = false;
-                }
-            }
-        }).catch(function (error) {
-        toastr["error"]("Không tìm thấy người dùng , vui lòng đăng nhập lại !");
-        $window.location.href = '/admin/tong-quan#/home';
-    });
-});
+// app.controller("indexController", function ($scope, $http, $location, $cookies, $window) {
+//     $http.get(host + '/admin/rest/nhan-vien/check-logged')
+//         .then(function (response) {
+//             if (response.status == 200) {
+//                 $scope.nhanVienLogged = response.data;
+//                 if ($scope.nhanVienLogged.chucVu == 2) {
+//                     $scope.chuCuaHangLogged = true;
+//                 } else if ($scope.nhanVienLogged.chucVu == 1) {
+//                     $scope.chuCuaHangLogged = false;
+//                 }
+//             }
+//         }).catch(function (error) {
+//         toastr["error"]("Không tìm thấy người dùng , vui lòng đăng nhập lại !");
+//         $window.location.href = '/admin/tong-quan#/home';
+//     });
+// });
 
 
 app.controller("detailNhanVienController", function ($scope, $http, $window, $location, $cookies) {

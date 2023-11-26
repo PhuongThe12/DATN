@@ -91,7 +91,8 @@
                 </div>
 
                 <div>
-                    <a class="btn btn-primary" href="#/excelUpdate"><i class="fas fa-file-excel px-2"></i>Cập nhật với excel</a>
+                    <a class="btn btn-primary" href="#/excelUpdate"><i class="fas fa-file-excel px-2"></i>Cập nhật với
+                        excel</a>
                 </div>
 
                 <div class="px-3">
@@ -165,7 +166,7 @@
                                          class="border-botton-005 li-height-50 d-flex align-items-end justify-content-center py-1"
                                          data-bs-toggle="modal" data-bs-target="#giaModal"
                                          ng-click="focusInputModal('giaBan', index, $index)">
-                                        <span class="bienTheField">{{bienThe.giaBan}} <i
+                                        <span class="bienTheField">{{bienThe.giaBan|number:0}} <sup class="text-danger">vnđ</sup><i
                                                 class="fas fa-pen edit-icon"></i></span>
                                     </div>
                                 </ul>
@@ -175,7 +176,7 @@
                                              class="border-botton-005 li-height-50 d-flex align-items-end justify-content-center py-1"
                                              data-bs-toggle="modal" data-bs-target="#giaModal"
                                              ng-click="focusInputModal('giaBan', index, $index)">
-                                            <span class="bienTheField">{{bienThe.giaBan}}<i
+                                            <span class="bienTheField">{{bienThe.giaBan|number:0}}<sup class="text-danger">vnđ</sup><i
                                                     class="fas fa-pen edit-icon"></i></span>
                                         </div>
                                     </ul>

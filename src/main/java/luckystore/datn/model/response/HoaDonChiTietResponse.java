@@ -44,4 +44,11 @@ public class HoaDonChiTietResponse {
         }
     }
 
+    public HoaDonChiTietResponse(Long id, Long idHoaDon, BienTheGiayResponse bienTheGiayResponse, Integer soLuong) {
+        this.id = id;
+        this.idHoaDon = idHoaDon;
+        this.bienTheGiay = bienTheGiayResponse;
+        this.soLuong = soLuong;
+    }
+
 }

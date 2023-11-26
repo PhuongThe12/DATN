@@ -3,6 +3,7 @@ package luckystore.datn.rest;
 import luckystore.datn.model.request.GiayExcelRequest;
 import luckystore.datn.model.request.GiayRequest;
 import luckystore.datn.model.request.GiaySearch;
+import luckystore.datn.model.request.IdListRequest;
 import luckystore.datn.service.GiayService;
 import luckystore.datn.service.ImageHubService;
 import luckystore.datn.util.JsonString;
@@ -75,9 +76,19 @@ public class RestGiayController {
         return new ResponseEntity<>(giayService.findAllForList(giaySearch), HttpStatus.OK);
     }
 
+    @PostMapping("/get-simple-by-search")
+    public ResponseEntity<?> findSimpleBySearch(@RequestBody GiaySearch giaySearch) {
+        return new ResponseEntity<>(giayService.findSimpleBySearch(giaySearch), HttpStatus.OK);
+    }
+
     @PostMapping("/find-all-by-search")
     public ResponseEntity<?> findAllBySearch(@RequestBody GiaySearch giaySearch) {
         return new ResponseEntity<>(giayService.findAllBySearch(giaySearch), HttpStatus.OK);
+    }
+
+    @GetMapping("/bien-the/{barcode}")
+    public ResponseEntity<?> findBienTheByBarcode(@PathVariable("barcode") String barcode) {
+        return new ResponseEntity<>(giayService.getBienTheByBarcode(barcode), HttpStatus.OK);
     }
 
     @PostMapping("/get-giay-contains")
@@ -122,6 +133,12 @@ public class RestGiayController {
     @GetMapping("/{id}/so-luong")
     public ResponseEntity<?> getSoLuong(@PathVariable("id") Long id) {
         return ResponseEntity.ok(giayService.getSoLuong(id));
+    }
+
+    @PostMapping("/bien-the/get-all-by-list-id")
+    public ResponseEntity<?> getAllBienTheGiayBuListId(@RequestBody IdListRequest list){
+        List<Long> ids = list.getIds();
+        return new ResponseEntity(giayService.getBienTheGiayByListId(ids), HttpStatus.OK);
     }
 
     private ResponseEntity<?> getErrorJson(BindingResult result) {

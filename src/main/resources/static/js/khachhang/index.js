@@ -14,6 +14,9 @@ app.config(function ($routeProvider, $locationProvider) {
     }).when("/add", {
         templateUrl: '/pages/admin/khachhang/views/add.html',
         controller: 'addKhachHangController'
+    }).when("/donmua", {
+        templateUrl: '/pages/admin/khachhang/views/donmua.html',
+        controller: 'donMuaController'
     })
         .otherwise({redirectTo: '/list'});
 });
@@ -39,7 +42,7 @@ app.controller("addKhachHangController", function ($scope, $http, $location) {
                 // toastr["error"]("Thêm thất bại");
                 console.log(error)
                 if (error.status === 400) {
-                    $scope.khachHangForm.hoTen.$dirty=false;
+                    $scope.khachHangForm.hoTen.$dirty = false;
                     $scope.khachHangForm.gioiTinh.$dirty = false;
                     $scope.khachHangForm.ngaySinh.$dirty = false;
                     $scope.khachHangForm.soDienThoai.$dirty = false;
@@ -133,6 +136,9 @@ app.controller("updateKhachHangController", function ($scope, $http, $routeParam
     $http.get(host + '/admin/rest/khach-hang/' + id)
         .then(function (response) {
             $scope.khachHang = response.data;
+            var ngaySinh = $scope.khachHang.ngaySinh;
+            var object = new Date(ngaySinh);
+            $scope.khachHang.ngaySinh = object;
             console.log(response.data);
         }).catch(function (error) {
         toastr["error"]("Lấy dữ liệu thất bại");
@@ -146,12 +152,12 @@ app.controller("updateKhachHangController", function ($scope, $http, $routeParam
         const khachHangUpdate = {
             id: $scope.khachHang.id,
             hoTen: $scope.khachHang.hoTen,
-            gioiTinh : $scope.khachHang.gioiTinh,
-            ngaySinh : $scope.khachHang.ngaySinh,
-            soDienThoai : $scope.khachHang.soDienThoai,
-            email : $scope.khachHang.email,
-            diemTichLuy : $scope.khachHang.diemTichLuy,
-            trangThai : $scope.khachHang.trangThai,
+            gioiTinh: $scope.khachHang.gioiTinh,
+            ngaySinh: $scope.khachHang.ngaySinh,
+            soDienThoai: $scope.khachHang.soDienThoai,
+            email: $scope.khachHang.email,
+            diemTichLuy: $scope.khachHang.diemTichLuy,
+            trangThai: $scope.khachHang.trangThai,
 
         };
         console.log($scope.khachHang);
@@ -167,8 +173,7 @@ app.controller("updateKhachHangController", function ($scope, $http, $routeParam
             console.log(error);
             toastr["error"]("Cập nhật thất bại");
             if (error.status === 400) {
-
-                $scope.khachHangForm.hoTen.$dirty=false;
+                $scope.khachHangForm.hoTen.$dirty = false;
                 $scope.khachHangForm.gioiTinh.$dirty = false;
                 $scope.khachHangForm.ngaySinh.$dirty = false;
                 $scope.khachHangForm.soDienThoai.$dirty = false;
@@ -178,4 +183,7 @@ app.controller("updateKhachHangController", function ($scope, $http, $routeParam
         })
     };
 });
+
+
+
 

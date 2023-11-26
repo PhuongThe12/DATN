@@ -17,7 +17,6 @@ app.controller("loginController", function ($scope, $http, $location, $window, $
                 } else {
                     $window.location.href = '/home';
                 }
-
             }).catch(function (error) {
             console.log(error)
         });

@@ -385,3 +385,19 @@ input:focus{
     overflow: auto;
     height: auto;
 }
+
+.btn-white{
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+}
+.btn-white:hover{
+    background-color: black;
+    color: white;
+    border: 1px solid white;
+}
+
+.click-button{
+    background-color: black;
+    color: white;
+}
