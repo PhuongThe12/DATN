@@ -3,6 +3,8 @@ package luckystore.datn.rest;
 import jakarta.validation.Valid;
 import luckystore.datn.model.request.DotGiamGiaRequest;
 import luckystore.datn.model.request.KhuyenMaiRequest;
+import luckystore.datn.model.response.ChiTietKhuyenMaiResponse;
+import luckystore.datn.model.response.GiayResponse;
 import luckystore.datn.service.DotGiamGiaService;
 import luckystore.datn.service.KhuyenMaiService;
 import luckystore.datn.util.JsonString;
@@ -14,7 +16,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/admin/rest/khuyen-mai")
@@ -66,6 +70,13 @@ public class RestKhuyenMaiController {
         ResponseEntity<?> errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
         return new ResponseEntity<>(khuyenMaiService.updateKhuyenMai(id, khuyenMaiRequest), HttpStatus.OK);
+    }
+
+    @GetMapping("/giay/{id}")
+    public ResponseEntity getKhuyenMaiGiay(@PathVariable("id") Long id) {
+        var khuyenMaiResponse = khuyenMaiService.findById(id);
+        var response = new ChiTietKhuyenMaiResponse(khuyenMaiResponse);
+        return new ResponseEntity(response, HttpStatus.OK);
     }
 
 }
