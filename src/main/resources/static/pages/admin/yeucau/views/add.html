@@ -71,7 +71,7 @@
     }
 
     #formYeuCau {
-        height: 700px;
+        height: 710px;
     }
 
     .right {
@@ -126,26 +126,26 @@
                                         <th>Kích Cỡ</th>
                                         <th>Màu Sắc</th>
                                         <th>Đơn Giá</th>
-                                        <th>Thành Tiền</th>
                                         <th>Thao Tác</th>
                                     </tr>
                                     </thead>
                                     <tbody style="max-height: 350px;overflow: auto">
                                     <tr ng-repeat="(index,hoaDonChiTiet) in hoaDon.listHoaDonChiTiet">
-                                        <td>SP{{hoaDonChiTiet.bienTheGiay.giayResponse.id}}</td>
+                                        <td>SP{{hoaDonChiTiet.bienTheGiay.id}},{{hoaDonChiTiet.id}}</td>
                                         <td>{{hoaDonChiTiet.bienTheGiay.giayResponse.ten}}</td>
                                         <td>
                                             <input type="number" ng-model="hoaDonChiTiet.soLuongTra" min="0"
-                                                   max="{{hoaDonChiTiet.soLuong }}">
-                                            <span>/ {{hoaDonChiTiet.soLuong}}</span>
+                                                   ng-init="hoaDonChiTiet.soLuongTra = 0"
+                                                   max="{{hoaDonChiTiet.soLuongDuocTra}}"
+                                                   ng-change="updateTongTienTra()">
+                                            <span>/ {{hoaDonChiTiet.soLuongTraMax}}</span>
                                         </td>
                                         <td>{{hoaDonChiTiet.bienTheGiay.kichThuoc.ten}}</td>
                                         <td>{{hoaDonChiTiet.bienTheGiay.mauSac.ten}}</td>
-                                        <td>{{ formatToVND(hoaDonChiTiet.donGia) }}</td>
-                                        <td>{{ formatToVND(hoaDonChiTiet.donGia * hoaDonChiTiet.soLuongTra) }}</td>
+                                        <td>{{ hoaDonChiTiet.donGia | formatToVND }}</td>
                                         <td>
-                                            <button type="button" class="btn btn-primary btn-lg"
-                                                    ng-click="doiSanPham(hoaDonChiTiet,index+1)">Trả
+                                            <button type="button" class="btn btn-primary"
+                                                    ng-click="addToMapSanPhamTra(index+1,hoaDonChiTiet)">Trả Hàng
                                             </button>
                                         </td>
                                     </tr>
@@ -169,17 +169,17 @@
                                 <thead>
                                 <tr>
                                     <th>Mã</th>
-                                    <th>Sản Phẩm Đổi</th>
+                                    <th>Loại</th>
+                                    <th>Tên Sản Phẩm</th>
                                     <th>Số Lượng Trả/Đổi</th>
                                     <th>Kích Cỡ</th>
                                     <th>Màu Sắc</th>
                                     <th>Đơn Giá</th>
-                                    <th>Thành Tiền</th>
                                     <th>Thao Tác</th>
                                 </tr>
                                 </thead>
                                 <tbody ng-repeat="item in arrayForRepeat track by $index"
-                                       style="max-height: 350px;overflow: auto">
+                                       style="max-height: 250px;overflow: auto">
                                 <tr>
                                     <td>{{ item.key}}</td>
                                     <td>Giày Trả</td>
@@ -188,17 +188,13 @@
                                     <td>{{ item.value.hoaDonChiTiet.bienTheGiay.kichThuoc.ten }}</td>
                                     <td>{{ item.value.hoaDonChiTiet.bienTheGiay.mauSac.ten }}</td>
                                     <td>{{ formatToVND(item.value.hoaDonChiTiet.donGia) }}</td>
-                                    <td>{{ formatToVND(item.value.hoaDonChiTiet.soLuongTra *
-                                        item.value.hoaDonChiTiet.donGia) }}
-                                    </td>
                                     <td>
-                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                                data-bs-target="#exampleModal" ng-click="ghiChu_LyDo(item)">Đổi
-                                        </button>
+                                        <button class="btn btn-warning" ng-click="ghiChu_LyDo(item)">Lý Do</button>
+                                        <button class="btn btn-danger" ng-click="deleteGiayTra(item)">Xóa</button>
                                     </td>
                                 </tr>
 
-                                <tr ng-repeat="(index, item1) in arrayForRepeat1 track by $index"
+                                <tr ng-repeat="item1 in arrayForRepeat1 track by $index"
                                     ng-if="item1.key === item.key">
                                     <td>{{ item1.key }}</td>
                                     <td>Giày Đổi</td>
@@ -207,9 +203,12 @@
                                     <td>{{ item1.value.bienTheGiay.kichThuoc.ten }}</td>
                                     <td>{{ item1.value.bienTheGiay.mauSac.ten }}</td>
                                     <td>{{ item1.value.bienTheGiay.giaBan }}</td>
-                                    <td>{{ item1.value.soLuongDoi * item1.value.bienTheGiay.giaBan }}</td>
-                                    <td><a class="btn btn-warning" data-bs-toggle="modal" href="#exampleModalToggle"
-                                           role="button" ng-click="chonLaiGiayDoi(item)">Chọn Lại</a></td>
+                                    <td>
+                                        <button class="btn btn-warning" ng-click="chonLaiGiay(item)">Chọn Lại</button>
+                                        <button type="button" class="btn btn-danger" ng-click="deleteGiayDoi(item1)">
+                                            Xóa
+                                        </button>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -218,15 +217,15 @@
                 </div>
 
 
-                <!-- Modal -->
+                <!-- Modal Điền: Lý Do + Ghi Chú-->
                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                     aria-hidden="true">
+                     aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">Lý Do Đổi Trả</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                                        aria-label="Close" ng-click="resetLyDo_ghiChu()"></button>
                             </div>
                             <div class="modal-body">
                                 <form>
@@ -234,8 +233,7 @@
                                         <div class="form-floating">
                                             <select class="form-select" id="floatingSelect"
                                                     placeholder="Chọn Lý Do Đổi/Trả"
-                                                    aria-label="Floating label select example" ng-model="lyDo"
-                                                    ng-change="updateMapSanPhamTra(giayTra.key,lyDo,ghiChu)">
+                                                    aria-label="Floating label select example" ng-model="lyDo">
                                                 <option ng-repeat="lyDo in listLyDo" value="{{lyDo.id}}">{{lyDo.ten}}
                                                 </option>
                                             </select>
@@ -244,25 +242,30 @@
                                     </div>
                                     <div class="mb-3">
                                         <div class="form-floating">
-                                        <textarea class="form-control" placeholder="Hãy mô tả chi tiết lý do đổi/trả"
-                                                  id="floatingTextarea2" style="height: 100px"
-                                                  ng-model="ghiChu"
-                                                  ng-blur="updateMapSanPhamTra(giayTra.key,lyDo,ghiChu)"
-                                                  ng-keyup="$event.keyCode == 13 && updateMapSanPhamTra(giayTra.key,lyDo,ghiChu)"></textarea>
-                                            <label for="floatingTextarea2">Mô Tả Chi Tiết</label></div>
+                                            <textarea class="form-control"
+                                                      placeholder="Hãy mô tả chi tiết lý do đổi/trả"
+                                                      id="floatingTextarea2" style="height: 100px"
+                                                      ng-model="ghiChu">
+                                            </textarea>
+                                            <label for="floatingTextarea2">Mô Tả Chi Tiết</label>
+                                        </div>
                                     </div>
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quay Về</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                        ng-click="resetLyDo_ghiChu()">Quay Về
+                                </button>
+                                <button type="button" class="btn btn-success" data-bs-dismiss="modal"
+                                        ng-click="updateLyDoVaGhiChu(giayTra.key,lyDo,ghiChu)">Lưu
+                                </button>
                                 <button type="button" class="btn btn-primary"
-                                        ng-click="checkFormMoTaLyDo(giayTra.key,lyDo,ghiChu)">Chọn Sản Phẩm
+                                        ng-click="checkFormMoTaLyDo(lyDo,ghiChu)">Đổi
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
-
 
 
                 <div class="modal fade" id="exampleModalToggle" aria-hidden="true"
@@ -286,7 +289,8 @@
                                                 <input id="seachText" class="form-control" type="text"
                                                        ng-model="searchText"
                                                        placeholder="Nhập Mã Yêu Cầu">
-                                                <button class="btn btn-custom " ng-click="search()">Tìm kiếm</button>
+                                                <button class="btn btn-custom " ng-click="searchGiay()">Tìm kiếm
+                                                </button>
                                                 </button>
                                             </div>
                                         </div>
@@ -335,7 +339,6 @@
                                                     </td>
                                                 </tr>
                                                 </tbody>
-
                                             </table>
                                         </div>
                                     </div>
@@ -354,7 +357,7 @@
 
                 <div class="modal fade" id="exampleModalToggle2" aria-hidden="true"
                      aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-dialog modal-dialog-centered modal-xl">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalToggleLabel2">Biến Thể Gìay</h5>
@@ -389,7 +392,7 @@
                                         <div class="side-left">
                                             <div class="title">
                                                 <h5>{{giayDetail.ten}} </h5>
-                                                <h5>Giá <span id="price-product">{{giayDetail.giaBan}}</span></h5>
+                                                <h5>Giá: <span id="price-product">{{giayDetail.giaBan}}</span></h5>
                                                 <h5>Số lượng : <span id="quantity">{{giayDetail.soLuong}}</span></h5>
                                             </div>
                                             <div id="buttons-container"></div>
@@ -409,7 +412,9 @@
                                         data-bs-toggle="modal"
                                         data-bs-dismiss="modal">Quay Về
                                 </button>
-                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close" ng-click="giaySelected()">Chọn</button>
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close"
+                                        ng-click="giaySelected()">Chọn
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -419,51 +424,67 @@
 
             <div class="right">
                 <div id="formYeuCau">
+
                     <div class="form-group">
-                        <label>Hoá Đơn: <a>HD{{hoaDon.id}}</a></label>
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="floatingInput" ng-model="hoaDon.khachHang.ten"
+                                   readonly>
+                            <label for="floatingInput">Khách Hàng</label>
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <select class="form-select" id="floatingSelect1"
-                                placeholder="Chọn Lý Do Đổi/Trả"
-                                aria-label="Floating label select example" name="nguoiThucHien" ng-model="yeuCau.nguoiThucHien">
-                            <option ng-repeat="nhanVien in listNhanVien" value="{{nhanVien}}" ng-selected="nhanVien.id">{{nhanVien.hoTen}}
-                            </option>
-                        </select>
-                        <label for="floatingSelect1">Nhân Viên</label>
+                        <div class="form-floating">
+                            <select class="form-select" id="floatingSelect1"
+                                    placeholder="Chọn Lý Do Đổi/Trả"
+                                    aria-label="Floating label select example" name="nguoiThucHien"
+                                    ng-model="yeuCau.nguoiThucHien">
+                                <option ng-repeat="nhanVien in listNhanVien" value="{{nhanVien.id}}">
+                                    {{nhanVien.hoTen}}
+                                </option>
+                            </select>
+                            <label for="floatingSelect1">Nhân Viên</label>
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <select class="form-select" id="floatingSelect2"
-                                aria-label="Floating label select example" name="loaiYeuCau"
-                                ng-model="yeuCau.loaiYeuCau">
-                            <option value="1">Yêu Cầu Đổi</option>
-                            <option value="2">Yêu Cầu Trả</option>
-                        </select>
-                        <label for="floatingSelect2">Loại Yêu Cầu</label>
+                        <label>Trả hàng/: <a style="color: #0c63e4">HD{{hoaDon.id}} -
+                            {{hoaDon.nhanVien.ten}}</a></label>
                     </div>
 
                     <div class="form-group">
-                        <select class="form-select" id="floatingSelect3"
-                                aria-label="Floating label select example" name="trangThai" ng-model="yeuCau.trangThai">
-                            <option value="1">Chờ Xét Duyệt</option>
-                            <option value="2">Đã Xét Duyệt</option>
-                            <option value="3">Đã Hoàn Thành</option>
-                            <option value="4">Bị Hủy</option>
-                        </select>
-                        <label for="floatingSelect3">Trạng Thái</label>
+                        <label>Tổng tiền mua hàng: {{tongTienHangMua | formatToVND}}</label>
                     </div>
 
                     <div class="form-group">
-                        <textarea class="form-control" placeholder="Ghi chú chi tiê" name="ghiChu" ng-model="yeuCau.ghiChu"
-                                  id="floatingTextarea3" style="height: 100px"
-                                  ng-model="ghiChu" ng-change="change(addYeuCauForm.ghiChu)"></textarea>
-                        <label for="floatingTextarea3">Ghi Chú</label>
+                        <label>Tổng tiền hàng trả: {{ tongTienHangTra | formatToVND }}</label>
                     </div>
-                    <button type="submit" class="btn btn-primary">Tạo mới</button>
-                    <button type="button" class="btn btn-primary" ng-click="combineMaps()">Hợp Nhât</button>
+
+                    <div class="form-group">
+                        <label>Tổng tiền hàng đổi: {{ tongTienHangDoi | formatToVND }}</label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tổng tiền trả khách: {{ tongTienTraKhach | formatToVND }}</label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tổng tiền trả khách: {{ tongTienKhachPhaiTra | formatToVND }}</label>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-floating">
+                            <textarea class="form-control"
+                                      name="ghiChu" ng-model="yeuCau.ghiChu"
+                                      id="floatingTextarea3" style="height: 100px">
+                            </textarea>
+                            <label for="floatingTextarea3">Ghi Chú</label>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary" ng-click="kiemTraSanPhamTra()">Tạo Mới</button>
                 </div>
             </div>
         </div>
+
     </form>
 </div>

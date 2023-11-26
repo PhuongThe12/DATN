@@ -1,14 +1,13 @@
 package luckystore.datn.service.impl;
 
 
-import luckystore.datn.constraints.ErrorMessage;
 import luckystore.datn.entity.*;
-import luckystore.datn.exception.NotFoundException;
-import luckystore.datn.exception.NullException;
 import luckystore.datn.model.request.YeuCauChiTietRequest;
 import luckystore.datn.model.request.YeuCauRequest;
 import luckystore.datn.model.response.YeuCauResponse;
 import luckystore.datn.repository.*;
+import luckystore.datn.service.ImageHubService;
+import luckystore.datn.service.YeuCauChiTietService;
 import luckystore.datn.service.YeuCauService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,27 +16,32 @@ import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Component
 public class YeuCauServiceIplm implements YeuCauService {
 
-
-
     private final YeuCauRepository yeuCauRepository;
     private final YeuCauChiTietRepository yeuCauChiTietRepository;
     private final HoaDonRepository hoaDonRepository;
     private final HoaDonChiTietRepository hoaDonChiTietRepository;
     private final BienTheGiayRepository bienTheGiayRepository;
+    private final LyDoRepository lyDoRepository;
+    private final YeuCauChiTietService yeuCauChiTietService;
+    private final ImageHubService imageHubService;
 
     @Autowired
-    public YeuCauServiceIplm(YeuCauRepository yeuCauRepo, YeuCauChiTietRepository yeuCauChiTietRepository, HoaDonRepository hoaDonRepository, HoaDonChiTietRepository hoaDonChiTietRepository, BienTheGiayRepository bienTheGiayRepository) {
+    public YeuCauServiceIplm(YeuCauRepository yeuCauRepo, YeuCauChiTietRepository yeuCauChiTietRepository, HoaDonRepository hoaDonRepository, HoaDonChiTietRepository hoaDonChiTietRepository, BienTheGiayRepository bienTheGiayRepository, LyDoRepository lyDoRepository, YeuCauChiTietService yeuCauChiTietService, ImageHubService imageHubService) {
         this.yeuCauRepository = yeuCauRepo;
         this.yeuCauChiTietRepository = yeuCauChiTietRepository;
         this.hoaDonRepository = hoaDonRepository;
         this.hoaDonChiTietRepository = hoaDonChiTietRepository;
         this.bienTheGiayRepository = bienTheGiayRepository;
+        this.lyDoRepository = lyDoRepository;
+        this.yeuCauChiTietService = yeuCauChiTietService;
+        this.imageHubService = imageHubService;
     }
 
     public List<YeuCauResponse> getAll() {
@@ -47,44 +51,138 @@ public class YeuCauServiceIplm implements YeuCauService {
     @Override
     public YeuCauResponse addYeuCau(YeuCauRequest yeuCauRequest) {
         HoaDon hoaDon = hoaDonRepository.findById(yeuCauRequest.getHoaDon()).orElse(null);
-        YeuCau yeuCau = new YeuCau(yeuCauRequest,hoaDon);
-        yeuCau.setNgayTao(new Date());
-        yeuCau.setNgaySua(new Date());
-//        addYeuCauChiTiet(yeuCauRequest,yeuCau);
-        return null;
+        YeuCau yeuCauSaved = new YeuCau(yeuCauRequest, hoaDon, new Date(), new Date());
+        List<YeuCauChiTiet> listYeuCauChiTiet = new ArrayList<>();
+        for (YeuCauChiTietRequest ycctRequest : yeuCauRequest.getListYeuCauChiTiet()) {
+            LyDo lyDo = lyDoRepository.findById(ycctRequest.getLyDo()).orElse(null);
+            BienTheGiay bienTheGiay = ycctRequest.getBienTheGiay() != null ? bienTheGiayRepository.findById(ycctRequest.getBienTheGiay()).orElse(null) : null;
+            if (bienTheGiay != null) {
+                bienTheGiay.setSoLuong(bienTheGiay.getSoLuong() - 1);
+                bienTheGiayRepository.save(bienTheGiay).getSoLuong();
+            }
+            HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findById(ycctRequest.getHoaDonChiTiet()).orElse(null);
+            YeuCauChiTiet ycct = new YeuCauChiTiet(ycctRequest, hoaDonChiTiet, bienTheGiay, lyDo, yeuCauSaved);
+            listYeuCauChiTiet.add(ycct);
+        }
+        yeuCauSaved.setListYeuCauChiTiet(listYeuCauChiTiet);
+        return new YeuCauResponse(yeuCauRepository.save(yeuCauSaved));
     }
 
-//    public void addYeuCauChiTiet(YeuCauRequest yeuCauRequest, YeuCau yeuCau){
-//        for (YeuCauChiTietRequest yeuCauChiTietRequest : yeuCauRequest.getListYeuCauChiTiet()) {
-//            YeuCau yeuCauAdd = yeuCauRepository.save(yeuCau);
-//            HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findById(yeuCauChiTietRequest.getHoaDonChiTiet()).orElse(null);
-//            BienTheGiay bienTheGiay = bienTheGiayRepository.findById(yeuCauChiTietRequest.getBienTheGiay()).orElse(null);
-//            String lyDo = yeuCauChiTietRequest.getLyDo();
-//            Integer soLuongDoi = yeuCauChiTietRequest.getSoLuong();
-//            Integer trangThai = yeuCauChiTietRequest.getTrangThai();
-//            String moTa = yeuCauChiTietRequest.getGhiChu();
-//            yeuCauChiTietRepository.save(new YeuCauChiTiet(yeuCauAdd,hoaDonChiTiet,bienTheGiay,lyDo,soLuongDoi,trangThai,moTa));
-//        }
-//    }
+    private Integer updateSoluongBienTheGiay(int soLuongDoi, Long idBienTheGiay) {
+        BienTheGiay bienTheGiay = bienTheGiayRepository.findById(idBienTheGiay).orElse(null);
+        bienTheGiay.setSoLuong(bienTheGiay.getSoLuong() - soLuongDoi);
+        return bienTheGiayRepository.save(bienTheGiay).getSoLuong();
+    }
 
     @Override
-    public YeuCauResponse updateYeuCau(Long id, YeuCauRequest yeuCauRequest) {
-        YeuCau yeuCau;
-        if (id == null) {
-            throw new NullException();
-        } else {
-            yeuCau = yeuCauRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND));
-        }
-        HoaDon hoaDon = new HoaDon();
-        yeuCau = new YeuCau(yeuCauRequest, hoaDon);
-        yeuCau.setId(id);
+    public YeuCauResponse confirmYeuCau(YeuCauRequest yeuCauRequest) {
+        HoaDon hoaDon = hoaDonRepository.findById(yeuCauRequest.getHoaDon()).orElse(null);
+        YeuCau yeuCauSaved = YeuCau.builder().id(yeuCauRequest.getId()).hoaDon(hoaDon).nguoiThucHien(yeuCauRequest.getNguoiThucHien()).trangThai(yeuCauRequest.getTrangThai()).ngayTao(yeuCauRequest.getNgayTao()).ngaySua(new Date()).ghiChu(yeuCauRequest.getGhiChu()).build();
+        List<YeuCauChiTiet> listYeuCauChiTiet = new ArrayList<>();
 
-        return new YeuCauResponse(yeuCauRepository.save(yeuCau));
+        for (YeuCauChiTietRequest ycctRequest : yeuCauRequest.getListYeuCauChiTiet()) {
+
+            HoaDonChiTiet hoaDonChiTietUpdate = hoaDonChiTietRepository.findById(ycctRequest.getHoaDonChiTiet()).orElse(null);
+            BienTheGiay bienTheGiayTra = bienTheGiayRepository.findById(ycctRequest.getBienTheGiayTra()).orElse(null);
+            BienTheGiay bienTheGiayDoi = ycctRequest.getBienTheGiay() == null ? null : bienTheGiayRepository.findById(ycctRequest.getBienTheGiay()).orElse(null);
+            LyDo lyDoUpdate = lyDoRepository.findById(ycctRequest.getLyDo()).orElse(null);
+
+            if (ycctRequest.getLoaiYeuCauChiTiet() != 3) {
+                if (ycctRequest.getTinhTrangSanPham() == false) { //giày không lỗi
+                    bienTheGiayTra.setSoLuong(bienTheGiayTra.getSoLuong() + 1);
+                    bienTheGiayRepository.save(bienTheGiayTra);
+                } else if (ycctRequest.getTinhTrangSanPham() == true) { // giày lỗi
+                    bienTheGiayTra.setSoLuongLoi(bienTheGiayTra.getSoLuongLoi() + 1);
+                    bienTheGiayRepository.save(bienTheGiayTra);
+                }
+
+                hoaDonChiTietUpdate.setSoLuongTra(hoaDonChiTietUpdate.getSoLuongTra() + 1);
+
+
+                if (ycctRequest.getLoaiYeuCauChiTiet() == 1) { //nếu đổi
+                    YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(bienTheGiayDoi).lyDo(lyDoUpdate).soLuong(ycctRequest.getSoLuong()).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).trangThai(1).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).ghiChu(ycctRequest.getGhiChu()).build();
+                    listYeuCauChiTiet.add(yeuCauChiTietSaved);
+                } else if (ycctRequest.getLoaiYeuCauChiTiet() == 2) { //nếu trả
+                    if (bienTheGiayDoi != null) { //trả từ hủy đổi
+                        bienTheGiayDoi.setSoLuong(bienTheGiayDoi.getSoLuong() + 1);
+                        YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(bienTheGiayDoi).lyDo(lyDoUpdate).soLuong(ycctRequest.getSoLuong()).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).trangThai(4).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).ghiChu(ycctRequest.getGhiChu()).build();
+                        listYeuCauChiTiet.add(yeuCauChiTietSaved);
+                    } else { //trả thờng
+                        YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(null).lyDo(lyDoUpdate).soLuong(ycctRequest.getSoLuong()).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).trangThai(1).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).ghiChu(ycctRequest.getGhiChu()).build();
+                        listYeuCauChiTiet.add(yeuCauChiTietSaved);
+                    }
+                }
+            } else { // nếu là hủy
+                if (bienTheGiayDoi != null) {
+                    bienTheGiayDoi.setSoLuong(bienTheGiayDoi.getSoLuong() + 1);
+                }
+                YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(bienTheGiayDoi).lyDo(lyDoUpdate).soLuong(ycctRequest.getSoLuong()).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).trangThai(ycctRequest.getTrangThai()).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).ghiChu(ycctRequest.getGhiChu()).build();
+                listYeuCauChiTiet.add(yeuCauChiTietSaved);
+            }
+        }
+        yeuCauSaved.setListYeuCauChiTiet(listYeuCauChiTiet);
+        return new YeuCauResponse(yeuCauRepository.save(yeuCauSaved));
     }
+
+    @Override
+    public YeuCauResponse unConfirmYeuCau(YeuCauRequest yeuCauRequest) {
+        YeuCau yeuCauSaved = yeuCauRepository.findById(yeuCauRequest.getId()).orElse(null);
+        yeuCauSaved.setNgaySua(new Date());
+        yeuCauSaved.setGhiChu(yeuCauRequest.getGhiChu());
+        yeuCauSaved.setTrangThai(3);
+
+        for (YeuCauChiTietRequest ycctRequest : yeuCauRequest.getListYeuCauChiTiet()) {
+            YeuCauChiTiet yeuCauChiTiet = yeuCauChiTietRepository.findById(ycctRequest.getId()).orElse(null);
+            yeuCauChiTiet.setLoaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet());
+            yeuCauChiTiet.setSoLuong(ycctRequest.getSoLuong());
+            yeuCauChiTiet.setTrangThai(ycctRequest.getTrangThai());
+            yeuCauChiTiet.setTinhTrangSanPham(ycctRequest.getTinhTrangSanPham());
+            if (ycctRequest.getBienTheGiay()!=null) {
+                BienTheGiay bienTheGiayDoi = bienTheGiayRepository.findById(ycctRequest.getBienTheGiay()).orElse(null);
+                bienTheGiayDoi.setSoLuong(bienTheGiayDoi.getSoLuong() + 1);
+                bienTheGiayRepository.save(bienTheGiayDoi);
+            }
+            yeuCauChiTietRepository.save(yeuCauChiTiet);
+        }
+
+        return new YeuCauResponse(yeuCauRepository.save(yeuCauSaved));
+    }
+
+    @Override
+    public YeuCauResponse updateYeuCau(YeuCauRequest yeuCauRequest) {
+
+        YeuCau yeuCauSaved = yeuCauRepository.findById(yeuCauRequest.getId()).orElse(null);
+        yeuCauSaved.setNgaySua(new Date());
+        yeuCauSaved.setGhiChu(yeuCauRequest.getGhiChu());
+
+        for (YeuCauChiTietRequest ycctRequest : yeuCauRequest.getListYeuCauChiTiet()) {
+            YeuCauChiTiet yeuCauChiTiet = yeuCauChiTietRepository.findById(ycctRequest.getId()).orElse(null);
+            yeuCauChiTiet.setGhiChu(ycctRequest.getGhiChu());
+            yeuCauChiTiet.setLyDo(lyDoRepository.findById(ycctRequest.getLyDo()).orElse(null));
+            if (yeuCauChiTiet.getTinhTrangSanPham() == true && ycctRequest.getTinhTrangSanPham() == false) {
+                BienTheGiay bienTheGiayTra = bienTheGiayRepository.findById(ycctRequest.getBienTheGiayTra()).orElse(null);
+                bienTheGiayTra.setSoLuongLoi(bienTheGiayTra.getSoLuongLoi() - 1);
+                bienTheGiayTra.setSoLuong(bienTheGiayTra.getSoLuong() + 1);
+                bienTheGiayRepository.save(bienTheGiayTra);
+            } else if (yeuCauChiTiet.getTinhTrangSanPham() == false && ycctRequest.getTinhTrangSanPham() == true) {
+                BienTheGiay bienTheGiayTra = bienTheGiayRepository.findById(ycctRequest.getBienTheGiayTra()).orElse(null);
+                bienTheGiayTra.setSoLuongLoi(bienTheGiayTra.getSoLuongLoi() + 1);
+                bienTheGiayTra.setSoLuong(bienTheGiayTra.getSoLuong() - 1);
+                bienTheGiayRepository.save(bienTheGiayTra);
+            }
+            yeuCauChiTiet.setTinhTrangSanPham(ycctRequest.getTinhTrangSanPham());
+
+            yeuCauChiTietRepository.save(yeuCauChiTiet);
+        }
+
+        return new YeuCauResponse(yeuCauRepository.save(yeuCauSaved));
+    }
+
+
 
     @Override
     public YeuCauResponse findById(Long id) {
-        return new YeuCauResponse(yeuCauRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND)));
+        return new YeuCauResponse(yeuCauRepository.findById(id).orElse(null));
     }
 
     @Override
@@ -93,12 +191,12 @@ public class YeuCauServiceIplm implements YeuCauService {
     }
 
     @Override
-    public Page<YeuCauResponse> getPage(Integer page,String searchText ,Date ngayBatDau, Date ngayKetThuc, Integer loaiYeuCau, Integer trangThai) {
-        return yeuCauRepository.getPageResponse(ngayBatDau,searchText,ngayKetThuc,loaiYeuCau,trangThai, PageRequest.of((page - 1), 5));
+    public Page<YeuCauResponse> getPage(Integer page, Long searchText, Date ngayBatDau, Date ngayKetThuc, Integer trangThai) {
+        return yeuCauRepository.getPageResponse(PageRequest.of((page - 1), 6), searchText, ngayBatDau, ngayKetThuc, trangThai);
     }
 
 
-    public Date fomatDate(Date date, String string){
+    public Date fomatDate(Date date, String string) {
 
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
         String date1 = sdf1.format(date);

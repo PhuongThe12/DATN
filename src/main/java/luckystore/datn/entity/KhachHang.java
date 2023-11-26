@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.Instant;
+
 
 @Entity
 @Table(name = "KhachHang")
@@ -45,5 +47,9 @@ public class KhachHang {
     @ManyToOne
     @JoinColumn(name = "ID_HANG_KHACH_HANG")
     private HangKhachHang hangKhachHang;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_TAI_KHOAN")
+    private TaiKhoan taiKhoan;
 
 }

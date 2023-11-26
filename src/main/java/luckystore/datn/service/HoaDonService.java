@@ -1,11 +1,15 @@
 package luckystore.datn.service;
 
 import luckystore.datn.model.request.AddOrderProcuctRequest;
+import luckystore.datn.model.request.DatHangTaiQuayRequest;
+import luckystore.datn.model.request.HoaDonRequest;
 import luckystore.datn.model.request.HoaDonSearch;
+import luckystore.datn.model.request.HoaDonThanhToanTaiQuayRequest;
 import luckystore.datn.model.response.HoaDonBanHangResponse;
 import luckystore.datn.model.response.HoaDonChiTietResponse;
 import luckystore.datn.model.response.HoaDonResponse;
 import luckystore.datn.model.response.HoaDonYeuCauRespone;
+import luckystore.datn.model.response.KhachHangResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +27,7 @@ public interface HoaDonService {
 
     HoaDonResponse findById(Long id);
 
+    void updateListHoaDon(List<HoaDonRequest> hoaDonRequestList);
     List<HoaDonBanHangResponse> getAllChuaThanhToan();
 
     HoaDonBanHangResponse getAllById(Long id);
@@ -37,4 +42,17 @@ public interface HoaDonService {
 
     void deleteAllHoaDonChiTiet(Long idHd);
 
+    KhachHangResponse addKhachHang(AddOrderProcuctRequest addOrderProcuctRequest);
+
+    Long thanhToanHoaDonTaiQuay(HoaDonThanhToanTaiQuayRequest request);
+
+    Long thanhToanHoaDonTaiQuayBanking(HoaDonThanhToanTaiQuayRequest request);
+
+    Page<HoaDonResponse> getPageByIdKhachHang(int page, String searchText, Integer status, Long idKhachHang);
+
+    Long datHangTaiQuay(DatHangTaiQuayRequest request);
+
+    Long datHangHoaDonTaiQuayBanking(HoaDonThanhToanTaiQuayRequest request);
+
+    void cancelBanking(Long id);
 }

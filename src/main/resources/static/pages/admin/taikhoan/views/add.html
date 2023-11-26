@@ -1,0 +1,48 @@
+<style>
+    .form-input {
+        background-color: white;
+        padding: 20px;
+        margin: 20px;
+        box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    }
+
+    .error-message {
+        color: red;
+        font-weight: bold;
+    }
+
+</style>
+
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-6">
+        <div class="form-input">
+            <form name="taiKhoanForm" ng-submit="addTaiKhoan()">
+                <h1 type="text-align: center;">Đăng kí tài khoản</h1>
+                <div class="form-group">
+                    <label for="">Email</label>
+                    <input type="text" class="form-control"  name="tenDangNhap" ng-model="taiKhoan.tenDangNhap"
+                           ng-maxlength="50" ng-required="true" ng-change="change(khachHangForm.tenDangNhap)">
+                    <small class="error-message"
+                           ng-show="(taiKhoanForm.tenDangNhap.$dirty || taiKhoanForm.tenDangNhap.$touched) && taiKhoanForm.tenDangNhap.$error.required">
+                            Không được để trống tên
+                    </small>
+                    <small class="error-message" ng-show="errors.tenDangNhap">{{errors.tenDangNhap}}</small>
+
+                    <div class="form-group">
+                        <label for="">Mật khẩu: </label>
+                        <input type="text" class="form-control"  name="matKhau" ng-model="taiKhoan.matKhau" ng-required="true"
+                               ng-change="change(taiKhoanForm.matKhau)">
+                        <small class="error-message" ng-show="(taiKhoanForm.matKhau.$dirty || taiKhoanForm.matKhau.$touched) && taiKhoanForm.matKhau.$error.required">
+                            Không được để trống số điện thoại</small>
+                        <small class="error-message" ng-show="errors.email && !taiKhoanForm.matKhau.$dirty">{{errors.email}}</small>
+                    </div>
+
+
+                    <button type="submit" class="btn btn-primary">Đăng kí</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

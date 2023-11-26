@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import luckystore.datn.entity.HangKhachHang;
+import luckystore.datn.entity.TaiKhoan;
 import org.hibernate.validator.constraints.Length;
 
 import java.sql.Date;
@@ -35,4 +36,6 @@ public class KhachHangRequest {
     private Integer trangThai;
 
     private HangKhachHang hangKhachHang;
+
+    private TaiKhoan taiKhoan;
 }

@@ -6,8 +6,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -16,7 +17,6 @@ import java.util.Set;
 @Setter
 @Builder
 @Entity
-@ToString
 @Table(name = "HoaDon")
 public class HoaDon {
 
@@ -32,11 +32,17 @@ public class HoaDon {
 
     @ManyToOne
     @JoinColumn(name = "ID_KHACH_HANG")
+    @JsonBackReference
     private KhachHang khachHang;
 
     @ManyToOne
     @JoinColumn(name = "ID_NHAN_VIEN")
+    @JsonBackReference
     private NhanVien nhanVien;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_KHUYEN_MAI_THEO_DIEU_KIEN")
+    private DieuKien dieuKien;
 
     @Column(name = "NGAY_TAO")
     private LocalDateTime ngayTao;
@@ -83,8 +89,16 @@ public class HoaDon {
     @Column(name = "UU_DAI")
     private Integer uuDai;
 
-    @OneToMany(mappedBy = "hoaDon", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private Set<HoaDonChiTiet> listHoaDonChiTiet;
+
+    @OneToMany(mappedBy = "hoaDon", fetch =FetchType.LAZY)
+    @JsonManagedReference
+    private List<YeuCau> listYeuCau = new ArrayList<>();
+
+    @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private Set<ChiTietThanhToan> chiTietThanhToans;
 
 }

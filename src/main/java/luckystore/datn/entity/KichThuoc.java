@@ -48,4 +48,5 @@ public class KichThuoc {
     @Column(name = "TRANG_THAI")
     private Integer trangThai;
 
+
 }

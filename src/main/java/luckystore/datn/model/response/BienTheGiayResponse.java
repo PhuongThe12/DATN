@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import luckystore.datn.entity.BienTheGiay;
-import luckystore.datn.entity.HinhAnh;
 import luckystore.datn.service.impl.ImageHubServiceImpl;
 
 import java.math.BigDecimal;
@@ -72,6 +71,15 @@ public class BienTheGiayResponse extends BaseBienTheResponse {
         this.giaBan = giaBan;
         this.mauSac = MauSacResponse.builder().ten(tenMS).build();
         this.kichThuoc = KichThuocResponse.builder().ten(tenKT).build();
+    }
+
+    public BienTheGiayResponse(Long id, String tenKT, String tenMS, Integer soLuong, BigDecimal giaBan, Giay giay) {
+        this.id = id;
+        this.soLuong = soLuong;
+        this.giaBan = giaBan;
+        this.mauSac = MauSacResponse.builder().ten(tenMS).build();
+        this.kichThuoc = KichThuocResponse.builder().ten(tenKT).build();
+        this.giayResponse = GiayResponse.builder().ten(giay.getTen()).build();
     }
 
     public BienTheGiayResponse(Long id, Long idMauSac, Long idKichThuoc, String barCode) {
