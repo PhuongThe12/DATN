@@ -12,4 +12,9 @@ public class UploadImageController {
     public String getIndex() {
         return "admin/upload/index";
     }
+
+    @GetMapping("/test")
+    public String test() {
+        return "admin/test";
+    }
 }

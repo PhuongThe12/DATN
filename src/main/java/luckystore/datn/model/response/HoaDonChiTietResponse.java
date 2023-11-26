@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import luckystore.datn.entity.HoaDonChiTiet;
 
 import java.math.BigDecimal;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @AllArgsConstructor
@@ -32,8 +33,9 @@ public class HoaDonChiTietResponse {
     private String ghiChu;
 
     private Integer soLuongDuocTra;
+
     public HoaDonChiTietResponse(HoaDonChiTiet hoaDonChiTiet) {
-        if(hoaDonChiTiet != null){
+        if (hoaDonChiTiet != null) {
             this.id = hoaDonChiTiet.getId();
             this.idHoaDon = hoaDonChiTiet.getHoaDon().getId();
             this.bienTheGiay = new BienTheGiayResponse(hoaDonChiTiet.getBienTheGiay());
@@ -42,7 +44,9 @@ public class HoaDonChiTietResponse {
             this.trangThai = hoaDonChiTiet.getTrangThai();
             this.soLuongTra = hoaDonChiTiet.getSoLuongTra();
             this.ghiChu = hoaDonChiTiet.getGhiChu();
-            this.soLuongDuocTra = hoaDonChiTiet.getSoLuong()-hoaDonChiTiet.getSoLuongTra();
+            if (hoaDonChiTiet.getSoLuongTra() != null) {
+                this.soLuongDuocTra = hoaDonChiTiet.getSoLuong() - hoaDonChiTiet.getSoLuongTra();
+            }
         }
     }
 
