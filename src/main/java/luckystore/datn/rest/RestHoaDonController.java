@@ -1,6 +1,8 @@
 package luckystore.datn.rest;
 
+import jakarta.validation.Valid;
 import luckystore.datn.model.request.AddOrderProcuctRequest;
+import luckystore.datn.model.request.DatHangTaiQuayRequest;
 import luckystore.datn.model.request.HoaDonRequest;
 import luckystore.datn.model.request.HoaDonSearch;
 import luckystore.datn.model.request.HoaDonThanhToanTaiQuayRequest;
@@ -72,28 +74,38 @@ public class RestHoaDonController {
     }
 
     @PostMapping("/add-product")
-    public ResponseEntity<?> addProduct(@RequestBody AddOrderProcuctRequest addOrderProcuctRequest) {
+    public ResponseEntity<?> addProduct(@Valid @RequestBody AddOrderProcuctRequest addOrderProcuctRequest) {
         return ResponseEntity.ok(hoaDonService.addProduct(addOrderProcuctRequest));
     }
 
     @PostMapping("/add-new-hdct")
-    public ResponseEntity<?> addNewHdct(@RequestBody AddOrderProcuctRequest addOrderProcuctRequest) {
+    public ResponseEntity<?> addNewHdct(@Valid @RequestBody AddOrderProcuctRequest addOrderProcuctRequest) {
         return ResponseEntity.ok(hoaDonService.addNewHDCT(addOrderProcuctRequest));
     }
 
     @PostMapping("/add-khach-hang")
-    public ResponseEntity<?> addKhachHang(@RequestBody AddOrderProcuctRequest addOrderProcuctRequest) {
+    public ResponseEntity<?> addKhachHang(@Valid @RequestBody AddOrderProcuctRequest addOrderProcuctRequest) {
         return ResponseEntity.ok(hoaDonService.addKhachHang(addOrderProcuctRequest));
     }
 
     @PostMapping("/thanh-toan-tai-quay")
-    public ResponseEntity<?> thanhToanHoaDonTaiQuay(@RequestBody HoaDonThanhToanTaiQuayRequest request) {
+    public ResponseEntity<?> thanhToanHoaDonTaiQuay(@Valid @RequestBody HoaDonThanhToanTaiQuayRequest request) {
         return ResponseEntity.ok(hoaDonService.thanhToanHoaDonTaiQuay(request));
     }
 
     @PostMapping("/thanh-toan-tai-quay-banking")
-    public ResponseEntity<?> thanhToanTaiQuayBanking(@RequestBody HoaDonThanhToanTaiQuayRequest request) {
+    public ResponseEntity<?> thanhToanTaiQuayBanking(@Valid @RequestBody HoaDonThanhToanTaiQuayRequest request) {
         return ResponseEntity.ok(hoaDonService.thanhToanHoaDonTaiQuayBanking(request));
+    }
+
+    @PostMapping("/dat-hang-tai-quay-banking")
+    public ResponseEntity<?> datHangTaiQuayBanking(@Valid @RequestBody HoaDonThanhToanTaiQuayRequest request) {
+        return ResponseEntity.ok(hoaDonService.datHangHoaDonTaiQuayBanking(request));
+    }
+
+    @PostMapping("/dat-hang-tai-quay")
+    public ResponseEntity<?> datHangTaiQuay(@Valid @RequestBody DatHangTaiQuayRequest request) {
+        return ResponseEntity.ok(hoaDonService.datHangTaiQuay(request));
     }
 
     @DeleteMapping("/{id}")
@@ -113,7 +125,6 @@ public class RestHoaDonController {
         hoaDonService.deleteAllHoaDonChiTiet(idHd);
         return ResponseEntity.ok(HttpEntity.EMPTY);
     }
-
 
     @GetMapping("/khach-hang/{idKhachHang}")
     public ResponseEntity getDonHangByIdKhachHang(@RequestParam(value = "page", defaultValue = "1") Integer page,
