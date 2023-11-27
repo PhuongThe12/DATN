@@ -5,8 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import luckystore.datn.entity.BienTheGiay;
 import luckystore.datn.entity.Giay;
+import luckystore.datn.entity.HinhAnh;
+import luckystore.datn.service.impl.ImageHubServiceImpl;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -15,8 +18,8 @@ import java.util.Objects;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class BienTheGiayResponse {
+@SuperBuilder
+public class BienTheGiayResponse extends BaseBienTheResponse {
 
     private Long id;
 
@@ -27,7 +30,7 @@ public class BienTheGiayResponse {
     private String hinhAnh;
 
     private BigDecimal giaBan;
-
+    
     private Integer khuyenMai = 0;
 
     private String barCode;
@@ -40,7 +43,7 @@ public class BienTheGiayResponse {
 
     private GiayResponse giayResponse;
 
-    public BienTheGiayResponse(BienTheGiay bienTheGiay, int... level) {
+    public BienTheGiayResponse(BienTheGiay bienTheGiay, int ...level) {
         if (bienTheGiay != null) {
             this.id = bienTheGiay.getId();
             this.soLuong = bienTheGiay.getSoLuong();
@@ -51,10 +54,10 @@ public class BienTheGiayResponse {
             this.trangThai = bienTheGiay.getTrangThai();
             this.mauSac = new MauSacResponse(bienTheGiay.getMauSac());
             this.kichThuoc = new KichThuocResponse(bienTheGiay.getKichThuoc());
-            if (bienTheGiay.getGiay() != null && level != null) {
+            if(bienTheGiay.getGiay() != null && level != null) {
                 giayResponse = new GiayResponse();
                 giayResponse.setId(bienTheGiay.getGiay().getId());
-                giayResponse.setLstAnh(null);
+                giayResponse.setLstAnh(bienTheGiay.getGiay().getLstAnh().stream().map(HinhAnh::getLink).toList());
                 giayResponse.setTen(bienTheGiay.getGiay().getTen());
 //                giayResponse.getLstAnh().add(bienTheGiay.getGiay().getLstAnh().isEmpty() ? null :
 //                        ImageHubServiceImpl.getBase64FromFileStatic(bienTheGiay.getGiay().getLstAnh().get(0).getLink()));
@@ -91,13 +94,6 @@ public class BienTheGiayResponse {
     public BienTheGiayResponse(Long id, Integer soLuong) {
         this.id = id;
         this.soLuong = soLuong;
-    }
-
-    public BienTheGiayResponse(Long id, BigDecimal giaBan, Integer khuyenMai, Integer trangThai) {
-        this.id = id;
-        this.giaBan = giaBan;
-        this.khuyenMai = khuyenMai;
-        this.trangThai = trangThai;
     }
 
     @Override

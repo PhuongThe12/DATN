@@ -265,9 +265,21 @@ app.controller("updateDotGiamGiaController", function ($scope, $http, $location,
         return false;
     };
 
-    $scope.removeDieuKien = function (index) {
-        $scope.dotGiamGia.dieuKienResponses.splice(index, 1);
-    }
+    $scope.removeDieuKien = function (index,dieuKien) {
+        $scope.dotGiamGia.dieuKienResponses.splice(index, 1)
+        $http({
+            method: 'DELETE',
+            url: 'http://localhost:8080/admin/rest/dot-giam-gia/delete-dieu-kien/' + dieuKien
+        }).then(function successCallback(response) {
+            // Xử lý khi API DELETE thành công
+            console.log('Xóa điều kiện giảm giá thành công', response);
+        }, function errorCallback(response) {
+            // Xử lý khi có lỗi xảy ra trong quá trình gọi API DELETE
+            console.error('Lỗi xóa điều kiện giảm giá', response);
+        });
+        console.log("index: ",index)
+        console.log("Điều kiện: ",dieuKien)
+    };
 
     $scope.updateDotGiamGia = function () {
 

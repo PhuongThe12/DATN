@@ -25,6 +25,11 @@
     <!-- Icon -->
     <link rel="stylesheet" href="/icon/css/all.min.css">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Carrois+Gothic&family=Fira+Sans:wght@300&family=Jost:wght@300&family=Nunito+Sans:opsz@6..12&family=Nunito:wght@300&family=Ubuntu:wght@300&display=swap" rel="stylesheet">
+
+
     <!--Sweet Alert -->
     <link rel="stylesheet" href="/sweetalert2/dist/sweetalert2.min.css">
 
@@ -32,12 +37,18 @@
     <script src="/js/global.js"></script>
     <link rel="stylesheet" href="/css/global-style.css">
     <link rel="stylesheet" href="/css/cart/style.css">
+    <link rel="stylesheet" href="/css/home/style.css">
 </head>
-
+<style>
+    body{
+        font-family: 'Nunito Sans', sans-serif;
+    }
+</style>
 <body>
 <div ng-controller="navbarController">
     <div ng-include="'/pages/user/navbar/navbar.html'"></div>
     <div ng-view></div>
+    <div ng-include="'/pages/user/footer/footer.html'"></div>
 </div>
 <script src="/sweetalert2/dist/sweetalert2.min.js"></script>
 <script src="/js/customer/index.js"></script>
