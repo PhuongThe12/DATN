@@ -1,4 +1,4 @@
-package luckystore.datn.rest;
+package luckystore.datn.rest.admin;
 
 import luckystore.datn.entity.HoaDonChiTiet;
 import luckystore.datn.model.response.YeuCauChiTietResponse;
