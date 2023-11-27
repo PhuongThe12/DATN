@@ -67,6 +67,10 @@ public class RestDotGiamGiaController {
         return new ResponseEntity<>(dotGiamGiaService.updateDotGiamGia(id, dotGiamGiaRequest), HttpStatus.OK);
     }
 
+    @DeleteMapping("/delete-dieu-kien/{id}")
+    public void deleteDieuKien(@PathVariable("id") Long id) {
+        dotGiamGiaService.deleteDieuKien(id);
+    }
     @GetMapping("/get-all-active")
     public ResponseEntity<?> getAllActive() {
         return new ResponseEntity<>(dotGiamGiaService.getAllActive(), HttpStatus.OK);
