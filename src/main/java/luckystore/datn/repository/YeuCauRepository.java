@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public interface YeuCauRepository extends JpaRepository<YeuCau,Long> {
             "AND (:trangThai is NULL or yc.trangThai = :trangThai) " +
             "AND (:searchText IS NULL OR yc.id = :searchText) " +
             "ORDER BY yc.id DESC" )
-    Page<YeuCauResponse> getPageResponse(Pageable pageable,Long searchText,Date ngayBatDau,Date ngayKetThuc,Integer trangThai);
+    Page<YeuCauResponse> getPageResponse(Pageable pageable, Long searchText, LocalDateTime ngayBatDau, LocalDateTime ngayKetThuc, Integer trangThai);
 
     @Query("select new luckystore.datn.model.response.YeuCauResponse(yc) from YeuCau yc  where yc.trangThai = 0")
     YeuCauResponse findResponseByStatus();

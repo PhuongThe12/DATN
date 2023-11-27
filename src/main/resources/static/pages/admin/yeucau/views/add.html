@@ -130,8 +130,8 @@
                                     </tr>
                                     </thead>
                                     <tbody style="max-height: 350px;overflow: auto">
-                                    <tr ng-repeat="(index,hoaDonChiTiet) in hoaDon.listHoaDonChiTiet">
-                                        <td>SP{{hoaDonChiTiet.bienTheGiay.id}},{{hoaDonChiTiet.id}}</td>
+                                    <tr ng-repeat="(index,hoaDonChiTiet) in hoaDon.listHoaDonChiTiet" ng-if="hoaDonChiTiet.soLuongDuocTra > 0">
+                                        <td>SP{{hoaDonChiTiet.bienTheGiay.id}}</td>
                                         <td>{{hoaDonChiTiet.bienTheGiay.giayResponse.ten}}</td>
                                         <td>
                                             <input type="number" ng-model="hoaDonChiTiet.soLuongTra" min="0"
@@ -285,7 +285,7 @@
 
                                             <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
                                             <input type="text" class="form-control w-50" placeholder="search..." ng-model="searchText">
-                                            <button class="btn btn-custom" ng-click="searchGiay()">Tìm kiếm</button>
+                                            <button class="btn btn-custom" ng-click="search()">Tìm kiếm</button>
                                             <button class="btn btn-custom mx-2" ng-click="reset()">Nhập lại</button>
                                             <button class="btn btn-custom mx-2" ng-click="startScanning()"><i class="fas fa-qrcode"></i></button>
                                             <button hidden="true" data-bs-toggle="modal" data-bs-target="#staticBackdrop" id="staticBackDropButton"></button>
@@ -463,6 +463,8 @@
                 </div>
             </div>
         </div>
-
+        <div>
+            <button type="button" class="btn btn-primary" ng-click="troVe()">Trở Về</button>
+        </div>
     </form>
 </div>

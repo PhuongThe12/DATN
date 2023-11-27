@@ -6,6 +6,7 @@ import luckystore.datn.model.response.YeuCauResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +24,6 @@ public interface YeuCauService {
     YeuCauResponse findById(Long id);
 
     YeuCauResponse findByStatus();
-    Page<YeuCauResponse> getPage(Integer page,Long searchText,Date ngayBatDau, Date ngayKetThuc, Integer trangThai);
+    Page<YeuCauResponse> getPage(Integer page, Long searchText, LocalDateTime ngayBatDau, LocalDateTime ngayKetThuc, Integer trangThai);
 
 }

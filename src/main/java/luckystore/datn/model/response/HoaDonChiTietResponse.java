@@ -32,6 +32,7 @@ public class HoaDonChiTietResponse {
     private String ghiChu;
 
     private Integer soLuongDuocTra;
+
     public HoaDonChiTietResponse(HoaDonChiTiet hoaDonChiTiet) {
         if(hoaDonChiTiet != null){
             this.id = hoaDonChiTiet.getId();

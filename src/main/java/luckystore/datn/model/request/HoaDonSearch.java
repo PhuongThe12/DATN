@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import luckystore.datn.entity.HoaDon;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -27,6 +28,10 @@ public class HoaDonSearch {
     private Date ngayTao;
 
     private Date ngayShip;
+
+    private LocalDateTime ngayBatDau;
+
+    private LocalDateTime ngayKetThuc;
 
     private Date ngayNhan;
 

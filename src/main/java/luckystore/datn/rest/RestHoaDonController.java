@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -37,6 +39,12 @@ public class RestHoaDonController {
 
     @PostMapping("/yeu-cau")
     public ResponseEntity getPageHoaDonYeuCauPage(@RequestBody HoaDonSearch hoaDonSearch) {
+        if (hoaDonSearch.getNgayBatDau() != null) {
+            hoaDonSearch.setNgayBatDau(adjustToStartOfDay(hoaDonSearch.getNgayBatDau()));
+        }
+        if (hoaDonSearch.getNgayKetThuc() != null) {
+            hoaDonSearch.setNgayBatDau(adjustToEndOfDay(hoaDonSearch.getNgayKetThuc()));
+        }
         return new ResponseEntity<>(hoaDonService.getPageHoaDonYeuCau(hoaDonSearch), HttpStatus.OK);
     }
 
@@ -114,13 +122,21 @@ public class RestHoaDonController {
         return ResponseEntity.ok(HttpEntity.EMPTY);
     }
 
-
     @GetMapping("/khach-hang/{idKhachHang}")
     public ResponseEntity getDonHangByIdKhachHang(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                                   @RequestParam(value = "search", required = false) String searchText,
                                                   @RequestParam(value = "status", required = false) Integer status,
                                                   @PathVariable("idKhachHang") Long idKhachHang) {
-        return new ResponseEntity(hoaDonService.getPageByIdKhachHang(page, searchText, status,idKhachHang), HttpStatus.OK);
+        return new ResponseEntity(hoaDonService.getPageByIdKhachHang(page, searchText, status, idKhachHang), HttpStatus.OK);
     }
 
+    public static LocalDateTime adjustToStartOfDay(LocalDateTime dateTime) {
+        // Chuyển về đầu ngày
+        return dateTime.toLocalDate().atStartOfDay();
+    }
+
+    public static LocalDateTime adjustToEndOfDay(LocalDateTime dateTime) {
+        // Chuyển về cuối ngày
+        return LocalDateTime.of(dateTime.toLocalDate(), LocalTime.MAX);
+    }
 }
