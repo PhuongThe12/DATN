@@ -1,4 +1,4 @@
-package luckystore.datn.rest;
+package luckystore.datn.rest.admin;
 
 import jakarta.validation.Valid;
 import luckystore.datn.model.request.YeuCauRequest;
