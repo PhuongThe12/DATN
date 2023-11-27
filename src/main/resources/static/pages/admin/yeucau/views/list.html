@@ -61,27 +61,31 @@
 
 <div class="box-shadow-page" style="margin: 20px">
     <div class="card-body">
-        <div class="d-flex add-search-custom">
-            <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
-                <input id="seachText" class="form-control" type="text" ng-model="searchTextYeuCau"
-                       placeholder="Nhập Mã Yêu Cầu">
-                <button class="btn btn-custom " ng-click="searchYeuCau()">Tìm kiếm</button>
-            </div>
-            <div>
+
+        <div class="d-flex flex-column flex-md-row add-search-custom">
+            <div class="col-md-4 mb-3">
                 <div class="input-group">
-                    <span class="input-group-text">Ngày Bắt Đầu & Kết Thúc</span>
-                    <input type="text" aria-label="First name" class="form-control" id="ngayBatDau">
-                    <input type="text" aria-label="Last name" class="form-control" id="ngayKetThuc">
+                    <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
+                    <input id="seachText" class="form-control" type="text" ng-model="searchTextYeuCau" placeholder="Nhập Mã Yêu Cầu">
+                    <button class="btn btn-custom" ng-click="searchYeuCau()">Tìm kiếm</button>
                 </div>
             </div>
-            <a class="btn btn-primary" href="#/hoa-don"><i class="fas fa-plus px-2 small"></i>Thêm yêu cầu</a>
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text">Ngày Bắt Đầu/Ngày Kết Thúc:</span>
+                    <input type="date" class="form-control" id="ngayBatDau" name="ngayBatDau">
+                    <input type="date" class="form-control" id="ngayKetThuc" name="ngayKetThuc">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <a class="btn btn-primary" href="#/hoa-don"><i class="fas fa-plus px-2 small"></i>Thêm yêu cầu</a>
+            </div>
         </div>
 
         <div class="d-flex justify-content-start">
             <div class="custom-radio">
                 <input type="radio" id="all" name="trangThai" ng-model="trangThai" value="0"
-                       ng-checked="trangThai != 1 && trangThai != 2" ng-change="changeRadioYeuCau()">
+                       ng-checked="trangThai != 1 && trangThai != 2" ng-change="changeRadioYeuCau(null)">
                 <label class="radio-label" for="all">Tất cả</label>
             </div>
 
@@ -103,6 +107,8 @@
                 <tr>
                     <th>ID</th>
                     <th>Hóa Đơn</th>
+                    <th>Khách Hàng</th>
+                    <th>Nhân Viên</th>
                     <th>Ngày Tạo</th>
                     <th>Ngày Sửa</th>
                     <th>Trạng Thái</th>
@@ -112,9 +118,11 @@
 
                 <tr ng-repeat="yeuCau in listYeuCau">
                     <td>{{yeuCau.id}}</td>
-                    <td>HD<a>{{yeuCau.hoaDon}}</a></td>
-                    <td>{{formatDateView(yeuCau.ngayTao) }}</td>
-                    <td>{{formatDateView(yeuCau.ngaySua) }}</td>
+                    <td><a>{{yeuCau.hoaDon.loaiHoaDon == 1? "HD" : "HD_HDD"}}{{yeuCau.hoaDon.id}}</a></td>
+                    <td>{{ yeuCau.hoaDon.khachHang.hoTen}}</td>
+                    <td>{{ yeuCau.hoaDon.nhanVien.hoTen}}</td>
+                    <td>{{ yeuCau.ngayTao | formatDate}}</td>
+                    <td>{{ yeuCau.ngaySua | formatDate}}</td>
                     <td>
                         <span ng-class="{
                             'trang-thai-cho-xet-duyet': yeuCau.trangThai == 1,

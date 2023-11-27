@@ -19,90 +19,96 @@ app.config(function ($routeProvider, $locationProvider) {
 
 app.controller("yeuCauListController", function ($scope, $http, $window, $location) {
 
-    $scope.curPage = 1, $scope.itemsPerPage = 5, $scope.maxSize = 5, $scope.searchTextYeuCau = '';
-    let startDate, endDate;
+    $scope.curPage = 1, $scope.itemsPerPage = 5, $scope.maxSize = 5;
+    $scope.startDate, $scope.endDate, $scope.trangThai, $scope.searchTextYeuCau = '';
 
+    document.addEventListener('DOMContentLoaded', function () {
+        var ngayBatDau = document.getElementById('ngayBatDau');
+        var ngayKetThuc = document.getElementById('ngayKetThuc');
 
-    // Datepicker ngày bắt đầu
-    const fpStart = flatpickr('#ngayBatDau', {
-        dateFormat: 'd/m/Y', maxDate: new Date(), allowInput: true, // Cho phép nhập giá trị thay vì chỉ chọn từ calendar
-        clickOpens: true, // Cho phép click vào input để mở calendar
-        onClose: function (selectedDates) {
-            // Nếu chọn ngày bắt đầu sau ngày kết thúc
-            if (selectedDates[0] > fpEnd.selectedDates[0]) {
-                // Cập nhật lại ngày kết thúc = ngày bắt đầu
-                fpEnd.setDate(selectedDates[0]);
+        // Cài đặt ngày tối đa là ngày hiện tại
+        var today = new Date().toISOString().split('T')[0];
+        ngayBatDau.setAttribute('max', today);
+        ngayKetThuc.setAttribute('max', today);
+
+        ngayBatDau.addEventListener('change', function () {
+            if (ngayBatDau.value > ngayKetThuc.value) {
+                alert('Ngày bắt đầu không thể lớn hơn ngày kết thúc. Vui lòng chọn lại.');
+                ngayBatDau.value = '';
             }
-            // Giới hạn ngày kết thúc không thể trước ngày bắt đầu
-            fpEnd.set('minDate', selectedDates[0]);
-        }, onChange: function (selectedDates, dateStr, instance) {
-            // Gọi hàm searchByDate khi ngày bắt đầu thay đổi
-            $scope.searchByDate();
-        }, onReady: function () {
-            this.input.addEventListener('blur', function () {
-                // Gọi hàm searchByDate khi trường nhập liệu mất focus
-                $scope.searchByDate();
-            });
-        }
+            sendDateToBackend(ngayBatDau.value, 'start');
+        });
+
+        ngayKetThuc.addEventListener('change', function () {
+            if (ngayKetThuc.value < ngayBatDau.value) {
+                alert('Ngày kết thúc không thể nhỏ hơn ngày bắt đầu. Vui lòng chọn lại.');
+                ngayKetThuc.value = '';
+            }
+            sendDateToBackend(ngayKetThuc.value, 'end');
+        });
     });
 
-// Datepicker ngày kết thúc
-    const fpEnd = flatpickr('#ngayKetThuc', {
-        dateFormat: 'd/m/Y', maxDate: new Date(), allowInput: true, // Cho phép nhập giá trị thay vì chỉ chọn từ calendar
-        clickOpens: true, // Cho phép click vào input để mở calendar
-        onChange: function (selectedDates, dateStr, instance) {
-            // Gọi hàm searchByDate khi ngày kết thúc thay đổi
-            $scope.searchByDate();
-        }, onReady: function () {
-            this.input.addEventListener('blur', function () {
-                // Gọi hàm searchByDate khi trường nhập liệu mất focus
-                $scope.searchByDate();
-            });
-        }
-    });
+    function sendDateToBackend(dateValue, type) {
+        if (dateValue === '') return; // Không gửi nếu ngày không hợp lệ
+        var dateForBackend = new Date(dateValue).toISOString();
+        console.log(`Sending ${type} date to backend: ${dateForBackend}`);
+        // Gửi dữ liệu tới back-end ở đây
+    }
 
 
-// Hàm để định dạng ngày thành chuỗi "yyyy-MM-dd 00:00:00"
-    function formatDateToISO(date) {
+
+
+
+
+
+    // Hàm để định dạng ngày thành chuỗi "yyyy-MM-dd 00:00:00"
+    function formatISOToJavaLocalDateTime(isoString) {
+        // Chuyển đổi chuỗi ISO 8601 thành một định dạng có thể sử dụng trong Java
+        // ví dụ: "2023-11-13T17:00:00.000Z" => "2023-11-13T17:00:00"
+        const date = new Date(isoString);
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+
+        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
     }
 
-// Hàm để định dạng ngày thành chuỗi "dd-MM-yyyy hh:mm:ss"
-    $scope.formatDateView = function (isoDateString) {
-        const inputDate = new Date(isoDateString);
-
-        const options = {
-            day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit',
-        };
-
-        const formattedDate = inputDate.toLocaleDateString('en-GB', options);
-
-        // Loại bỏ dấu phẩy
-        return formattedDate.replace(',', '');
-    };
-
+    $scope.reset = function () {
+        $scope.searchTextYeuCau = '',
+            $scope.startDate = null,
+            $scope.endDate = null,
+            $scope.trangThai = null
+    }
 
     $scope.searchByDate = function () {
-        startDate = fpStart.selectedDates[0];
-        endDate = fpEnd.selectedDates[0];
-        if (startDate === null && endDate === null) {
+        $scope.startDate = fpStart.selectedDates[0];
+        $scope.endDate = fpEnd.selectedDates[0];
+        if ($scope.startDate === null && $scope.endDate === null) {
             toastr["error"]("Vui lòng chọn ngày bắt đầu hoặc ngày kết thúc");
             return;
         }
-        getData(1, startDate, endDate);
+        getData(1, $scope.startDate, $scope.endDate);
     };
 
     $scope.changeRadioYeuCau = function (trangThai) {
-        getData(1, startDate, endDate, null, trangThai);
+        if (trangThai == null) {
+            $scope.reset();
+            fpStart.setDate(null);
+            fpEnd.setDate(null);
+            getData(1);
+        }
+        $scope.trangThai = trangThai;
+        getData(1, $scope.startDate, $scope.endDate, null, $scope.trangThai);
     }
+
     $scope.searchYeuCau = function () {
         if (!$scope.searchTextYeuCau) {
-            getData(1, null, null, null, null);
+            getData(1);
         }
-        getData(1, startDate, endDate, $scope.searchTextYeuCau);
+        getData(1, null, null, $scope.searchTextYeuCau, null);
     };
 
 
@@ -110,31 +116,34 @@ app.controller("yeuCauListController", function ($scope, $http, $window, $locati
 
         let apiUrl = host + '/admin/rest/yeu-cau?page=' + currentPage;
         if (startDate != null) {
-            apiUrl += '&ngayBatDau=' + formatDateToISO(startDate);
+            apiUrl += '&ngayBatDau=' + encodeURIComponent(formatISOToJavaLocalDateTime(startDate));
         }
         if (endDate != null) {
-            apiUrl += '&ngayKetThuc=' + formatDateToISO(endDate);
+            apiUrl += '&ngayKetThuc=' + encodeURIComponent(formatISOToJavaLocalDateTime(endDate));
         }
         if (searchText) {
-            apiUrl += '&searchText=' + searchText;
+            apiUrl += '&searchText=' + encodeURIComponent(searchText);
         }
         if (trangThai) {
-            apiUrl += '&trangThai=' + trangThai;
+            apiUrl += '&trangThai=' + encodeURIComponent(trangThai);
         }
 
         $http.get(apiUrl)
             .then(function (response) {
                 $scope.listYeuCau = response.data.content;
+                console.log($scope.listYeuCau)
                 $scope.numOfPages = response.data.totalPages;
             })
             .catch(function (error) {
                 toastr["error"]("Lấy dữ liệu thất bại");
-                window.location.href = feHost + '/list';
+                // window.location.href = feHost + '/list';
             });
     }
 
+
     $scope.$watch('curPage + numPerPage', function () {
-        getData($scope.curPage);
+
+        getData($scope.curPage, $scope.startDate == null ? null : $scope.startDate, $scope.endDate == null ? null : $scope.endDate, $scope.searchTextYeuCau, $scope.trangThai);
     });
 });
 
@@ -243,7 +252,7 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
                 trangThai: item.trangThai,
                 tinhTrangSanPham: item.tinhTrangSanPham == null ? false : item.tinhTrangSanPham,
                 bienTheGiayTra: item.hoaDonChiTiet.bienTheGiay.id,
-                soLuongTra : item.soLuongTra == null ? 1 : item.soLuongTra,
+                soLuongTra: item.soLuongTra == null ? 1 : item.soLuongTra,
             };
             return yeuCauChiTietRequest;
         });
@@ -269,7 +278,7 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
 
     }
 
-    $scope.luuYeuCau = function (){
+    $scope.luuYeuCau = function () {
         let listYeuCauChiTietUpdate = $scope.listYeuCauChiTietResponse.map(item => {
             let yeuCauChiTietRequest = {
                 id: item.id,
@@ -404,20 +413,14 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
 
     const idHoaDon = $routeParams.id;
 
-//checkForm
-    $scope.focusLyDo = false, $scope.focusGhiChu = false;
 //các list
     $scope.listYeuCauChiTiet = [], $scope.listGiay = [], $scope.arrayForRepeat = [], $scope.arrayForRepeat1 = [];
 //các map
     $scope.mapSanPhamTra = new Map(), $scope.mapSanPhamThayThe = new Map(), $scope.mapYeuCauChiTiet = new Map();
 //tạo search
-    $scope.giaySearch = {}, $scope.giaySearch.curPage = 1, $scope.giaySearch.itemsPerPage = 5, $scope.giaySearch.maxSize = 5, $scope.giaySearch.pageSize = 6;
+    $scope.giaySearch = {}, $scope.curPage = 1, $scope.itemsPerPage = 5, $scope.maxSize = 5, $scope.giaySearch.pageSize = 24, $scope.giaySearch.trangThai = 1;
 
     $scope.yeuCau = {};
-
-    $scope.change = function (input) {
-        input.$dirty = true;
-    }
 
     getHoaDon(idHoaDon);
     getAllNhanVien();
@@ -550,6 +553,7 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
 ///////////////////////Bắt đầu đổi
     $scope.getAllGiay = function () {
         $scope.isLoading = true;
+        $scope.giaySearch.currentPage = $scope.curPage;
         searchGiay($scope.giaySearch)
     }
 
@@ -566,6 +570,10 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
             throw error; // Đẩy lỗi để xử lý ở nơi gọi hàm
             $scope.isLoading = false;
         });
+
+        $('#exampleModalToggle2').modal('show');
+        $('#exampleModalToggle').modal('hide');
+
     };
 
     //Sau khi chọn được biến thể giày
@@ -711,20 +719,28 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
     $scope.giayChoosed = {}; // Biến thể giày được chọn khi chọn màu + size
 
     function detailGiayChiTiet(productData) {
-
         $scope.giayDetail = productData;
-
-        displayImages(productData.lstAnh);
-
         const mauSacImages = productData.mauSacImages;
+        for (const key in mauSacImages) {
+            if (mauSacImages[key]) {
+                productData.lstAnh.push(mauSacImages[key]);
+            }
+        }
+        displayImages(productData.lstAnh);
         const lstBienTheGiay = productData.lstBienTheGiay;
 
         const buttonsContainer = document.getElementById('buttons-container');
         buttonsContainer.innerHTML = '';
         const productInfoContainer = document.getElementById('product-info');
         const sizeButtons = document.getElementById("sizeButtons");
-        const quantityDisplay = document.getElementById('quantity');
-        const priceDisplay = document.getElementById('price-product');
+        while (sizeButtons.firstChild) {
+            sizeButtons.removeChild(sizeButtons.firstChild);
+        }
+        $scope.giayChoosed = {};
+
+        if (mauSacImages.length === 0) {
+            toastr["warning"]("Sản phẩm này chưa có biến thể nào");
+        }
 
 // Tạo các button màu sắc và xử lý sự kiện click
         for (const mauSacId in mauSacImages) {
@@ -733,8 +749,7 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
 
                 // Tìm tên màu sắc từ lstBienTheGiay dựa trên mauSacId
                 const mauSacInfo = lstBienTheGiay.find(variant => variant.mauSac.id === mauSacIdInt)?.mauSac || {
-                    ten: `Màu ${mauSacId}`,
-                    maMau: '#FFFFFF'
+                    ten: `Màu ${mauSacId}`, maMau: '#FFFFFF'
                 };
 
 
@@ -752,6 +767,8 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
                 outerDiv.appendChild(insideDiv);
 
                 outerDiv.addEventListener('click', () => {
+                    $scope.giayChoosed = {};
+                    $scope.giayDetail = {};
                     input.checked = true;
                     productInfoContainer.innerHTML = '';
                     sizeButtons.innerHTML = '';
@@ -766,12 +783,19 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
                             // Tạo nút kích thước và xử lý sự kiện click
                             const sizeButton = document.createElement("button");
                             sizeButton.textContent = variant.kichThuoc.ten;
-                            sizeButton.className = "btn btn-dark";
+                            sizeButton.className = "btn border";
+
+                            $scope.$watch('giayDetail', function (newGiayDetail, oldGiayDetail) {
+                                $scope.giayDetail = newGiayDetail;
+                            });
+
                             sizeButton.addEventListener("click", () => {
-                                quantityDisplay.textContent = variant.soLuong;
-                                priceDisplay.textContent = variant.giaBan;
+                                $scope.giayDetail = variant;
                                 $scope.giayChoosed = variant;
                                 $scope.giayChoosed.ten = productData.ten;
+                                if ($scope.giayDetail) {
+                                    $scope.$apply();
+                                }
                             });
                             sizeButtons.appendChild(sizeButton);
                         }
@@ -784,10 +808,14 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
                     });
                     outerDiv.classList.add('button_checked');
 
-
                     const linkAnh = mauSacImages[mauSacId];
-                    const imageList = [linkAnh];
-                    displayImages(imageList);
+                    if (linkAnh) {
+                        const imageList = [linkAnh];
+                        displayImages(imageList);
+                    } else {
+                        displayImages(productData.lstAnh);
+                    }
+
                 });
                 outerDiv.className = "button_color";
                 buttonsContainer.appendChild(outerDiv);
@@ -842,17 +870,57 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
         });
     }
 
+    $scope.searching = false;
+
+    $scope.search = function () {
+        if (!$scope.searchText) {
+            toastr["warning"]("Bạn chưa nhập thông tin tìm kiếm");
+            return;
+        }
+
+        $scope.searching = true;
+        searchGiay($scope.giaySearch);
+    }
+
+    $scope.reset = function () {
+        if ($scope.searching) {
+            $scope.searchText = "";
+            searchGiay($scope.giaySearch);
+        } else {
+            toastr["warning"]("Bạn đang không tìm kiếm");
+        }
+        $scope.searching = false;
+
+    }
+
+    $scope.$watch('curPage + numPerPage', function () {
+        $scope.isLoading = true;
+        searchGiay($scope.giaySearch);
+    });
+
     function searchGiay(giaySearch) {
-        $http.post(host + '/admin/rest/giay/find-all-by-search', giaySearch)
+        $scope.isLoading = true;
+
+        let apiUrl = host + '/admin/rest/giay/find-all-by-search';
+
+        if ($scope.searchText && $scope.searchText.length > 0) {
+            $scope.giaySearch.ten = ($scope.searchText + "").trim();
+        } else {
+            $scope.giaySearch.ten = null;
+        }
+
+        giaySearch.currentPage = $scope.curPage;
+
+        $http.post(apiUrl, giaySearch)
             .then(function (response) {
-                $scope.listGiay = response.data;
+                $scope.listGiay = response.data.content;
                 $scope.numOfPages = response.data.totalPages;
                 $scope.isLoading = false;
-            }).catch(function (error) {
-            toastr["error"]("Lấy dữ liệu thất bại 1");
-            // $location.path("/list");
-            $scope.isLoading = false;
-        });
+            })
+            .catch(function (error) {
+                console.log(error);
+                toastr["error"]("Lấy dữ liệu thất bại");
+            });
     }
 
     function getAllLyDo() {
@@ -886,19 +954,166 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
         });
     }
 
+    $scope.troVe = function () {
+        $location.path("/hoa-don");
+    }
 });
 
 
 app.controller("selectedHoaDonController", function ($scope, $http, $location, $routeParams) {
     $scope.isLoading = true, $scope.searchText;
-
     $scope.hoaDonSearch = {};
-    $scope.hoaDonSearch.currentPage = 1, $scope.hoaDonSearch.itemsPerPage = 5, $scope.hoaDonSearch.pageSize = 6, $scope.hoaDonSearch.kenhBan = 2;
+    $scope.hoaDonSearch.currentPage = 1, $scope.hoaDonSearch.itemsPerPage = 5, $scope.hoaDonSearch.pageSize = 6, $scope.maxSize = 5, $scope.curPage = 1;
+    $scope.typeSearch = "1", $scope.textSearch = '', $scope.tongTien = {};
+    let startDate, endDate;
+
     getData($scope.hoaDonSearch);
+
+    $scope.search = function () {
+        if ($scope.typeSearch == 1) {
+            $scope.hoaDonSearch.idHoaDon = $scope.textSearch;
+        } else if ($scope.typeSearch == 2 || $scope.typeSearch == 3) {
+            // Kiểm tra nếu có ký tự đặc biệt không mong muốn
+            if (/[^a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝàáâãèéêìíòóôõùúýĂăĐđĨĩŨũƠơƯưẠ-ỹ _]/.test($scope.textSearch)) {
+                toastr["error"]("Vui lòng không nhập ký tự đặc biệt.");
+            } else {
+                if ($scope.typeSearch == 2) {
+                    $scope.hoaDonSearch.khachHang = $scope.textSearch;
+                } else {
+                    $scope.hoaDonSearch.nhanVien = $scope.textSearch;
+                }
+            }
+        } else if ($scope.typeSearch == 4) {
+            if (!validatePhoneNumber($scope.textSearch)) {
+                toastr["error"]("Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại có 10 chữ số.");
+            } else {
+                $scope.hoaDonSearch.soDienThoaiKhacHang = $scope.textSearch;
+            }
+        } else if ($scope.typeSearch == 5) {
+            if (!validateEmail($scope.textSearch)) {
+                toastr["error"]("Địa chỉ email không hợp lệ.");
+            } else {
+                $scope.hoaDonSearch.email = $scope.textSearch;
+            }
+        }
+        getData($scope.hoaDonSearch);
+        $scope.textSearch = '';
+    }
 
     $scope.changeRadioLoaiHoaDon = function (loaiHoaDon) {
         $scope.hoaDonSearch.loaiHoaDon = loaiHoaDon;
         getData($scope.hoaDonSearch);
+    }
+
+    $scope.reset = function () {
+        $scope.hoaDonSearch.idHoaDon = null,
+            $scope.hoaDonSearch.khachHang = null,
+            $scope.hoaDonSearch.nhanVien = null,
+            $scope.hoaDonSearch.soDienThoaiKhacHang = null,
+            $scope.hoaDonSearch.email = null,
+            $scope.hoaDonSearch.loaiHoaDon = null,
+            $scope.hoaDonSearch.ngayBatDau = null,
+            $scope.hoaDonSearch.ngayKetThuc = null,
+            $scope.hoaDonSearch.giaTu = null,
+            $scope.hoaDonSearch.giaDen = null
+        getData($scope.hoaDonSearch);
+        $scope.textSearch = '';
+    }
+
+    $scope.searchByTotalMoney = function () {
+        if ($scope.tongTien == 1) {
+            $scope.hoaDonSearch.giaDen = 500000;
+        } else if ($scope.tongTien == 2) {
+            $scope.hoaDonSearch.giaTu = 500001;
+            $scope.hoaDonSearch.giaDen = 1000000;
+        } else if ($scope.tongTien == 3) {
+            $scope.hoaDonSearch.giaTu = 1000001;
+            $scope.hoaDonSearch.giaDen = 1500000;
+        } else if ($scope.tongTien == 4) {
+            $scope.hoaDonSearch.giaTu = 1500001;
+            $scope.hoaDonSearch.giaDen = 2000000;
+        } else if ($scope.tongTien == 5) {
+            $scope.hoaDonSearch.giaTu = 2000001;
+            $scope.hoaDonSearch.giaDen = 250000;
+        } else if ($scope.tongTien == 6) {
+            $scope.hoaDonSearch.giaTu = 250001;
+            $scope.hoaDonSearch.giaDen = 3000000;
+        } else if ($scope.tongTien == 6) {
+            $scope.hoaDonSearch.giaTu = 3000001;
+        }
+    }
+
+//     // Datepicker ngày bắt đầu
+//     const fpStart = flatpickr('#ngayBatDau', {
+//         dateFormat: 'd/m/Y', maxDate: new Date(), allowInput: true, // Cho phép nhập giá trị thay vì chỉ chọn từ calendar
+//         clickOpens: true, // Cho phép click vào input để mở calendar
+//         onClose: function (selectedDates) {
+//             // Nếu chọn ngày bắt đầu sau ngày kết thúc
+//             if (selectedDates[0] > fpEnd.selectedDates[0]) {
+//                 // Cập nhật lại ngày kết thúc = ngày bắt đầu
+//                 fpEnd.setDate(selectedDates[0]);
+//             }
+//             // Giới hạn ngày kết thúc không thể trước ngày bắt đầu
+//             fpEnd.set('minDate', selectedDates[0]);
+//         }, onChange: function (selectedDates, dateStr, instance) {
+//             // Gọi hàm searchByDate khi ngày bắt đầu thay đổi
+//             $scope.searchByDate();
+//         }, onReady: function () {
+//             this.input.addEventListener('keydown', function (e) {
+//                 if (e.key === 'Enter') {
+//                     $scope.searchByDate();
+//                     $scope.$apply(); // Cần gọi $scope.$apply để cập nhật Angular scope
+//                 }
+//             });
+//         }
+//     });
+//
+// // Datepicker ngày kết thúc
+//     const fpEnd = flatpickr('#ngayKetThuc', {
+//         dateFormat: 'd/m/Y', maxDate: new Date(), allowInput: true, // Cho phép nhập giá trị thay vì chỉ chọn từ calendar
+//         clickOpens: true, // Cho phép click vào input để mở calendar
+//         onChange: function (selectedDates, dateStr, instance) {
+//             // Gọi hàm searchByDate khi ngày kết thúc thay đổi
+//             $scope.searchByDate();
+//         }, onReady: function () {
+//             this.input.addEventListener('keydown', function (e) {
+//                 if (e.key === 'Enter') {
+//                     $scope.searchByDate();
+//                     $scope.$apply(); // Cần gọi $scope.$apply để cập nhật Angular scope
+//                 }
+//             });
+//         }
+//     });
+
+
+    $scope.searchByDate = function () {
+        startDate = fpStart.selectedDates[0];
+        endDate = fpEnd.selectedDates[0];
+        if (startDate === null && endDate === null) {
+            toastr["error"]("Vui lòng chọn ngày bắt đầu hoặc ngày kết thúc");
+            return;
+        }
+
+        $scope.hoaDonSearch.ngayBatDau = startDate == null ? null : formatISOToJavaLocalDateTime(startDate);
+        $scope.hoaDonSearch.ngayKetThuc = endDate == null ? null : formatISOToJavaLocalDateTime(endDate);
+
+        getData($scope.hoaDonSearch);
+    };
+
+
+    // Hàm để định dạng ngày thành chuỗi "yyyy-MM-dd 00:00:00"
+    function formatISOToJavaLocalDateTime(isoString) {
+        // Chuyển đổi chuỗi ISO 8601 thành một định dạng có thể sử dụng trong Java
+        // ví dụ: "2023-11-13T17:00:00.000Z" => "2023-11-13T17:00:00"
+        const date = new Date(isoString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+
+        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
     }
 
     document.getElementById('flexSwitchCheckDefault').addEventListener('change', function () {
@@ -914,8 +1129,14 @@ app.controller("selectedHoaDonController", function ($scope, $http, $location, $
         }
     });
 
-    $scope.search = function () {
+    function validateEmail(email) {
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
 
+    function validatePhoneNumber(phone) {
+        var phoneRegex = /^0[0-9]{9}$/;
+        return phoneRegex.test(phone);
     }
 
     function getData(hoaDonSearch) {
@@ -923,6 +1144,7 @@ app.controller("selectedHoaDonController", function ($scope, $http, $location, $
         $http.post(host + '/admin/rest/hoa-don/yeu-cau', hoaDonSearch)
             .then(function (response) {
                 $scope.listHoaDon = response.data.content;
+                console.log($scope.listHoaDon)
                 $scope.numOfPages = response.data.totalPages;
                 $scope.isLoading = false;
             })
@@ -932,6 +1154,12 @@ app.controller("selectedHoaDonController", function ($scope, $http, $location, $
                 $scope.isLoading = false;
             });
     }
+
+
+    $scope.$watch('curPage + numPerPage', function () {
+        $scope.hoaDonSearch.currentPage = $scope.curPage;
+        getData($scope.hoaDonSearch);
+    });
 
     $scope.chonHoaDon = function (hoaDon) {
         $scope.hoaDonSelected = hoaDon;
@@ -945,6 +1173,9 @@ app.controller("selectedHoaDonController", function ($scope, $http, $location, $
             toastr["error"]("Bạn phải chọn một hóa đơn để tạo yêu cầu");
         }
     };
+    $scope.troVe = function () {
+        $location.path("/list");
+    }
 
 });
 
@@ -955,6 +1186,26 @@ app.filter('formatToVND', function () {
             return number.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'});
         } else {
             return '0 VND'; // Hoặc giá trị mặc định khác
+        }
+    };
+});
+
+app.filter('formatDate', function () {
+    return function (isoDateString) {
+        if (isoDateString) {
+            const inputDate = new Date(isoDateString);
+            const options = {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+            };
+            const formattedDate = inputDate.toLocaleDateString('en-GB', options);
+            return formattedDate.replace(',', '');
+        } else {
+            return '-'; // Hoặc giá trị mặc định khác nếu không có ngày
         }
     };
 });

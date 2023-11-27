@@ -31,7 +31,7 @@ public interface GiayService {
 
     GiayResponse updateGiay(Long id, GiayRequest giayRequest);
 
-    List<GiayResponse> findAllBySearch(GiaySearch giaySearch);
+    Page<GiayResponse> findAllBySearch(GiaySearch giaySearch);
 
     void addExcel(List<GiayExcelRequest> giayExcelRequests);
 

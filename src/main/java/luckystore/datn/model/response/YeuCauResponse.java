@@ -12,6 +12,7 @@ import luckystore.datn.entity.YeuCauChiTiet;
 import luckystore.datn.service.impl.ImageHubServiceImpl;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -27,10 +28,10 @@ public class YeuCauResponse {
 
     private Long id;
     private Long nguoiThucHien;
-    private Long hoaDon;
+    private HoaDonYeuCauRespone hoaDon;
     private Integer trangThai;
-    private Date ngayTao;
-    private Date ngaySua;
+    private LocalDateTime ngayTao;
+    private LocalDateTime ngaySua;
     private String ghiChu;
 
     private List<String> listAnhGiayTra = new ArrayList<>();
@@ -41,7 +42,7 @@ public class YeuCauResponse {
         if(yeuCau != null){
             this.id = yeuCau.getId();
             this.nguoiThucHien = yeuCau.getNguoiThucHien();
-            this.hoaDon = yeuCau.getHoaDon().getId();
+            this.hoaDon = new HoaDonYeuCauRespone(yeuCau.getHoaDon(),null);
             this.trangThai = yeuCau.getTrangThai();
             this.ngayTao = yeuCau.getNgayTao();
             this.ngaySua = yeuCau.getNgaySua();
