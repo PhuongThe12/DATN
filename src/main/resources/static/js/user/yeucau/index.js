@@ -3,7 +3,7 @@ app.config(function ($routeProvider, $locationProvider) {
     $locationProvider.hashPrefix('');
     $routeProvider
         .when("/list", {
-            templateUrl: '/pages/user/yeucau/views/list.html', controller: 'yeuCauListController'
+            templateUrl: '/pages/customer/yeucau/views/list.html', controller: 'yeuCauListController'
         }).when("/detail/:id", {
         templateUrl: '/pages/user/yeucau/views/detail.html', controller: 'detailYeuCauController'
         }).when("/update/:id", {
@@ -15,4 +15,4 @@ app.config(function ($routeProvider, $locationProvider) {
 
 app.controller("yeuCauListController", function ($scope, $http, $window, $location) {
 
-}
+});

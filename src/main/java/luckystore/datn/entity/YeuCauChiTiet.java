@@ -37,7 +37,7 @@ public class YeuCauChiTiet {
     private BienTheGiay bienTheGiay;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "LY_DO")
+    @JoinColumn(name = "ID_LY_DO")
     private LyDo lyDo;
 
     @Column(name = "SO_LUONG")
