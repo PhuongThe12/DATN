@@ -1,15 +1,33 @@
 <style>
-    .title-cart{
+    .title-cart {
         text-align: center;
         padding: 4px 0px;
     }
-    .navbar{
+
+    .navbar {
         border-bottom: 1px solid #d9d9d9;
     }
 </style>
+<div class="container-fluid" style="background: black;color: white;">
+    <div class="email" style="text-align: center;">
+        <p class="font-size-14-ncl">BLACK FRIDAY : 30% <a href="" style="text-decoration: none;color: white;">MUA
+            NGAY</a></p>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="d-flex align-items-center justify-content-center">
+        <img src="/img/logo_datn.png" width="30px" class="rounded" alt="">
+        <h5 class="fw-bold">LUCKYSTORE</h5>
+    </div>
+</div>
 <nav class="navbar navbar-expand-lg p-3">
     <div class="container-fluid">
-        <a class="navbar-brand text-decoration-none fw-light text-dark" href="#"><img src="/img/logo_datn.png" width="50px" class="rounded" alt=""> LUCKY STORE</a>
+        <div class="" style="text-align: center;">
+            <a class="navbar-brand text-decoration-none fw-light font-size-16-ncl text-dark"
+               style="border-bottom: 3px solid black;" href="#">Sản Phẩm</a>
+            <a class="navbar-brand text-decoration-none fw-light font-size-16-ncl text-dark" href="#">Khuyến Mãi</a>
+            <a class="navbar-brand text-decoration-none fw-light font-size-16-ncl text-dark" href="#">Chính Sách</a>
+        </div>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
                 aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -17,17 +35,23 @@
 
         <div class=" collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav ms-auto ">
-
-                <div class="btn-group"  style="cursor: pointer;">
+                <div>
+                    <a href=""><i class="far fa-user" style="color: black;font-size: 23px;"></i></a>
+                </div>
+                <div class="ps-3">
+                    <a href=""><i class="far fa-heart" style="color: black;font-size: 23px;"></i></a>
+                </div>
+                <div class="btn-group ps-3" style="cursor: pointer;">
                     <div data-bs-toggle="dropdown" class="position-relative" ng-click="openCartDropdown()">
                         <i class="fas fa-shopping-cart" style="color: black;font-size: 23px;"></i>
-                        <span style="position: absolute;top: -7px;padding: 4px 7px; background: #e50000;left: 20px;" class="badge badge-light">{{ gioHang.length }}</span>
+                        <span style="position: absolute;top: -7px;padding: 4px 7px; background: #e50000;left: 20px;"
+                              class="badge badge-light">{{ gioHang.length }}</span>
                     </div>
 
                     <ul class="dropdown-menu" style="
                             right: 0px !important;
                             left: unset !important;">
-                        <div >
+                        <div>
                             <h5 class="title-cart fw-light">GIỎ HÀNG</h5>
                         </div>
                         <div style="width: 386px;
