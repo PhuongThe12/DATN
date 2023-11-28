@@ -1,0 +1,8 @@
+
+#invoiceContent {
+    display: block !important;
+}
+
+@page {
+    margin: 24px;
+}
