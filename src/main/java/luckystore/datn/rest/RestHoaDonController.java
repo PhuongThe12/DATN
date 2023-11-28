@@ -66,9 +66,14 @@ public class RestHoaDonController {
         return ResponseEntity.ok(hoaDonService.findById(id));
     }
 
-    @GetMapping("/chua-thanh-toan")
+    @GetMapping("/get-print/{id}")
+    public ResponseEntity<?> getPrint(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(hoaDonService.getPrint(id));
+    }
+
+    @GetMapping("/chua-thanh-toan-ban-hang")
     public ResponseEntity<?> getAllChuaThanhToan() {
-        return ResponseEntity.ok(hoaDonService.getAllChuaThanhToan());
+        return ResponseEntity.ok(hoaDonService.getAllChuaThanhToanBanHang());
     }
 
     @GetMapping("/get-full-response/{id}")
