@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import luckystore.datn.model.request.YeuCauRequest;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -36,10 +37,10 @@ public class YeuCau {
     private Integer trangThai;
 
     @Column(name = "NGAY_TAO")
-    private Date ngayTao;
+    private LocalDateTime ngayTao;
 
     @Column(name = "NGAY_SUA")
-    private Date ngaySua;
+    private LocalDateTime ngaySua;
 
     @Column(name = "GHI_CHU")
     private String ghiChu;
@@ -48,7 +49,7 @@ public class YeuCau {
     @JsonManagedReference
     private List<YeuCauChiTiet> listYeuCauChiTiet;
 
-    public YeuCau(YeuCauRequest YeuCauRequest,HoaDon hoaDon,Date ngayTao,Date ngaySua) {
+    public YeuCau(YeuCauRequest YeuCauRequest,HoaDon hoaDon,LocalDateTime ngayTao,LocalDateTime ngaySua) {
         if (YeuCauRequest != null) {
             this.nguoiThucHien = YeuCauRequest.getNguoiThucHien();
             this.hoaDon = hoaDon;

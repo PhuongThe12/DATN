@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 import luckystore.datn.entity.HoaDon;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -32,6 +34,7 @@ public class HoaDonYeuCauRespone {
 
     private Integer loaiHoaDon;
 
+    private LocalDateTime ngayTao;
     private String moTa;
 
     private List<HoaDonChiTietResponse> listHoaDonChiTiet = new ArrayList<>();
@@ -46,6 +49,7 @@ public class HoaDonYeuCauRespone {
         this.kenhBan = hoaDon.getKenhBan();
         this.trangThai = hoaDon.getTrangThai();
         this.loaiHoaDon = hoaDon.getLoaiHoaDon();
+        this.ngayTao = hoaDon.getNgayTao();
         this.moTa = hoaDon.getGhiChu();
         this.listHoaDonChiTiet = (hoaDon.getListHoaDonChiTiet().stream().map(HoaDonChiTietResponse::new).collect(Collectors.toList()));
         this.tongTien = tongTien((hoaDon.getListHoaDonChiTiet().stream().map(HoaDonChiTietResponse::new).collect(Collectors.toList())));

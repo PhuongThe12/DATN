@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import luckystore.datn.validation.groups.CreateGroup;
 import luckystore.datn.validation.groups.UpdateGroup;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -28,9 +29,9 @@ public class YeuCauRequest {
 
     private String ghiChu;
 
-    private Date ngaySua;
+    private LocalDateTime ngaySua;
 
-    private Date ngayTao;
+    private LocalDateTime ngayTao;
 
     private List<YeuCauChiTietRequest> listYeuCauChiTiet;
 

@@ -86,6 +86,13 @@ public class BienTheGiayResponse extends BaseBienTheResponse {
         this.giayResponse = GiayResponse.builder().ten(giay.getTen()).build();
     }
 
+    public BienTheGiayResponse(Long id, BigDecimal giaBan, Integer phanTramGiam, Integer trangThai) {
+        this.id = id;
+        this.giaBan = giaBan;
+        this.khuyenMai = phanTramGiam;
+        this.trangThai = trangThai;
+    }
+
     public BienTheGiayResponse(Long id, Long idMauSac, Long idKichThuoc, String barCode) {
         this.id = id;
         this.barCode = barCode;
