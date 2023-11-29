@@ -16,6 +16,7 @@ import luckystore.datn.service.TaiKhoanService;
 import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -31,6 +32,9 @@ public class TaiKhoanServiceImpl implements TaiKhoanService {
 
     @Autowired
     NhanVienRepository nhanVienRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Override
     public List<NhanVienResponse> getAll() {
@@ -57,15 +61,29 @@ public class TaiKhoanServiceImpl implements TaiKhoanService {
         return null;
     }
 
-    public TaiKhoanResponse login(TaiKhoanRequest taiKhoanRequest) {
-        TaiKhoan taiKhoan = taiKhoanRepository.findByTenDangNhapAndMatKhau(taiKhoanRequest.getTenDangNhap(), taiKhoanRequest.getMatKhau());
-        if (taiKhoan == null) {
-            throw new NotFoundException(ErrorMessage.NOT_FOUND);
-        }
-        if (taiKhoan.getRole() == 1) { // Nhaan Vien Login
-            SystemHistoryLogger.writeSystemHistoryEntry(new SystemHistoryEntry(taiKhoan.getTenDangNhap(), SystemHistory.LOGIN, "" + SystemHistoryLogger.getDateNow()));
-        }
-            SystemHistory.nhanVien = nhanVienRepository.findNhanVienByIdTaiKhoan(taiKhoan.getId());
-        return new TaiKhoanResponse(taiKhoan);
+    @Override
+    public TaiKhoanResponse addTaiKhoan(TaiKhoanRequest taiKhoanRequest) {
+        TaiKhoan taiKhoan = getTaiKhoan(new TaiKhoan(), taiKhoanRequest);
+        return new TaiKhoanResponse(taiKhoanRepository.save(taiKhoan));
     }
+
+    private TaiKhoan getTaiKhoan(TaiKhoan taiKhoan, TaiKhoanRequest request) {
+        taiKhoan.setTenDangNhap(request.getTenDangNhap());
+        taiKhoan.setMatKhau(passwordEncoder.encode(request.getMatKhau()));
+        taiKhoan.setRole(request.getRole());
+        taiKhoan.setTrangThai(request.getTrangThai() == null || request.getTrangThai() == 0 ? 0 : 1);
+        return taiKhoan;
+    }
+
+//    public TaiKhoanResponse login(TaiKhoanRequest taiKhoanRequest) {
+//        TaiKhoan taiKhoan = taiKhoanRepository.findByTenDangNhapAndMatKhau(taiKhoanRequest.getTenDangNhap(), taiKhoanRequest.getMatKhau());
+//        if (taiKhoan == null) {
+//            throw new NotFoundException(ErrorMessage.NOT_FOUND);
+//        }
+//        if (taiKhoan.getRole() == 1) { // Nhaan Vien Login
+//            SystemHistoryLogger.writeSystemHistoryEntry(new SystemHistoryEntry(taiKhoan.getTenDangNhap(), SystemHistory.LOGIN, "" + SystemHistoryLogger.getDateNow()));
+//        }
+//            SystemHistory.nhanVien = nhanVienRepository.findNhanVienByIdTaiKhoan(taiKhoan.getId());
+//        return new TaiKhoanResponse(taiKhoan);
+//    }
 }

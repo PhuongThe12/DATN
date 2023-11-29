@@ -8,6 +8,7 @@ import luckystore.datn.entity.TaiKhoan;
 import luckystore.datn.exception.DuplicateException;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.exception.NullException;
+import luckystore.datn.infrastructure.Role;
 import luckystore.datn.model.request.NhanVienRequest;
 import luckystore.datn.model.response.NhanVienResponse;
 import luckystore.datn.repository.NhanVienRepository;
@@ -52,7 +53,7 @@ public class NhanVienServiceImpl implements NhanVienService {
         taiKhoan.setTenDangNhap(nhanVienRequest.getTenDangNhap());
         taiKhoan.setMatKhau(nhanVienRequest.getMatKhau());
         taiKhoan.setTrangThai(1);
-        taiKhoan.setRole(1);
+        taiKhoan.setRole(Role.ROLE_STAFF);
         NhanVien nhanVien = getNhanVien(new NhanVien(), nhanVienRequest);
         nhanVien.setTaiKhoan(taiKhoanRepo.save(taiKhoan));
         if (SystemHistory.nhanVien == null) {

@@ -7,6 +7,7 @@ import luckystore.datn.entity.TaiKhoan;
 import luckystore.datn.exception.DuplicateException;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.exception.NullException;
+import luckystore.datn.infrastructure.Role;
 import luckystore.datn.model.request.KhachHangRequest;
 import luckystore.datn.model.response.KhachHangResponse;
 import luckystore.datn.repository.HangKhachHangRepository;
@@ -57,7 +58,7 @@ public class KhachHangServiceImpl implements KhachHangService {
         TaiKhoan taiKhoan = new TaiKhoan();
         taiKhoan.setMatKhau(khachHangRequest.getSoDienThoai());
         taiKhoan.setTenDangNhap(khachHangRequest.getEmail());
-        taiKhoan.setRole(1);
+        taiKhoan.setRole(Role.ROLE_USER);
         taiKhoan.setTrangThai(khachHang.getTrangThai());
 
         khachHang.setTaiKhoan(taiKhoan);
