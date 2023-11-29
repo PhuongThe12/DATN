@@ -49,6 +49,10 @@ public class HoaDonResponse {
 
     private String ghiChu;
 
+    private BigDecimal tienGiam;
+
+    private Integer uuDai;
+
 
     public HoaDonResponse(HoaDon hoaDon) {
 
@@ -71,6 +75,8 @@ public class HoaDonResponse {
                 this.ngayThanhToan = dateFormat(hoaDon.getNgayThanhToan());
             }
 
+            this.tienGiam = hoaDon.getTienGiam();
+            this.uuDai = hoaDon.getUuDai();
             this.kenhBan = hoaDon.getKenhBan();
             this.maVanDon = hoaDon.getMaVanDon();
             this.email = hoaDon.getEmail();
@@ -103,6 +109,8 @@ public class HoaDonResponse {
                 this.ngayThanhToan = dateFormat(hoaDon.getNgayThanhToan());
             }
 
+            this.tienGiam = hoaDon.getTienGiam();
+            this.uuDai = hoaDon.getUuDai();
             this.kenhBan = hoaDon.getKenhBan();
             this.maVanDon = hoaDon.getMaVanDon();
             this.email = hoaDon.getEmail();

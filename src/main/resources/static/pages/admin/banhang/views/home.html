@@ -891,5 +891,58 @@
 </div>
 
 <div id="invoiceContent" style="display: none">
+    <div class="invoice-header">
+        <div class="d-flex justify-content-evenly align-content-center" style="padding-bottom: 10px ;border-bottom: 2px slategray dashed;">
+            <img src="/img/logo_datn.png"
+                 alt="" style="width: 50px; height: 50px;">
+            <h2 class="d-flex align-items-center">Cửa hàng giày sneaker Lucky Store</h2>
+        </div>
+        <h2>Hóa Đơn Thanh Toán</h2>
+    </div>
 
+    <div class="invoice-details">
+        <p><strong>Mã Hóa Đơn:</strong> HD{{hoaDonPrint.ma}}</p>
+        <p><strong>Khách Hàng:</strong> {{hoaDonPrint.tenKhachHang}}</p>
+        <p><strong>Ngày thanh toán:</strong> {{hoaDonPrint.ngayThanhToan}}</p>
+        <p><strong>Nhân viên:</strong> {{hoaDonPrint.tenNhanVien}}</p>
+    </div>
+
+    <table class="invoice-items" style="width: 100%">
+        <thead>
+        <tr>
+            <th style="width: 50%">Sản Phẩm</th>
+            <th>Số Lượng</th>
+            <th>Đơn Giá (Đã giảm)</th>
+            <th>Thành Tiền</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="sanPham in sanPhams">
+            <td>({{sanPham.bienTheGiay.kichThuoc.ten}} - {{sanPham.bienTheGiay.mauSac.ten}}) <strong>{{sanPham.bienTheGiay.giayResponse.ten}}</strong></td>
+            <td>{{sanPham.soLuong}}</td>
+            <td>{{sanPham.donGia}}</td>
+            <td>{{sanPham.donGia * sanPham.soLuong}}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="invoice-total">
+        <p class="py-2"><strong>Tổng Cộng : </strong> {{hoaDonPrint.tongCong | number : 0}} VND</p>
+        <p class="py-2"><strong>Tiền ship : </strong>- {{hoaDonPrint.tienShip | number : 0}} VND</p>
+        <p class="py-2"><strong>Giảm giá  : </strong>- {{hoaDonPrint.tongTru | number : 0}} VND</p>
+        <p class="py-2"><strong>Phải trả  : </strong>{{hoaDonPrint.conLai | number : 0}} VND</p>
+    </div>
+
+    <div class="py-2 display-none" ng-class="hoaDonPrint.trangThai==1?'display-block' : ''">
+        <span class="da-thanh-toan px-2">Đã thanh toán</span>
+    </div>
+    <div class="py-2 display-none" ng-class="hoaDonPrint.trangThai==0?'display-block' : ''">
+        <span class="chua-thanh-toan">Chưa thanh toán</span>
+    </div>
+    <div class="py-2 display-none"  ng-class="hoaDonPrint.trangThai!=1&&hoaDonPrint.trangThai!=0?'display-block' : ''">
+        <span>Trạng thái: {{hoaDonPrint.trangThai}}</span>
+    </div>
+    <div class="d-flex justify-content-center" style="padding-top: 10px ;border-top: 2px slategray dashed;">
+        <div style="text-align: center">Cảm ơn và hẹn gặp lại!</div>
+    </div>
 </div>

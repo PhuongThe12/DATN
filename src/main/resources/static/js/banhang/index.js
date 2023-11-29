@@ -113,8 +113,8 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
         container[item.split("=")[0]] = decodeURIComponent(item.split("=")[1]) ? item.split("=")[1] : "No query strings available";
     });
 
-    if (Object.keys(container).length === 1 && container["status"] === "00") {
-        toastr["success"]("Thanh toán thành công");
+    if (Object.keys(container).length === 2 && container["status"] === "00") {
+        printOrder(container["hd"], 2);
     } else if (Object.keys(container).length === 2 && container["status"] === "02" && !isNaN(container["hd"])) {
         $scope.selecteHoaDon(container["hd"]);
     }
@@ -139,7 +139,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
             if (info.length === 2) {
                 $http.post(host + "/admin/rest/hoa-don/thanh-toan-tai-quay-banking", request)
                     .then(response => {
-                        window.location.href = window.location.origin + window.location.pathname + "?status=00#home";
+                        window.location.href = window.location.origin + window.location.pathname + "?status=00&hd=" + info[0] + "#home";
                     })
                     .catch(err => {
                         window.location.href = window.location.origin + window.location.pathname + "?status=02#home";
@@ -147,7 +147,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
             } else if (info.length === 3) {
                 $http.post(host + "/admin/rest/hoa-don/dat-hang-tai-quay-banking", request)
                     .then(response => {
-                        window.location.href = window.location.origin + window.location.pathname + "?status=00#home";
+                        window.location.href = window.location.origin + window.location.pathname + "?status=00&hd=" + info[0] + "#home";
                     })
                     .catch(err => {
                         window.location.href = window.location.origin + window.location.pathname + "?status=02#home";
@@ -663,7 +663,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                             const index = $scope.hoaDons.findIndex(item => item.id === response.data);
                             if (index !== -1) {
                                 $scope.hoaDons.splice(index, 1);
-                                toastr["success"]("Thanh toán thành công");
+                                printOrder(response.data, 1);
                                 resetHoaDon();
                             }
                             $scope.isLoading = false;
@@ -716,6 +716,63 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                     });
             }
         });
+    }
+
+    function printOrder(idHd, level) {
+        Swal.fire({
+            text: "Thanh toán thành công. Bạn có muốn in hóa đơn không?",
+            icon: "success",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $http.get(host + "/admin/rest/hoa-don/get-print/" + idHd)
+                    .then((response) => {
+                        $scope.hoaDonPrint = {};
+                        const data = response.data;
+                        $scope.hoaDonPrint.ma = data.id;
+                        $scope.hoaDonPrint.tenKhachHang = data.khachHang ? data.khachHang.hoTen : "";
+                        $scope.hoaDonPrint.tenNhanVien = data.nhanVien ? data.nhanVien.hoTen : "";
+                        $scope.hoaDonPrint.ngayThanhToan = data.ngayThanhToan;
+                        $scope.sanPhams = data.hoaDonChiTietResponses;
+                        $scope.hoaDonPrint.conLai = 0;
+                        data.chiTietThanhToans.forEach(item => {
+                            $scope.hoaDonPrint.conLai += item.tienThanhToan;
+                        });
+                        $scope.hoaDonPrint.tongTru = data.tienGiam ? data.tienGiam : 0;
+                        $scope.hoaDonPrint.tienShip = data.tienShip ? data.tienShip : 0;
+
+                        $scope.hoaDonPrint.tongCong = $scope.hoaDonPrint.conLai + $scope.hoaDonPrint.tongTru + $scope.hoaDonPrint.tienShip;
+
+                        $scope.hoaDonPrint.trangThai = data.trangThai;
+
+                        document.title = 'HD' + data.id;
+                        setTimeout(function () {
+                            printJS({
+                                printable: 'invoiceContent',
+                                type: 'html',
+                                documentTitle: 'HD' + data.id,
+                                css: '/css/banhang/print.css',
+                                onPrintDialogClose: () => {
+                                    window.location.href = window.location.origin + window.location.pathname + "#home";
+                                }
+                            })
+                        }, 0);
+
+                    })
+                    .catch((error) => {
+                        toastr["error"]("Không tìm thấy hóa đơn vui lòng thử lại");
+                    })
+            } else {
+                if (level === 2) {
+                    window.location.href = window.location.origin + window.location.pathname + "#home";
+                }
+            }
+        });
+
     }
 
     function resetHoaDon() {

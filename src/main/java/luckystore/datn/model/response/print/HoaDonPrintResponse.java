@@ -6,8 +6,11 @@ import lombok.Setter;
 import luckystore.datn.entity.ChiTietThanhToan;
 import luckystore.datn.entity.HoaDon;
 import luckystore.datn.model.response.BienTheGiayResponse;
+import luckystore.datn.model.response.GiayResponse;
 import luckystore.datn.model.response.HoaDonChiTietResponse;
 import luckystore.datn.model.response.KhachHangResponse;
+import luckystore.datn.model.response.KichThuocResponse;
+import luckystore.datn.model.response.MauSacResponse;
 import luckystore.datn.model.response.NhanVienResponse;
 
 import java.math.BigDecimal;
@@ -54,6 +57,10 @@ public class HoaDonPrintResponse {
 
     private String ghiChu;
 
+    private BigDecimal tienGiam;
+
+    private Integer uuDai;
+
     private List<HoaDonChiTietResponse> hoaDonChiTietResponses = new ArrayList<>();
 
     private Set<ChiTietThanhToan> chiTietThanhToans;
@@ -85,6 +92,8 @@ public class HoaDonPrintResponse {
                 this.ngayThanhToan = dateFormat(hoaDon.getNgayThanhToan());
             }
 
+            this.tienGiam = hoaDon.getTienGiam();
+            this.uuDai = hoaDon.getUuDai();
             this.kenhBan = hoaDon.getKenhBan();
             this.maVanDon = hoaDon.getMaVanDon();
             this.email = hoaDon.getEmail();
@@ -100,6 +109,9 @@ public class HoaDonPrintResponse {
                 response.setSoLuong(item.getSoLuong());
                 BienTheGiayResponse bienTheGiayResponse = new BienTheGiayResponse();
                 bienTheGiayResponse.setGiaBan(item.getBienTheGiay().getGiaBan());
+                bienTheGiayResponse.setKichThuoc(KichThuocResponse.builder().ten(item.getBienTheGiay().getKichThuoc().getTen()).build());
+                bienTheGiayResponse.setMauSac(MauSacResponse.builder().ten(item.getBienTheGiay().getMauSac().getTen()).build());
+                bienTheGiayResponse.setGiayResponse(GiayResponse.builder().ten(item.getBienTheGiay().getGiay().getTen()).build());
                 response.setBienTheGiay(bienTheGiayResponse);
 
                 this.hoaDonChiTietResponses.add(response);
@@ -129,6 +141,8 @@ public class HoaDonPrintResponse {
                 this.ngayThanhToan = dateFormat(hoaDon.getNgayThanhToan());
             }
 
+            this.tienGiam = hoaDon.getTienGiam();
+            this.uuDai = hoaDon.getUuDai();
             this.kenhBan = hoaDon.getKenhBan();
             this.maVanDon = hoaDon.getMaVanDon();
             this.email = hoaDon.getEmail();

@@ -33,4 +33,7 @@ public interface KichThuocRepository extends JpaRepository<KichThuoc, Long> {
 
     @Query("select new luckystore.datn.model.response.KichThuocResponse(g.id, g.ten) from KichThuoc g where g.ten in :names")
     List<KichThuocResponse> getIdsByName(Set<String> names);
+
+    @Query("select lg.ten from KichThuoc lg")
+    String[] getAllTen();
 }
