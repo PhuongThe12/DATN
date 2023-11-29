@@ -331,26 +331,41 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
     });
 
     $scope.themVaoGioHang = function () {
-        console.log($scope.giayChoosed.id);
-        if ($scope.giayChoosed.id === undefined) {
-            toastr["warning"]("Vui lòng chọn sản phẩm");
-        } else {
-            var giaTriCanThem = {idBienTheGiay: $scope.giayChoosed.id, soLuong: 1};
+        //Khách chưa Login
 
-            var tonTai = kiemTraTonTai($scope.gioHang, giaTriCanThem.idBienTheGiay);
+        // if ($scope.giayChoosed.id === undefined) {
+        //     toastr["warning"]("Vui lòng chọn sản phẩm");
+        // } else {
+        //     var giaTriCanThem = {idBienTheGiay: $scope.giayChoosed.id, soLuong: 1};
+        //
+        //     var tonTai = kiemTraTonTai($scope.gioHang, giaTriCanThem.idBienTheGiay);
+        //     if (!tonTai) {
+        //         $scope.gioHang.push(giaTriCanThem);
+        //         $scope.listBienTheGiayLocalStorage.push($scope.giayChoosed);
+        //         toastr["success"]("Thêm vào giỏ hàng thành công");
+        //     } else {
+        //         var index = timViTri($scope.gioHang, giaTriCanThem.idBienTheGiay);
+        //         $scope.gioHang[index].soLuong++;
+        //     }
+        //
+        //     localStorage.setItem('gioHang', JSON.stringify($scope.gioHang));
+        //     $scope.loadLocalStorage();
+        // }
 
-            if (!tonTai) {
-                $scope.gioHang.push(giaTriCanThem);
-                $scope.listBienTheGiayLocalStorage.push($scope.giayChoosed);
-                toastr["success"]("Thêm vào giỏ hàng thành công");
-            } else {
-                var index = timViTri($scope.gioHang, giaTriCanThem.idBienTheGiay);
-                $scope.gioHang[index].soLuong++;
-            }
+        //Khách đã Login
+        $http.get("http://localhost:8080/user/rest/gio-hang/1").then(function (response) {
+            $scope.gioHangChiTiet = {};
+            $scope.gioHangChiTiet.id = response.data.id;
+            $scope.gioHangChiTiet.bienTheGiay = $scope.giayChoosed.id;
+            console.log($scope.gioHangChiTiet);
+            $http.post("http://localhost:8080/user/rest/gio-hang", $scope.gioHangChiTiet)
+        }).catch(function (error) {
+            console.log(error);
+            toastr["error"]("Lấy dữ liệu thất bại");
+            $scope.isLoading = false;
+        });
 
-            localStorage.setItem('gioHang', JSON.stringify($scope.gioHang));
-            $scope.loadLocalStorage();
-        }
+
     }
 
     // List Recommend
@@ -576,7 +591,7 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
                     itemDiv.appendChild(itemChild);
                     itemH5.textContent = genNameKey(key);
                     itemSpan.textContent = keyData.ten;
-                    itemP.textContent =keyData.moTa;
+                    itemP.textContent = keyData.moTa;
                     // itemDiv.appendChild(itemH5);
 
                     itemP.classList.add('text-limit');
@@ -694,6 +709,7 @@ app.controller('cartProductController', function ($scope, $http, $location, $coo
                         correspondingObject.soLuongMua = item1.soLuong;
                     }
                 });
+                console.log($scope.gioHang);
                 $scope.tongTien = 0;
                 $scope.listBienTheGiayLocalStorage.forEach(function (item) {
                     $scope.tongTien += item.soLuongMua * item.giaBan;
@@ -709,7 +725,79 @@ app.controller('cartProductController', function ($scope, $http, $location, $coo
             });
     }
 
-    $scope.loadLocalStorage();
+    $scope.loadCartByIdKhachHang = function () {
+        $http.get("http://localhost:8080/user/rest/gio-hang/1").then(function (response) {
+            console.log(response.data);
+            var bienTheGiayList = [];
+
+            angular.forEach(response.data.gioHangChiTietResponses, function (gioHangChiTiet) {
+                var bienTheGiay = gioHangChiTiet.bienTheGiay;
+                bienTheGiay.soLuongMua = gioHangChiTiet.soLuong;
+                bienTheGiay.idGioHang = gioHangChiTiet.id;
+                bienTheGiayList.push(bienTheGiay);
+            });
+            $scope.listBienTheGiayLocalStorage = bienTheGiayList;
+            $scope.tongTien = 0;
+            $scope.listBienTheGiayLocalStorage.forEach(function (item) {
+                $scope.tongTien += item.soLuongMua * item.giaBan;
+            });
+            console.log($scope.listBienTheGiayLocalStorage);
+
+        }).catch(function (error) {
+            console.log(error);
+            toastr["error"]("Lấy dữ liệu thất bại");
+            $scope.isLoading = false;
+        });
+
+    }
+    $scope.loadCartByIdKhachHang();
+    // $scope.loadLocalStorage();
+
+    $scope.subtraction = function (bienTheGiay) {
+        var gioHangChiTietUpdate = {};
+        gioHangChiTietUpdate.id = bienTheGiay.idGioHang;
+        gioHangChiTietUpdate.soLuong = bienTheGiay.soLuongMua - 1;
+        $http.put("http://localhost:8080/user/rest/gio-hang/update/so-luong", gioHangChiTietUpdate)
+            .then(function (response) {
+                $scope.loadCartByIdKhachHang();
+            }).catch(function (error) {
+
+        })
+
+    }
+
+    $scope.summation = function (bienTheGiay) {
+        var gioHangChiTietUpdate = {};
+        gioHangChiTietUpdate.id = bienTheGiay.idGioHang;
+        gioHangChiTietUpdate.soLuong = bienTheGiay.soLuongMua + 1;
+        console.log(gioHangChiTietUpdate);
+        $http.put("http://localhost:8080/user/rest/gio-hang/update/so-luong", gioHangChiTietUpdate)
+            .then(function (response) {
+                $scope.loadCartByIdKhachHang();
+            }).catch(function (error) {
+
+        })
+
+    }
+
+    $scope.deleteBienTheGiay = function (bienTheGiay) {
+        var gioHangChiTietUpdate = {};
+        gioHangChiTietUpdate.id = bienTheGiay.idGioHang;
+        gioHangChiTietUpdate.soLuong = bienTheGiay.soLuongMua
+        console.log(gioHangChiTietUpdate);
+        $http.delete("http://localhost:8080/user/rest/gio-hang/delete", {
+            data: JSON.stringify(gioHangChiTietUpdate),
+            headers: {'Content-Type': 'application/json;charset=utf-8'}
+        })
+            .then(function (response) {
+                $scope.loadCartByIdKhachHang();
+            })
+            .catch(function (error) {
+                console.error('Error:', error);
+            });
+    }
+
+
 });
 
 
@@ -858,7 +946,7 @@ app.controller("detailDonHangController", function ($scope, $http, $window, $loc
     });
 });
 
-app.controller("thanhToanController", function ($scope, $http, $window, $location, $routeParams){
+app.controller("thanhToanController", function ($scope, $http, $window, $location, $routeParams) {
     $scope.listBienTheGiayLocalStorage = [];
     $scope.tongTien = 0;
     $scope.loadLocalStorage = function () {
@@ -906,7 +994,7 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
     targetElement.style.height = '0';
     targetElement.style.overflow = 'hidden';
 
-    $scope.toggleHeight = function() {
+    $scope.toggleHeight = function () {
         var targetElement = document.getElementById('cart');
 
         if ($scope.isExpanded) {
@@ -925,7 +1013,7 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
         $scope.isExpanded = !$scope.isExpanded;
     };
 })
-app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $location, $routeParams){
+app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $location, $routeParams) {
 
 
 });

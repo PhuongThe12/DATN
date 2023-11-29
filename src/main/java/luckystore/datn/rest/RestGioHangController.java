@@ -1,14 +1,13 @@
 package luckystore.datn.rest;
 
+import luckystore.datn.model.request.GioHangChiTietRequest;
 import luckystore.datn.model.response.GioHangResponse;
+import luckystore.datn.repository.GioHangChiTietRepository;
 import luckystore.datn.service.GioHangService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user/rest/gio-hang")
@@ -21,4 +20,41 @@ public class RestGioHangController {
     public ResponseEntity<?> getGioHangByIdKhachHang(@PathVariable("id") Long id) {
         return new ResponseEntity(gioHangService.getGioHangByKhachHang(id), HttpStatus.OK);
     }
+
+    @PutMapping("/update/so-luong")
+    public ResponseEntity<?> updateGioHangChiTiet(@RequestBody GioHangChiTietRequest gioHangChiTietRequest) {
+        try {
+            gioHangService.updateSoLuongGioHang(gioHangChiTietRequest);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (Exception e) {
+            // Log the exception
+            e.printStackTrace();
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteGioHangChiTiet(@RequestBody GioHangChiTietRequest gioHangChiTietRequest){
+        try {
+            gioHangService.deleteGioHangChiTiet(gioHangChiTietRequest);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (Exception e) {
+            // Log the exception
+            e.printStackTrace();
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<?> addGioHangChiTiet(@RequestBody GioHangChiTietRequest gioHangChiTietRequest){
+        try {
+            gioHangService.addGiohangChiTiet(gioHangChiTietRequest);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (Exception e) {
+            // Log the exception
+            e.printStackTrace();
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
