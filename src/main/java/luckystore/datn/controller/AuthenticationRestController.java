@@ -19,6 +19,7 @@ public class AuthenticationRestController {
 
     @PostMapping("/singin")
     public ResponseEntity<JwtResponse> singin (@RequestBody TaiKhoanRequest requets)  {
+        System.out.println("Response :" +authenService.logInBasic(requets));
         return ResponseEntity.ok(authenService.logInBasic(requets));
     }
 }

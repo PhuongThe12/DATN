@@ -70,7 +70,6 @@
         </div>
     </div>
 </div>
-
 <div style="margin: 20px;">
     <div class="row">
         <div class="col-md-8 position-relative">
@@ -167,7 +166,7 @@
                             <div class="col-md-2 mb-2" ng-repeat="giay in giays">
                                 <button data-bs-toggle="modal" data-bs-target="#showGiaySelect" id="buttonModalSanPham"
                                         hidden=""></button>
-                                <div class="p-2 hover-item" ng-click="addOrder(giay.id)" data-bs-toggle="tooltip"
+                                <div  class="p-2 hover-item" ng-click="addOrder(giay.id)" data-bs-toggle="tooltip"
                                      data-bs-placement="right" title="{{giay.ten}}">
                                     <div class="position-relative" style="text-align: center;">
                                         <img width="60%" class="rounded-3"
@@ -310,7 +309,8 @@
                                 <label class="form-label" style="margin-bottom: 0">Tiền chuyển khoản:
                                     <strong ng-show="chuyenKhoanTaiQuay > 0" class="text-info font-size-16">
                                         {{chuyenKhoanTaiQuay | number:0}} <sup class="text-danger">(vnđ)</sup></strong></label>
-                                    <input type="number" class="form-control" ng-change="changeChuyenKhoanTaiQuay()" ng-model="chuyenKhoanTaiQuay" ng-disabled="disabledChuyenKhoanTaiQuay">
+                                <input type="number" class="form-control" ng-change="changeChuyenKhoanTaiQuay()"
+                                       ng-model="chuyenKhoanTaiQuay" ng-disabled="disabledChuyenKhoanTaiQuay">
                                 </label>
                             </div>
                         </div>
@@ -321,14 +321,16 @@
                                     <strong ng-show="tienMatTaiQuay > 0" class="text-info font-size-16">
                                         {{tienMatTaiQuay | number:0}} <sup class="text-danger">(vnđ)</sup></strong>
                                 </label>
-                                <input type="number" class="form-control" ng-change="changeTienMatTaiQuay()" ng-model="tienMatTaiQuay" ng-disabled="disabledTienMatTaiQuay">
+                                <input type="number" class="form-control" ng-change="changeTienMatTaiQuay()"
+                                       ng-model="tienMatTaiQuay" ng-disabled="disabledTienMatTaiQuay">
                             </div>
                         </div>
 
                         <div class="row">
                             <div>
                                 <label class="form-label" style="margin-bottom: 0">Tiền thừa:
-                                    <strong ng-show="tienThuaTaiQuay" class="font-size-16" ng-class="tienThuaTaiQuay < 0 ? 'text-danger' : 'text-success'">
+                                    <strong ng-show="tienThuaTaiQuay" class="font-size-16"
+                                            ng-class="tienThuaTaiQuay < 0 ? 'text-danger' : 'text-success'">
                                         {{tienThuaTaiQuay | number:0}} <sup>(vnđ)</sup></strong></label>
                                 </label>
                             </div>
@@ -338,12 +340,15 @@
                             <div class="col-12">
                                 <div class="mb-3">
                                     <label class="form-label" style="margin-bottom: 0">Ghi chú</label>
-                                    <textarea class="form-control" rows="3" ng-model="ghiChuTaiQuay" ng-maxlength="255"></textarea>
+                                    <textarea class="form-control" rows="3" ng-model="ghiChuTaiQuay"
+                                              ng-maxlength="255"></textarea>
                                 </div>
                             </div>
                         </div>
                         <div>
-                            <button type="submit" class="btn btn-outline-dark" ng-click="thanhToanTaiQuay()">Thanh toán</button>
+                            <button type="submit" class="btn btn-outline-dark" ng-click="thanhToanTaiQuay()">Thanh
+                                toán
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -422,17 +427,14 @@
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="mb-3">
-                                <label class="form-label" style="margin-bottom: 0">Tiền phải trả:</label>
-                                <span ng-show="tongTien > 0"><strong class="text-success">- {{tongTienPhaiTra | number : 0}}<sup
-                                        class="text-danger">(vnđ)</sup></strong></span>
-                            </div>
-                        </div>
-
                         <div class="row mb-3">
                             <div>
-                                Thông tin nhận hàng:
+                                <label class="form-label" style="margin-bottom: 0">Thông tin nhận hàng:</label>
+                                <strong>
+                                    <span ng-show="tenNguoiNhan.length>0">{{tenNguoiNhan}}</span>
+                                    <span ng-show="sdtNhan.length>0">- ({{sdtNhan}})</span><br>
+                                    <span ng-show="diaChiNhan.length>0">{{diaChiNhan}}</span>
+                                </strong>
                                 <a data-bs-toggle="modal" data-bs-target="#modalThongTinNhanHang"
                                    style="color: blue; text-decoration: underline; font-size: smaller; cursor: pointer">Thay
                                     đổi</a>
@@ -442,36 +444,27 @@
                         <div class="row mb-3">
                             <div class="col-12">
                                 <label class="form-label" style="margin-bottom: 0">Phương Thức Thanh Toán</label>
-                                <select class="form-select">
-                                    <option value="1">Tiền Mặt</option>
-                                    <option value="3">Chuyển Khoản</option>
-                                    <option value="3">Kết hợp</option>
+                                <select class="form-select" ng-model="phuongThucDatHang"
+                                        ng-options="phuongThuc as phuongThuc.value for phuongThuc in phuongThucDatHangs">
                                 </select>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <div>
-                                <label class="form-label" style="margin-bottom: 0">Phí Vận Chuyển</label>
-                                <input type="checkbox" ng-model="phiVanChuyen">
-                                <input type="text" class="form-control" ng-disabled="!phiVanChuyen">
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-6">
-                                <label class="form-label" style="margin-bottom: 0">Tiền chuyển khoản:</label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label" style="margin-bottom: 0">Tiền mặt</label>
-                                <input type="text" class="form-control">
+                                <label class="form-label" style="margin-bottom: 0">Phí Vận Chuyển: </label>
+                                <span ng-show="phiVanChuyen > 0"><strong class="text-success">{{phiVanChuyen | number : 0}}<sup
+                                        class="text-danger">(vnđ)</sup></strong></span>
+                                <input type="checkbox" ng-model="checkPhiVanChuyen">
+                                <input type="number" ng-change="chagePhiVanChuyen()" class="form-control" ng-disabled="!checkPhiVanChuyen" ng-model="phiVanChuyen" step="1">
                             </div>
                         </div>
 
                         <div class="row">
-                            <div>
-                                <label class="form-label" style="margin-bottom: 0">Tiền thừa: </label>
+                            <div class="mb-3">
+                                <label class="form-label" style="margin-bottom: 0">Tiền phải trả:</label>
+                                <span ng-show="tongTien > 0"><strong class="text-success">{{tongTienPhaiTraDatHang | number : 0}}<sup
+                                        class="text-danger">(vnđ)</sup></strong></span>
                             </div>
                         </div>
 
@@ -484,7 +477,7 @@
                             </div>
                         </div>
                         <div>
-                            <button type="submit" class="btn btn-outline-dark">Thanh toán</button>
+                            <button type="button" ng-click="datHang()" class="btn btn-outline-dark">Xác nhận</button>
                         </div>
                     </form>
                 </div>
@@ -587,7 +580,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                        ng-click="closeModalCamera()">Close
+                        id="closeModalCamer"
+                        ng-click="closeModalCamera()"
+                        aria-label="Close">Close
                 </button>
             </div>
         </div>
@@ -602,7 +597,8 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalKhachHangLabel">Chọn khách hàng</h5>
-                <button type="button" class="btn-close" id="closeModalKhachHang" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" id="closeModalKhachHang" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <ul class="nav nav-tabs mb-3" id="pills-tab" role="tablist">
@@ -785,9 +781,55 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalThongTinNhanHangLabel">Thông tin nhận hàng</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" id="closeModalThongTinNhanHang" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+
+                <form name="diaChiForm" ng-submit="submitDiaChi()" class="g-2">
+                    <div class="row g-2 mb-3" >
+                        <div class="form-group col-md-6">
+                            <label for="tenNguoiNhan">Họ tên <sup class="text-danger">(*)</sup>: </label>
+                            <input type="text" class="form-control" name="tenNguoiNhan" id="tenNguoiNhan" ng-model="diaChi.tenNguoiNhan" placeholder="Tên người nhận"
+                                   ng-required="true" ng-maxlength="100">
+                            <small class="text-danger" ng-show="(diaChiForm.tenNguoiNhan.$dirty || diaChiForm.tenNguoiNhan.$touched) && diaChiForm.tenNguoiNhan.$error.required" >Không được để trống</small>
+                            <small class="text-danger" ng-show="(diaChiForm.tenNguoiNhan.$dirty || diaChiForm.tenNguoiNhan.$touched) && diaChiForm.tenNguoiNhan.$error.maxlength" >Tên quá dài. Không hợp lệ</small>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="sdtNguoiNhan">Số điện thoại người nhận <sup class="text-danger">(*)</sup>:</label>
+                            <input type="text" class="form-control" id="sdtNguoiNhan"  ng-model="diaChi.sdtNguoiNhan"
+                                   placeholder="Số điện thoại người nhận"
+                                   ng-pattern="/^0\d{9}$/" ng-required="true">
+                            <small class="text-danger" ng-show="(diaChiForm.sdtNguoiNhan.$dirty || diaChiForm.sdtNguoiNhan.$touched) && diaChiForm.sdtNguoiNhan.$error.required" >Không được để trống</small>
+                            <small ng-show="diaChiForm.sdtNguoiNhan.$error.pattern">Số điện thoại không đúng định dạng.</small>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 mb-3" >
+                        <div class="form-group col-md-4">
+                            <label for="tenNguoiNhan">Tỉnh/Thành Phố <sup class="text-danger">(*)</sup>: </label>
+                            <custom-select on-change="changeTinh()" id="tinh" title="Tỉnh" items="tinhs" ng-model="diaChi.tinh"></custom-select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="sdtNguoiNhan">Huyện/Quận <sup class="text-danger">(*)</sup>:</label>
+                            <custom-select on-change="changeHuyen()"  id="huyen" title="Huyện" items="huyens" ng-model="diaChi.huyen"></custom-select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="sdtNguoiNhan">Xã/Phường <sup class="text-danger">(*)</sup>:</label>
+                            <custom-select id="xa" title="Xã" items="xas" ng-model="diaChi.xa"></custom-select>
+                        </div>
+                        <small ng-show="error.diaChi">{error.diaChi}}</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="detailAdress">Địa chỉ cụ thể <sup class="text-danger">(*)</sup>:</label>
+                        <textarea class="form-control" name="detailAdress" ng-model="diaChi.detailAdress" id="detailAdress" placeholder="Địa chỉ cụ thể"
+                                  ng-required="true" ng-maxlength="100"></textarea>
+                        <small class="text-danger" ng-show="(diaChiForm.detailAdress.$dirty || diaChiForm.detailAdress.$touched) && diaChiForm.detailAdress.$error.required" >Không được để trống</small>
+                        <small class="text-danger" ng-show="(diaChiForm.detailAdress.$dirty || diaChiForm.detailAdress.$touched) && diaChiForm.detailAdress.$error.maxlength" >Địa chỉ quá dài. Không hợp lệ</small>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Xác nhận</button>
+                </form>
             </div>
         </div>
     </div>

@@ -82,7 +82,7 @@ public class TokenProvider {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public void decodeTheToken(String token, HttpServletRequest request) {
+    public UserDetailToken decodeTheToken(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(SECRET)
                 .build()
@@ -93,12 +93,7 @@ public class TokenProvider {
         String tenDangNhap = claims.get("tenDangNhap", String.class);
         String role = claims.get("role", String.class);
 
-        HttpSession session = request.getSession();
         var user = UserDetailToken.builder().id(id).role(role).tenDangNhap(tenDangNhap).build();
-        if (user.getRole().equals("ROLE_USER")) {
-            session.setAttribute("customer", user);
-        } else {
-            session.setAttribute("staff", user);
-        }
+        return user;
     }
 }

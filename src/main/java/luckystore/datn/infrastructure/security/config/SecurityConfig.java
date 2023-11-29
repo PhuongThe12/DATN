@@ -44,7 +44,7 @@ public class SecurityConfig {
 
                         request -> request.requestMatchers("/api/authentication/**","/login", "/client/**", "/cart/**",
                                         "/admin/poin/**", "/cart-detail/**", "/admin/promotion", "/admin/voucher"
-                                        , "/ws/**").permitAll()
+                                        , "/ws/**", "/admin/**","/user/**").permitAll()
 //                                .requestMatchers(HttpMethod.GET, "/admin/**").hasAnyRole("ADMIN", "EMLOYEE")
 //                                .requestMatchers("/admin/bill-detail/**").hasAnyRole("EMLOYEE", "ADMIN")
 //                                .requestMatchers("/admin/bill-history/**").hasAnyRole("EMLOYEE", "ADMIN")
@@ -55,7 +55,8 @@ public class SecurityConfig {
 //                                .requestMatchers(HttpMethod.POST, "/admin/**").hasAnyRole("ADMIN")
 //                                .requestMatchers(HttpMethod.PUT, "/admin/**").hasAnyRole("ADMIN")
 //                                .requestMatchers(HttpMethod.DELETE, "/admin/**").hasAnyRole("ADMIN")
-                                .requestMatchers("/admin/**").hasAuthority("ROLE_USER")
+                                .requestMatchers("/admin/rest/day-giay/**").hasAuthority("ROLE_USER")
+                                .requestMatchers("/admin/rest/de-giay/**").hasAuthority("ROLE_STAFF")
                                 .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(

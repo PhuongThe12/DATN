@@ -20,13 +20,10 @@ public class YeuCauRequest {
 
     private Long id;
 
-    @NotNull(message = "Không được để trống", groups = {UpdateGroup.class, CreateGroup.class})
     private Long nguoiThucHien;
 
-    @NotNull(message = "Không được để trống", groups = {UpdateGroup.class, CreateGroup.class})
     private Long hoaDon;
 
-    @NotNull(message = "Không được để trống", groups = {UpdateGroup.class, CreateGroup.class})
     private Integer trangThai;
 
     private String ghiChu;

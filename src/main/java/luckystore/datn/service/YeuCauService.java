@@ -16,10 +16,13 @@ public interface YeuCauService {
 
     YeuCauResponse addYeuCau(YeuCauRequest yeuCauRequest);
 
+    YeuCauResponse confirmYeuCau(YeuCauRequest yeuCauRequest);
+    YeuCauResponse unConfirmYeuCau(YeuCauRequest yeuCauRequest);
     YeuCauResponse updateYeuCau(YeuCauRequest yeuCauRequest);
 
     YeuCauResponse findById(Long id);
 
     YeuCauResponse findByStatus();
     Page<YeuCauResponse> getPage(Integer page,Long searchText,Date ngayBatDau, Date ngayKetThuc, Integer trangThai);
+
 }

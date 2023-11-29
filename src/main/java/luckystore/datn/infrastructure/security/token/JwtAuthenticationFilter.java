@@ -32,10 +32,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        final String authheader = request.getHeader("Authorization");
         final String jwt;
         final String tenDanqNhap;
-        if (StringUtils.isEmpty(authheader) || !authheader.startsWith("Bearer ")) {
+        final String authheader = request.getHeader("Authorization");
+        if (StringUtils.isEmpty(authheader) || !org.apache.commons.lang3.StringUtils.startsWith(authheader, "Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -44,17 +44,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (StringUtils.isNotEmpty(tenDanqNhap) && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = accountDetailsService.userDetailsService().loadUserByUsername(tenDanqNhap);
-
             if (provider.isTokenValid(jwt, userDetails)) {
                 SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-
                 UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities()
                 );
                 token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 securityContext.setAuthentication(token);
                 SecurityContextHolder.setContext(securityContext);
-                provider.decodeTheToken(jwt,request);
             }
         }
         filterChain.doFilter(request, response);
