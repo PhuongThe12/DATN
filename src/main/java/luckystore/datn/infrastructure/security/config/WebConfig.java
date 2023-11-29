@@ -14,6 +14,6 @@ public class WebConfig implements WebMvcConfigurer{
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(tokenIntercreptor)
-                .addPathPatterns("/admin/**", "/user/**", "/customer/**");
+                .addPathPatterns("/admin/**", "/user/**", "/customer/**", "/admin/ban-hang");
     }
 }

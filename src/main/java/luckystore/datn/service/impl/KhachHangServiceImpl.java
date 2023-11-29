@@ -3,19 +3,24 @@ package luckystore.datn.service.impl;
 import luckystore.datn.constraints.ErrorMessage;
 import luckystore.datn.entity.HangKhachHang;
 import luckystore.datn.entity.KhachHang;
+import luckystore.datn.entity.TaiKhoan;
+import luckystore.datn.exception.DuplicateException;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.exception.NullException;
+import luckystore.datn.infrastructure.Role;
 import luckystore.datn.model.request.KhachHangRequest;
 import luckystore.datn.model.response.KhachHangResponse;
 import luckystore.datn.repository.HangKhachHangRepository;
 import luckystore.datn.repository.KhachHangRepository;
 import luckystore.datn.service.KhachHangService;
+import luckystore.datn.util.JsonString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Service
 public class KhachHangServiceImpl implements KhachHangService {
 
@@ -39,44 +44,56 @@ public class KhachHangServiceImpl implements KhachHangService {
 
     @Override
     public KhachHangResponse addKhachHang(KhachHangRequest khachHangRequest) {
-        KhachHang khachHang = getKhachHang(new KhachHang(), khachHangRequest);
-        HangKhachHang hangKhachHang = new HangKhachHang();
-        khachHang.setDiemTichLuy(0);
-        if(khachHang.getDiemTichLuy()>=30){
-            khachHang.setHangKhachHang(hangKhachHangRepo.findHangVip5(hangKhachHang));
-        }else if(khachHang.getDiemTichLuy()>=20){
-            khachHang.setHangKhachHang(hangKhachHangRepo.findHangVip4(hangKhachHang));
-        }else if(khachHang.getDiemTichLuy()>=15){
-            khachHang.setHangKhachHang(hangKhachHangRepo.findHangVip3(hangKhachHang));
-        }else if(khachHang.getDiemTichLuy()>=10){
-            khachHang.setHangKhachHang(hangKhachHangRepo.findHangVip2(hangKhachHang));
-        }else {
-            khachHang.setHangKhachHang(hangKhachHangRepo.findHangVip1(hangKhachHang));
+
+        if(khachHangRepo.existsByEmail(khachHangRequest.getEmail())) {
+            String errorObject = JsonString.errorToJsonObject("email", "Email đã tồn tại");
+            throw new DuplicateException(JsonString.stringToJson(errorObject));
         }
+
+        KhachHang khachHang = getKhachHang(new KhachHang(), khachHangRequest);
+        khachHang.setDiemTichLuy(0);
+        System.out.println("Den Day");
+        setHangKhachHang(khachHang);
+
+        TaiKhoan taiKhoan = new TaiKhoan();
+        taiKhoan.setMatKhau(khachHangRequest.getSoDienThoai());
+        taiKhoan.setTenDangNhap(khachHangRequest.getEmail());
+        taiKhoan.setRole(Role.ROLE_USER);
+        taiKhoan.setTrangThai(khachHang.getTrangThai());
+
+        khachHang.setTaiKhoan(taiKhoan);
+
         return new KhachHangResponse(khachHangRepo.save(khachHang));
+    }
+
+    private void setHangKhachHang(KhachHang khachHang) {
+        if (khachHang.getDiemTichLuy() != null) {
+            List<HangKhachHang> hangs = hangKhachHangRepo.getMaxByDiemTichLuy(khachHang.getDiemTichLuy(), PageRequest.of(0, 1));
+            HangKhachHang hang = !hangs.isEmpty() ? hangs.get(0) : null;
+            khachHang.setHangKhachHang(hang);
+        } else {
+            khachHang.setHangKhachHang(null);
+        }
     }
 
     @Override
     public KhachHangResponse updateKhachHang(Long id, KhachHangRequest khachHangRequest) {
+
         KhachHang khachHang;
         if (id == null) {
             throw new NullException();
         } else {
             khachHang = khachHangRepo.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND));
         }
-        khachHang = getKhachHang(khachHang, khachHangRequest);
-        HangKhachHang hangKhachHang = new HangKhachHang();
-        if(khachHang.getDiemTichLuy()>=30){
-            khachHang.setHangKhachHang(hangKhachHangRepo.findHangVip5(hangKhachHang));
-        }else if(khachHang.getDiemTichLuy()>=20){
-            khachHang.setHangKhachHang(hangKhachHangRepo.findHangVip4(hangKhachHang));
-        }else if(khachHang.getDiemTichLuy()>=15){
-            khachHang.setHangKhachHang(hangKhachHangRepo.findHangVip3(hangKhachHang));
-        }else if(khachHang.getDiemTichLuy()>=10){
-            khachHang.setHangKhachHang(hangKhachHangRepo.findHangVip2(hangKhachHang));
-        }else {
-            khachHang.setHangKhachHang(hangKhachHangRepo.findHangVip1(hangKhachHang));
+
+        if(khachHangRepo.existsByEmailAndIdNot(khachHangRequest.getEmail(), khachHang.getId())) {
+            String errorObject = JsonString.errorToJsonObject("email", "Email khách hàng đã tồn tại");
+            throw new DuplicateException(JsonString.stringToJson(errorObject));
         }
+
+        getKhachHang(khachHang, khachHangRequest);
+        setHangKhachHang(khachHang);
+        khachHang.getTaiKhoan().setTrangThai(khachHang.getTrangThai());
         return new KhachHangResponse(khachHangRepo.save(khachHang));
     }
 
@@ -97,18 +114,6 @@ public class KhachHangServiceImpl implements KhachHangService {
         khachHang.setNgaySinh(khachHangRequest.getNgaySinh());
         khachHang.setEmail(khachHangRequest.getEmail());
         khachHang.setDiemTichLuy(khachHangRequest.getDiemTichLuy());
-        khachHang.setHangKhachHang(khachHangRequest.getHangKhachHang());
-        khachHang.setTrangThai(khachHangRequest.getTrangThai() == null || khachHangRequest.getTrangThai() == 0 ? 0 : 1);
-        return khachHang;
-    }
-    private KhachHang getKhachHangDieuKien(KhachHang khachHang, KhachHangRequest khachHangRequest) {
-        khachHang.setHoTen(khachHangRequest.getHoTen());
-        khachHang.setGioiTinh(khachHangRequest.getGioiTinh());
-        khachHang.setSoDienThoai(khachHangRequest.getSoDienThoai());
-        khachHang.setNgaySinh(khachHangRequest.getNgaySinh());
-        khachHang.setEmail(khachHangRequest.getEmail());
-        khachHang.setDiemTichLuy(khachHangRequest.getDiemTichLuy());
-        khachHang.setHangKhachHang(khachHangRequest.getHangKhachHang());
         khachHang.setTrangThai(khachHangRequest.getTrangThai() == null || khachHangRequest.getTrangThai() == 0 ? 0 : 1);
         return khachHang;
     }

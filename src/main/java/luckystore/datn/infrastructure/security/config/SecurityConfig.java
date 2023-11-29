@@ -45,7 +45,11 @@ public class SecurityConfig {
                         request -> request.requestMatchers("/api/authentication/**","/login", "/client/**", "/cart/**",
                                         "/admin/poin/**", "/cart-detail/**", "/admin/promotion", "/admin/voucher"
                                         , "/ws/**", "/admin/**","/user/**").permitAll()
-//                                .requestMatchers(HttpMethod.GET, "/admin/**").hasAnyRole("ADMIN", "EMLOYEE")
+//                                .requestMatchers(" admin/rest/hoa-don/**").hasAuthority("ROLE_USER")
+//                                .requestMatchers(" admin/rest/khach-hang/**").hasAuthority("ROLE_USER")
+//                                .requestMatchers(" admin/rest/yeu-cau/**").hasAuthority("ROLE_USER")
+//                                .requestMatchers(" admin/rest/ly-do/**").hasAuthority("ROLE_USER")
+//                                .requestMatchers(HttpMethod.GET, "/admin/rest/**").hasAnyAuthority("ROLE_STAFF", "ROLE_USER")
 //                                .requestMatchers("/admin/bill-detail/**").hasAnyRole("EMLOYEE", "ADMIN")
 //                                .requestMatchers("/admin/bill-history/**").hasAnyRole("EMLOYEE", "ADMIN")
 //                                .requestMatchers("/admin/bill/**").hasAnyRole("EMLOYEE", "ADMIN")
@@ -55,9 +59,10 @@ public class SecurityConfig {
 //                                .requestMatchers(HttpMethod.POST, "/admin/**").hasAnyRole("ADMIN")
 //                                .requestMatchers(HttpMethod.PUT, "/admin/**").hasAnyRole("ADMIN")
 //                                .requestMatchers(HttpMethod.DELETE, "/admin/**").hasAnyRole("ADMIN")
-                                .requestMatchers("/admin/rest/day-giay/**").hasAuthority("ROLE_USER")
-                                .requestMatchers("/admin/rest/de-giay/**").hasAuthority("ROLE_STAFF")
-                                .anyRequest().authenticated())
+//                                .requestMatchers(HttpMethod.GET,"/admin/rest/giay/**").hasAuthority("ROLE_USER")
+//                                .requestMatchers("/admin/ban-hang").hasAuthority("ROLE_USER")
+//                                .requestMatchers("/admin/rest/de-giay/**", "/admin/ban-hang").hasAuthority("ROLE_STAFF")
+                                .anyRequest().permitAll())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
                         jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class

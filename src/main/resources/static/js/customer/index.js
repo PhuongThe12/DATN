@@ -17,6 +17,12 @@ app.config(function ($routeProvider, $locationProvider) {
     }).when("/don-hang/detail/:id", {
         templateUrl: '/pages/user/views/don-hang-detail.html',
         controller: 'detailDonHangController'
+    }).when("/thanh-toan", {
+        templateUrl: '/pages/user/views/thanh-toan.html',
+        controller: 'thanhToanController'
+    }).when("/thong-tin-tai-khoan", {
+        templateUrl: '/pages/user/views/thong-tin-tai-khoan.html',
+        controller: 'thongTinTaiKhoanController'
     })
         .otherwise({redirectTo: '/list'});
 });
@@ -68,8 +74,8 @@ app.controller('listProductController', function ($scope, $http, $location) {
     $scope.curPage = 1, $scope.itemsPerPage = 999, $scope.maxSize = 9999;
 
     $scope.curPage = 1,
-        $scope.itemsPerPage = 9999,
-        $scope.maxSize = 9999;
+        $scope.itemsPerPage = 12,
+        $scope.maxSize = 12;
 
     let giaySearch = {};
 
@@ -86,6 +92,37 @@ app.controller('listProductController', function ($scope, $http, $location) {
         $http.post(apiUrl, giaySearch)
             .then(function (response) {
                 $scope.giays = response.data.content;
+                for (let bienTheGiayObject of $scope.giays) {
+                    let lstBienTheGiay = bienTheGiayObject.lstBienTheGiay;
+                    let giaThapNhat = lstBienTheGiay[0].giaBan;
+                    let giaLonNhat = lstBienTheGiay[0].giaBan;
+
+                    let uniqueMauSacSet = new Set();
+
+                    let lstMauSac = [];
+
+                    for (let bienTheGiay of lstBienTheGiay) {
+                        if (bienTheGiay.giaBan < giaThapNhat) {
+                            giaThapNhat = bienTheGiay.giaBan;
+                        }
+
+                        if (bienTheGiay.giaBan > giaLonNhat) {
+                            giaLonNhat = bienTheGiay.giaBan;
+                        }
+                        if (bienTheGiay.mauSac && bienTheGiay.mauSac.maMau) {
+                            let maMau = bienTheGiay.mauSac.maMau;
+
+                            if (!uniqueMauSacSet.has(maMau)) {
+                                lstMauSac.push(maMau);
+                                uniqueMauSacSet.add(maMau);
+                            }
+                        }
+                    }
+                    bienTheGiayObject.giaThapNhat = giaThapNhat;
+                    bienTheGiayObject.giaLonNhat = giaLonNhat;
+                    bienTheGiayObject.lstMauSac = lstMauSac;
+                }
+                console.log($scope.giays);
                 $scope.numOfPages = response.data.totalPages;
                 $scope.isLoading = false;
             })
@@ -103,7 +140,150 @@ app.controller('listProductController', function ($scope, $http, $location) {
         getData($scope.curPage);
     });
 
+    $scope.lstSearchChoosed = [];
+    $scope.dropdowns = [
+        {
+            ten: "Màu Sắc",
+            listValue: [
+                {name: "#FF0000", selected: false},  // Đỏ
+                {name: "#00FF00", selected: false},  // Xanh lá cây
+                {name: "#0000FF", selected: false},  // Xanh dương
+                {name: "#FFFF00", selected: false},  // Vàng
+                {name: "#FF00FF", selected: false},  // Hồng
+                {name: "#00FFFF", selected: false},  // Lam
+                {name: "#000000", selected: false}   // Đen
+            ],
+            isOpen: true
+        },
+        {
+            ten: "Kích Cỡ", listValue: [
+                {
+                    name: 35, selected: false
+                },
+                {
+                    name: 36, selected: false
+                },
+                {
+                    name: 37, selected: false
+                },
+                {
+                    name: 38, selected: false
+                },
+                {
+                    name: 39, selected: false
+                },
+                {
+                    name: 40, selected: false
+                }, {
+                    name: 35, selected: false
+                },
+                {
+                    name: 36, selected: false
+                },
+                {
+                    name: 37, selected: false
+                },
+                {
+                    name: 38, selected: false
+                },
+                {
+                    name: 39, selected: false
+                },
+                {
+                    name: 40, selected: false
+                }, {
+                    name: 35, selected: false
+                },
+                {
+                    name: 36, selected: false
+                },
+                {
+                    name: 37, selected: false
+                },
+                {
+                    name: 38, selected: false
+                },
+                {
+                    name: 39, selected: false
+                },
+                {
+                    name: 40, selected: false
+                }
+            ],
+            isOpen: true
+        },
+        {
+            ten: "Chất Liệu",
+            listValue: [{name: "Leather", selected: false}, {name: "Mesh", selected: false}, {
+                name: "Canvas",
+                selected: false
+            }],
+            isOpen: true
+        },
+        {
+            ten: "Thương Hiệu",
+            listValue: [{name: "Nike", selected: false}, {name: "Adidas", selected: false}, {
+                name: "Puma",
+                selected: false
+            }],
+            isOpen: true
+        },
+        {
+            ten: "Cổ Giày",
+            listValue: [{name: "Low-top", selected: false}, {name: "High-top", selected: false}],
+            isOpen: true
+        },
+        {
+            ten: "Đế Giày",
+            listValue: [{name: "Rubber", selected: false}, {name: "EVA", selected: false}, {
+                name: "Phylon",
+                selected: false
+            }],
+            isOpen: true
+        },
+        {
+            ten: "Mũi Giày",
+            listValue: [{name: "Round Toe", selected: false}, {name: "Square Toe", selected: false}],
+            isOpen: true
+        },
+        {
+            ten: "Lót Giày",
+            listValue: [{name: "Gel", selected: false}, {name: "Foam", selected: false}, {
+                name: "Ortholite",
+                selected: false
+            }],
+            isOpen: true
+        },
+        {
+            ten: "Dây Giày",
+            listValue: [{name: "Flat", selected: false}, {name: "Round", selected: false}, {
+                name: "Waxed",
+                selected: false
+            }],
+            isOpen: true
+        },
 
+    ];
+
+
+    $scope.toggleDropdown = function (index) {
+        $scope.dropdowns[index].isOpen = !$scope.dropdowns[index].isOpen;
+    };
+
+    $scope.changeSearch = function () {
+        $scope.lstSearchChoosed = [];
+        for (let dropdown of $scope.dropdowns) {
+            for (let value of dropdown.listValue) {
+                if (value.selected) {
+                    $scope.lstSearchChoosed.push({
+                        dropdownName: dropdown.ten,
+                        selectedValue: value.name,
+                    });
+                }
+            }
+        }
+        console.log($scope.lstSearchChoosed);
+    };
 });
 
 app.controller('detailProductController', function ($scope, $http, $location, $cookies, $routeParams) {
@@ -114,7 +294,36 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
     $http.get(host + '/admin/rest/giay/' + id)
         .then(function (response) {
             $scope.giaySeletect = response.data;
-            detailGiayChiTiet(response.data);
+
+            let lstBienTheGiay = $scope.giaySeletect.lstBienTheGiay;
+            let giaThapNhat = lstBienTheGiay[0].giaBan;
+            let giaLonNhat = lstBienTheGiay[0].giaBan;
+
+            let uniqueMauSacSet = new Set();
+
+            let lstMauSac = [];
+
+            for (let bienTheGiay of lstBienTheGiay) {
+                if (bienTheGiay.giaBan < giaThapNhat) {
+                    giaThapNhat = bienTheGiay.giaBan;
+                }
+
+                if (bienTheGiay.giaBan > giaLonNhat) {
+                    giaLonNhat = bienTheGiay.giaBan;
+                }
+                if (bienTheGiay.mauSac && bienTheGiay.mauSac.maMau) {
+                    let maMau = bienTheGiay.mauSac.maMau;
+
+                    if (!uniqueMauSacSet.has(maMau)) {
+                        lstMauSac.push(maMau);
+                        uniqueMauSacSet.add(maMau);
+                    }
+                }
+            }
+            $scope.giaySeletect.giaThapNhat = giaThapNhat;
+            $scope.giaySeletect.giaLonNhat = giaLonNhat;
+            $scope.giaySeletect.lstMauSac = lstMauSac;
+            detailGiayChiTiet($scope.giaySeletect);
         }).catch(function (error) {
         toastr["error"]("Lấy dữ liệu thất bại");
         console.log(error);
@@ -143,6 +352,71 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
             $scope.loadLocalStorage();
         }
     }
+
+    // List Recommend
+
+    $scope.curPage = 1,
+        $scope.itemsPerPage = 6,
+        $scope.maxSize = 6;
+
+    let giaySearch = {};
+
+    function getData(currentPage) {
+        $scope.isLoading = true;
+        let apiUrl = host + '/admin/rest/giay/get-all-giay';
+
+        if ($scope.searchText) {
+            giaySearch.ten = ($scope.searchText + "").trim();
+        }
+        giaySearch.currentPage = currentPage;
+        giaySearch.pageSize = $scope.itemsPerPage;
+
+        $http.post(apiUrl, giaySearch)
+            .then(function (response) {
+                $scope.giays = response.data.content;
+                for (let bienTheGiayObject of $scope.giays) {
+                    let lstBienTheGiay = bienTheGiayObject.lstBienTheGiay;
+                    let giaThapNhat = lstBienTheGiay[0].giaBan;
+                    let giaLonNhat = lstBienTheGiay[0].giaBan;
+
+                    let uniqueMauSacSet = new Set();
+
+                    let lstMauSac = [];
+
+                    for (let bienTheGiay of lstBienTheGiay) {
+                        if (bienTheGiay.giaBan < giaThapNhat) {
+                            giaThapNhat = bienTheGiay.giaBan;
+                        }
+
+                        if (bienTheGiay.giaBan > giaLonNhat) {
+                            giaLonNhat = bienTheGiay.giaBan;
+                        }
+                        if (bienTheGiay.mauSac && bienTheGiay.mauSac.maMau) {
+                            let maMau = bienTheGiay.mauSac.maMau;
+
+                            if (!uniqueMauSacSet.has(maMau)) {
+                                lstMauSac.push(maMau);
+                                uniqueMauSacSet.add(maMau);
+                            }
+                        }
+                    }
+                    bienTheGiayObject.giaThapNhat = giaThapNhat;
+                    bienTheGiayObject.giaLonNhat = giaLonNhat;
+                    bienTheGiayObject.lstMauSac = lstMauSac;
+                }
+                console.log($scope.giays);
+                $scope.numOfPages = response.data.totalPages;
+                $scope.isLoading = false;
+            })
+            .catch(function (error) {
+                console.log(error);
+                toastr["error"]("Lấy dữ liệu thất bại");
+                $scope.isLoading = false;
+                // window.location.href = feHost + '/trang-chu';
+            });
+    }
+
+    getData(1);
 
 
     function kiemTraTonTai(arr, id) {
@@ -282,6 +556,66 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
                 // }
             }
         }
+        const infoContainer = document.querySelector('.info');
+        const isExpandedMap = {};
+
+        for (const key in productData) {
+            if (key !== 'id' && key !== 'ten' && key !== 'namSX' && key !== 'lstAnh' && key !== 'trangThai' && key !== 'lstBienTheGiay' && key !== 'mauSacImages' && key !== 'giaLonNhat' && key !== 'giaThapNhat' && key !== 'lstMauSac' && key !== 'lstHashTagChiTiet') {
+                const keyData = productData[key];
+
+                const itemDiv = document.createElement('div');
+                itemDiv.classList.add('item');
+                const itemChild = document.createElement('div');
+                const itemH5 = document.createElement('h5');
+                itemChild.appendChild(itemH5);
+                const itemP = document.createElement('p');
+                const itemSpan = document.createElement('span');
+                if (key === 'moTa') {
+                    itemDiv.innerHTML = `<p>${keyData}: ${keyData}</p>`;
+                } else if (keyData && keyData.id !== null) {
+                    itemDiv.appendChild(itemChild);
+                    itemH5.textContent = genNameKey(key);
+                    itemSpan.textContent = keyData.ten;
+                    itemP.textContent =keyData.moTa;
+                    // itemDiv.appendChild(itemH5);
+
+                    itemP.classList.add('text-limit');
+                    itemDiv.appendChild(itemSpan);
+                    itemDiv.appendChild(itemP);
+
+                }
+
+                infoContainer.appendChild(itemDiv);
+
+                if (keyData && keyData.id !== null) {
+
+                    if (itemDiv.scrollHeight > 0) {
+                        const iButton = document.createElement('i');
+                        const iDropdown = document.createElement('i');
+
+                        iButton.classList.add("fas", "fa-ellipsis-h", "i-button");
+                        iDropdown.classList.add("fas", "fa-caret-down");
+                        itemChild.classList.add("d-flex");
+                        itemChild.appendChild(iButton);
+                        itemChild.appendChild(iDropdown);
+
+                        isExpandedMap[key] = false;
+
+                        iButton.addEventListener('click', function () {
+                            if (isExpandedMap[key]) {
+                                itemDiv.classList.remove("show-text");
+                            } else {
+                                // Mở nội dung
+                                itemDiv.classList.add("show-text");
+                            }
+
+                            isExpandedMap[key] = !isExpandedMap[key];
+                        });
+                    }
+
+                }
+            }
+        }
     }
 
     function displayImages(imageList) {
@@ -308,11 +642,34 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
         }
     }
 
+    function genNameKey(key) {
+        if (key === 'chatLieu') {
+            return "Chất Liệu";
+        } else if (key == 'coGiay') {
+            return "Cổ Giày";
+        } else if (key == 'dayGiay') {
+            return "Dây Giày";
+        } else if (key == 'deGiay') {
+            return "Đế Giày";
+        } else if (key == 'lotGiay') {
+            return "Lót Giày"
+        } else if (key == 'muiGiay') {
+            return "Mũi Giày";
+        } else if (key == 'thuongHieu') {
+            return "Thương Hiệu";
+        } else {
+            return "null";
+        }
+    }
+
+
+// Duyệt qua các trường trong productData
+
 
 })
 
 
-app.controller('cartProductController', function ($scope, $http, $location, $cookies){
+app.controller('cartProductController', function ($scope, $http, $location, $cookies) {
     $scope.listBienTheGiayLocalStorage = [];
     $scope.tongTien = 0;
     $scope.loadLocalStorage = function () {
@@ -490,13 +847,85 @@ app.controller("donHangListController", function ($scope, $http, $window, $locat
     }
 });
 
-app.controller("detailDonHangController", function ($scope, $http, $window, $location,  $routeParams){
+app.controller("detailDonHangController", function ($scope, $http, $window, $location, $routeParams) {
     const id = $routeParams.id;
-    $http.get("http://localhost:8080/admin/rest/hoa-don-chi-tiet/find-by-id-hoa-don/"+id)
+    $http.get("http://localhost:8080/admin/rest/hoa-don-chi-tiet/find-by-id-hoa-don/" + id)
         .then(function (response) {
             $scope.lstHoaDonChiTiet = response.data;
         }).catch(function (error) {
         toastr["error"]("Lấy dữ liệu thất bại");
         $location.path("/list");
     });
+});
+
+app.controller("thanhToanController", function ($scope, $http, $window, $location, $routeParams){
+    $scope.listBienTheGiayLocalStorage = [];
+    $scope.tongTien = 0;
+    $scope.loadLocalStorage = function () {
+        var gioHangFromCookies = localStorage.getItem('gioHang') || '[]';
+        $scope.gioHang = JSON.parse(gioHangFromCookies);
+        $scope.gioHang.sort(function (a, b) {
+            return a.idBienTheGiay - b.idBienTheGiay;
+        });
+
+        var idList = $scope.gioHang.map(function (item) {
+            return item.idBienTheGiay || item.bienTheGiay;
+        });
+        var resultJson = {"ids": idList};
+        $http.post("http://localhost:8080/admin/rest/giay/bien-the/get-all-by-list-id", resultJson)
+            .then(function (response) {
+                $scope.listBienTheGiayLocalStorage = response.data;
+                $scope.gioHang.forEach(function (item1) {
+                    var correspondingObject = $scope.listBienTheGiayLocalStorage.find(function (item2) {
+                        return item2.id === item1.idBienTheGiay;
+                    });
+                    if (correspondingObject) {
+                        correspondingObject.soLuongMua = item1.soLuong;
+                    }
+                });
+                $scope.tongTien = 0;
+                $scope.listBienTheGiayLocalStorage.forEach(function (item) {
+                    $scope.tongTien += item.soLuongMua * item.giaBan;
+                });
+
+                console.log($scope.listBienTheGiayLocalStorage);
+
+            })
+            .catch(function (error) {
+                console.log(error);
+                toastr["error"]("Lấy dữ liệu thất bại");
+                $scope.isLoading = false;
+            });
+    }
+
+    $scope.loadLocalStorage();
+
+    $scope.isExpanded = false;
+    var targetElement = document.getElementById('cart');
+    var iconDropDown = document.getElementById('icon-drop-down');
+    targetElement.style.height = '0';
+    targetElement.style.overflow = 'hidden';
+
+    $scope.toggleHeight = function() {
+        var targetElement = document.getElementById('cart');
+
+        if ($scope.isExpanded) {
+            targetElement.style.height = '0';
+            targetElement.style.overflow = 'hidden';
+            iconDropDown.classList.remove("rotate-icon");
+        } else {
+            var cartHeight = targetElement.scrollHeight;
+            targetElement.style.height = cartHeight + 'px';
+            targetElement.style.overflow = 'visible';
+            iconDropDown.classList.add("rotate-icon");
+
+
+        }
+
+        $scope.isExpanded = !$scope.isExpanded;
+    };
+})
+app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $location, $routeParams){
+
+
 });

@@ -21,7 +21,7 @@ public class TokenIntercreptor implements HandlerInterceptor {
 
         String token = extractTokenFromCookies(request);
         String requestedPath = request.getRequestURI();
-
+        System.out.println("Request path :"+requestedPath);
         if (token == null || token.isEmpty()) {
             response.sendRedirect("/login");
             return false;
@@ -34,13 +34,12 @@ public class TokenIntercreptor implements HandlerInterceptor {
                 return true; // Cho phép truy cập đến endpoint admin
             } else if (role.equals(Role.ROLE_STAFF.name()) && requestedPath.startsWith("/admin")) {
                 return true; // Cho phép truy cập đến endpoint user
-            } else if (role.equals(Role.ROLE_USER.name()) && requestedPath.startsWith("/user")) {
+            } else if (role.equals(Role.ROLE_USER.name()) && requestedPath.startsWith("/user") || requestedPath.equals("/admin/ban-hang")) {
                 System.out.println("User");
                 return true; // Cho phép truy cập đến endpoint customer
             }
         }
-
-        response.sendError(HttpServletResponse.SC_FORBIDDEN, "Bạn không có quyền truy cập vào tài nguyên này.");
+        response.sendRedirect("/access-denied");
         return false;
     }
 

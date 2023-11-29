@@ -7,7 +7,7 @@ app.controller("loginController", function ($scope, $http, $location, $window, $
             .then(function (response) {
                 if (response.status == 200) {
                     setTokenCookie(response.data.token, 1)
-                    $window.location.href = '/admin/de-giay';
+                    $window.location.href = '/admin/ban-hang';
                 }
             }).catch(function (error) {
             console.log(error)

@@ -48,6 +48,10 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
     $scope.sdtNhanHang = '';
     $scope.tenNguoiNhan = '';
     $scope.diaChiNhan = '';
+    $scope.diaChi = {};
+    $scope.diaChi.tinh = {};
+    $scope.diaChi.huyen = {};
+    $scope.diaChi.xa = {};
 
     //Lay dia chi tinh
     $http.get(host + "/rest/provinces/get-all")
@@ -118,8 +122,11 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
     if (Object.keys(container).length > 2) {
         console.log(container, container["vnp_OrderInfo"], container["vnp_OrderInfo"].split("x"));
         const info = container["vnp_OrderInfo"].split("x");
-        if (info.length !== 2 && (info[1] !== 2 || info[1] !== 3)) {
-            toastr["error"]("Không hợp lệ");
+        if (info.length < 2 && (info[1] !== '2' || info[1] !== '3')) {
+            window.location.href = window.location.origin + window.location.pathname + "?status=02&hd=" + info[0] + "#home";
+            return;
+        } else if (info.length === 3 && (info[1] !== '2' || info[1] !== '3') && info[2] !== '1') {
+            window.location.href = window.location.origin + window.location.pathname + "?status=02&hd=" + info[0] + "#home";
             return;
         }
         if (container["vnp_TransactionStatus"] === "00") {
@@ -129,16 +136,32 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                 tienChuyenKhoan: container["vnp_Amount"] / 100,
                 maGiaoDich: container["vnp_TxnRef"]
             }
-            console.log(request);
-            $http.post(host + "/admin/rest/hoa-don/thanh-toan-tai-quay-banking", request)
+            if (info.length === 2) {
+                $http.post(host + "/admin/rest/hoa-don/thanh-toan-tai-quay-banking", request)
+                    .then(response => {
+                        window.location.href = window.location.origin + window.location.pathname + "?status=00#home";
+                    })
+                    .catch(err => {
+                        window.location.href = window.location.origin + window.location.pathname + "?status=02#home";
+                    })
+            } else if (info.length === 3) {
+                $http.post(host + "/admin/rest/hoa-don/dat-hang-tai-quay-banking", request)
+                    .then(response => {
+                        window.location.href = window.location.origin + window.location.pathname + "?status=00#home";
+                    })
+                    .catch(err => {
+                        window.location.href = window.location.origin + window.location.pathname + "?status=02#home";
+                    })
+            }
+
+        } else {
+            $http.get(host + "/vnpay/cancel-banking/" + info[0])
                 .then(response => {
-                    window.location.href = window.location.origin + window.location.pathname + "?status=00#home";
+                    window.location.href = window.location.origin + window.location.pathname + "?status=02#home";
                 })
                 .catch(err => {
                     window.location.href = window.location.origin + window.location.pathname + "?status=02#home";
                 })
-        } else {
-            window.location.href = window.location.origin + window.location.pathname + "?status=02&hd=" + info[0] + "#home";
         }
     }
 
@@ -459,7 +482,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
 
     function getHoaDonChuaThanhToan() {
         $scope.isLoading = true;
-        $http.get(host + "/admin/rest/hoa-don/chua-thanh-toan")
+        $http.get(host + "/admin/rest/hoa-don/chua-thanh-toan-ban-hang")
             .then(function (response) {
                 $scope.hoaDons = response.data;
                 $scope.isLoading = false;
@@ -638,9 +661,11 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                     $http.post(host + "/admin/rest/hoa-don/thanh-toan-tai-quay", request)
                         .then(response => {
                             const index = $scope.hoaDons.findIndex(item => item.id === response.data);
-                            $scope.hoaDons.splice(index, 1);
-                            toastr["success"]("Thanh toán thành công");
-                            resetHoaDon();
+                            if (index !== -1) {
+                                $scope.hoaDons.splice(index, 1);
+                                toastr["success"]("Thanh toán thành công");
+                                resetHoaDon();
+                            }
                             $scope.isLoading = false;
                         })
                         .catch(err => {
@@ -670,7 +695,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                 $http.post(host + "/admin/rest/hoa-don/thanh-toan-tai-quay", request)
                     .then(response => {
                         // const index = $scope.hoaDons.findIndex(item => item.id === response.data);
-                        request.idHoaDon = response.data + "x2";
+                        request.idHoaDon = response.data + "x" + request.phuongThuc;
                         $http.post(host + "/vnpay/create-vnpay-order-tai-quay", request)
                             .then(response => {
                                 window.location.href = response.data;
@@ -710,6 +735,10 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
         $scope.uuDai = {uuDai: 0};
         $scope.tienMatTaiQuay = null;
         $scope.tienThuaTaiQuay = null;
+
+        $scope.tenNguoiNhan = '';
+        $scope.diaChiNhan = '';
+        $scope.sdtNhan = '';
     }
 
     function detailGiayChiTiet(productData) {
@@ -1033,6 +1062,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
     const video = document.getElementById('video');
 
     let scanning = false;
+    let inteval;
 
     $scope.startScanning = function () {
         if (!$scope.selectedHoaDon || !$scope.selectedHoaDon.id) {
@@ -1051,7 +1081,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                     const canvas = document.createElement('canvas');
                     const context = canvas.getContext('2d');
 
-                    const interval = setInterval(() => {
+                    inteval = setInterval(() => {
                         if (scanning) {
                             context.drawImage(video, 0, 0, canvas.width, canvas.height);
                             const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
@@ -1094,7 +1124,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                                 setTimeout(function () {
                                     scanning = true;
                                     code = null;
-                                }, 1500);
+                                }, 1000);
 
                             } else {
                                 Quagga.decodeSingle({
@@ -1134,7 +1164,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                                         setTimeout(function () {
                                             scanning = true;
                                             result = null;
-                                        }, 1500);
+                                        }, 1000);
                                         // document.getElementById('closeModalCamera').click();
                                         // clearInterval(interval);
                                     }
@@ -1181,6 +1211,9 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
     $scope.stopScanning = function () {
         video.pause();
         video.srcObject.getTracks().forEach(track => track.stop());
+        if (inteval) {
+            clearInterval(inteval);
+        }
     }
 
     $scope.closeModalCamera = function () {
@@ -1198,12 +1231,13 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
         if ($scope.khachHangForm.$invalid) {
             return;
         }
+        console.log($scope.khachHang);
         $http.post(host + '/admin/rest/khach-hang', $scope.khachHang)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
                 }
-                $location.path("/list");
+                $scope.selectedKhachHang = response;
             })
             .catch(function (error) {
                 toastr["error"]("Thêm thất bại");
@@ -1216,6 +1250,52 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                     $scope.errors = error.data;
                 }
             });
+    }
+
+    $scope.scanQRKhachHang = function () {
+        scanning = true;
+        if (scanning) {
+            navigator.mediaDevices.getUserMedia({video: true})
+                .then((stream) => {
+                    video.srcObject = stream;
+                    video.play();
+
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+
+                    const interval = setInterval(() => {
+                        if (scanning) {
+                            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                            const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+                            if (code) {
+                                // Thực hiện các hành động với mã QR tại đây
+                                if (typeof code.data === 'string') {
+                                    console.log(code.data.split('|'));
+                                    const data = code.data.split('|');
+                                    if (data.length === 7) {
+                                        $scope.khachHang.hoTen = data[2];
+                                        $scope.khachHang.gioiTinh = data[4] === 'Nam';
+                                        console.log($scope.khachHang.gioiTinh);
+                                    } else {
+                                        toastr["error"]('Không hợp lệ. Vui lòng thử lại');
+                                    }
+                                } else {
+                                    toastr["error"]('Không hợp lệ. Vui lòng thử lại');
+                                }
+                                document.getElementById('closeModalCamera').click();
+                                clearInterval(interval);
+                            }
+                        }
+                    }, 500);
+                })
+                .catch((error) => {
+                    toastr["error"]('Không thể truy cập camera:');
+                });
+        } else {
+            $scope.stopScanning();
+        }
     }
 
     $scope.changeTinh = function () {
@@ -1246,8 +1326,23 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
         }
     }
 
+    $scope.changeXa = function () {
+        $scope.error = {};
+    }
+
+    function checkDiaChi() {
+        $scope.error = {};
+        if (!$scope.diaChi.tinh.id || !$scope.diaChi.huyen.id || !$scope.diaChi.xa.id) {
+            $scope.error.diaChi = "Địa chỉ phải đầy đủ xã, huyện tỉnh";
+        } else {
+            $scope.error.diaChi = null;
+        }
+    }
+
     $scope.submitDiaChi = function () {
-        if (!$scope.diaChi.xa.id || !$scope.diaChi.huyen.id || !$scope.diaChi.tinh.id || !$scope.diaChi.tenNguoiNhan || !$scope.diaChi.sdtNguoiNhan) {
+
+        checkDiaChi();
+        if (!$scope.diaChi.xa.id || !$scope.diaChi.huyen.id || !$scope.diaChi.tinh.id || !$scope.diaChi.tenNguoiNhan || !$scope.diaChi.sdtNguoiNhan || !$scope.diaChi.emailNhan) {
             toastr["error"]("Lấy thông tin địa chỉ thất bại");
             return;
         }
@@ -1304,9 +1399,9 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
 
         let soDonHang = 0;
         if ($scope.soLuong % 30 === 0) {
-            soDonHang = $scope.soLuong / 30;
+            soDonHang = parseInt($scope.soLuong / 30);
         } else {
-            soDonHang = $scope.soLuong / 30 + 1;
+            soDonHang = parseInt($scope.soLuong / 30) + 1;
         }
 
         $scope.phiVanChuyen = Math.round(soDonHang * $scope.feeShippingPerOne);
@@ -1319,6 +1414,11 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
         $scope.sdtNhan = '';
         $scope.diaChiNhan = '';
         $scope.phiVanChuyen = null;
+        $scope.feeShippingPerOne = 0;
+        $scope.diaChi = {};
+        $scope.diaChi.tinh = {};
+        $scope.diaChi.huyen = {};
+        $scope.diaChi.xa = {};
     }
 
     let logisticInfo = {
@@ -1349,6 +1449,14 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
         "service_type_id": 2
     }
 
+    $scope.thayDoiDiaChi = function () {
+        if ($scope.selectedKhachHang.id && (!$scope.diaChi.tenNguoiNhan || !$scope.diaChi.sdtNguoiNhan || !$scope.diaChi.emailNhan)) {
+            $scope.diaChi.tenNguoiNhan = $scope.selectedKhachHang.hoTen;
+            $scope.diaChi.sdtNguoiNhan = $scope.selectedKhachHang.soDienThoai;
+            $scope.diaChi.emailNhan = $scope.selectedKhachHang.email;
+        }
+    }
+
     $scope.datHang = function () {
 
         if ($scope.listGiaySelected.length === 0) {
@@ -1361,13 +1469,79 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
             return;
         }
 
-        if (!$scope.diaChi || !$scope.diaChi.xa || !$scope.diaChi.huyen || !$scope.diaChi.tinh || !$scope.diaChi.xa
-            || !$scope.diaChi.sdtNguoiNhan || $scope.diaChi.tenNguoiNhan || !$scope.diaChi.detailAdress) {
+        if (!$scope.diaChi || !$scope.diaChi.xa || !$scope.diaChi.huyen || !$scope.diaChi.tinh || !$scope.diaChi.xa || !$scope.diaChi.sdtNguoiNhan || !$scope.diaChi.tenNguoiNhan || !$scope.diaChi.detailAdress) {
             toastr["error"]("Chưa có địa chỉ giao hàng hoặc địa chỉ không hợp lệ");
             return;
         }
 
-        console.log($scope.feeShippingPerOne, $scope.tongTienPhaiTra, $scope.soLuong, $scope.diaChi);
+        if ($scope.tongTienPhaiTra < 10001) {
+            toastr["error"]("Tiền đơn hàng không được nhỏ hơn 10,001 vnđ");
+            return;
+        }
+
+        if ($scope.tongTienPhaiTra > 999999999) {
+            toastr["error"]("Tiền đơn hàng không được nhỏ hơn 999,999,999 vnđ");
+            return;
+        }
+
+        const request = {
+            id: $scope.selectedHoaDon.id,
+            phuongThuc: $scope.phuongThucDatHang.id,
+            tienGiam: $scope.tongTienGiam,
+            tienShip: $scope.phiVanChuyen,
+            tongTien: $scope.tongTienPhaiTra,
+            diaChiNhan: $scope.diaChiNhan,
+            sdtNhan: $scope.sdtNhan,
+            nguoiNhan: $scope.tenNguoiNhan,
+            ghiChu: $scope.ghiChuDatHang
+        }
+
+        Swal.fire({
+            text: "Xác nhận xóa thanh toán ?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                $http.post(host + "/admin/rest/hoa-don/dat-hang-tai-quay", request)
+                    .then(response => {
+                        if (request.phuongThuc === 1) {
+                            const index = $scope.hoaDons.findIndex(item => item.id === response.data);
+                            if (index !== -1) {
+                                $scope.hoaDons.splice(index, 1);
+                                toastr["success"]("Thanh toán thành công");
+                                resetHoaDon();
+                            }
+                        } else {
+                            request.idHoaDon = response.data + "x" + request.phuongThuc + "x1";
+                            request.tienChuyenKhoan = request.tongTien;
+                            $http.post(host + "/vnpay/create-vnpay-order-tai-quay", request)
+                                .then(response => {
+                                    window.location.href = response.data;
+                                })
+                                .catch(err => {
+                                    console.log(err);
+                                })
+                        }
+
+                        $scope.isLoading = false;
+                    })
+                    .catch(err => {
+                        if (err.status === 409) {
+                            toastr["error"](err.data.data);
+                            $location.path("#home");
+                        } else {
+                            toastr["error"]("Có lỗi vui lòng thử lại");
+                        }
+                        $scope.isLoading = false;
+                    });
+            }
+        });
+
     }
 
 });

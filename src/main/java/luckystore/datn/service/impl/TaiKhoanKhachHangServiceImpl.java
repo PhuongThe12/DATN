@@ -8,7 +8,6 @@ import luckystore.datn.entity.TaiKhoan;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.infrastructure.Role;
 import luckystore.datn.model.request.TaiKhoanRequest;
-import luckystore.datn.model.response.KhachHangResponse;
 import luckystore.datn.model.response.TaiKhoanResponse;
 import luckystore.datn.repository.HangKhachHangRepository;
 import luckystore.datn.repository.KhachHangRepository;
@@ -21,7 +20,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TaiKhoanKhachHangServiceImpl implements TaiKhoanKhachHangService {
@@ -33,7 +31,6 @@ public class TaiKhoanKhachHangServiceImpl implements TaiKhoanKhachHangService {
     private EmailUtil emailUtil;
     @Autowired
     private HangKhachHangRepository hangKhachHangRepo;
-
 
 
     @Override
@@ -62,7 +59,11 @@ public class TaiKhoanKhachHangServiceImpl implements TaiKhoanKhachHangService {
         khachHang.setTrangThai(1);
         khachHang.setTaiKhoan(taiKhoan);
         khachHang.setDiemTichLuy(0);
-        khachHang.setHangKhachHang(hangKhachHangRepo.findHangVip1(new HangKhachHang()));
+
+        List<HangKhachHang> hangs = hangKhachHangRepo.getMaxByDiemTichLuy(khachHang.getDiemTichLuy(), PageRequest.of(0, 1));
+        HangKhachHang hang = !hangs.isEmpty() ? hangs.get(0) : null;
+        khachHang.setHangKhachHang(hang);
+
         khachHangRepository.save(khachHang);
         return new TaiKhoanResponse(taiKhoan);
     }
