@@ -1,5 +1,6 @@
 package luckystore.datn.service.impl;
 
+import luckystore.datn.entity.BienTheGiay;
 import luckystore.datn.entity.GioHang;
 import luckystore.datn.entity.GioHangChiTiet;
 import luckystore.datn.model.request.GioHangChiTietRequest;
@@ -12,6 +13,8 @@ import luckystore.datn.service.GioHangService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
 public class GioHangServiceImpl implements GioHangService {
@@ -48,13 +51,25 @@ public class GioHangServiceImpl implements GioHangService {
     }
 
     public GioHangChiTiet getGioHangChiTiet(GioHangChiTiet gioHangChiTiet, GioHangChiTietRequest gioHangChiTietRequest){
-        gioHangChiTiet.setId(gioHangChiTietRequest.getId());
-        gioHangChiTiet.setGioHang(gioHangRepository.findById(gioHangChiTietRequest.getGioHang()).get());
-        gioHangChiTiet.setBienTheGiay(bienTheGiayRepository.findById(gioHangChiTietRequest.getBienTheGiay()).get());
-        gioHangChiTiet.setSoLuong(gioHangChiTiet.getSoLuong());
-        gioHangChiTiet.setGiaBan(gioHangChiTiet.getGiaBan());
-        gioHangChiTiet.setNgayTao(gioHangChiTiet.getNgayTao());
-        gioHangChiTiet.setGhiChu(gioHangChiTiet.getGhiChu());
+        GioHangChiTietResponse gioHangChiTietResponse = gioHangChiTietRepository.findByGioHangAndBienTheGiay(gioHangChiTietRequest.getGioHang(), gioHangChiTietRequest.getBienTheGiay());
+        if(gioHangChiTietResponse == null){
+            BienTheGiay bienTheGiay = bienTheGiayRepository.findById(gioHangChiTietRequest.getBienTheGiay()).get();
+            gioHangChiTiet.setGioHang(gioHangRepository.findById(gioHangChiTietRequest.getGioHang()).get());
+            gioHangChiTiet.setBienTheGiay(bienTheGiay);
+            gioHangChiTiet.setSoLuong(gioHangChiTietRequest.getSoLuong());
+            gioHangChiTiet.setGiaBan(bienTheGiay.getGiaBan());
+            gioHangChiTiet.setNgayTao(LocalDateTime.now());
+            gioHangChiTiet.setGhiChu(gioHangChiTiet.getGhiChu());
+        }else{
+            gioHangChiTiet.setId(gioHangChiTietResponse.getId());
+            BienTheGiay bienTheGiay = bienTheGiayRepository.findById(gioHangChiTietRequest.getBienTheGiay()).get();
+            gioHangChiTiet.setGioHang(gioHangRepository.findById(gioHangChiTietRequest.getGioHang()).get());
+            gioHangChiTiet.setBienTheGiay(bienTheGiay);
+            gioHangChiTiet.setSoLuong(gioHangChiTietResponse.getSoLuong()+gioHangChiTietRequest.getSoLuong());
+            gioHangChiTiet.setGiaBan(bienTheGiay.getGiaBan());
+            gioHangChiTiet.setNgayTao(LocalDateTime.now());
+            gioHangChiTiet.setGhiChu(gioHangChiTiet.getGhiChu());
+        }
         return gioHangChiTiet;
     }
 }

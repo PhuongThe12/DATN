@@ -33,19 +33,19 @@
         <div class="col-md-8">
             <p class="fw-bold">Thông Tin Khách Hàng</p>
             <div>
-                <form action="">
+                <form action="" >
                     <div class="row">
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="nhanVienTen" class="form-label">Họ và tên</label>
-                                <input type="text" class="form-control">
+                                <input type="text" class="form-control" ng-model="khachHang.hoTen">
 
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="nhanVienTen" class="form-label">Số điện thoại</label>
-                                <input type="text" class="form-control">
+                                <input type="text" class="form-control" ng-model="khachHang.soDienThoai">
 
                             </div>
                         </div>
@@ -54,7 +54,7 @@
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="nhanVienTen" class="form-label">Email </label>
-                                <input type="text" class="form-control">
+                                <input type="text" class="form-control" ng-model="khachHang.email">
 
                             </div>
                         </div>
@@ -63,22 +63,16 @@
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label class="form-label">Tỉnh / Thành Phố </label>
-                                <select class="form-select" aria-label="Default select example">
-                                    <option selected>Open this select menu</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
+                                <select class="form-select" aria-label="Default select example"
+                                        name="provinces" ng-model="diaChiNhanHang.provinces" ng-options="province.ten for province in provinces" ng-change="changeProvince()">
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label class="form-label">Quận / Huyện </label>
-                                <select class="form-select" aria-label="Default select example">
-                                    <option selected>Open this select menu</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
+                                <select class="form-select" aria-label="Default select example"
+                                        name="districts" ng-model="diaChiNhanHang.districts" ng-options="district.ten for district in districts" ng-change="changeDistrict()" >
                                 </select>
 
                             </div>
@@ -88,11 +82,8 @@
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label class="form-label">Xã / Phường </label>
-                                <select class="form-select" aria-label="Default select example">
-                                    <option selected>Open this select menu</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
+                                <select class="form-select" aria-label="Default select example"
+                                        name="wards"  ng-model="diaChiNhanHang.wards" ng-options="ward.ten for ward in wards">
                                 </select>
                             </div>
                         </div>
@@ -103,7 +94,7 @@
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-custom w-100 mb-5">Thanh Toán</button>
+                    <button class="btn btn-custom w-100 mb-5" type="button" ng-click="thanhToan()">Thanh Toán</button>
                 </form>
             </div>
 
@@ -149,7 +140,7 @@
                     <p class="font-size-14-ncl border-bottom-1 py-2 fw-bold">Thông Tin Thanh Toán</p>
                     <div class="d-flex align-items-center justify-content-between">
                         <p class=" font-size-14-ncl py-1">Tổng tiền sản phẩm</p>
-                        <p class="fw-bold font-size-14-ncl">3,100,000 ₫</p>
+                        <p class="fw-bold font-size-14-ncl">{{tongTien | number}} ₫</p>
                     </div>
                     <div class="d-flex align-items-center justify-content-between border-bottom-1">
                         <p class=" font-size-14-ncl py-1">Phí ship</p>
@@ -157,11 +148,11 @@
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
                         <p class=" font-size-14-ncl py-1">Tổng thanh toán</p>
-                        <p class="fw-bold font-size-14-ncl">3,100,000 ₫</p>
+                        <p class="fw-bold font-size-14-ncl">{{tongTien | number}} ₫</p>
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
                         <p class=" font-size-14-ncl py-1">Khuyến Mại</p>
-                        <p class="fw-bold font-size-14-ncl">100,000 ₫</p>
+                        <p class="fw-bold font-size-14-ncl">0 ₫</p>
                     </div>
                     <div class="mb-4">
                         <div class="form-check">

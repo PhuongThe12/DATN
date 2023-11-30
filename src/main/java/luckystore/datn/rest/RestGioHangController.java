@@ -1,6 +1,7 @@
 package luckystore.datn.rest;
 
 import luckystore.datn.model.request.GioHangChiTietRequest;
+import luckystore.datn.model.request.GioHangRequest;
 import luckystore.datn.model.response.GioHangResponse;
 import luckystore.datn.repository.GioHangChiTietRepository;
 import luckystore.datn.service.GioHangService;
@@ -34,7 +35,7 @@ public class RestGioHangController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteGioHangChiTiet(@RequestBody GioHangChiTietRequest gioHangChiTietRequest){
+    public ResponseEntity<?> deleteGioHangChiTiet(@RequestBody GioHangChiTietRequest gioHangChiTietRequest) {
         try {
             gioHangService.deleteGioHangChiTiet(gioHangChiTietRequest);
             return new ResponseEntity(HttpStatus.OK);
@@ -46,15 +47,8 @@ public class RestGioHangController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addGioHangChiTiet(@RequestBody GioHangChiTietRequest gioHangChiTietRequest){
-        try {
-            gioHangService.addGiohangChiTiet(gioHangChiTietRequest);
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (Exception e) {
-            // Log the exception
-            e.printStackTrace();
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<?> addGioHangChiTiet(@RequestBody GioHangChiTietRequest gioHangChiTietRequest) {
+        return new ResponseEntity<>(gioHangService.addGiohangChiTiet(gioHangChiTietRequest), HttpStatus.OK);
     }
 
 }
