@@ -4,5 +4,5 @@ public interface SessionService {
 
     UserDetailToken getCustomer();
 
-    UserDetailToken getStaff();
+    UserDetailToken getAdmintrator();
 }

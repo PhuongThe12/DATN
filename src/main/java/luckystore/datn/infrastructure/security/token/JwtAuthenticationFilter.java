@@ -52,16 +52,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 securityContext.setAuthentication(token);
                 SecurityContextHolder.setContext(securityContext);
+                provider.decodeTheToken(jwt, request);
             }
         }
         filterChain.doFilter(request, response);
     }
 
-    private String extractJwtToken(HttpServletRequest request) {
-        String authorizationHeader = request.getHeader("Authorization");
-        if (org.springframework.util.StringUtils.hasText(authorizationHeader) && authorizationHeader.startsWith("Bearer ")) {
-            return authorizationHeader.substring(7);
-        }
-        return null;
-    }
 }

@@ -16,7 +16,7 @@ public class SessionServiceImpl implements SessionService{
     }
 
     @Override
-    public UserDetailToken getStaff() {
-        return (UserDetailToken) httpSession.getAttribute("staff");
+    public UserDetailToken getAdmintrator() {
+        return (UserDetailToken) httpSession.getAttribute("admintrator");
     }
 }

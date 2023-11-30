@@ -21,24 +21,23 @@ public class TokenIntercreptor implements HandlerInterceptor {
 
         String token = extractTokenFromCookies(request);
         String requestedPath = request.getRequestURI();
-        System.out.println("Request path :"+requestedPath);
         if (token == null || token.isEmpty()) {
             response.sendRedirect("/login");
             return false;
         }
 
-        String role = provider.decodeTheToken(token).getRole();
+        String role = provider.decodeTheToken(token, request).getRole();
         if (role != null) {
             if (role.equals(Role.ROLE_ADMIN.name()) && requestedPath.startsWith("/staff")) {
-                System.out.println("Admin");
                 return true; // Cho phép truy cập đến endpoint admin
             } else if (role.equals(Role.ROLE_STAFF.name()) && requestedPath.startsWith("/admin")) {
                 return true; // Cho phép truy cập đến endpoint user
-            } else if (role.equals(Role.ROLE_USER.name()) && requestedPath.startsWith("/user") || requestedPath.equals("/admin/ban-hang")) {
-                System.out.println("User");
+            } else if (role.equals(Role.ROLE_USER.name()) && requestedPath.startsWith("/user")
+                    || requestedPath.equals("/admin/ban-hang")) {
                 return true; // Cho phép truy cập đến endpoint customer
             }
         }
+
         response.sendRedirect("/access-denied");
         return false;
     }

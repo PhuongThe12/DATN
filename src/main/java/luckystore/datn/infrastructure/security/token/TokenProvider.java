@@ -7,11 +7,18 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
+import luckystore.datn.entity.KhachHang;
+import luckystore.datn.entity.NhanVien;
 import luckystore.datn.entity.TaiKhoan;
+import luckystore.datn.infrastructure.Role;
 import luckystore.datn.infrastructure.security.session.UserDetailToken;
+import luckystore.datn.repository.KhachHangRepository;
+import luckystore.datn.repository.NhanVienRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.net.http.HttpRequest;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,7 +26,12 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
+@RequiredArgsConstructor
 public class TokenProvider {
+
+    private final KhachHangRepository khachHangRepository;
+
+    private final NhanVienRepository nhanVienRepository;
 
     public static final String SECRET = "7A25432A462D4A614E645266556A586E3272357538782F413F4428472B4B6250";
 
@@ -82,18 +94,30 @@ public class TokenProvider {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public UserDetailToken decodeTheToken(String token) {
+    public UserDetailToken decodeTheToken(String token, HttpServletRequest request) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(SECRET)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
 
-        Integer id = claims.get("id", Integer.class);
+        Long id = claims.get("id", Long.class);
         String tenDangNhap = claims.get("tenDangNhap", String.class);
         String role = claims.get("role", String.class);
 
-        var user = UserDetailToken.builder().id(id).role(role).tenDangNhap(tenDangNhap).build();
-        return user;
+        UserDetailToken userDetailToken;
+        HttpSession session = request.getSession();
+        if (role.equalsIgnoreCase(Role.ROLE_USER.toString())) {
+            KhachHang getKhachHangByToken = khachHangRepository.getKhachHangByTaiKhoanId(id);
+            userDetailToken = UserDetailToken.builder().id(getKhachHangByToken.getId()).tenDangNhap(tenDangNhap)
+                    .hoTen(getKhachHangByToken.getHoTen()).email(getKhachHangByToken.getEmail()).role(role).build();
+            session.setAttribute("customer", userDetailToken);
+        } else {
+            NhanVien getNhanVienByToken = nhanVienRepository.findNhanVienByIdTaiKhoan(id);
+            userDetailToken = UserDetailToken.builder().id(getNhanVienByToken.getId()).tenDangNhap(tenDangNhap)
+                    .hoTen(getNhanVienByToken.getHoTen()).email(getNhanVienByToken.getEmail()).role(role).build();
+            session.setAttribute("admintrator", userDetailToken);
+        }
+        return userDetailToken;
     }
 }
