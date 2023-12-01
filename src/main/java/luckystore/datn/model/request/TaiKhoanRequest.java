@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import luckystore.datn.infrastructure.Role;
 
 @Data
 @AllArgsConstructor
@@ -21,6 +22,6 @@ public class TaiKhoanRequest {
 
     private Integer trangThai;
 
-    private Integer role;
+    private Role role;
 
 }

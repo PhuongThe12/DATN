@@ -44,11 +44,11 @@ public class KhachHang {
     @Column(name = "TRANG_THAI")
     private Integer trangThai;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ID_HANG_KHACH_HANG")
     private HangKhachHang hangKhachHang;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ID_TAI_KHOAN")
     private TaiKhoan taiKhoan;
 

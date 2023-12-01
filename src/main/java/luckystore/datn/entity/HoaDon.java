@@ -93,7 +93,7 @@ public class HoaDon {
     @JsonManagedReference
     private Set<HoaDonChiTiet> listHoaDonChiTiet;
 
-    @OneToMany(mappedBy = "hoaDon", fetch =FetchType.LAZY)
+    @OneToMany(mappedBy = "hoaDon", fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<YeuCau> listYeuCau = new ArrayList<>();
 
