@@ -42,24 +42,28 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
 
     @Override
     public HoaDonResponse addHoaDon(GioHangThanhToanRequest gioHangThanhToanRequest) {
-        HoaDon hoaDonSaved = hoaDonRepository.save(getHoaDon(new HoaDon(), gioHangThanhToanRequest));
-        Set<HoaDonChiTiet> hoaDonChiTiets = getBienTheGiay(gioHangThanhToanRequest.getBienTheGiayRequests(), hoaDonSaved);
-        hoaDonChiTietRepository.saveAll(hoaDonChiTiets);
 
-        GioHangResponse gioHangResponse = gioHangRepository.getGioHangByIdKhachHang(hoaDonSaved.getKhachHang().getId());
+        GioHang gioHang = gioHangRepository.findById(gioHangThanhToanRequest.getId()).get();
+//        if (gioHang.getTrangThai() == 1) {
+            HoaDon hoaDonSaved = hoaDonRepository.save(getHoaDon(new HoaDon(), gioHangThanhToanRequest));
+            Set<HoaDonChiTiet> hoaDonChiTiets = getBienTheGiay(gioHangThanhToanRequest.getBienTheGiayRequests(), hoaDonSaved);
+            hoaDonChiTietRepository.saveAll(hoaDonChiTiets);
 
-        GioHang gioHangOld = getGioHang(gioHangResponse,new GioHang());
-        gioHangOld.setTrangThai(2);
-        gioHangRepository.save(gioHangOld);
+            GioHangResponse gioHangResponse = gioHangRepository.getGioHangByIdKhachHang(hoaDonSaved.getKhachHang().getId());
 
-        GioHang gioHangNew = new GioHang();
-        gioHangNew.setKhachHang(gioHangOld.getKhachHang());
-        gioHangNew.setNgayTao(LocalDateTime.now());
-        gioHangNew.setTrangThai(1);
-        gioHangNew.setGhiChu("abc");
-        gioHangRepository.save(gioHangNew);
+            GioHang gioHangOld = getGioHang(gioHangResponse, new GioHang());
+            gioHangOld.setTrangThai(2);
+            gioHangRepository.save(gioHangOld);
 
-        return new HoaDonResponse(hoaDonSaved);
+            GioHang gioHangNew = new GioHang();
+            gioHangNew.setKhachHang(gioHangOld.getKhachHang());
+            gioHangNew.setNgayTao(LocalDateTime.now());
+            gioHangNew.setTrangThai(1);
+            gioHangNew.setGhiChu("abc");
+            gioHangRepository.save(gioHangNew);
+            return new HoaDonResponse(hoaDonSaved);
+//        }
+//        return new HoaDonResponse();
     }
 
     private HoaDon getHoaDon(HoaDon hoaDon, GioHangThanhToanRequest gioHangThanhToanRequest) {
@@ -81,6 +85,7 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         hoaDon.setDiaChiNhan(gioHangThanhToanRequest.getDiaChiNhan());
         hoaDon.setTrangThai(gioHangThanhToanRequest.getTrangThai());
         hoaDon.setGhiChu(gioHangThanhToanRequest.getGhiChu());
+        hoaDon.setChiTietThanhToans(null);
         return hoaDon;
     }
 
@@ -98,7 +103,7 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         return hoaDonChiTiets;
     }
 
-    private GioHang getGioHang(GioHangResponse gioHangResponse , GioHang gioHang){
+    private GioHang getGioHang(GioHangResponse gioHangResponse, GioHang gioHang) {
         gioHang.setId(gioHangResponse.getId());
         gioHang.setKhachHang(khachHangRepository.findById(gioHangResponse.getKhachHang().getId()).get());
         gioHang.setTrangThai(gioHangResponse.getTrangThai());

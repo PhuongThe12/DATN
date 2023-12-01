@@ -89,6 +89,7 @@ app.controller('listProductController', function ($scope, $http, $location) {
         giaySearch.currentPage = currentPage;
         giaySearch.pageSize = $scope.itemsPerPage;
 
+        console.log(giaySearch);
         $http.post(apiUrl, giaySearch)
             .then(function (response) {
                 $scope.giays = response.data.content;
@@ -1092,7 +1093,7 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
         $http.get("http://localhost:8080/user/rest/gio-hang/1").then(function (response) {
             console.log(response.data);
             var bienTheGiayList = [];
-
+            $scope.idGioHang = response.data.id;
             angular.forEach(response.data.gioHangChiTietResponses, function (gioHangChiTiet) {
                 var bienTheGiay = gioHangChiTiet.bienTheGiay;
                 bienTheGiay.soLuongMua = gioHangChiTiet.soLuong;
@@ -1127,6 +1128,7 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
         $scope.hoaDonThanhToan.trangThai = 4;
         $scope.hoaDonThanhToan.email = $scope.khachHang.email;
         $scope.hoaDonThanhToan.bienTheGiayRequests = $scope.listBienTheGiayLocalStorage;
+        $scope.hoaDonThanhToan.id = $scope.idGioHang;
         $http.post("http://localhost:8080/user/rest/hoa-don",$scope.hoaDonThanhToan)
             .then(function (response){
                 $location.path("/don-hang");
