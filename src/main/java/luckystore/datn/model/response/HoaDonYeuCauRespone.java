@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import luckystore.datn.entity.ChiTietThanhToan;
 import luckystore.datn.entity.HoaDon;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,11 +37,14 @@ public class HoaDonYeuCauRespone {
     private Integer loaiHoaDon;
 
     private LocalDateTime ngayTao;
-    private String moTa;
+    private String ghiChu;
 
+    private List<ChiTietThanhToanResponse> listChiTietThanhToan = new ArrayList<>();
     private List<HoaDonChiTietResponse> listHoaDonChiTiet = new ArrayList<>();
+    private BigDecimal tongTienKhachThanhToan;
+    private BigDecimal tongGiaTriHoaDon;
 
-    private BigDecimal tongTien;
+    private Double phanTramGiam;
 
     public HoaDonYeuCauRespone(HoaDon hoaDon, Long idHoaDonGoc) {
         this.id = hoaDon.getId();
@@ -50,20 +55,44 @@ public class HoaDonYeuCauRespone {
         this.trangThai = hoaDon.getTrangThai();
         this.loaiHoaDon = hoaDon.getLoaiHoaDon();
         this.ngayTao = hoaDon.getNgayTao();
-        this.moTa = hoaDon.getGhiChu();
+        this.ghiChu = hoaDon.getGhiChu();
         this.listHoaDonChiTiet = (hoaDon.getListHoaDonChiTiet().stream().map(HoaDonChiTietResponse::new).collect(Collectors.toList()));
-        this.tongTien = tongTien((hoaDon.getListHoaDonChiTiet().stream().map(HoaDonChiTietResponse::new).collect(Collectors.toList())));
+        this.tongTienKhachThanhToan = tongTienKhachThanhToan((hoaDon.getChiTietThanhToans().stream().map(ChiTietThanhToanResponse::new).collect(Collectors.toList())));
+        this.tongGiaTriHoaDon = hoaDon.getTienGiam().add(tongTienKhachThanhToan(hoaDon.getChiTietThanhToans().stream().map(ChiTietThanhToanResponse::new).collect(Collectors.toList())));
     }
 
+    public HoaDonYeuCauRespone(HoaDon hoaDon){
+        this.id = hoaDon.getId();
+        this.khachHang = new KhachHangResponse(hoaDon.getKhachHang());
+        this.nhanVien = new NhanVienResponse(hoaDon.getNhanVien());
+        this.ngayTao = hoaDon.getNgayTao();
+        this.trangThai = hoaDon.getTrangThai();
+        this.listHoaDonChiTiet = hoaDon.getListHoaDonChiTiet().stream().map(HoaDonChiTietResponse::new).collect(Collectors.toList());
+        this.listChiTietThanhToan = hoaDon.getChiTietThanhToans().stream().map(ChiTietThanhToanResponse::new).collect(Collectors.toList());
+        this.tongTienKhachThanhToan = tongTienKhachThanhToan(hoaDon.getChiTietThanhToans().stream().map(ChiTietThanhToanResponse::new).collect(Collectors.toList()));
+        this.tongGiaTriHoaDon = hoaDon.getTienGiam().add(tongTienKhachThanhToan(hoaDon.getChiTietThanhToans().stream().map(ChiTietThanhToanResponse::new).collect(Collectors.toList())));
+        this.phanTramGiam = tinhPhanTramGiam(this.tongGiaTriHoaDon,hoaDon.getTienGiam());
+    }
 
-    private BigDecimal tongTien(List<HoaDonChiTietResponse> listHoaDonChiTiet){
-        BigDecimal result = BigDecimal.ZERO; // Sử dụng BigDecimal.ZERO thay vì new BigDecimal("0")
-        for (HoaDonChiTietResponse hdctr : listHoaDonChiTiet) {
-            // Thực hiện phép nhân và cộng sử dụng các phương thức của BigDecimal
-            BigDecimal thanhTien = new BigDecimal(hdctr.getSoLuong()).multiply(hdctr.getDonGia());
-            result = result.add(thanhTien);
+    private BigDecimal tongTienKhachThanhToan(List<ChiTietThanhToanResponse> listChiTietThanhToan) {
+        BigDecimal result = BigDecimal.ZERO;
+        if (listChiTietThanhToan != null) { // Kiểm tra xem list không phải là null
+            for (ChiTietThanhToanResponse cttt : listChiTietThanhToan) {
+                if (cttt != null && cttt.getTienThanhToan() != null) { // Kiểm tra xem đối tượng và giá trị tiền không phải là null
+                    result = result.add(cttt.getTienThanhToan());
+                }
+            }
         }
         return result;
+    }
+
+    private Double tinhPhanTramGiam(BigDecimal tongGiaTriHoaDon, BigDecimal tienGiam){
+        if (tongGiaTriHoaDon == null || tienGiam == null || BigDecimal.ZERO.compareTo(tongGiaTriHoaDon) == 0) {
+            // Xử lý trường hợp tổng giá trị hóa đơn là 0 hoặc null
+            return null;
+        }
+        BigDecimal phanTram = tienGiam.multiply(new BigDecimal("100")).divide(tongGiaTriHoaDon, 2, RoundingMode.HALF_UP);
+        return phanTram.doubleValue(); // Chuyển đổi sang Integer
     }
 
 }

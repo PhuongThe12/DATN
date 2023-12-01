@@ -45,6 +45,9 @@ public interface HoaDonRepository extends JpaRepository<HoaDon,Long> {
     )
     Page<HoaDonYeuCauRespone> getPageHoaDonYeuCauResponse(HoaDonSearch hoaDonSearch, Pageable pageable);
 
+    @Query("SELECT new luckystore.datn.model.response.HoaDonYeuCauRespone(hd) FROM HoaDon hd WHERE hd.id = :id")
+    HoaDonYeuCauRespone getOneHoaDonYeuCau(Long id);
+
     @Query("SELECT new luckystore.datn.model.response.HoaDonBanHangResponse(hd.id, hdct, hd.trangThai)  FROM HoaDon hd " +
             "left join hd.listHoaDonChiTiet hdct " +
             "where hd.id = :id")
