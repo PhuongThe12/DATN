@@ -92,22 +92,11 @@ public class RestYeuCauController {
             }
             System.out.println(ngayBatDau);
             System.out.println(ngayKetThuc);
-            return new ResponseEntity(yeuCauService.getPage(page,searchText,ngayBatDau,ngayKetThuc,trangThai), HttpStatus.OK);
+            return new ResponseEntity(yeuCauService.getPage(page,searchText,null,null,trangThai), HttpStatus.OK);
         } catch (ParseException e) {
             // Xử lý lỗi nếu ngày không đúng định dạng
             return new ResponseEntity("Ngày không đúng định dạng (yyyy-MM-dd)", HttpStatus.BAD_REQUEST);
         }
-
-        // Điều chỉnh ngày kết thúc về cuối ngày nếu cần
-        if (ngayBatDau != null) {
-            ngayBatDau = adjustToStartOfDay(ngayBatDau);
-        }
-        if (ngayKetThuc != null) {
-            ngayKetThuc = adjustToEndOfDay(ngayKetThuc);
-        }
-
-        // Gọi service và trả về response
-        return new ResponseEntity(yeuCauService.getPage(page, searchText, ngayBatDau, ngayKetThuc, trangThai), HttpStatus.OK);
 
     }
 
