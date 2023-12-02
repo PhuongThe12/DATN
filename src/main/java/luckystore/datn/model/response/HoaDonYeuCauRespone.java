@@ -39,6 +39,9 @@ public class HoaDonYeuCauRespone {
     private LocalDateTime ngayTao;
     private String ghiChu;
 
+    private String soDienThoaiNhan;
+
+    private String diaChiNhan;
     private List<ChiTietThanhToanResponse> listChiTietThanhToan = new ArrayList<>();
     private List<HoaDonChiTietResponse> listHoaDonChiTiet = new ArrayList<>();
     private BigDecimal tongTienKhachThanhToan;
@@ -61,8 +64,21 @@ public class HoaDonYeuCauRespone {
         this.tongGiaTriHoaDon = hoaDon.getTienGiam().add(tongTienKhachThanhToan(hoaDon.getChiTietThanhToans().stream().map(ChiTietThanhToanResponse::new).collect(Collectors.toList())));
     }
 
+    public HoaDonYeuCauRespone(HoaDon hoaDon, String getAllYeuCauPage) {
+        this.id = hoaDon.getId();
+        this.hoaDonGoc = hoaDon.getHoaDonGoc() == null ? null : hoaDon.getHoaDonGoc().getId();
+        this.khachHang = new KhachHangResponse(hoaDon.getKhachHang().getId(), hoaDon.getKhachHang().getHoTen());
+        this.nhanVien = new NhanVienResponse(hoaDon.getNhanVien().getId(), hoaDon.getNhanVien().getHoTen());
+        this.loaiHoaDon = hoaDon.getLoaiHoaDon();
+        this.ngayTao = hoaDon.getNgayTao();
+        this.kenhBan = hoaDon.getKenhBan();
+        this.trangThai = hoaDon.getTrangThai();
+    }
+
+
     public HoaDonYeuCauRespone(HoaDon hoaDon){
         this.id = hoaDon.getId();
+        this.hoaDonGoc = hoaDon.getHoaDonGoc().getId();
         this.khachHang = new KhachHangResponse(hoaDon.getKhachHang());
         this.nhanVien = new NhanVienResponse(hoaDon.getNhanVien());
         this.ngayTao = hoaDon.getNgayTao();
@@ -72,6 +88,8 @@ public class HoaDonYeuCauRespone {
         this.tongTienKhachThanhToan = tongTienKhachThanhToan(hoaDon.getChiTietThanhToans().stream().map(ChiTietThanhToanResponse::new).collect(Collectors.toList()));
         this.tongGiaTriHoaDon = hoaDon.getTienGiam().add(tongTienKhachThanhToan(hoaDon.getChiTietThanhToans().stream().map(ChiTietThanhToanResponse::new).collect(Collectors.toList())));
         this.phanTramGiam = tinhPhanTramGiam(this.tongGiaTriHoaDon,hoaDon.getTienGiam());
+        this.soDienThoaiNhan = hoaDon.getSoDienThoaiNhan();
+        this.diaChiNhan = hoaDon.getDiaChiNhan();
     }
 
     private BigDecimal tongTienKhachThanhToan(List<ChiTietThanhToanResponse> listChiTietThanhToan) {

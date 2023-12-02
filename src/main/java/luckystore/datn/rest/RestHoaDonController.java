@@ -42,10 +42,10 @@ public class RestHoaDonController {
     @PostMapping("/yeu-cau")
     public ResponseEntity getPageHoaDonYeuCauPage(@RequestBody HoaDonSearch hoaDonSearch) {
         if (hoaDonSearch.getNgayBatDau() != null) {
-            hoaDonSearch.setNgayBatDau(adjustToStartOfDay(hoaDonSearch.getNgayBatDau()));
+            hoaDonSearch.setNgayBatDau(hoaDonSearch.getNgayBatDau().toLocalDate().atStartOfDay());
         }
         if (hoaDonSearch.getNgayKetThuc() != null) {
-            hoaDonSearch.setNgayBatDau(adjustToEndOfDay(hoaDonSearch.getNgayKetThuc()));
+            hoaDonSearch.setNgayBatDau(LocalDateTime.of(hoaDonSearch.getNgayKetThuc().toLocalDate(), LocalTime.MAX));
         }
         return new ResponseEntity<>(hoaDonService.getPageHoaDonYeuCau(hoaDonSearch), HttpStatus.OK);
     }
@@ -147,13 +147,4 @@ public class RestHoaDonController {
         return new ResponseEntity(hoaDonService.getPageByIdKhachHang(page, searchText, status, idKhachHang), HttpStatus.OK);
     }
 
-    public static LocalDateTime adjustToStartOfDay(LocalDateTime dateTime) {
-        // Chuyển về đầu ngày
-        return dateTime.toLocalDate().atStartOfDay();
-    }
-
-    public static LocalDateTime adjustToEndOfDay(LocalDateTime dateTime) {
-        // Chuyển về cuối ngày
-        return LocalDateTime.of(dateTime.toLocalDate(), LocalTime.MAX);
-    }
 }

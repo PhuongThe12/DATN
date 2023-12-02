@@ -1,5 +1,6 @@
 package luckystore.datn.repository;
 
+import luckystore.datn.constraints.TrangThaiHoaDon;
 import luckystore.datn.entity.HoaDon;
 import luckystore.datn.model.request.HoaDonSearch;
 import luckystore.datn.model.response.HashTagResponse;
@@ -7,6 +8,7 @@ import luckystore.datn.model.response.HoaDonBanHangResponse;
 import luckystore.datn.model.response.HoaDonResponse;
 import luckystore.datn.model.response.HoaDonYeuCauRespone;
 import luckystore.datn.model.response.MuiGiayResponse;
+import luckystore.datn.model.response.print.HoaDonPrintResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,7 +29,7 @@ public interface HoaDonRepository extends JpaRepository<HoaDon,Long> {
             "WHERE (:searchText IS NULL OR hd.ghiChu LIKE %:searchText%) AND (:status IS NULL OR hd.trangThai = :status)")
     Page<HoaDonResponse> getPageResponse(String searchText, Integer status, Pageable pageable);
 
-    @Query("SELECT new luckystore.datn.model.response.HoaDonYeuCauRespone(hd, hd.hoaDonGoc.id)" +
+    @Query("SELECT new luckystore.datn.model.response.HoaDonYeuCauRespone(hd, 'getAllYeuCau' )" +
             "FROM HoaDon hd " +
             "left JOIN hd.khachHang kh on hd.khachHang.id = kh.id " +
             "left JOIN hd.nhanVien nv on hd.nhanVien.id = nv.id " +

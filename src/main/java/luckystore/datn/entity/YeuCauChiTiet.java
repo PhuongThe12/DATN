@@ -6,6 +6,7 @@ import lombok.*;
 import luckystore.datn.model.request.YeuCauChiTietRequest;
 import org.hibernate.annotations.Nationalized;
 
+import java.math.BigDecimal;
 
 
 @AllArgsConstructor
@@ -40,10 +41,12 @@ public class YeuCauChiTiet {
     @JoinColumn(name = "ID_LY_DO")
     private LyDo lyDo;
 
-    @Column(name = "SO_LUONG")
-    private Integer soLuong;
+    @Column(name = "TIEN_GIAM")
+    private BigDecimal tienGiam;
+    @Column(name = "THANH_TIEN")
+    private BigDecimal thanhTien;
 
-    @Column(name = "TRANG_THAI") // 0 : "Chờ xét duyệt" / 1 : "Đã xác nhận" / 2 : "Đã Hủy" / 3 : "Chờ xét duyệt - Hủy đổi" / 4 : "Đã xác nhận - Hủy đổi"
+    @Column(name = "TRANG_THAI") //      //1: chờ xác nhận - chờ xác nhân   2:chờ xác nhận - hủy   3:đã xác nhận - hủy  4: đã xác nhận - đã xác nhận   5: Đã hủy - Đã hủy
     private Integer trangThai;
 
     @Column(name = "LOAI_YEU_CAU_CHI_TIET")
@@ -65,7 +68,8 @@ public class YeuCauChiTiet {
             this.hoaDonChiTiet = hoaDonChiTiet;
             this.bienTheGiay = bienTheGiay;
             this.lyDo = lyDo;
-            this.soLuong = yeuCauChiTietRequest.getSoLuong();
+            this.thanhTien = yeuCauChiTietRequest.getThanhTien();
+            this.tienGiam = yeuCauChiTietRequest.getTienGiam();
             this.trangThai = yeuCauChiTietRequest.getTrangThai();
             this.tinhTrangSanPham = yeuCauChiTietRequest.getTinhTrangSanPham();
             this.loaiYeuCauChiTiet = yeuCauChiTietRequest.getLoaiYeuCauChiTiet();
@@ -74,4 +78,16 @@ public class YeuCauChiTiet {
     }
 
 
+    public YeuCauChiTiet(YeuCau yeuCau,HoaDonChiTiet hoaDonChiTiet, BienTheGiay bienTheGiay, LyDo lyDo, BigDecimal tienGiam, BigDecimal thanhTien, Integer trangThai, Integer loaiYeuCauChiTiet, Boolean tinhTrangSanPham, String ghiChu) {
+        this.yeuCau = yeuCau;
+        this.hoaDonChiTiet = hoaDonChiTiet;
+        this.bienTheGiay = bienTheGiay;
+        this.lyDo = lyDo;
+        this.tienGiam = tienGiam;
+        this.thanhTien = thanhTien;
+        this.trangThai = trangThai;
+        this.loaiYeuCauChiTiet = loaiYeuCauChiTiet;
+        this.tinhTrangSanPham = tinhTrangSanPham;
+        this.ghiChu = ghiChu;
+    }
 }
