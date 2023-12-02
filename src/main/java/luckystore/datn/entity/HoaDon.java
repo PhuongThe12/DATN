@@ -17,6 +17,7 @@ import java.util.Set;
 @Setter
 @Builder
 @Entity
+@ToString
 @Table(name = "HoaDon")
 public class HoaDon {
 

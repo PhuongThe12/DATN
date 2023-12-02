@@ -1,8 +1,12 @@
 package luckystore.datn.service.user.impl;
 
+import luckystore.datn.constraints.ErrorMessage;
 import luckystore.datn.entity.*;
+import luckystore.datn.exception.ConflictException;
+import luckystore.datn.exception.ExcelException;
 import luckystore.datn.exception.InvalidIdException;
 import luckystore.datn.model.request.*;
+import luckystore.datn.model.response.GioHangChiTietResponse;
 import luckystore.datn.model.response.GioHangResponse;
 import luckystore.datn.model.response.HoaDonResponse;
 import luckystore.datn.repository.*;
@@ -10,10 +14,13 @@ import luckystore.datn.service.user.HoaDonKhachHangService;
 import luckystore.datn.util.JsonString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -40,30 +47,27 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
     @Autowired
     GioHangRepository gioHangRepository;
 
+    @Autowired
+    GioHangChiTietRepository gioHangChiTietRepository;
+
+    @Transactional
     @Override
     public HoaDonResponse addHoaDon(GioHangThanhToanRequest gioHangThanhToanRequest) {
 
-        GioHang gioHang = gioHangRepository.findById(gioHangThanhToanRequest.getId()).get();
-//        if (gioHang.getTrangThai() == 1) {
+        List<GioHangChiTietResponse> gioHangChiTietResponseList = gioHangChiTietRepository.findGioHangChiTietByIdGioHang(gioHangThanhToanRequest.getId());
+
+
+        if (gioHangChiTietResponseList.size() != 0) {
+            checkSoLuong(gioHangThanhToanRequest.getBienTheGiayRequests());
             HoaDon hoaDonSaved = hoaDonRepository.save(getHoaDon(new HoaDon(), gioHangThanhToanRequest));
             Set<HoaDonChiTiet> hoaDonChiTiets = getBienTheGiay(gioHangThanhToanRequest.getBienTheGiayRequests(), hoaDonSaved);
             hoaDonChiTietRepository.saveAll(hoaDonChiTiets);
 
-            GioHangResponse gioHangResponse = gioHangRepository.getGioHangByIdKhachHang(hoaDonSaved.getKhachHang().getId());
+            gioHangChiTietRepository.deleteAllGioHangChiTietByIdGioHang(gioHangThanhToanRequest.getId());
 
-            GioHang gioHangOld = getGioHang(gioHangResponse, new GioHang());
-            gioHangOld.setTrangThai(2);
-            gioHangRepository.save(gioHangOld);
-
-            GioHang gioHangNew = new GioHang();
-            gioHangNew.setKhachHang(gioHangOld.getKhachHang());
-            gioHangNew.setNgayTao(LocalDateTime.now());
-            gioHangNew.setTrangThai(1);
-            gioHangNew.setGhiChu("abc");
-            gioHangRepository.save(gioHangNew);
             return new HoaDonResponse(hoaDonSaved);
-//        }
-//        return new HoaDonResponse();
+        }
+        throw new InvalidIdException("Giỏ hàng đã được thanh toán !");
     }
 
     private HoaDon getHoaDon(HoaDon hoaDon, GioHangThanhToanRequest gioHangThanhToanRequest) {
@@ -71,7 +75,7 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         KhachHang khachHang = khachHangRepository.findById(gioHangThanhToanRequest.getKhachHang().getId()).get();
 
         hoaDon.setKhachHang(khachHang);
-        hoaDon.setId(gioHangThanhToanRequest.getId());
+//        hoaDon.setId(gioHangThanhToanRequest.getId());
         hoaDon.setNgayTao(LocalDateTime.now());
         hoaDon.setNgayShip(gioHangThanhToanRequest.getNgayShip());
         hoaDon.setNgayNhan(gioHangThanhToanRequest.getNgayNhan());
@@ -85,7 +89,7 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         hoaDon.setDiaChiNhan(gioHangThanhToanRequest.getDiaChiNhan());
         hoaDon.setTrangThai(gioHangThanhToanRequest.getTrangThai());
         hoaDon.setGhiChu(gioHangThanhToanRequest.getGhiChu());
-        hoaDon.setChiTietThanhToans(null);
+
         return hoaDon;
     }
 
@@ -98,6 +102,7 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
             hoaDonChiTiet.setHoaDon(hoaDon);
             hoaDonChiTiet.setSoLuong(h.getSoLuongMua());
             hoaDonChiTiet.setTrangThai(1);
+            hoaDonChiTiet.setDonGia(h.getGiaBan());
             hoaDonChiTiets.add(hoaDonChiTiet);
         }
         return hoaDonChiTiets;
@@ -110,6 +115,22 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         gioHang.setNgayTao(gioHangResponse.getNgayTao());
         gioHang.setGhiChu(gioHangResponse.getGhiChu());
         return gioHang;
+    }
+
+    private void checkSoLuong(Set<BienTheGiayGioHangRequest> list) {
+        List<String> errors = new ArrayList<>();
+        for (BienTheGiayGioHangRequest bienTheGiayRequest : list) {
+            String error = "";
+            if (bienTheGiayRepository.getSoLuong(bienTheGiayRequest.getId()) == 0) {
+                error = "" + bienTheGiayRequest.getId() + ": 1";
+            } else {
+                error = "" + bienTheGiayRequest.getId() + ": 2";
+            }
+            errors.add(error);
+        }
+        if (!errors.isEmpty()) {
+            throw new ConflictException(errors);
+        }
     }
 }
 

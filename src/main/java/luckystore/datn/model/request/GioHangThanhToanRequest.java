@@ -14,8 +14,6 @@ import java.util.Set;
 public class GioHangThanhToanRequest {
     private Long id;
 
-    private HoaDonRequest hoaDonGoc;
-
     private KhachHangRequest khachHang;
 
     private NhanVienRequest nhanVien;

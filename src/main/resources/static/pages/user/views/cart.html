@@ -18,14 +18,17 @@
                         </a>
                     </div>
                     <div class="w-75 ps-3">
-                        <p class="font-size-14-ncl fw-bold text-dark mb-2 text-wrap-none">{{bienTheGiay.giayResponse.ten}}</p>
+                        <div class="d-flex align-items-center">
+                            <p ng-class="{ 'out-of-stock': bienTheGiay.soLuong === 0 }" class="font-size-14-ncl fw-bold text-dark mb-2 text-wrap-none">{{bienTheGiay.giayResponse.ten}}</p>
+                            <p  ng-if="bienTheGiay.soLuong === 0" class="ps-2 font-size-14-ncl fw-bold text-dark mb-2 text-wrap-none">( Hết hàng )</p>
+                        </div>
                         <div class="d-flex align-items-center justify-content-between">
                             <p class="font-size-14-ncl text-secondary">Kích cỡ : {{bienTheGiay.kichThuoc.ten}} / Màu Sắc : {{bienTheGiay.mauSac.ten}}</p>
                             <p class="font-size-16-ncl fw-bold text-dark">{{bienTheGiay.giaBan | number}} ₫</p>
                         </div>
                         <div class=" d-flex  mb-3">
-                            <button class="btn btn-light" ng-click="subtraction(bienTheGiay)"><i class="fas fa-minus"></i></button>
-                            <input type="number" class="form-control" style="width: 67px;" ng-model="bienTheGiay.soLuongMua">
+                            <button class="btn btn-light"  ng-click="subtraction(bienTheGiay)"><i class="fas fa-minus"></i></button>
+                            <input type="number" min="1" class="form-control" style="width: 67px;" ng-model="bienTheGiay.soLuongMua">
                             <button class="btn btn-light" ng-click="summation(bienTheGiay)"><i class="fas fa-plus"></i></button>
                         </div>
                         <div class="d-flex">
@@ -52,9 +55,62 @@
                     <p class="fw-bold text-dark">{{tongTien | number}} đ</p>
                 </div>
                 <div class="row">
-                    <a class="btn btn-dark py-2" href="#/thanh-toan">Tiến Hành Thanh Toán</a>
+                    <button class="btn btn-dark py-2" ng-click="thanhToanLocation()">Tiến Hành Thanh Toán</button>
                 </div>
 
+            </div>
+        </div>
+    </div>
+</div>
+
+<p id="soldout" data-bs-toggle="modal"  data-bs-target="#staticBackdrop"></p>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" tabindex="-1" aria-labelledby="staticBackdrop" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered  modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <h5 class="modal-title mb-1" id="staticBackdropLabel">Số lượng giày trong kho không đủ vui lòng kiểm tra lại</h5>
+                <p class="font-size-12-ncl mb-3">Tải lại trang để cập nhật mới nhất về trạng thái sản phẩm</p>
+              <div ng-show="productsSoldOutQuantity.length > 0">
+                  <h5>Sản phẩm hết hàng</h5>
+                  <div class="d-flex mb-3" ng-repeat="bienTheGiay in productsSoldOutQuantity">
+                      <div>
+                          <a href="#/detail/{{bienTheGiay.id}}">
+                              <img class="rounded" width="100%" src="https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg" alt="">
+                          </a>
+                      </div>
+                      <div class="w-75 ps-3">
+                          <div class="d-flex align-items-center">
+                              <p class="font-size-14-ncl fw-bold text-dark mb-2 text-wrap-none">{{bienTheGiay.giayResponse.ten}}</p>
+                          </div>
+                          <div class="d-flex align-items-center justify-content-between">
+                              <p class="font-size-14-ncl text-secondary">Kích cỡ : {{bienTheGiay.kichThuoc.ten}} / Màu Sắc : {{bienTheGiay.mauSac.ten}}</p>
+                              <p class="font-size-16-ncl fw-bold text-dark">{{bienTheGiay.giaBan | number}} ₫</p>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+                <div ng-show="productsLessQuantity.length > 0">
+                    <h5>Sản phẩm vượt quá số lượng</h5>
+                    <div class="d-flex mb-3" ng-repeat="bienTheGiay in productsLessQuantity">
+                        <div>
+                            <a href="#/detail/{{bienTheGiay.id}}">
+                                <img class="rounded" width="100%" src="https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg" alt="">
+                            </a>
+                        </div>
+                        <div class="w-75 ps-3">
+                            <div class="d-flex align-items-center">
+                                <p class="font-size-14-ncl fw-bold text-dark mb-2 text-wrap-none">{{bienTheGiay.giayResponse.ten}}</p>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <p class="font-size-14-ncl text-secondary">Kích cỡ : {{bienTheGiay.kichThuoc.ten}} / Màu Sắc : {{bienTheGiay.mauSac.ten}}</p>
+                                <p class="font-size-16-ncl fw-bold text-dark">{{bienTheGiay.giaBan | number}} ₫</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
