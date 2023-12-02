@@ -4,14 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import luckystore.datn.entity.KhuyenMai;
-import luckystore.datn.entity.KhuyenMaiChiTiet;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
@@ -33,7 +30,7 @@ public class ChiTietKhuyenMaiResponse {
 
     private KhuyenMaiChiTietGiayResponse khuyenMaiChiTietResponses;
 
-    public ChiTietKhuyenMaiResponse(KhuyenMaiResponse khuyenMai){
+    public ChiTietKhuyenMaiResponse(KhuyenMaiResponse khuyenMai) {
         this.id = khuyenMai.getId();
         this.ten = khuyenMai.getTen();
         this.ngayBatDau = khuyenMai.getNgayBatDau();
@@ -43,9 +40,10 @@ public class ChiTietKhuyenMaiResponse {
         var chiTietResponses = khuyenMai.getKhuyenMaiChiTietResponses();
         Map<Long, GiayResponse> giays = new HashMap<Long, GiayResponse>();
         KhuyenMaiChiTietGiayResponse aaa = new KhuyenMaiChiTietGiayResponse();
-        for (var chiTietResponse: chiTietResponses) {
+        for (var chiTietResponse : chiTietResponses) {
             var bietTheGiay = chiTietResponse.getBienTheGiayResponsel();
             bietTheGiay.setPhanTramGiam(chiTietResponse.getPhanTramGiam());
+            bietTheGiay.setIdKhuyenMaiChiTiet(chiTietResponse.getId());
             var giay = bietTheGiay.getGiayResponse();
             bietTheGiay.setGiayResponse(null);
             if (!giays.containsKey(giay.getId())) {
@@ -60,7 +58,6 @@ public class ChiTietKhuyenMaiResponse {
             }
         }
         aaa.setGiays(giays.values().stream().toList());
-
         this.khuyenMaiChiTietResponses = aaa;
 
     }

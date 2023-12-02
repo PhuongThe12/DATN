@@ -7,7 +7,6 @@ import luckystore.datn.entity.KhuyenMaiChiTiet;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.model.request.KhuyenMaiChiTietRequest;
 import luckystore.datn.model.request.KhuyenMaiRequest;
-import luckystore.datn.model.response.DotGiamGiaResponse;
 import luckystore.datn.model.response.KhuyenMaiResponse;
 import luckystore.datn.repository.KhuyenMaiChiTietRepository;
 import luckystore.datn.repository.KhuyenMaiRepository;
@@ -67,29 +66,36 @@ public class KhuyenMaiServiceImpl implements KhuyenMaiService {
 
     @Override
     public KhuyenMaiResponse updateKhuyenMai(Long id, KhuyenMaiRequest khuyenMaiRequest) {
-        KhuyenMai khuyenMai = khuyenMaiRepository.findById(id).orElseThrow(()->new RuntimeException());
-        System.out.println(khuyenMai);
+        KhuyenMai khuyenMai = khuyenMaiRepository.findById(id).orElseThrow(() -> new RuntimeException());
         khuyenMai.setTen(khuyenMaiRequest.getTen());
         khuyenMai.setNgayBatDau(khuyenMaiRequest.getNgayBatDau());
         khuyenMai.setNgayKetThuc(khuyenMaiRequest.getNgayKetThuc());
         khuyenMai.setTrangThai(khuyenMaiRequest.getTrangThai());
         khuyenMai.setGhiChu(khuyenMaiRequest.getGhiChu());
-
         List<KhuyenMaiChiTiet> chiTietList = new ArrayList<>();
         for (KhuyenMaiChiTietRequest chiTietRequest : khuyenMaiRequest.getKhuyenMaiChiTietRequests()) {
-            KhuyenMaiChiTiet chiTiet = khuyenMaiChiTietRepository.findById(chiTietRequest.getId()).orElseThrow(()->new RuntimeException());
-            BienTheGiay bienTheGiay = new BienTheGiay();
-            bienTheGiay.setId(chiTietRequest.getBienTheGiayId());
-            chiTiet.setBienTheGiay(bienTheGiay);
-            chiTiet.setPhanTramGiam(chiTietRequest.getPhanTramGiam());
-            chiTiet.setKhuyenMai(khuyenMai);
-            chiTietList.add(chiTiet);
+            if (chiTietRequest.getId() != null) {
+                KhuyenMaiChiTiet chiTiet = khuyenMaiChiTietRepository.findById(chiTietRequest.getId()).orElseThrow(() -> new RuntimeException());
+                BienTheGiay bienTheGiay = new BienTheGiay();
+                bienTheGiay.setId(chiTietRequest.getBienTheGiayId());
+                chiTiet.setBienTheGiay(bienTheGiay);
+                chiTiet.setPhanTramGiam(chiTietRequest.getPhanTramGiam());
+                chiTiet.setKhuyenMai(khuyenMai);
+                chiTietList.add(chiTiet);
+            } else {
+                KhuyenMaiChiTiet chiTiet = new KhuyenMaiChiTiet();
+                BienTheGiay bienTheGiay = new BienTheGiay();
+                bienTheGiay.setId(chiTietRequest.getBienTheGiayId());
+                chiTiet.setBienTheGiay(bienTheGiay);
+                chiTiet.setPhanTramGiam(chiTietRequest.getPhanTramGiam());
+                chiTiet.setKhuyenMai(khuyenMai);
+                chiTietList.add(chiTiet);
+            }
         }
         khuyenMai.setKhuyenMaiChiTiets(chiTietList);
         khuyenMaiRepository.save(khuyenMai);
         return new KhuyenMaiResponse(khuyenMaiRepository.save(khuyenMai));
     }
-
 
     @Override
     public KhuyenMaiResponse findById(Long id) {
