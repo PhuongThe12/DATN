@@ -184,10 +184,6 @@ app.controller("diaChiNhanHangListController", function ($scope, $http, $window,
     };
 
 
-
-
-
-
 });
 
 app.controller("updateDiaChiNhanHangController", function ($scope, $http, $routeParams, $location) {
