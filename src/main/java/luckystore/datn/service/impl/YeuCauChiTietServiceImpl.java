@@ -40,7 +40,6 @@ public class YeuCauChiTietServiceImpl implements YeuCauChiTietService {
         HoaDonChiTiet hoaDonChiTiet  = hoaDonChiTietRepository.findById(yeuCauChiTietRequest.getHoaDonChiTiet()).orElse(null);
         YeuCauChiTiet yeuCauChiTiet = new YeuCauChiTiet(yeuCauChiTietRequest,hoaDonChiTiet,bienTheGiay!= null ? bienTheGiay : null,lyDo,yeuCau);
         yeuCauChiTiet.setTrangThai(1);
-        yeuCauChiTiet.setSoLuong(0);
         return new YeuCauChiTietResponse(yeuCauChiTietRepository.save(yeuCauChiTiet));
     }
 

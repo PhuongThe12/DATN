@@ -77,9 +77,6 @@ public class RestYeuCauController {
             ngayKetThuc = adjustToEndOfDay(ngayKetThuc);
         }
 
-        System.out.println("Ngày bắt đầu: " + ngayBatDau);
-        System.out.println("Ngày kết thúc: " + ngayKetThuc);
-
         // Gọi service và trả về response
         return new ResponseEntity(yeuCauService.getPage(page, searchText, ngayBatDau, ngayKetThuc, trangThai), HttpStatus.OK);
     }

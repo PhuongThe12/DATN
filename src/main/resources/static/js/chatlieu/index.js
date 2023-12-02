@@ -26,7 +26,7 @@ app.controller("addChatLieuController", function ($scope, $http, $location) {
     }
 
     $scope.comfirmAdd = function () {
-        Swal.fire({
+        Swal({
             text: "Xác nhận thêm?",
             icon: "info",
             showCancelButton: true,
