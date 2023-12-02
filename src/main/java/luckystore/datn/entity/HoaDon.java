@@ -1,6 +1,7 @@
 package luckystore.datn.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,10 +26,8 @@ public class HoaDon {
     @Column(name = "ID")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "ID_HOA_DON_GOC")
-    @JsonBackReference
-    private HoaDon hoaDonGoc;
+    @Column(name = "ID_HOA_DON_GOC")
+    private Long hoaDonGoc;
 
     @ManyToOne
     @JoinColumn(name = "ID_KHACH_HANG")

@@ -328,6 +328,7 @@
                         <th>Kích thước</th>
                         <th>Giá bán</th>
                         <th>Số lượng</th>
+                        <th>Số lượng lỗi</th>
                         <th>Trạng thái</th>
                         <th>Barcode</th>
                         </thead>
@@ -401,6 +402,23 @@
                                     <div>
                                         <small class="text-danger"
                                                ng-show="kichThuoc.errors.soLuong">{{kichThuoc.errors.soLuong}}</small>
+                                    </div>
+
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group mb-3 px-3 d-flex flex-column"
+                                     style="margin-bottom: 0 !important;">
+                                    <div class="d-flex flex-row">
+                                        <input type="number" step="1" class="form-control" ng-model="kichThuoc.soLuongLoi"
+                                               placeholder="Số lượng lỗi" ng-required="true" min="0"
+                                               ng-change="changeInput(msIndex, ktIndex, 'soLuongLoi')"
+                                               ng-blur="blurInput(msIndex, ktIndex, 'soLuongLoi')" name="soLuongLoi"
+                                               onkeypress="nextInput(event)">
+                                    </div>
+                                    <div>
+                                        <small class="text-danger"
+                                               ng-show="kichThuoc.errors.soLuongLoi">{{kichThuoc.errors.soLuongLoi}}</small>
                                     </div>
 
                                 </div>

@@ -739,9 +739,20 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                         $scope.hoaDonPrint.ngayThanhToan = data.ngayThanhToan;
                         $scope.sanPhams = data.hoaDonChiTietResponses;
                         $scope.hoaDonPrint.conLai = 0;
-                        data.chiTietThanhToans.forEach(item => {
+
+                        $scope.hoaDonPrint.thongTinThanhToan ={};
+                        hoaDon.chiTietThanhToans.forEach(item => {
                             $scope.hoaDonPrint.conLai += item.tienThanhToan;
+                            $scope.hoaDonPrint.thongTinThanhToan.show = true;
+                            if(item.hinhThucThanhToan === 1) {
+                                $scope.hoaDonPrint.thongTinThanhToan.tienMat = item.tienThanhToan;
+                            }
+                            if (item.hinhThucThanhToan === 2) {
+                                $scope.hoaDonPrint.thongTinThanhToan.chuyenKhoan = item.tienThanhToan;
+                                $scope.hoaDonPrint.thongTinThanhToan.maGiaoDich = item.maGiaoDich;
+                            }
                         });
+
                         $scope.hoaDonPrint.tongTru = data.tienGiam ? data.tienGiam : 0;
                         $scope.hoaDonPrint.tienShip = data.tienShip ? data.tienShip : 0;
 

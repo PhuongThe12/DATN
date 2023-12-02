@@ -393,6 +393,7 @@ public class GiayServiceImpl implements GiayService {
                     bienThe.setSoLuong(bienTheGiayRequest.getSoLuong());
                     bienThe.setTrangThai(bienTheGiayRequest.getTrangThai());
                     bienThe.setBarCode(bienTheGiayRequest.getBarcode());
+                    bienThe.setSoLuongLoi(bienTheGiayRequest.getSoLuongLoi());
 
                     bienThe.setHinhAnh(files.getOrDefault(bienThe.getMauSac().getId(), null));
                     exists = true;
@@ -406,8 +407,7 @@ public class GiayServiceImpl implements GiayService {
                 KichThuoc kichThuoc = kichThuocRepository.findById(bienTheGiayRequest.getKichThuocId()).orElseThrow(() -> new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("kichThuoc", "Không tồn tại kích thước này"))));
 
 
-                BienTheGiay bienTheGiay = BienTheGiay.builder().barCode(bienTheGiayRequest.getBarcode()).giay(giay).giaBan(bienTheGiayRequest.getGiaBan()).mauSac(mauSac).kichThuoc(kichThuoc).trangThai(bienTheGiayRequest.getTrangThai()).soLuong(bienTheGiayRequest.getSoLuong()).build();
-
+                BienTheGiay bienTheGiay = BienTheGiay.builder().barCode(bienTheGiayRequest.getBarcode()).giay(giay).giaBan(bienTheGiayRequest.getGiaBan()).mauSac(mauSac).kichThuoc(kichThuoc).trangThai(bienTheGiayRequest.getTrangThai()).soLuong(bienTheGiayRequest.getSoLuong()).soLuongLoi(bienTheGiayRequest.getSoLuongLoi()).build();
                 bienTheGiay.setHinhAnh(files.getOrDefault(bienTheGiay.getMauSac().getId(), null));
 
                 giay.getLstBienTheGiay().add(bienTheGiay);

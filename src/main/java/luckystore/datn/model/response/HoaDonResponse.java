@@ -19,7 +19,7 @@ import java.time.format.DateTimeFormatter;
 public class HoaDonResponse {
     private Long id;
 
-    private HoaDon hoaDonGoc;
+    private Long hoaDonGoc;
 
     private KhachHang khachHang;
 
@@ -53,6 +53,8 @@ public class HoaDonResponse {
 
     private Integer uuDai;
 
+    private Integer loaiHoaDon;
+
 
     public HoaDonResponse(HoaDon hoaDon) {
 
@@ -85,6 +87,7 @@ public class HoaDonResponse {
             this.diaChiNhan = hoaDon.getDiaChiNhan().trim();
             this.trangThai = hoaDon.getTrangThai();
             this.ghiChu = hoaDon.getGhiChu();
+            this.loaiHoaDon = hoaDon.getLoaiHoaDon();
         }
     }
 
@@ -119,7 +122,7 @@ public class HoaDonResponse {
             this.diaChiNhan = hoaDon.getDiaChiNhan();
             this.trangThai = hoaDon.getTrangThai();
             this.ghiChu = hoaDon.getGhiChu();
-
+            this.loaiHoaDon = hoaDon.getLoaiHoaDon();
 
         }
     }

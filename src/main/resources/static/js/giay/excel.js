@@ -73,7 +73,7 @@ app.controller('excelController', function ($scope, $http, $location) {
 
                 let lastKey;
                 // Duyệt qua từng dòng bắt đầu từ dòng thứ 6
-                for (let row = 5; row <= 999; row++) {
+                for (let row = 5; row <= 999 && row <= range.e.r; row++) {
 
                     //Lưu dữ liệu của một dòng
                     const giay = {};

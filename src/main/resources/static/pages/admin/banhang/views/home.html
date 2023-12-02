@@ -566,7 +566,7 @@
 
 
 <!--    Camera modal-->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" style="z-index: 1070" data-bs-keyboard="false"
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" style="z-index: 1210" data-bs-keyboard="false"
      tabindex="-1"
      aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">
@@ -901,16 +901,16 @@
     </div>
 
     <div class="invoice-details">
-        <p><strong>Mã Hóa Đơn:</strong> HD{{hoaDonPrint.ma}}</p>
-        <p><strong>Khách Hàng:</strong> {{hoaDonPrint.tenKhachHang}}</p>
-        <p><strong>Ngày thanh toán:</strong> {{hoaDonPrint.ngayThanhToan}}</p>
-        <p><strong>Nhân viên:</strong> {{hoaDonPrint.tenNhanVien}}</p>
+        <p class="py-2"><strong>Mã Hóa Đơn :</strong> HD{{hoaDonPrint.ma}}</p>
+        <p class="py-2"><strong>Khách Hàng :</strong> {{hoaDonPrint.tenKhachHang}}</p>
+        <p class="py-2"><strong>Nhân viên  :</strong> {{hoaDonPrint.tenNhanVien}}</p>
+        <p class="py-2"><strong>Ngày thanh toán:</strong> {{hoaDonPrint.ngayThanhToan}}</p>
     </div>
 
-    <table class="invoice-items" style="width: 100%">
+    <table class="invoice-items" style="width: 100%; table-layout: fixed">
         <thead>
         <tr>
-            <th style="width: 50%">Sản Phẩm</th>
+            <th style="width: 70%">Sản Phẩm</th>
             <th>Số Lượng</th>
             <th>Đơn Giá (Đã giảm)</th>
             <th>Thành Tiền</th>
@@ -926,11 +926,26 @@
         </tbody>
     </table>
 
-    <div class="invoice-total">
-        <p class="py-2"><strong>Tổng Cộng : </strong> {{hoaDonPrint.tongCong | number : 0}} VND</p>
-        <p class="py-2"><strong>Tiền ship : </strong>- {{hoaDonPrint.tienShip | number : 0}} VND</p>
-        <p class="py-2"><strong>Giảm giá  : </strong>- {{hoaDonPrint.tongTru | number : 0}} VND</p>
-        <p class="py-2"><strong>Phải trả  : </strong>{{hoaDonPrint.conLai | number : 0}} VND</p>
+    <div class="row">
+        <div class="col-6" ng-show="hoaDonPrint.thongTinThanhToan.show">
+            <div class="py-2"><strong>Thông tin thanh toán:</strong></div>
+            <div class="py-2" ng-show="hoaDonPrint.thongTinThanhToan.show && hoaDonPrint.thongTinThanhToan.tienMat">Tiền mặt(tại quầy):
+                <strong>{{hoaDonPrint.thongTinThanhToan.tienMat? hoaDonPrint.thongTinThanhToan.tienMat : 0 | number : 0}} VND</strong>
+                <div ng-show="hoaDonPrint.thongTinThanhToan.show && hoaDonPrint.thongTinThanhToan.chuyenKhoan" style="border-bottom: 2px slategray dashed;"></div>
+            </div>
+            <div class="py-2" ng-show="hoaDonPrint.thongTinThanhToan.show && hoaDonPrint.thongTinThanhToan.chuyenKhoan">Chuyển khoản:
+                <strong>{{hoaDonPrint.thongTinThanhToan.chuyenKhoan? hoaDonPrint.thongTinThanhToan.chuyenKhoan : 0 | number : 0}} VND</strong>
+                <div>Mã giao dịch: <strong>{{hoaDonPrint.thongTinThanhToan.maGiaoDich}}</strong></div>
+            </div>
+        </div>
+        
+        <div class="invoice-total col-6">
+            <p class="py-2"><strong>Tổng Cộng : </strong> {{hoaDonPrint.tongCong | number : 0}} VND</p>
+            <p class="py-2"><strong>Tiền ship : </strong>- {{hoaDonPrint.tienShip? hoaDonPrint.tienShip : 0 | number :
+                0}} VND</p>
+            <p class="py-2"><strong>Giảm giá : </strong>- {{hoaDonPrint.tongTru | number : 0}} VND</p>
+            <p class="py-2"><strong>Phải trả : </strong>{{hoaDonPrint.conLai | number : 0}} VND</p>
+        </div>
     </div>
 
     <div class="py-2 display-none" ng-class="hoaDonPrint.trangThai==1?'display-block' : ''">

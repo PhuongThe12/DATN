@@ -27,7 +27,7 @@ public class HoaDonPrintResponse {
 
     private Long id;
 
-    private HoaDon hoaDonGoc;
+    private Long hoaDonGoc;
 
     private KhachHangResponse khachHang;
 
@@ -61,6 +61,8 @@ public class HoaDonPrintResponse {
 
     private Integer uuDai;
 
+    private Integer loaiHoaDon;
+
     private List<HoaDonChiTietResponse> hoaDonChiTietResponses = new ArrayList<>();
 
     private Set<ChiTietThanhToan> chiTietThanhToans;
@@ -69,7 +71,6 @@ public class HoaDonPrintResponse {
 
         if (hoaDon != null) {
             this.id = hoaDon.getId();
-            this.hoaDonGoc = hoaDon.getHoaDonGoc();
             if (hoaDon.getNhanVien() != null) {
                 this.nhanVien = new NhanVienResponse();
                 this.nhanVien.setHoTen(hoaDon.getNhanVien().getHoTen());
@@ -92,6 +93,7 @@ public class HoaDonPrintResponse {
                 this.ngayThanhToan = dateFormat(hoaDon.getNgayThanhToan());
             }
 
+            this.hoaDonGoc = hoaDon.getHoaDonGoc();
             this.tienGiam = hoaDon.getTienGiam();
             this.uuDai = hoaDon.getUuDai();
             this.kenhBan = hoaDon.getKenhBan();
@@ -102,6 +104,7 @@ public class HoaDonPrintResponse {
             this.diaChiNhan = hoaDon.getDiaChiNhan();
             this.trangThai = hoaDon.getTrangThai();
             this.ghiChu = hoaDon.getGhiChu();
+            this.loaiHoaDon = hoaDon.getLoaiHoaDon();
             hoaDon.getListHoaDonChiTiet().forEach(item -> {
                 HoaDonChiTietResponse response = new HoaDonChiTietResponse();
                 response.setId(item.getId());
@@ -124,7 +127,6 @@ public class HoaDonPrintResponse {
 
         if (hoaDon != null) {
             this.id = hoaDon.getId();
-            this.hoaDonGoc = hoaDon.getHoaDonGoc();
             this.nhanVien = new NhanVienResponse(hoaDon.getNhanVien());
             this.khachHang = new KhachHangResponse(hoaDon.getKhachHang());
 
@@ -141,6 +143,7 @@ public class HoaDonPrintResponse {
                 this.ngayThanhToan = dateFormat(hoaDon.getNgayThanhToan());
             }
 
+            this.hoaDonGoc = hoaDon.getHoaDonGoc();
             this.tienGiam = hoaDon.getTienGiam();
             this.uuDai = hoaDon.getUuDai();
             this.kenhBan = hoaDon.getKenhBan();
@@ -153,6 +156,7 @@ public class HoaDonPrintResponse {
             this.ghiChu = hoaDon.getGhiChu();
             this.hoaDonChiTietResponses = hoaDon.getListHoaDonChiTiet().stream().map(HoaDonChiTietResponse::new).toList();
             this.chiTietThanhToans = hoaDon.getChiTietThanhToans();
+            this.loaiHoaDon = hoaDon.getLoaiHoaDon();
         }
     }
 

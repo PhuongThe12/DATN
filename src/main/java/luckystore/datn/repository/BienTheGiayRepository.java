@@ -45,6 +45,9 @@ public interface BienTheGiayRepository extends JpaRepository<BienTheGiay, Long> 
 //           + " and km.trangThai = 1"
             )
     List<BienTheGiayResponse> bienTheGiay(List<Long> ids);
+
+    @Query("select bt from BienTheGiay bt where bt.id in :ids")
+    List<BienTheGiay> getAllByIds(List<Long> ids);
 }
 
 
