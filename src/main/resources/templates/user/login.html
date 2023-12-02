@@ -38,10 +38,10 @@
         <form name="user" ng-submit="loginUser()">
 
             <div class="mb-3">
-                <label for="exampleFormControlInput1" class="form-label">Tài khoản</label>
+                <label class="form-label">Tài khoản</label>
                 <input type="text" ng-model="userLogin.tenDangNhap" class="form-control" id="taiKhoan">
             </div>
-            <label for="" class="form-label">Mật Khẩu</label>
+            <label class="form-label">Mật Khẩu</label>
             <div class="input-group mb-3">
 
                 <input type="password" ng-model="userLogin.matKhau" class="form-control" aria-label="Recipient's username" aria-describedby="button-addon2">
@@ -62,6 +62,7 @@
     </div>
 </div>
 <script src="/js/user/index.js"></script>
+<script src="/js/helper/tokenService.js"></script>
 </body>
 
 </html>

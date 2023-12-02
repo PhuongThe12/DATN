@@ -24,6 +24,7 @@ app.config(function ($routeProvider, $locationProvider) {
 
 app.controller("addKhachHangController", function ($scope, $http, $location) {
     $scope.khachHang = {};
+    $scope.khachHang.gioiTinh = true;
     $scope.change = function (input) {
         input.$dirty = true;
     }
@@ -50,6 +51,89 @@ app.controller("addKhachHangController", function ($scope, $http, $location) {
                     $scope.errors = error.data;
                 }
             });
+    }
+
+    const video = document.getElementById('video');
+    let scanning = false;
+    $scope.scanQR = function () {
+        scanning = true;
+        if (scanning) {
+            navigator.mediaDevices.getUserMedia({video: true})
+                .then((stream) => {
+                    video.srcObject = stream;
+                    video.play();
+
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+
+                    const interval = setInterval(() => {
+                        if (scanning) {
+                            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                            const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+                            if (code) {
+                                // Thực hiện các hành động với mã QR tại đây
+                                if (typeof code.data === 'string') {
+                                    console.log(code.data.split('|'));
+                                    const data = code.data.split('|');
+                                    if (data.length === 7) {
+                                        $scope.khachHang.hoTen = data[2];
+                                        $scope.khachHang.gioiTinh = data[4] === 'Nam';
+                                        console.log($scope.khachHang.gioiTinh);
+                                    } else {
+                                        toastr["error"]('Không hợp lệ. Vui lòng thử lại');
+                                    }
+                                } else {
+                                    toastr["error"]('Không hợp lệ. Vui lòng thử lại');
+                                }
+                                document.getElementById('closeModalCamera').click();
+                                clearInterval(interval);
+                            }
+                        }
+                    }, 500);
+                })
+                .catch((error) => {
+                    toastr["error"]('Không thể truy cập camera:');
+                });
+        } else {
+            $scope.stopScanning();
+        }
+    }
+
+    function convertImageDataToBase64(imageData) {
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.width = imageData.width;
+        canvas.height = imageData.height;
+        context.putImageData(imageData, 0, 0);
+
+        return canvas.toDataURL('image');
+    }
+
+
+    function updateVideoStream() {
+        navigator.mediaDevices.getUserMedia({
+            video: {deviceId: selectedCamera}
+        })
+            .then((stream) => {
+                video.srcObject = stream;
+                video.play();
+            })
+            .catch((error) => {
+                console.error('Không thể cập nhật stream camera:', error);
+            });
+    }
+
+
+    $scope.stopScanning = function () {
+        video.pause();
+        video.srcObject.getTracks().forEach(track => track.stop());
+    }
+
+    $scope.closeModalCamera = function () {
+        scanning = false;
+        $scope.stopScanning();
     }
 
 });

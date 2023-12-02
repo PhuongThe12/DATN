@@ -21,12 +21,12 @@ public class RestTaiKhoanController {
     @Autowired
     TaiKhoanServiceImpl taiKhoanService;
 
-    @PostMapping("/detail")
-    public ResponseEntity<?> detail(@RequestBody TaiKhoanRequest taiKhoanRequest) {
-//        ResponseEntity errorJson = getErrorJson(bindingResult);
-//        if (errorJson != null) return errorJson;
-        return new ResponseEntity(taiKhoanService.login(taiKhoanRequest), HttpStatus.OK);
-    }
+//    @PostMapping("/detail")
+//    public ResponseEntity<?> detail(@RequestBody TaiKhoanRequest taiKhoanRequest) {
+////        ResponseEntity errorJson = getErrorJson(bindingResult);
+////        if (errorJson != null) return errorJson;
+//        return new ResponseEntity(taiKhoanService.login(taiKhoanRequest), HttpStatus.OK);
+//    }
 
     private ResponseEntity getErrorJson(BindingResult result) {
         if (result.hasErrors()) {

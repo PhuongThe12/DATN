@@ -10,6 +10,6 @@ public interface TaiKhoanKhachHangService {
 
     TaiKhoanResponse addTaiKhoan(TaiKhoanRequest taiKhoanRequest);
 
-    TaiKhoanResponse khachHanglogin(TaiKhoanRequest taiKhoanRequest);
+//    TaiKhoanResponse khachHanglogin(TaiKhoanRequest taiKhoanRequest);
 
 }

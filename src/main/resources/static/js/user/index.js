@@ -2,8 +2,9 @@ var app = angular.module("app", ["ngRoute", "ui.bootstrap","ngCookies"]);
 app.controller("loginController", function ($scope, $http, $location, $window, $cookies) {
 
     $scope.loginUser = function () {
+        alert($scope.userLogin);
         console.log($scope.userLogin);
-        $http.post(host + '/tai-khoan/detail', $scope.userLogin)
+        $http.post(host + '/api/authentication/login-basic' + $scope.userLogin)
             .then(function (response) {
                 if (response.data.role == 1) {
                     $http.get(host + '/admin/rest/nhan-vien/find-tai-khoan/' + response.data.id)
