@@ -421,8 +421,9 @@ public class GiayServiceImpl implements GiayService {
     }
 
     @Override
-    public List<GiayResponse> findAllBySearch(GiaySearch giaySearch) {
-        return giayRepository.findAllBySearch(giaySearch);
+    public Page<GiayResponse> findAllBySearch(GiaySearch giaySearch) {
+        Pageable pageable = PageRequest.of(giaySearch.getCurrentPage() - 1, giaySearch.getPageSize());
+        return giayRepository.findAllBySearch(giaySearch,pageable);
     }
 
     @Transactional

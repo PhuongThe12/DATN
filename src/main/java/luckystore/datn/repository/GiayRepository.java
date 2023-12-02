@@ -106,7 +106,7 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
             "and (:#{#giaySearch.thuongHieuIds} is null or g.thuongHieu.id in :#{#giaySearch.thuongHieuIds}) " +
             "group by g.id, g.ten, anh.link"
     )
-    List<GiayResponse> findAllBySearch(GiaySearch giaySearch);
+    Page<GiayResponse> findAllBySearch(GiaySearch giaySearch, Pageable pageable);
 
     @Query("select new luckystore.datn.model.response.GiayResponse(g.id, g.ten) from Giay g where g.ten in :names")
     List<GiayResponse> getIdsByName(Set<String> names);

@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -49,6 +51,12 @@ public class RestHoaDonController {
 
     @PostMapping("/yeu-cau")
     public ResponseEntity getPageHoaDonYeuCauPage(@RequestBody HoaDonSearch hoaDonSearch) {
+        if (hoaDonSearch.getNgayBatDau() != null) {
+            hoaDonSearch.setNgayBatDau(adjustToStartOfDay(hoaDonSearch.getNgayBatDau()));
+        }
+        if (hoaDonSearch.getNgayKetThuc() != null) {
+            hoaDonSearch.setNgayBatDau(adjustToEndOfDay(hoaDonSearch.getNgayKetThuc()));
+        }
         return new ResponseEntity<>(hoaDonService.getPageHoaDonYeuCau(hoaDonSearch), HttpStatus.OK);
     }
 
@@ -195,8 +203,16 @@ public class RestHoaDonController {
     }
 
     @GetMapping("/get-don-doi-tra/{id}")
-    public ResponseEntity<?> getHoaDonDoiTra(@PathVariable("id")Long id) {
+    public ResponseEntity<?> getHoaDonDoiTra(@PathVariable("id") Long id) {
         return ResponseEntity.ok(hoaDonService.getHoaDonDoiTra(id));
+    }
+
+    public static LocalDateTime adjustToStartOfDay(LocalDateTime dateTime) {
+        return dateTime.toLocalDate().atStartOfDay();
+    }
+
+    public static LocalDateTime adjustToEndOfDay(LocalDateTime dateTime) {
+        return LocalDateTime.of(dateTime.toLocalDate(), LocalTime.MAX);
     }
 
 }

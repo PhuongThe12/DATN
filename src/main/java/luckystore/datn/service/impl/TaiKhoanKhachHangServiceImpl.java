@@ -6,6 +6,7 @@ import luckystore.datn.entity.HangKhachHang;
 import luckystore.datn.entity.KhachHang;
 import luckystore.datn.entity.TaiKhoan;
 import luckystore.datn.exception.NotFoundException;
+import luckystore.datn.infrastructure.Role;
 import luckystore.datn.model.request.TaiKhoanRequest;
 import luckystore.datn.model.response.TaiKhoanResponse;
 import luckystore.datn.repository.HangKhachHangRepository;
@@ -48,7 +49,7 @@ public class TaiKhoanKhachHangServiceImpl implements TaiKhoanKhachHangService {
         TaiKhoan taiKhoan = new TaiKhoan();
         taiKhoan.setTenDangNhap(taiKhoanRequest.getTenDangNhap());
         taiKhoan.setMatKhau(taiKhoanRequest.getMatKhau());
-        taiKhoan.setRole(2);
+        taiKhoan.setRole(Role.ROLE_ADMIN);
         taiKhoan.setTrangThai(1);
         taiKhoanRepository.save(taiKhoan);
 
@@ -67,15 +68,15 @@ public class TaiKhoanKhachHangServiceImpl implements TaiKhoanKhachHangService {
         return new TaiKhoanResponse(taiKhoan);
     }
 
-    @Override
-    public TaiKhoanResponse khachHanglogin(TaiKhoanRequest taiKhoanRequest) {
-        TaiKhoan taiKhoan = taiKhoanRepository.findByTenDangNhapAndMatKhau(taiKhoanRequest.getTenDangNhap(), taiKhoanRequest.getMatKhau());
-        if (taiKhoan != null && taiKhoan.getRole() == 2) {
-            return new TaiKhoanResponse(taiKhoan);
-        } else {
-            throw new NotFoundException(ErrorMessage.NOT_FOUND);
-        }
-
-    }
+//    @Override
+//    public TaiKhoanResponse khachHanglogin(TaiKhoanRequest taiKhoanRequest) {
+//        TaiKhoan taiKhoan = taiKhoanRepository.findByTenDangNhapAndMatKhau(taiKhoanRequest.getTenDangNhap(), taiKhoanRequest.getMatKhau());
+//        if (taiKhoan != null && taiKhoan.getRole() == 2) {
+//            return new TaiKhoanResponse(taiKhoan);
+//        }else{
+//            throw new NotFoundException(ErrorMessage.NOT_FOUND);
+//        }
+//
+//    }
 
 }

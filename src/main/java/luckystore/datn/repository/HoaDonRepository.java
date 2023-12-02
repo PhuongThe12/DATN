@@ -28,19 +28,20 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
 
     @Query("SELECT new luckystore.datn.model.response.HoaDonYeuCauRespone(hd, hd.hoaDonGoc)" +
             "FROM HoaDon hd " +
-            "left JOIN hd.khachHang kh " +
-            "left JOIN hd.nhanVien nv " +
-            "INNER JOIN hd.listHoaDonChiTiet hdct " +
-            "WHERE (hd.loaiHoaDon = 1 OR hd.loaiHoaDon = 2) " +
-            "AND (:#{#hoaDonSearch.idHoaDon} IS NULL OR hd.id  = :#{#hoaDonSearch.idHoaDon}) " +
-            "AND (:#{#hoaDonSearch.loaiHoaDon} IS NULL OR hd.loaiHoaDon = :#{#hoaDonSearch.loaiHoaDon}) " +
-            "AND (:#{#hoaDonSearch.email} IS NULL OR hd.email like %:#{#hoaDonSearch.email}%) " +
-            "AND (:#{#hoaDonSearch.kenhBan} IS NULL OR hd.kenhBan = :#{#hoaDonSearch.kenhBan}) " +
-            "AND (:#{#hoaDonSearch.trangThai} IS NULL OR hd.trangThai = :#{#hoaDonSearch.trangThai}) " +
-            "AND (:#{#hoaDonSearch.khachHang} IS NULL OR kh.hoTen = :#{#hoaDonSearch.khachHang}) " +
-            "AND (:#{#hoaDonSearch.nhanVien} IS NULL OR nv.hoTen = :#{#hoaDonSearch.nhanVien}) " +
-            "AND (:#{#hoaDonSearch.giaTu} IS NULL OR (SELECT SUM(ct.donGia * ct.soLuong) FROM HoaDonChiTiet ct WHERE ct.hoaDon = hd) >= :#{#hoaDonSearch.giaTu})" +
-            "AND (:#{#hoaDonSearch.giaDen} IS NULL OR (SELECT SUM(ct.donGia * ct.soLuong) FROM HoaDonChiTiet ct WHERE ct.hoaDon = hd) <= :#{#hoaDonSearch.giaDen})")
+            "left JOIN hd.khachHang kh on hd.khachHang.id = kh.id " +
+            "left JOIN hd.nhanVien nv on hd.nhanVien.id = nv.id " +
+            "WHERE (hd.loaiHoaDon = 1 OR hd.loaiHoaDon = 2) "+
+            "AND (:#{#hoaDonSearch.idHoaDon} IS NULL OR hd.id  = :#{#hoaDonSearch.idHoaDon}) "+
+            "AND (:#{#hoaDonSearch.loaiHoaDon} IS NULL OR hd.loaiHoaDon = :#{#hoaDonSearch.loaiHoaDon}) "+
+            "AND (:#{#hoaDonSearch.email} IS NULL OR hd.email like %:#{#hoaDonSearch.email}%) "+
+            "AND (:#{#hoaDonSearch.soDienThoaiKhacHang} IS NULL OR kh.soDienThoai like %:#{#hoaDonSearch.soDienThoaiKhacHang}%) "+
+            "AND (:#{#hoaDonSearch.kenhBan} IS NULL OR hd.kenhBan = :#{#hoaDonSearch.kenhBan}) "+
+            "AND (:#{#hoaDonSearch.trangThai} IS NULL OR hd.trangThai = :#{#hoaDonSearch.trangThai}) "+
+            "AND (:#{#hoaDonSearch.khachHang} IS NULL OR kh.hoTen like %:#{#hoaDonSearch.khachHang}%) "+
+            "AND (:#{#hoaDonSearch.nhanVien} IS NULL OR nv.hoTen like %:#{#hoaDonSearch.nhanVien}%) " +
+            "AND (:#{#hoaDonSearch.ngayBatDau} IS NULL OR hd.ngayTao >= :#{#hoaDonSearch.ngayBatDau}) "+
+            "AND (:#{#hoaDonSearch.ngayKetThuc} IS NULL OR hd.ngayTao <= :#{#hoaDonSearch.ngayKetThuc}) "
+    )
     Page<HoaDonYeuCauRespone> getPageHoaDonYeuCauResponse(HoaDonSearch hoaDonSearch, Pageable pageable);
 
     @Query("SELECT new luckystore.datn.model.response.HoaDonBanHangResponse(hd.id)  FROM HoaDon hd " +
