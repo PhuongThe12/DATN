@@ -66,7 +66,7 @@ public class HoaDonYeuCauRespone {
 
     public HoaDonYeuCauRespone(HoaDon hoaDon, String getAllYeuCauPage) {
         this.id = hoaDon.getId();
-        this.hoaDonGoc = hoaDon.getHoaDonGoc() == null ? null : hoaDon.getHoaDonGoc().getId();
+        this.hoaDonGoc = hoaDon.getHoaDonGoc() == null ? null : hoaDon.getHoaDonGoc();
         this.khachHang = new KhachHangResponse(hoaDon.getKhachHang().getId(), hoaDon.getKhachHang().getHoTen());
         this.nhanVien = new NhanVienResponse(hoaDon.getNhanVien().getId(), hoaDon.getNhanVien().getHoTen());
         this.loaiHoaDon = hoaDon.getLoaiHoaDon();
@@ -78,7 +78,7 @@ public class HoaDonYeuCauRespone {
 
     public HoaDonYeuCauRespone(HoaDon hoaDon){
         this.id = hoaDon.getId();
-        this.hoaDonGoc = hoaDon.getHoaDonGoc().getId();
+        this.hoaDonGoc = hoaDon.getHoaDonGoc();
         this.khachHang = new KhachHangResponse(hoaDon.getKhachHang());
         this.nhanVien = new NhanVienResponse(hoaDon.getNhanVien());
         this.ngayTao = hoaDon.getNgayTao();
