@@ -1,5 +1,5 @@
-<form name="khuyenMaiForm" ng-submit="addKhuyenMai()">
-    <button type="submit" class="btn btn-primary" ng-disabled="khuyenMaiForm.$invalid">Thêm</button>
+<form name="khuyenMaiForm" ng-submit="updateKhuyenMai()">
+    <button type="submit" class="btn btn-primary" ng-disabled="khuyenMaiForm.$invalid">Cập nhật</button>
     <div class="form-group">
         <label for="ten">Tên chương trình: </label>
         <input type="text" class="form-control" id="ten" name="ten" ng-model="khuyenMai.ten" ng-maxlength="50"
