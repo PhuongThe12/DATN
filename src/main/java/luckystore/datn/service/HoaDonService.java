@@ -1,10 +1,14 @@
 package luckystore.datn.service;
 
+import luckystore.datn.entity.HoaDon;
 import luckystore.datn.model.request.AddOrderProcuctRequest;
 import luckystore.datn.model.request.DatHangTaiQuayRequest;
 import luckystore.datn.model.request.HoaDonRequest;
 import luckystore.datn.model.request.HoaDonSearch;
+import luckystore.datn.model.request.HoaDonSearchP;
 import luckystore.datn.model.request.HoaDonThanhToanTaiQuayRequest;
+import luckystore.datn.model.request.HuyDonRequest;
+import luckystore.datn.model.request.TraMotPhanRequest;
 import luckystore.datn.model.response.HoaDonBanHangResponse;
 import luckystore.datn.model.response.HoaDonChiTietResponse;
 import luckystore.datn.model.response.HoaDonResponse;
@@ -58,4 +62,24 @@ public interface HoaDonService {
     void cancelBanking(Long id);
 
     HoaDonPrintResponse getPrint(Long id);
+
+    Page<HoaDonPrintResponse> getAllBySearch(HoaDonSearchP hoaDonSearch);
+
+    int xacNhanDonHang(List<Long> ids);
+
+    int xacNhanGiaoHang(List<Long> ids);
+
+    int hoanThanhDonHang(List<Long> ids);
+
+    int huyDonHang(List<HuyDonRequest> requests);
+
+    Page<HoaDonPrintResponse> getAllBySearchOrderNgayShip(HoaDonSearchP hoaDonSearch);
+
+    Page<HoaDonPrintResponse> getAllBySearchOrderNgayThanhToan(HoaDonSearchP hoaDonSearch);
+
+    boolean traMotPhan(TraMotPhanRequest traMotPhanRequest);
+
+    int xacNhanHoanHang(TraMotPhanRequest request);
+
+    List<HoaDonResponse> getHoaDonDoiTra(Long id);
 }

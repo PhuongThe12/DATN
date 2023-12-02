@@ -18,13 +18,17 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
     let giayClone;
 
     $scope.isLoading = true;
-    setTimeout(function() {
+
+    setTimeout(function () {
         $http.get(host + '/admin/rest/giay/' + id)
             .then(function (response) {
                 $scope.giay = response.data;
                 setData();
                 giayClone = angular.copy($scope.giay);
                 $scope.isLoading = false;
+                setTimeout(() => {
+                    document.getElementById('tenGiay').click();
+                }, 20);
             })
             .catch(function (error) {
                 console.log(error);
@@ -33,6 +37,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                 // $scope.isLoading = false;
             });
     }, 10);
+
 
     $scope.changeSelectedKichThuoc = function () {
         // Sao chép selectedMauSacs
@@ -494,7 +499,8 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                     soLuong: kichThuoc.soLuong,
                     giaBan: kichThuoc.giaBan,
                     trangThai: kichThuoc.trangThai === 0 ? 0 : 1,
-                    barcode: kichThuoc.barcode
+                    barcode: kichThuoc.barcode,
+                    soLuongLoi: kichThuoc.soLuongLoi? kichThuoc.soLuongLoi : 0,
                 }
                 bienTheGiays.push(bienTheGiay);
             });
@@ -619,6 +625,18 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                     count++;
                 }
 
+                if (isNaN(kichThuoc.soLuongLoi)) {
+                    kichThuoc.soLuongLoi = null;
+                    kichThuoc.errors.soLuongLoi = 'Không được bỏ trống số lượng';
+                    valid = false;
+                    count++;
+                } else if (kichThuoc.soLuongLoi < 0) {
+                    kichThuoc.soLuongLoi = null;
+                    kichThuoc.errors.soLuongLoi = 'Số lượng không được âm';
+                    valid = false;
+                    count++;
+                }
+
                 if (!kichThuoc.barcode) {
                     kichThuoc.barcode = '';
                     kichThuoc.errors.barcode = 'Không được bỏ trống barcode';
@@ -659,6 +677,10 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
         }
         if (model === 'soLuong' && $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.soLuong) {
             $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.soLuong = null;
+        }
+
+        if (model === 'soLuongLoi' && $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.soLuongLoi) {
+            $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.soLuongLoi = null;
         }
 
     }
@@ -709,6 +731,15 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.soLuong = null;
             }
         }
+
+        if (model === 'soLuongLoi') {
+            if (isNaN($scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].soLuongLoi)) {
+                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.soLuongLoi = 'Không được để trống';
+                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].soLuongLoi = null;
+            } else {
+                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.soLuongLoi = null;
+            }
+        }
     }
 
     $scope.updateForAll = function () {
@@ -736,6 +767,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                 $scope.blurInput(msIndex, ktIndex, 'barcode');
                 $scope.blurInput(msIndex, ktIndex, 'giaBan');
                 $scope.blurInput(msIndex, ktIndex, 'soLuong');
+                $scope.blurInput(msIndex, ktIndex, 'soLuongLoi');
             })
         })
         $scope.resetFormForAll();
@@ -818,11 +850,13 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                             kt.trangThai = bt.trangThai;
                             kt.barcode = bt.barCode;
                             kt.soLuong = bt.soLuong;
+                            kt.soLuongLoi = bt.soLuongLoi ? bt.soLuongLoi : 0;
                         } else {
                             kt.giaBan = 0;
                             kt.trangThai = 0;
                             kt.barcode = new Date().getTime();
                             kt.soLuong = 0;
+                            kt.soLuongLoi = bt.soLuongLoi ? bt.soLuongLoi : 0;
                         }
                     });
                 });
@@ -838,7 +872,6 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
 
 
         }
-                document.getElementById('tenGiay').click();
 
         fetchDataAndProcess();
 
@@ -866,7 +899,6 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             $scope.image5 = 1;
             loadImageFromBase64(lstAnh[4], 'selectedImage5');
         }
-
     }
 
 
