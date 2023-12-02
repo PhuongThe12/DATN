@@ -1,19 +1,26 @@
 package luckystore.datn.model.request;
 
+import lombok.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@ToString
+@Builder
 public class GioHangRequest {
 
-    private Long id;
+    public Long id;
 
-    private Long khachHang;
+    public KhachHangRequest khachHang;
 
-    private LocalDateTime ngayTao;
+    public LocalDateTime ngayTao;
 
-    private String ghiChu;
+    public String ghiChu;
 
-    private Integer trangThai;
+    public Integer trangThai;
 
     List<GioHangChiTietRequest> gioHangChiTietRequestList;
 }

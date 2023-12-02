@@ -64,9 +64,9 @@ public class SecurityConfig {
 //                                .requestMatchers("/admin/rest/de-giay/**", "/admin/ban-hang").hasAuthority("ROLE_STAFF")
                                 .anyRequest().permitAll())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider()).addFilterBefore(
-                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class
-                )
+//                .authenticationProvider(authenticationProvider()).addFilterBefore(
+//                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class
+//                )
                 .build();
     }
 
