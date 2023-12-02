@@ -19,7 +19,7 @@ import java.time.format.DateTimeFormatter;
 public class HoaDonResponse {
     private Long id;
 
-    private HoaDon hoaDonGoc;
+    private Long hoaDonGoc;
 
     private KhachHang khachHang;
 
@@ -49,6 +49,12 @@ public class HoaDonResponse {
 
     private String ghiChu;
 
+    private BigDecimal tienGiam;
+
+    private Integer uuDai;
+
+    private Integer loaiHoaDon;
+
 
     public HoaDonResponse(HoaDon hoaDon) {
 
@@ -71,6 +77,8 @@ public class HoaDonResponse {
                 this.ngayThanhToan = dateFormat(hoaDon.getNgayThanhToan());
             }
 
+            this.tienGiam = hoaDon.getTienGiam();
+            this.uuDai = hoaDon.getUuDai();
             this.kenhBan = hoaDon.getKenhBan();
             this.maVanDon = hoaDon.getMaVanDon();
             this.email = hoaDon.getEmail();
@@ -79,6 +87,7 @@ public class HoaDonResponse {
             this.diaChiNhan = hoaDon.getDiaChiNhan().trim();
             this.trangThai = hoaDon.getTrangThai();
             this.ghiChu = hoaDon.getGhiChu();
+            this.loaiHoaDon = hoaDon.getLoaiHoaDon();
         }
     }
 
@@ -103,6 +112,8 @@ public class HoaDonResponse {
                 this.ngayThanhToan = dateFormat(hoaDon.getNgayThanhToan());
             }
 
+            this.tienGiam = hoaDon.getTienGiam();
+            this.uuDai = hoaDon.getUuDai();
             this.kenhBan = hoaDon.getKenhBan();
             this.maVanDon = hoaDon.getMaVanDon();
             this.email = hoaDon.getEmail();
@@ -111,7 +122,7 @@ public class HoaDonResponse {
             this.diaChiNhan = hoaDon.getDiaChiNhan();
             this.trangThai = hoaDon.getTrangThai();
             this.ghiChu = hoaDon.getGhiChu();
-
+            this.loaiHoaDon = hoaDon.getLoaiHoaDon();
 
         }
     }

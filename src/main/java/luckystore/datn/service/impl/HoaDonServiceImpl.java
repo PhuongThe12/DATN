@@ -1,6 +1,5 @@
 package luckystore.datn.service.impl;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import luckystore.datn.constraints.Config;
 import luckystore.datn.constraints.ErrorMessage;
@@ -21,7 +20,10 @@ import luckystore.datn.model.request.DatHangTaiQuayRequest;
 import luckystore.datn.model.request.HoaDonChiTietRequest;
 import luckystore.datn.model.request.HoaDonRequest;
 import luckystore.datn.model.request.HoaDonSearch;
+import luckystore.datn.model.request.HoaDonSearchP;
 import luckystore.datn.model.request.HoaDonThanhToanTaiQuayRequest;
+import luckystore.datn.model.request.HuyDonRequest;
+import luckystore.datn.model.request.TraMotPhanRequest;
 import luckystore.datn.model.response.BienTheGiayResponse;
 import luckystore.datn.model.response.HoaDonBanHangResponse;
 import luckystore.datn.model.response.HoaDonChiTietResponse;
@@ -44,10 +46,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -55,6 +60,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
@@ -372,7 +378,7 @@ public class HoaDonServiceImpl implements HoaDonService {
 
     @Override
     public Long thanhToanHoaDonTaiQuay(HoaDonThanhToanTaiQuayRequest request) {
-        HoaDon hoaDon =checkHoaDonChuaThanhToan(Long.valueOf(request.getIdHoaDon()));
+        HoaDon hoaDon = checkHoaDonChuaThanhToan(Long.valueOf(request.getIdHoaDon()));
 
         if (hoaDon.getListHoaDonChiTiet().isEmpty()) {
             throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Chưa có sản phẩm trong hóa đơn")));
@@ -482,8 +488,8 @@ public class HoaDonServiceImpl implements HoaDonService {
     }
 
     private void setUuDai(HoaDon hoaDon) {
-        if(hoaDon.getKhachHang() != null) {
-            if(hoaDon.getKhachHang().getHangKhachHang() != null) {
+        if (hoaDon.getKhachHang() != null) {
+            if (hoaDon.getKhachHang().getHangKhachHang() != null) {
                 hoaDon.setUuDai(hoaDon.getKhachHang().getHangKhachHang().getUuDai());
             }
         }
@@ -615,6 +621,299 @@ public class HoaDonServiceImpl implements HoaDonService {
     @Override
     public HoaDonPrintResponse getPrint(Long id) {
         return hoaDonRepository.getPrint(id);
+    }
+
+    @Override
+    public Page<HoaDonPrintResponse> getAllBySearch(HoaDonSearchP hoaDonSearch) {
+        Pageable pageable = PageRequest.of(hoaDonSearch.getCurrentPage() - 1, hoaDonSearch.getPageSize());
+        return hoaDonRepository.getAllBySearch(hoaDonSearch, pageable);
+    }
+
+    @Transactional
+    @Override
+    public int xacNhanDonHang(List<Long> ids) {
+
+        if (ids.isEmpty()) {
+            throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Bạn chưa chọn hóa đơn")));
+        }
+
+        AtomicInteger count = new AtomicInteger();
+        List<HoaDon> hoaDons = hoaDonRepository.getAllByIds(ids);
+        if (hoaDons.isEmpty()) {
+            throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không tìm thấy hóa đơn nào")));
+        }
+
+        hoaDons.forEach(hd -> {
+            if (hd.getTrangThai() == TrangThaiHoaDon.CHO_XAC_NHAN) {
+                hd.setTrangThai(TrangThaiHoaDon.CHO_GIAO_HANG);
+                count.getAndIncrement();
+            }
+        });
+
+        hoaDonRepository.saveAll(hoaDons);
+
+        return count.get();
+    }
+
+    @Override
+    public int xacNhanGiaoHang(List<Long> ids) {
+        if (ids.isEmpty()) {
+            throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Bạn chưa chọn hóa đơn")));
+        }
+
+        AtomicInteger count = new AtomicInteger();
+        List<HoaDon> hoaDons = hoaDonRepository.getAllByIds(ids);
+        if (hoaDons.isEmpty()) {
+            throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không tìm thấy hóa đơn nào")));
+        }
+
+        hoaDons.forEach(hd -> {
+            if (hd.getTrangThai() == TrangThaiHoaDon.CHO_GIAO_HANG) {
+                hd.setTrangThai(TrangThaiHoaDon.DANG_GIAO_HANG);
+                count.getAndIncrement();
+            }
+        });
+
+        hoaDonRepository.saveAll(hoaDons);
+
+        return count.get();
+    }
+
+    @Override
+    public int hoanThanhDonHang(List<Long> ids) {
+        if (ids.isEmpty()) {
+            throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Bạn chưa chọn hóa đơn")));
+        }
+
+        AtomicInteger count = new AtomicInteger();
+        List<HoaDon> hoaDons = hoaDonRepository.getAllByIds(ids);
+        if (hoaDons.isEmpty()) {
+            throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không tìm thấy hóa đơn nào")));
+        }
+
+        hoaDons.forEach(hd -> {
+            if (hd.getTrangThai() == TrangThaiHoaDon.DANG_GIAO_HANG) {
+                hd.setTrangThai(TrangThaiHoaDon.DA_THANH_TOAN);
+                count.getAndIncrement();
+            }
+        });
+
+        hoaDonRepository.saveAll(hoaDons);
+
+        return count.get();
+    }
+
+    @Transactional
+    @Override
+    public int huyDonHang(List<HuyDonRequest> requests) {
+        List<Long> ids = new ArrayList<>();
+
+        Map<Long, String> requestMap = new HashMap<>();
+        for (HuyDonRequest request : requests) {
+            requestMap.put(request.getId(), request.getGhiChu());
+            ids.add(request.getId());
+        }
+
+        if (ids.isEmpty()) {
+            throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Bạn chưa chọn hóa đơn")));
+        }
+
+        AtomicInteger count = new AtomicInteger();
+        List<HoaDon> hoaDons = hoaDonRepository.getAllByIds(ids);
+        if (hoaDons.isEmpty()) {
+            throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không tìm thấy hóa đơn nào")));
+        }
+
+        List<BienTheGiay> lstBienThe = new ArrayList<>();
+        hoaDons.forEach(hd -> {
+            if (hd.getTrangThai() != TrangThaiHoaDon.DA_THANH_TOAN && hd.getTrangThai() != TrangThaiHoaDon.DA_HUY) {
+                hd.setTrangThai(TrangThaiHoaDon.DA_HUY);
+                hd.setGhiChu(requestMap.get(hd.getId()));
+                count.getAndIncrement();
+            }
+            hd.getListHoaDonChiTiet().forEach(hdct -> {
+                BienTheGiay bienThe = new BienTheGiay();
+                bienThe.setId(hdct.getBienTheGiay().getId());
+                bienThe.setSoLuong(hdct.getSoLuong());
+                lstBienThe.add(bienThe);
+            });
+        });
+
+        List<Long> idsBienThe = lstBienThe.stream().map(BienTheGiay::getId).toList();
+        List<BienTheGiay> bienTheGiays = bienTheGiayRepository.getAllByIds(idsBienThe);
+        lstBienThe.forEach(bienTheHuy -> {
+            bienTheGiays.forEach(bienThe -> {
+                if (Objects.equals(bienTheHuy.getId(), bienThe.getId())) {
+                    bienThe.setSoLuong(bienThe.getSoLuong() + bienTheHuy.getSoLuong());
+                }
+            });
+        });
+
+        bienTheGiayRepository.saveAll(bienTheGiays);
+        hoaDonRepository.saveAll(hoaDons);
+
+        return count.get();
+    }
+
+    @Override
+    public Page<HoaDonPrintResponse> getAllBySearchOrderNgayShip(HoaDonSearchP hoaDonSearch) {
+        Pageable pageable = PageRequest.of(hoaDonSearch.getCurrentPage() - 1, hoaDonSearch.getPageSize());
+        return hoaDonRepository.getAllBySearchOrderNgayShip(hoaDonSearch, pageable);
+    }
+
+    @Override
+    public Page<HoaDonPrintResponse> getAllBySearchOrderNgayThanhToan(HoaDonSearchP hoaDonSearch) {
+        Pageable pageable = PageRequest.of(hoaDonSearch.getCurrentPage() - 1, hoaDonSearch.getPageSize());
+        return hoaDonRepository.getAllBySearchOrderNgayThanhToan(hoaDonSearch, pageable);
+    }
+
+    @Transactional
+    @Override
+    public boolean traMotPhan(TraMotPhanRequest traMotPhanRequest) {
+
+        if (traMotPhanRequest.getChiTietHoaDons().isEmpty()) {
+            throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không có sản phẩm trả")));
+        }
+
+        HoaDon hoaDon = hoaDonRepository.findById(traMotPhanRequest.getIdHoaDon())
+                .orElseThrow(() -> new NotFoundException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không tìm thấy hóa đơn"))));
+
+        if (hoaDon.getTrangThai() != 3) {
+            throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Hóa đơn đã được xử lý")));
+        }
+
+        hoaDon.setTienGiam(null);
+        hoaDon.setUuDai(null);
+        hoaDon.setTrangThai(TrangThaiHoaDon.DA_THANH_TOAN);
+        HoaDon hoaDonHoan = new HoaDon();
+        Set<HoaDonChiTiet> hoaDonChiTietsHoan = new HashSet<>();
+
+        Set<HoaDonChiTiet> hoaDonChiTiets = hoaDon.getListHoaDonChiTiet();
+
+        hoaDon.getListHoaDonChiTiet().forEach(hdct -> {
+            traMotPhanRequest.getChiTietHoaDons().forEach(hdctTra -> {
+                if (Objects.equals(hdct.getId(), hdctTra.getId()) && Objects.equals(hdct.getBienTheGiay().getId(), hdctTra.getBienTheGiay().getId()) && hdct.getTrangThai() == 1) {
+                    int soLuongConLai = hdct.getSoLuong() - hdctTra.getSoLuongTra();
+                    hdct.setSoLuong(soLuongConLai);
+
+                    HoaDonChiTiet newHdct = new HoaDonChiTiet();
+                    newHdct.setSoLuong(hdctTra.getSoLuongTra());
+                    newHdct.setBienTheGiay(hdct.getBienTheGiay());
+                    newHdct.setHoaDon(hdct.getHoaDon());
+                    newHdct.setTrangThai(0);
+                    newHdct.setDonGia(hdct.getDonGia());
+                    newHdct.setGhiChu(hdctTra.getGhiChu());
+                    hoaDonChiTiets.add(newHdct);
+
+                    HoaDonChiTiet chiTietHoan = new HoaDonChiTiet();
+                    chiTietHoan.setSoLuong(hdctTra.getSoLuongTra());
+                    chiTietHoan.setBienTheGiay(hdct.getBienTheGiay());
+                    chiTietHoan.setHoaDon(hoaDonHoan);
+                    chiTietHoan.setTrangThai(1);
+                    chiTietHoan.setDonGia(hdct.getDonGia());
+                    chiTietHoan.setGhiChu(hdctTra.getGhiChu());
+                    hoaDonChiTietsHoan.add(chiTietHoan);
+                }
+            });
+        });
+
+        hoaDonChiTiets.removeIf(item -> item.getSoLuong() == 0);
+
+        BigDecimal tienConLai = hoaDonChiTiets.stream()
+                .filter(hdct -> hdct.getTrangThai() == 1)
+                .map(hdct -> BigDecimal.valueOf(hdct.getSoLuong()).multiply(hdct.getDonGia()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        Set<ChiTietThanhToan> chiTietThanhToans = hoaDon.getChiTietThanhToans();
+        if (chiTietThanhToans == null) {
+            chiTietThanhToans = new HashSet<>();
+        }
+        BigDecimal tienDaTra = chiTietThanhToans.stream()
+                .filter(cttt -> cttt.getTrangThai() == 1)
+                .map(ChiTietThanhToan::getTienThanhToan)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        chiTietThanhToans.removeIf(item -> item.getId() != null);
+        ChiTietThanhToan chiTietThanhToan = new ChiTietThanhToan();
+        chiTietThanhToan.setHoaDon(hoaDon);
+        chiTietThanhToan.setTrangThai(1);
+        chiTietThanhToan.setHinhThucThanhToan(1);
+        chiTietThanhToan.setTienThanhToan(tienConLai);
+        chiTietThanhToans.add(chiTietThanhToan);
+
+        if (tienDaTra.compareTo(BigDecimal.ZERO) != 0) {
+            ChiTietThanhToan chiTietThanhToanHoan = new ChiTietThanhToan();
+            chiTietThanhToanHoan.setTienThanhToan(tienConLai.subtract(tienDaTra));
+            chiTietThanhToanHoan.setTrangThai(0);
+            chiTietThanhToanHoan.setHoaDon(hoaDonHoan);
+            chiTietThanhToanHoan.setHinhThucThanhToan(1);
+            hoaDonHoan.setChiTietThanhToans(Collections.singleton(chiTietThanhToanHoan));
+        }
+
+        hoaDonHoan.setListHoaDonChiTiet(hoaDonChiTietsHoan);
+        hoaDonHoan.setNgayTao(LocalDateTime.now());
+        hoaDonHoan.setTrangThai(TrangThaiHoaDon.HOAN_HANG);
+        hoaDonHoan.setGhiChu("Khách chỉ nhận một phần");
+        hoaDonRepository.saveAll(Arrays.asList(hoaDonHoan, hoaDon));
+
+        return true;
+    }
+
+    @Transactional
+    @Override
+    public int xacNhanHoanHang(TraMotPhanRequest request) {
+        List<Long> ids = new ArrayList<>();
+
+        HoaDon hoaDon = hoaDonRepository.findById(request.getIdHoaDon())
+                .orElseThrow(() -> new NotFoundException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không tìm thấy hóa đơn"))));
+
+        if (hoaDon.getTrangThai() != TrangThaiHoaDon.HOAN_HANG) {
+            throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Hóa đơn đã được xử lý. Vui lòng chọn hóa đơn khác")));
+        }
+
+        Set<HoaDonChiTiet> hoaDonChiTiets = hoaDon.getListHoaDonChiTiet();
+        hoaDonChiTiets.forEach(hdct -> {
+            ids.add(hdct.getBienTheGiay().getId());
+            hoaDonChiTiets.remove(hdct);
+        });
+
+        List<BienTheGiay> bienTheGiays = bienTheGiayRepository.getAllByIds(ids);
+        request.getChiTietHoaDons().forEach(hdct -> {
+            bienTheGiays.forEach(bienTheGiay -> {
+                if (Objects.equals(hdct.getBienTheGiay().getId(), bienTheGiay.getId())) {
+                    HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
+                    hoaDonChiTiet.setHoaDon(hoaDon);
+                    hoaDonChiTiet.setBienTheGiay(bienTheGiay);
+                    hoaDonChiTiet.setSoLuong(hdct.getSoLuong());
+                    hoaDonChiTiet.setTrangThai(hdct.getTrangThai());
+                    hoaDonChiTiet.setDonGia(bienTheGiay.getGiaBan());
+
+                    if (hdct.getTrangThai() == 0) {
+                        bienTheGiay.setSoLuongLoi(bienTheGiay.getSoLuongLoi() + hdct.getSoLuong());
+                    } else {
+                        bienTheGiay.setSoLuong(bienTheGiay.getSoLuong() + hdct.getSoLuong());
+                    }
+
+                    hoaDonChiTiets.add(hoaDonChiTiet);
+                }
+            });
+        });
+
+        hoaDon.setTrangThai(TrangThaiHoaDon.DA_HOAN_HANG);
+
+        hoaDonRepository.save(hoaDon);
+        bienTheGiayRepository.saveAll(bienTheGiays);
+
+        return 0;
+    }
+
+    @Override
+    public List<HoaDonResponse> getHoaDonDoiTra(Long id) {
+        List<HoaDon> hoaDons = hoaDonRepository.getHoaDonDoiTra(id);
+        if(hoaDons.isEmpty()) {
+            return null;
+        }
+        return hoaDons.stream().map(HoaDonResponse::new).toList();
     }
 
     @Override

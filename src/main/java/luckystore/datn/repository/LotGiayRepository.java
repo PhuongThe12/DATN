@@ -35,4 +35,7 @@ public interface LotGiayRepository extends JpaRepository<LotGiay, Long> {
     List<LotGiayResponse> getIdsByName(Set<String> names);
 
     Optional<LotGiay> findByTen(String ten);
+
+    @Query("select lg.ten from LotGiay lg")
+    String[] getAllTen();
 }

@@ -31,4 +31,7 @@ public interface CoGiayRepository extends JpaRepository<CoGiay, Long> {
     List<CoGiayResponse> getIdsByName(Set<String> names);
 
     Optional<CoGiay> findByTen(String ten);
+
+    @Query("select lg.ten from CoGiay lg")
+    String[] getAllTen();
 }
