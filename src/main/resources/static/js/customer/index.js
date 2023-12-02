@@ -397,7 +397,10 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
             $http.get("http://localhost:8080/admin/rest/giay/" + $scope.giayDetail.id + "/so-luong")
                 .then(function (response) {
                     // $http.get("http://localhost:8080/admin/rest/giay/" + $scope.giayDetail.id + "/so-luong")
-                    getSoLuongInGhct($scope.giayChoosed.id);
+                    $scope.getSoLuongInGhct($scope.giayChoosed.id);
+
+                    console.log($scope.soLuongGioHangChiTiet);
+
                     if ($scope.soLuongMua + $scope.soLuongGioHangChiTiet > response.data) {
                         toastr["warning"]("Số lượng vượt quá trong kho");
                     } else {
@@ -427,10 +430,11 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
         }
     }
 
-    function getSoLuongInGhct(idBienTheGiay) {
+    $scope.getSoLuongInGhct = function(idBienTheGiay) {
         $http.get("http://localhost:8080/user/rest/gio-hang/16/so-luong/" + idBienTheGiay)
             .then(function (response) {
                 $scope.soLuongGioHangChiTiet = response.data;
+                console.log(response.data);
             }).catch(function (error) {
 
         })
