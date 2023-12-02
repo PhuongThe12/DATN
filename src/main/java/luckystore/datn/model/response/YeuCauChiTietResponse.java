@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import luckystore.datn.entity.YeuCauChiTiet;
 import luckystore.datn.service.impl.ImageHubServiceImpl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,22 +21,15 @@ import java.util.stream.Collectors;
 public class YeuCauChiTietResponse {
 
     private Long id;
-
     private YeuCauResponse yeuCau;
-
     private HoaDonChiTietResponse hoaDonChiTiet;
-
     private BienTheGiayResponse bienTheGiay;
-
     private LyDoResponse lyDo;
-
-    private Integer soLuong;
-
+    private BigDecimal tienGiam;
+    private BigDecimal thanhTien;
     private Integer trangThai;
-
     private Boolean tinhTrangSanPham;
     private Integer loaiYeuCauChiTiet;
-
     private String ghiChu;
 
 //    private List<String> listAnhGiayTra = new ArrayList<>();
@@ -47,7 +41,8 @@ public class YeuCauChiTietResponse {
             this.hoaDonChiTiet = new HoaDonChiTietResponse(yeuCauChiTiet.getHoaDonChiTiet());
             this.bienTheGiay = new BienTheGiayResponse(yeuCauChiTiet.getBienTheGiay());
             this.lyDo = new LyDoResponse(yeuCauChiTiet.getLyDo());
-            this.soLuong = yeuCauChiTiet.getSoLuong();
+            this.tienGiam = yeuCauChiTiet.getTienGiam();
+            this.thanhTien = yeuCauChiTiet.getThanhTien();
             this.trangThai = yeuCauChiTiet.getTrangThai();
             this.tinhTrangSanPham = yeuCauChiTiet.getTinhTrangSanPham();
             this.loaiYeuCauChiTiet = yeuCauChiTiet.getLoaiYeuCauChiTiet();

@@ -259,29 +259,53 @@ app.controller("khuyenMaiListController", function ($scope, $http, $window, $loc
 });
 
 app.controller("updateKhuyenMaiController", function ($scope, $http, $location, $routeParams) {
-
     $scope.khuyenMai = {};
     $scope.khuyenMai.khuyenMaiChiTietRequests = [];
-    $scope.khuyenMai.id = $routeParams.id;
+    const id = $routeParams.id;
+
+    $scope.selectedGiay = [];
+    $scope.selectedGiayTableData = [];
+
+    $scope.selectedGiayInsert = [];
+    $scope.selectedGiayTableDataInsert = [];
+
+    $scope.selectedGiayUpdate = [];
+    $scope.selectedGiayTableDataUpdate = [];
+
     $scope.init = function () {
-        $http.get(host + '/admin/rest/khuyen-mai/giay/' + $scope.khuyenMai.id)
+        $http.get(host + '/admin/rest/khuyen-mai/giay/' + id)
             .then(function (response) {
                 if (response.status === 200) {
-                    $scope.khuyenMai = response.data;
-                    console.log("Detail khuyến mại: ", $scope.khuyenMai)
-                    console.log("Detail khuyến mại chi tiết: ", $scope.khuyenMai.khuyenMaiChiTietResponses)
-                    console.log("Giày", $scope.khuyenMai.khuyenMaiChiTietResponses.giays)
-                    angular.forEach($scope.khuyenMai.khuyenMaiChiTietResponses.giays, function (giay) {
+                    $scope.khuyenMaiDetail = response.data;
+                    console.log("Detail khuyến mại: ", $scope.khuyenMaiDetail.ten)
+                    $scope.khuyenMai = {
+                        id: $scope.khuyenMaiDetail.id,
+                        ten: $scope.khuyenMaiDetail.ten,
+                        ngayBatDau: $scope.khuyenMaiDetail.ngayBatDau,
+                        ngayKetThuc: $scope.khuyenMaiDetail.ngayKetThuc,
+                        ghiChu: $scope.khuyenMaiDetail.ghiChu,
+                        trangThai: $scope.khuyenMaiDetail.trangThai,
+                    }
+                    console.log("Tên:", $scope.khuyenMai)
+                    console.log("Detail khuyến mại chi tiết: ", $scope.khuyenMaiDetail.khuyenMaiChiTietResponses)
+                    console.log("Giày", $scope.khuyenMaiDetail.khuyenMaiChiTietResponses.giays)
+                    angular.forEach($scope.khuyenMaiDetail.khuyenMaiChiTietResponses.giays, function (giay) {
+                        console.log("Giày id:", giay.id)
                         console.log("Biến thể", giay.lstBienTheGiay)
                     });
 
-                    angular.forEach($scope.khuyenMai.khuyenMaiChiTietResponses.giays, function (giay) {
-                        $scope.selectedGiay.push(giay.id);
-                        $scope.selectedGiayTableData.push(giay)
-                        console.log("Biến thể detail:", $scope.selectedGiayTableData)
-                        console.log("Id giày:", giay.id)
+                    angular.forEach($scope.khuyenMaiDetail.khuyenMaiChiTietResponses.giays, function (giay) {
+                        $scope.selectedGiayUpdate.push(giay.id);
+                        $scope.selectedGiayTableDataUpdate.push(giay);
+                        console.log("Id detail:", $scope.selectedGiayUpdate)
+                        console.log("Biến thể detail", $scope.selectedGiayTableDataUpdate)
                     });
 
+                    $scope.selectedGiay = $scope.selectedGiayUpdate.concat($scope.selectedGiay);
+                    $scope.selectedGiayTableData = $scope.selectedGiayTableDataUpdate.concat($scope.selectedGiayTableData);
+
+                    console.log("Id show: ", $scope.selectedGiay)
+                    console.log("Biến thể show: ", $scope.selectedGiayTableData)
                 }
             })
             .catch(function (error) {
@@ -353,58 +377,86 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
         }
     }, true);
 
-    $scope.selectedGiay = [];
-    $scope.selectedGiayTableData = [];
-
     $scope.xacNhan = function () {
+
         $scope.giays.forEach(function (giay) {
             if (giay.selected === true) {
-                $scope.selectedGiay.push(giay);
+                $scope.selectedGiayInsert.push(giay);
             }
         });
 
-        $scope.selectedGiay = $scope.selectedGiay.filter(function (giay) {
+        $scope.selectedGiayInsert = $scope.selectedGiayInsert.filter(function (giay) {
             return giay.selected;
         }).map(function (giay) {
             return giay.id;
         });
-        $http.post('http://localhost:8080/admin/rest/giay/get-giay-contains', $scope.selectedGiay)
+
+        $scope.selectedGiayInsert = $scope.selectedGiayInsert.filter(function (item) {
+            return $scope.selectedGiay.indexOf(item) === -1;
+        });
+
+        console.log("Id giày insert: ", $scope.selectedGiayInsert);
+
+        $http.post('http://localhost:8080/admin/rest/giay/get-giay-contains', $scope.selectedGiayInsert)
             .then(function (response) {
-                // Xử lý dữ liệu từ API ở đây
-                $scope.selectedGiayTableData = response.data;
-                console.log("Load biến thể: ", $scope.selectedGiayTableData);
+                $scope.selectedGiayTableDataInsert = response.data;
+
+                $scope.selectedGiay = $scope.selectedGiayInsert.concat($scope.selectedGiay);
+                $scope.selectedGiayTableData = $scope.selectedGiayTableDataInsert.concat($scope.selectedGiayTableData);
+
+                console.log("Id show: ", $scope.selectedGiay)
+                console.log("Biến thể show: ", $scope.selectedGiayTableData)
+
             })
             .catch(function (error) {
                 // Xử lý lỗi ở đây
                 console.error('Error fetching data:', error);
             });
-        console.log("Id giày ", $scope.selectedGiay);
 
     };
 
-    $scope.addKhuyenMai = function () {
+    $scope.updateKhuyenMai = function () {
 
         if ($scope.khuyenMaiForm.$invalid) {
             return;
         }
-
         angular.forEach($scope.selectedGiayTableData, function (giay) {
-            angular.forEach(giay.lstBienTheGiay, function (bienTheGiay) {
-                if (giay.selected) {
-                    var khuyenMaiChiTietRequest = {
-                        bienTheGiayId: bienTheGiay.id,
-                        phanTramGiam: bienTheGiay.phanTramGiam
-                    };
-                    $scope.khuyenMai.khuyenMaiChiTietRequests.push(khuyenMaiChiTietRequest);
-                }
-            });
+            console.log("data", giay.lstBienTheGiay)
+            $scope.data = giay.lstBienTheGiay
         })
+        var filteredArrayUpdate  = $scope.data.map(function(item) {
+            return {
+                id: item.idKhuyenMaiChiTiet,
+                bienTheGiayId: item.id,
+                phanTramGiam: item.phanTramGiam
+            };
+        });
+        angular.forEach($scope.selectedGiayTableDataInsert, function (giay) {
+            console.log("data", giay.lstBienTheGiay)
+            $scope.data = giay.lstBienTheGiay
+        })
+        var filteredArrayInsert  = $scope.data.map(function(item) {
+            return {
+                id: item.idKhuyenMaiChiTiet,
+                bienTheGiayId: item.id,
+                phanTramGiam: item.phanTramGiam
+            };
+        });
+        var dataUpdate = filteredArrayUpdate.concat(filteredArrayInsert);
+        console.log("up:",filteredArrayUpdate);
+        console.log("in:",filteredArrayInsert);
 
-        console.log("Khuyến mại chi tiết: ", $scope.khuyenMai.khuyenMaiChiTietRequests)
-        $http.post(host + '/admin/rest/khuyen-mai', $scope.khuyenMai)
+        $scope.khuyenMai.khuyenMaiChiTietRequests = dataUpdate;
+        console.log("after:",dataUpdate);
+        console.log("chitiet:",$scope.khuyenMai.khuyenMaiChiTietRequests);
+
+        console.log("post:",$scope.khuyenMai);
+
+
+        $http.put(host + '/admin/rest/khuyen-mai/'+id, $scope.khuyenMai)
             .then(function (response) {
                 if (response.status === 200) {
-                    toastr["success"]("Thêm thành công");
+                    toastr["success"]("Cập nhật thành công");
                 }
                 $location.path("/list");
             })

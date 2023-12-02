@@ -56,11 +56,6 @@ app.controller("yeuCauListController", function ($scope, $http, $window, $locati
     }
 
 
-
-
-
-
-
     // Hàm để định dạng ngày thành chuỗi "yyyy-MM-dd 00:00:00"
     function formatISOToJavaLocalDateTime(isoString) {
         // Chuyển đổi chuỗi ISO 8601 thành một định dạng có thể sử dụng trong Java
@@ -148,28 +143,61 @@ app.controller("yeuCauListController", function ($scope, $http, $window, $locati
 });
 
 
-app.controller("detailYeuCauController", function ($scope, $http, $location, $routeParams) {
 
 
-});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 app.controller("updateYeuCauController", function ($scope, $http, $routeParams, $location) {
     const idYeuCau = $routeParams.id;
-    $scope.isLoading = true;
     $scope.listYeuCauChiTiet = [];
+    $scope.isLoading = true;
 
-    getListYeuCauChiTiet(idYeuCau, function () {
-        $scope.soLuongTra = tinhSoLuongTra(), $scope.soLuongDoi = tinhSoLuongDoi();
-    });
+
+    $http.get(host + '/admin/rest/yeu-cau-chi-tiet/list/' + idYeuCau)
+        .then(function (response) {
+            $scope.listYeuCauChiTietResponse = response.data;
+            $scope.yeuCau = response.data[0].yeuCau;
+            $scope.hoaDon = $scope.yeuCau.hoaDon;
+            if ($scope.yeuCau.nguoiThucHien != null) {
+                getNhanVien($scope.yeuCau.nguoiThucHien);
+            }
+            $scope.numOfPages = response.data.totalPages;
+            $scope.isLoading = false;
+        })
+        .catch(function (error) {
+            toastr["error"]("Lấy dữ liệu thất bại");
+            $scope.isLoading = false;
+        });
+
 
     $scope.confirmDeleteGiayTra = function (item) {
         if (confirm('Bạn có chắc chắn muốn hủy trả giày này không bạn không thể hoàn tác thao tác này?')) {
             let index = $scope.listYeuCauChiTietResponse.indexOf(item);
             if (index !== -1) {
                 $scope.listYeuCauChiTietResponse[index].loaiYeuCauChiTiet = 3;
-                $scope.listYeuCauChiTietResponse[index].trangThai = 2;
-                $scope.soLuongTra = $scope.soLuongTra - 1;
+                $scope.listYeuCauChiTietResponse[index].trangThai = 5;
             }
         }
     };
@@ -180,9 +208,8 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
             let index = $scope.listYeuCauChiTietResponse.indexOf(item);
             if (index !== -1) {
                 $scope.listYeuCauChiTietResponse[index].loaiYeuCauChiTiet = 2;
-                $scope.listYeuCauChiTietResponse[index].trangThai = 3;
+                $scope.listYeuCauChiTietResponse[index].trangThai = 2;
                 $scope.listYeuCauChiTietResponse[index].isDeleted = true; // Thêm thuộc tính isDeleted
-                $scope.soLuongDoi = $scope.soLuongDoi - 1;
             }
         }
     };
@@ -360,23 +387,9 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
         });
     }
 
-    function getListYeuCauChiTiet(id, callback) {
-        $scope.isLoading = true;
-        $http.get(host + '/admin/rest/yeu-cau-chi-tiet/list/' + id)
-            .then(function (response) {
-                $scope.listYeuCauChiTietResponse = response.data;
-                $scope.yeuCau = response.data[0].yeuCau;
-                getNhanVien($scope.yeuCau.nguoiThucHien)
-                getHoaDon();
-                $scope.numOfPages = response.data.totalPages;
-                $scope.isLoading = false;
-                callback(); // Gọi hàm callback sau khi dữ liệu đã tải
-            })
-            .catch(function (error) {
-                toastr["error"]("Lấy dữ liệu thất bại");
-                $scope.isLoading = false;
-            });
-    }
+
+
+
 
     function getNhanVien(id) {
         $scope.isLoading = true;
@@ -391,21 +404,6 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
             });
     }
 
-    function getHoaDon() {
-        $scope.hoaDonSearch = {}, $scope.hoaDonSearch.currentPage = 1, $scope.hoaDonSearch.pageSize = 1, $scope.hoaDonSearch.idHoaDon = 8;
-        $scope.isLoading = true;
-        $http.post(host + '/admin/rest/hoa-don/yeu-cau', $scope.hoaDonSearch)
-            .then(function (response) {
-                $scope.hoaDon = response.data.content[0];
-                $scope.numOfPages = response.data.totalPages;
-                $scope.isLoading = false;
-            })
-            .catch(function (error) {
-                toastr["error"]("Lấy dữ liệu thất bại");
-                // window.location.href = feHost + '/trang-chu';
-                $scope.isLoading = false;
-            });
-    }
 });
 
 
@@ -854,6 +852,7 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
         $http.get(host + '/admin/rest/hoa-don/yeu-cau/' + id)
             .then(function (response) {
                 $scope.hoaDon = response.data;
+                console.log($scope.hoaDon)
                 $scope.khachHang = response.data.khachHang;
                 $scope.yeuCau.hoaDon = response.data.id;
                 $scope.numOfPages = response.data.totalPages;

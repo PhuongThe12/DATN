@@ -1,20 +1,20 @@
-package luckystore.datn.rest.admin;
+package luckystore.datn.rest;
 
 import jakarta.validation.Valid;
 import luckystore.datn.model.request.YeuCauRequest;
 import luckystore.datn.service.YeuCauService;
 import luckystore.datn.util.JsonString;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 @RestController
@@ -23,6 +23,7 @@ public class RestYeuCauController {
 
     @Autowired
     private YeuCauService yeuCauService;
+
 
     @GetMapping("/get-all")
 //    @PreAuthorize('hasAuthor(ABC)')
@@ -52,7 +53,7 @@ public class RestYeuCauController {
     }
 
     @GetMapping("/find-by-status")
-    public ResponseEntity findByStatus() {
+    public ResponseEntity findByStatus(){
         return new ResponseEntity(yeuCauService.findByStatus(), HttpStatus.OK);
     }
 
@@ -64,10 +65,38 @@ public class RestYeuCauController {
     @GetMapping()
     public ResponseEntity getYeuCauPage(
             @RequestParam(value = "page", defaultValue = "1") Integer page,
-            @RequestParam(value = "ngayBatDau", required = false) LocalDateTime ngayBatDau,
-            @RequestParam(value = "ngayKetThuc", required = false) LocalDateTime ngayKetThuc,
+            @RequestParam(value = "ngayBatDau", required = false) String ngayBatDauStr,
+            @RequestParam(value = "ngayKetThuc", required = false) String ngayKetThucStr,
             @RequestParam(value = "searchText", required = false) Long searchText,
             @RequestParam(value = "trangThai", required = false) Integer trangThai) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        java.sql.Date ngayBatDau = null;
+        java.sql.Date ngayKetThuc = null;
+        try {
+            if (ngayBatDauStr != null) {
+                java.util.Date ngayBatDauUtil = sdf.parse(ngayBatDauStr);
+                ngayBatDau = new java.sql.Date(ngayBatDauUtil.getTime());
+            }
+
+
+            if (ngayKetThucStr != null) {
+                java.util.Date ngayKetThucUtil = sdf.parse(ngayKetThucStr);
+
+                // Chuyển ngày kết thúc thành cuối ngày
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(ngayKetThucUtil);
+                calendar.set(Calendar.HOUR_OF_DAY, 23);
+                calendar.set(Calendar.MINUTE, 59);
+                calendar.set(Calendar.SECOND, 59);
+                ngayKetThuc = new java.sql.Date(calendar.getTime().getTime());
+            }
+            System.out.println(ngayBatDau);
+            System.out.println(ngayKetThuc);
+            return new ResponseEntity(yeuCauService.getPage(page,searchText,ngayBatDau,ngayKetThuc,trangThai), HttpStatus.OK);
+        } catch (ParseException e) {
+            // Xử lý lỗi nếu ngày không đúng định dạng
+            return new ResponseEntity("Ngày không đúng định dạng (yyyy-MM-dd)", HttpStatus.BAD_REQUEST);
+        }
 
         // Điều chỉnh ngày kết thúc về cuối ngày nếu cần
         if (ngayBatDau != null) {
@@ -77,11 +106,9 @@ public class RestYeuCauController {
             ngayKetThuc = adjustToEndOfDay(ngayKetThuc);
         }
 
-        System.out.println("Ngày bắt đầu: " + ngayBatDau);
-        System.out.println("Ngày kết thúc: " + ngayKetThuc);
-
         // Gọi service và trả về response
         return new ResponseEntity(yeuCauService.getPage(page, searchText, ngayBatDau, ngayKetThuc, trangThai), HttpStatus.OK);
+
     }
 
     private ResponseEntity getErrorJson(BindingResult result) {
@@ -95,14 +122,6 @@ public class RestYeuCauController {
         }
         return null;
     }
-    public static LocalDateTime adjustToStartOfDay(LocalDateTime dateTime) {
-        // Chuyển về đầu ngày
-        return dateTime.toLocalDate().atStartOfDay();
-    }
 
-    public static LocalDateTime adjustToEndOfDay(LocalDateTime dateTime) {
-        // Chuyển về cuối ngày
-        return LocalDateTime.of(dateTime.toLocalDate(), LocalTime.MAX);
-    }
 }
 

@@ -33,6 +33,12 @@ public class YeuCauRequest {
 
     private LocalDateTime ngayTao;
 
+    private Long nguoiTao;
+
+    private Long nguoiSua;
+
+    private String thongTinNhanHang;
+
     private List<YeuCauChiTietRequest> listYeuCauChiTiet;
 
 }
