@@ -37,4 +37,6 @@ public interface ThuongHieuRepository extends JpaRepository<ThuongHieu, Long> {
 
     Optional<ThuongHieu> findByTen(String ten);
 
+    @Query("select lg.ten from ThuongHieu lg")
+    String[] getAllTen();
 }

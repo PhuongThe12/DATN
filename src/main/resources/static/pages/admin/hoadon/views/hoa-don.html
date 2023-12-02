@@ -1,0 +1,467 @@
+<style>
+    .nav-link.active {
+        font-weight: bolder;
+    }
+</style>
+
+<div ng-show="isLoading" class="loading-spinner">
+    <div class="text-center" style="  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Màu nền đục để làm mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; ">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<div class="title-page">
+    <h5>Hóa Đơn</h5>
+    <div class="d-flex">
+        <p class="text-secondary m-0">Trang chủ - Quản Lý Hóa Đơn - Danh Sách Hóa Đơn</p>
+    </div>
+</div>
+<div class="card" style="margin: 20px">
+    <div class="card-body">
+        <div class="d-flex">
+            <div class="input-group w-25">
+                <span class="input-group-text" id="basic-addon1">HD</span>
+                <input id="seachText" class="form-control" type="number" ng-model="searchText"
+                       placeholder="Nhập mã hóa đơn">
+            </div>
+
+            <div class="input-group w-25 px-2">
+                <span class="input-group-text" id="basic-addon2">Từ ngày: </span>
+                <input type="date" ng-model="tu" id="tu" class="form-control">
+            </div>
+
+            <div class="input-group w-25">
+                <span class="input-group-text" id="basic-addon3">Đến ngày: </span>
+                <input type="date" ng-model="den" id="den" class="form-control">
+            </div>
+            <button class="btn btn-custom " ng-click="search()">Tìm kiếm</button>
+            <button class="btn btn-custom mx-2" ng-click="resetSearch()">Nhập lại</button>
+        </div>
+
+
+        <div class="d-flex justify-content-start radio-filter">
+            <div class="custom-radio">
+                <input type="radio" id="done" name="status" ng-model="status" value="1"
+                       ng-checked="status == 1"
+                       ng-change="changeRadio(1)">
+                <label class="radio-label" for="done">Đã hoàn thành</label>
+            </div>
+
+            <div class="custom-radio">
+                <input type="radio" id="cancel" name="status" ng-model="status" value="-1" ng-checked="status == -1"
+                       ng-change="changeRadio(-1)">
+                <label class="radio-label" for="cancel">Đã hủy</label>
+            </div>
+        </div>
+
+        <div>
+            <table class="table align-middle text-center" border="1">
+                <tr>
+                    <th>Mã HD</th>
+                    <th>Nhân viên</th>
+                    <th>Khách hàng</th>
+                    <th>Ngày thanh toán</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+
+                <tr ng-repeat="hoaDon in hoaDons">
+                    <td>
+                        {{(hoaDon.loaiHoaDon == 1 ? 'HD_HDD' : (hoaDon.loaiHoaDon == 2 ? 'TH' : 'HD')) + hoaDon.id}}
+                    </td>
+                    <td>{{hoaDon.nhanVien? hoaDon.nhanvien.hoTen : ''}}</td>
+                    <td>{{hoaDon.khachHang? hoaDon.khachHang.hoTen : ''}}</td>
+                    <td>{{hoaDon.ngayThanhToan? hoaDon.ngayThanhToan : ''}}</td>
+                    <td>
+                        <h5>
+                <span ng-class="{'badge bd-success-custom': hoaDon.trangThai == 1, 'badge bd-danger-custom': hoaDon.trangThai == -1}">
+                    {{hoaDon.trangThai == 1? "Đã thanh toán" : "Đã hủy"}}
+                </span>
+                        </h5>
+                    </td>
+                    <td>
+                        <div class="d-sm-inline-flex">
+                            <button class="btn btn-custom" ng-click="detailHoaDon(hoaDon.id)" data-bs-toggle="modal"
+                                    data-bs-target="#showHoaDon">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages" data-current-page="curPage"
+                 data-max-size="maxSize"
+                 data-boundary-links="true">
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- Modal Detail-->
+<div class="modal fade" id="showHoaDon" tabindex="-1" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" id="closeModal" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <a class="nav-link active" id="nav-home-tab" data-bs-toggle="tab"
+                           data-bs-target="#hoaDonInfo" type="button" role="tab" aria-controls="hoaDonInfo"
+                           aria-selected="true">Thông tin hóa đơn
+                        </a>
+                        <a class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#hoaDonDoi"
+                           type="button" role="tab" aria-controls="hoaDonDoi" aria-selected="false" ng-show="hoaDonDoi.id">Hóa đơn đổi
+                        </a>
+                        <a class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#hoaDonTra"
+                           type="button" role="tab" aria-controls="hoaDonTra" aria-selected="false" ng-show="hoaDonTra.id">Hóa đơn trả
+                        </a>
+                    </div>
+                </nav>
+
+                <div class="tab-content mt-3" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="hoaDonInfo" role="tabpanel"
+                         aria-labelledby="nav-home-tab">
+                        <div class="invoice-details">
+                            <p class="py-2"><strong>Mã Hóa Đơn :</strong>
+                                {{(hoaDonDetail.loaiHoaDon == 1 ? 'HD_HDD' : (hoaDonDetail.loaiHoaDon == 2 ? 'TH' : 'HD')) + hoaDonDetail.id}}
+                            </p>
+                            <p class="py-2"><strong>Khách Hàng :</strong> {{hoaDonDetail.khachHang?
+                                hoaDonDetail.khachHang.hoTen
+                                : ''}}</p>
+                            <p class="py-2"><strong>Nhân viên :</strong> {{hoaDonDetail.nhanVien?
+                                hoaDonDetail.nhanVien.hoTen :
+                                ''}}</p>
+                            <p class="py-2"><strong>Ngày thanh toán:</strong> {{hoaDonDetail.ngayThanhToan}}</p>
+                            <p class="py-2" ng-show="hoaDonDetail.ghiChu && hoaDonDetail.trangThai == -1"><strong>Lý do
+                                hủy:</strong> {{hoaDonDetail.ghiChu}}</p>
+                            <p class="py-2" ng-show="hoaDonDetail.ghiChu && hoaDonDetail.trangThai != -1"><strong>Ghi
+                                chú:</strong> {{hoaDonDetail.ghiChu}}</p>
+                        </div>
+
+                        <table class="invoice-items" style="width: 100%; table-layout: fixed">
+                            <thead>
+                            <tr>
+                                <th style="width: 70%">Sản Phẩm</th>
+                                <th>Số Lượng</th>
+                                <th>Đơn Giá (Đã giảm)</th>
+                                <th>Thành Tiền</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="sanPham in hoaDonDetail.hoaDonChiTietResponses | orderBy : '-trangThai'">
+                                <td style="overflow: hidden; text-overflow: ellipsis">
+                            <span ng-show="sanPham.trangThai == 1">
+                            ({{sanPham.bienTheGiay.kichThuoc.ten}} - {{sanPham.bienTheGiay.mauSac.ten}})
+                            </span>
+                                    <strong ng-show="sanPham.trangThai == 1">{{sanPham.bienTheGiay.giayResponse.ten}}</strong>
+
+                                    <del ng-show="sanPham.trangThai == -0">
+                                <span>
+                                ({{sanPham.bienTheGiay.kichThuoc.ten}} - {{sanPham.bienTheGiay.mauSac.ten}})
+                                </span>
+                                        <strong>{{sanPham.bienTheGiay.giayResponse.ten}}</strong>
+                                    </del>
+                                </td>
+                                <td style="text-align: center">
+                                    <span ng-show="sanPham.trangThai == 1">{{sanPham.soLuong}}</span>
+                                    <del ng-show="sanPham.trangThai == -0">{{sanPham.soLuong}}</del>
+                                </td>
+                                <td style="text-align: center">
+                                    <span ng-show="sanPham.trangThai == 1">{{sanPham.donGia | number : 0}}</span>
+                                    <del ng-show="sanPham.trangThai == -0">{{sanPham.donGia | number : 0}}</del>
+                                </td>
+                                <td style="text-align: center">
+                                    <span ng-show="sanPham.trangThai == 1">{{sanPham.donGia * sanPham.soLuong | number : 0}}</span>
+                                    <del ng-show="sanPham.trangThai == -0">{{sanPham.donGia * sanPham.soLuong | number :
+                                        0}}
+                                    </del>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="row">
+                            <div class="col-6"
+                                 ng-hide="hoaDonDetail.thongTinThanhToan.show && hoaDonDetail.trangThai != -1"></div>
+                            <div class="col-6"
+                                 ng-show="hoaDonDetail.thongTinThanhToan.show && hoaDonDetail.trangThai != -1">
+                                <div class="py-2"><strong>Thông tin thanh toán:</strong></div>
+                                <div class="py-2"
+                                     ng-show="hoaDonDetail.thongTinThanhToan.show && hoaDonDetail.thongTinThanhToan.tienMat">
+                                    Tiền mặt:
+                                    <strong>{{hoaDonDetail.thongTinThanhToan.tienMat?
+                                        hoaDonDetail.thongTinThanhToan.tienMat
+                                        : 0
+                                        | number : 0}} VND</strong>
+                                    <div ng-show="hoaDonDetail.thongTinThanhToan.show && hoaDonDetail.thongTinThanhToan.chuyenKhoan"
+                                         style="border-bottom: 2px slategray dashed;"></div>
+                                </div>
+                                <div class="py-2"
+                                     ng-show="hoaDonDetail.thongTinThanhToan.show && hoaDonDetail.thongTinThanhToan.chuyenKhoan">
+                                    Chuyển khoản:
+                                    <strong>{{hoaDonDetail.thongTinThanhToan.chuyenKhoan?
+                                        hoaDonDetail.thongTinThanhToan.chuyenKhoan : 0 | number : 0}} VND</strong>
+                                    <div>Mã giao dịch: <strong>{{hoaDonDetail.thongTinThanhToan.maGiaoDich}}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="invoice-total col-6">
+                                <p class="py-2"><strong>Tổng Cộng : </strong> {{hoaDonDetail.tongCong | number : 0}} VND
+                                </p>
+                                <p class="py-2"><strong>Tiền ship : </strong>- {{hoaDonDetail.tienShip ?
+                                    hoaDonDetail.tienShip :
+                                    0 |
+                                    number : 0}} VND</p>
+                                <p class="py-2"><strong>Giảm giá : </strong>- {{hoaDonDetail.tongTru | number : 0}} VND
+                                </p>
+                                <p class="py-2"><strong>Phải trả : </strong>{{hoaDonDetail.conLai | number : 0}} VND</p>
+                            </div>
+                        </div>
+
+                        <div class="py-2 display-none" ng-class="hoaDonDetail.trangThai==1?'display-block' : ''">
+                            <span class="da-thanh-toan px-2">Đã thanh toán</span>
+                        </div>
+                        <div class="py-2 display-none" ng-class="hoaDonDetail.trangThai==-1?'display-block' : ''">
+                            <span class="chua-thanh-toan">Đã hủy</span>
+                        </div>
+                    </div>
+                    <!--                    //end tab 1-->
+
+                    <div class="tab-pane fade" id="hoaDonDoi" role="tabpanel"
+                         aria-labelledby="nav-home-tab">
+                        <div class="invoice-details">
+                            <p class="py-2"><strong>Mã Hóa Đơn :</strong>{{hoaDonDetail.loaiHoaDon == 1 ? 'HD_HDD' : (hoaDonDetail.loaiHoaDon == 2 ? 'TH' : 'HD') + hoaDonDetail.id}}</p>
+                            <p class="py-2"><strong>Mã Hóa Gốc :</strong> {{hoaDonDetail.loaiHoaDon == 1 ? 'HD_HDD' : (hoaDonDetail.loaiHoaDon == 2 ? 'TH' : 'HD') + hoaDonDetail.id}}</p>
+                            <p class="py-2"><strong>Khách Hàng :</strong> {{hoaDonDetail.khachHang?
+                                hoaDonDetail.khachHang.hoTen
+                                : ''}}</p>
+                            <p class="py-2"><strong>Nhân viên :</strong> {{hoaDonDetail.nhanVien?
+                                hoaDonDetail.nhanVien.hoTen :
+                                ''}}</p>
+                            <p class="py-2"><strong>Ngày thanh toán:</strong> {{hoaDonDetail.ngayThanhToan}}</p>
+                            <p class="py-2" ng-show="hoaDonDetail.ghiChu && hoaDonDetail.trangThai == -1"><strong>Lý do
+                                hủy:</strong> {{hoaDonDetail.ghiChu}}</p>
+                            <p class="py-2" ng-show="hoaDonDetail.ghiChu && hoaDonDetail.trangThai != -1"><strong>Ghi
+                                chú:</strong> {{hoaDonDetail.ghiChu}}</p>
+                        </div>
+
+                        <table class="invoice-items" style="width: 100%; table-layout: fixed">
+                            <thead>
+                            <tr>
+                                <th style="width: 70%">Sản Phẩm</th>
+                                <th>Số Lượng</th>
+                                <th>Đơn Giá (Đã giảm)</th>
+                                <th>Thành Tiền</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="sanPham in hoaDonDetail.hoaDonChiTietResponses | orderBy : '-trangThai'">
+                                <td style="overflow: hidden; text-overflow: ellipsis">
+                            <span ng-show="sanPham.trangThai == 1">
+                            ({{sanPham.bienTheGiay.kichThuoc.ten}} - {{sanPham.bienTheGiay.mauSac.ten}})
+                            </span>
+                                    <strong ng-show="sanPham.trangThai == 1">{{sanPham.bienTheGiay.giayResponse.ten}}</strong>
+
+                                    <del ng-show="sanPham.trangThai == -0">
+                                <span>
+                                ({{sanPham.bienTheGiay.kichThuoc.ten}} - {{sanPham.bienTheGiay.mauSac.ten}})
+                                </span>
+                                        <strong>{{sanPham.bienTheGiay.giayResponse.ten}}</strong>
+                                    </del>
+                                </td>
+                                <td style="text-align: center">
+                                    <span ng-show="sanPham.trangThai == 1">{{sanPham.soLuong}}</span>
+                                    <del ng-show="sanPham.trangThai == -0">{{sanPham.soLuong}}</del>
+                                </td>
+                                <td style="text-align: center">
+                                    <span ng-show="sanPham.trangThai == 1">{{sanPham.donGia | number : 0}}</span>
+                                    <del ng-show="sanPham.trangThai == -0">{{sanPham.donGia | number : 0}}</del>
+                                </td>
+                                <td style="text-align: center">
+                                    <span ng-show="sanPham.trangThai == 1">{{sanPham.donGia * sanPham.soLuong | number : 0}}</span>
+                                    <del ng-show="sanPham.trangThai == -0">{{sanPham.donGia * sanPham.soLuong | number :
+                                        0}}
+                                    </del>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="row">
+                            <div class="col-6"
+                                 ng-hide="hoaDonDetail.thongTinThanhToan.show && hoaDonDetail.trangThai != -1"></div>
+                            <div class="col-6"
+                                 ng-show="hoaDonDetail.thongTinThanhToan.show && hoaDonDetail.trangThai != -1">
+                                <div class="py-2"><strong>Thông tin thanh toán:</strong></div>
+                                <div class="py-2"
+                                     ng-show="hoaDonDetail.thongTinThanhToan.show && hoaDonDetail.thongTinThanhToan.tienMat">
+                                    Tiền mặt:
+                                    <strong>{{hoaDonDetail.thongTinThanhToan.tienMat?
+                                        hoaDonDetail.thongTinThanhToan.tienMat
+                                        : 0
+                                        | number : 0}} VND</strong>
+                                    <div ng-show="hoaDonDetail.thongTinThanhToan.show && hoaDonDetail.thongTinThanhToan.chuyenKhoan"
+                                         style="border-bottom: 2px slategray dashed;"></div>
+                                </div>
+                                <div class="py-2"
+                                     ng-show="hoaDonDetail.thongTinThanhToan.show && hoaDonDetail.thongTinThanhToan.chuyenKhoan">
+                                    Chuyển khoản:
+                                    <strong>{{hoaDonDetail.thongTinThanhToan.chuyenKhoan?
+                                        hoaDonDetail.thongTinThanhToan.chuyenKhoan : 0 | number : 0}} VND</strong>
+                                    <div>Mã giao dịch: <strong>{{hoaDonDetail.thongTinThanhToan.maGiaoDich}}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="invoice-total col-6">
+                                <p class="py-2"><strong>Tổng Cộng : </strong> {{hoaDonDetail.tongCong | number : 0}} VND
+                                </p>
+                                <p class="py-2"><strong>Tiền ship : </strong>- {{hoaDonDetail.tienShip ?
+                                    hoaDonDetail.tienShip :
+                                    0 |
+                                    number : 0}} VND</p>
+                                <p class="py-2"><strong>Giảm giá : </strong>- {{hoaDonDetail.tongTru | number : 0}} VND
+                                </p>
+                                <p class="py-2"><strong>Phải trả : </strong>{{hoaDonDetail.conLai | number : 0}} VND</p>
+                            </div>
+                        </div>
+
+                        <div class="py-2 display-none" ng-class="hoaDonDetail.trangThai==1?'display-block' : ''">
+                            <span class="da-thanh-toan px-2">Đã thanh toán</span>
+                        </div>
+                        <div class="py-2 display-none" ng-class="hoaDonDetail.trangThai==-1?'display-block' : ''">
+                            <span class="chua-thanh-toan">Đã hủy</span>
+                        </div>
+                    </div>
+                    <!--                    //end tab 2-->
+
+                    <div class="tab-pane fade" id="hoaDonTra" role="tabpanel"
+                         aria-labelledby="nav-home-tab">
+                        <div class="invoice-details">
+                            <p class="py-2"><strong>Mã Hóa Đơn :</strong> {{hoaDonDetail.loaiHoaDon == 1 ? 'HD_HDD' : (hoaDonDetail.loaiHoaDon == 2 ? 'TH' : 'HD') + hoaDonDetail.id}}</p>
+                            <p class="py-2"><strong>Mã Hóa Gốc :</strong> {{hoaDonDetail.loaiHoaDon == 1 ? 'HD_HDD' : (hoaDonDetail.loaiHoaDon == 2 ? 'TH' : 'HD') + hoaDonDetail.id}}</p>
+                            <p class="py-2"><strong>Khách Hàng :</strong> {{hoaDonDetail.khachHang?
+                                hoaDonDetail.khachHang.hoTen
+                                : ''}}</p>
+                            <p class="py-2"><strong>Nhân viên :</strong> {{hoaDonDetail.nhanVien?
+                                hoaDonDetail.nhanVien.hoTen :
+                                ''}}</p>
+                            <p class="py-2"><strong>Ngày thanh toán:</strong> {{hoaDonDetail.ngayThanhToan}}</p>
+                            <p class="py-2" ng-show="hoaDonDetail.ghiChu && hoaDonDetail.trangThai == -1"><strong>Lý do
+                                hủy:</strong> {{hoaDonDetail.ghiChu}}</p>
+                            <p class="py-2" ng-show="hoaDonDetail.ghiChu && hoaDonDetail.trangThai != -1"><strong>Ghi
+                                chú:</strong> {{hoaDonDetail.ghiChu}}</p>
+                        </div>
+
+                        <table class="invoice-items" style="width: 100%; table-layout: fixed">
+                            <thead>
+                            <tr>
+                                <th style="width: 70%">Sản Phẩm</th>
+                                <th>Số Lượng</th>
+                                <th>Đơn Giá (Đã giảm)</th>
+                                <th>Thành Tiền</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="sanPham in hoaDonDetail.hoaDonChiTietResponses | orderBy : '-trangThai'">
+                                <td style="overflow: hidden; text-overflow: ellipsis">
+                            <span ng-show="sanPham.trangThai == 1">
+                            ({{sanPham.bienTheGiay.kichThuoc.ten}} - {{sanPham.bienTheGiay.mauSac.ten}})
+                            </span>
+                                    <strong ng-show="sanPham.trangThai == 1">{{sanPham.bienTheGiay.giayResponse.ten}}</strong>
+
+                                    <del ng-show="sanPham.trangThai == -0">
+                                <span>
+                                ({{sanPham.bienTheGiay.kichThuoc.ten}} - {{sanPham.bienTheGiay.mauSac.ten}})
+                                </span>
+                                        <strong>{{sanPham.bienTheGiay.giayResponse.ten}}</strong>
+                                    </del>
+                                </td>
+                                <td style="text-align: center">
+                                    <span ng-show="sanPham.trangThai == 1">{{sanPham.soLuong}}</span>
+                                    <del ng-show="sanPham.trangThai == -0">{{sanPham.soLuong}}</del>
+                                </td>
+                                <td style="text-align: center">
+                                    <span ng-show="sanPham.trangThai == 1">{{sanPham.donGia | number : 0}}</span>
+                                    <del ng-show="sanPham.trangThai == -0">{{sanPham.donGia | number : 0}}</del>
+                                </td>
+                                <td style="text-align: center">
+                                    <span ng-show="sanPham.trangThai == 1">{{sanPham.donGia * sanPham.soLuong | number : 0}}</span>
+                                    <del ng-show="sanPham.trangThai == -0">{{sanPham.donGia * sanPham.soLuong | number :
+                                        0}}
+                                    </del>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="row">
+                            <div class="col-6"
+                                 ng-hide="hoaDonDetail.thongTinThanhToan.show && hoaDonDetail.trangThai != -1"></div>
+                            <div class="col-6"
+                                 ng-show="hoaDonDetail.thongTinThanhToan.show && hoaDonDetail.trangThai != -1">
+                                <div class="py-2"><strong>Thông tin thanh toán:</strong></div>
+                                <div class="py-2"
+                                     ng-show="hoaDonDetail.thongTinThanhToan.show && hoaDonDetail.thongTinThanhToan.tienMat">
+                                    Tiền mặt:
+                                    <strong>{{hoaDonDetail.thongTinThanhToan.tienMat?
+                                        hoaDonDetail.thongTinThanhToan.tienMat
+                                        : 0
+                                        | number : 0}} VND</strong>
+                                    <div ng-show="hoaDonDetail.thongTinThanhToan.show && hoaDonDetail.thongTinThanhToan.chuyenKhoan"
+                                         style="border-bottom: 2px slategray dashed;"></div>
+                                </div>
+                                <div class="py-2"
+                                     ng-show="hoaDonDetail.thongTinThanhToan.show && hoaDonDetail.thongTinThanhToan.chuyenKhoan">
+                                    Chuyển khoản:
+                                    <strong>{{hoaDonDetail.thongTinThanhToan.chuyenKhoan?
+                                        hoaDonDetail.thongTinThanhToan.chuyenKhoan : 0 | number : 0}} VND</strong>
+                                    <div>Mã giao dịch: <strong>{{hoaDonDetail.thongTinThanhToan.maGiaoDich}}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="invoice-total col-6">
+                                <p class="py-2"><strong>Tổng Cộng : </strong> {{hoaDonDetail.tongCong | number : 0}} VND
+                                </p>
+                                <p class="py-2"><strong>Tiền ship : </strong>- {{hoaDonDetail.tienShip ?
+                                    hoaDonDetail.tienShip :
+                                    0 |
+                                    number : 0}} VND</p>
+                                <p class="py-2"><strong>Giảm giá : </strong>- {{hoaDonDetail.tongTru | number : 0}} VND
+                                </p>
+                                <p class="py-2"><strong>Phải trả : </strong>{{hoaDonDetail.conLai | number : 0}} VND</p>
+                            </div>
+                        </div>
+
+                        <div class="py-2 display-none" ng-class="hoaDonDetail.trangThai==1?'display-block' : ''">
+                            <span class="da-thanh-toan px-2">Đã thanh toán</span>
+                        </div>
+                        <div class="py-2 display-none" ng-class="hoaDonDetail.trangThai==-1?'display-block' : ''">
+                            <span class="chua-thanh-toan">Đã hủy</span>
+                        </div>
+                    </div>
+                    <!--                    //end tab 3-->
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
