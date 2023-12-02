@@ -13,6 +13,9 @@ public interface GioHangRepository extends JpaRepository<GioHang,Long> {
     @Query("select new luckystore.datn.model.response.GioHangResponse(gh) from GioHang gh")
     List<GioHangResponse> findAllResponse();
 
-    @Query("select new luckystore.datn.model.response.GioHangResponse(gh) from GioHang gh where gh.khachHang.id = :id")
-    GioHangResponse getGioHangByIdKhachHang(Long id);
+    @Query("select new luckystore.datn.model.response.GioHangResponse(gh) from GioHang gh where gh.khachHang.id = :id and gh.trangThai = 1")
+    public GioHangResponse getGioHangByIdKhachHang(Long id);
+
+    @Query("UPDATE GioHang gh SET gh.trangThai = :status where gh.khachHang.id = :idKhachHang")
+    void updateStatusGioHangbyIdKhachHang(Long idKhachHang, Integer status);
 }

@@ -418,3 +418,50 @@ input:focus{
 .border-bottom-2{
     border-bottom: 2px solid black;
 }
+
+.soldout{
+    cursor: no-drop !important;
+    position: relative;
+}
+.soldout::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+    width: 20px;
+    height: 50%;
+    background: url(//theme.hstatic.net/1000197303/1000796534/14/sold_out.png?v=6087) no-repeat;
+    background-size: contain;
+    filter: invert(1);
+    opacity: 0.5;
+}
+
+.out-of-stock {
+    text-decoration: line-through;
+}
+
+.badge-soldout{
+    color: white;
+    margin-left: 10px;
+    background: #e23d3d;
+    border-radius: 5px;
+    padding: 0px 11px;
+}
+
+.cart-user{
+    position: absolute;
+    right: 0px;
+    left: 0px;
+    height: 100vh;
+    top: -49px;
+    background: rgb(0 0 0 / 40%);
+    z-index: 99;
+    display: none;
+}
+.show-cart{
+    display: block !important;
+}
+
