@@ -98,6 +98,7 @@ public class KhachHangServiceImpl implements KhachHangService {
         khachHang.setEmail(khachHangRequest.getEmail());
         khachHang.setDiemTichLuy(khachHangRequest.getDiemTichLuy());
         khachHang.setHangKhachHang(khachHangRequest.getHangKhachHang());
+        khachHang.setTaiKhoan(khachHangRequest.getTaiKhoan());
         khachHang.setTrangThai(khachHangRequest.getTrangThai() == null || khachHangRequest.getTrangThai() == 0 ? 0 : 1);
         return khachHang;
     }

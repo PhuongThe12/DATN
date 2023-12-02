@@ -103,6 +103,8 @@ app.controller("hangKhachHangListController", function ($scope, $http, $window, 
             });
     }
 
+    //modal
+
     $scope.detailHangKhachHang = function (val) {
         var id = val;
         $http.get(host + '/admin/rest/hang-khach-hang/' + id)
