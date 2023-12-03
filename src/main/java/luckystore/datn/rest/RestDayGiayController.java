@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/rest/day-giay")
+@RequestMapping("/rest/admin/day-giay")
 public class RestDayGiayController {
 
     @Autowired

@@ -19,7 +19,7 @@ app.controller('hoaDonHoanController', function ($scope, $http, $location) {
 
     function getData(currentPage) {
         $scope.isLoading = true;
-        let apiUrl = host + '/admin/rest/hoa-don/get-all';
+        let apiUrl = host + '/rest/admin/hoa-don/get-all';
 
         if ($scope.searchText > 0) {
             hoaDonSearch.id = ($scope.searchText + "").trim();
@@ -46,9 +46,6 @@ app.controller('hoaDonHoanController', function ($scope, $http, $location) {
 
         $http.post(apiUrl, hoaDonSearch)
             .then(function (response) {
-                if (response.data.content.length === 0) {
-                    toastr["warning"]("Không tìm thấy hóa đơn nào");
-                }
                 $scope.hoaDons = response.data.content;
                 $scope.numOfPages = response.data.totalPages;
                 $scope.isLoading = false;
@@ -168,7 +165,7 @@ app.controller('hoaDonHoanController', function ($scope, $http, $location) {
                 });
 
                 console.log(request);
-                $http.post(host + "/admin/rest/hoa-don/xac-nhan-hoan", request)
+                $http.post(host + "/rest/admin/hoa-don/xac-nhan-hoan", request)
                     .then((response) => {
                         toastr["success"]("Đã hoàn thành hóa đơn");
                         $scope.changeRadio(6);

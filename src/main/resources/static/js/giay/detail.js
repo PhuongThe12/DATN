@@ -3,7 +3,7 @@ app.controller('detailGiayController', function ($scope, $http, $location, $rout
 
     const id = $routeParams.id;
 
-    $http.get(host + '/admin/rest/giay/' + id)
+    $http.get(host + '/rest/admin/giay/' + id)
         .then(function (response) {
             $scope.giaySeletect = response.data;
 

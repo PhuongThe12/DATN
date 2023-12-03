@@ -3,7 +3,7 @@ app.controller('giayListController', function ($scope, $http, $location) {
     $scope.giays = [];
     $scope.thuongHieus = [];
 
-    $http.get(host + '/admin/rest/thuong-hieu/get-all')
+    $http.get(host + '/rest/admin/thuong-hieu/get-all')
         .then(function (response) {
             $scope.thuongHieus = response.data;
         })
@@ -29,7 +29,7 @@ app.controller('giayListController', function ($scope, $http, $location) {
 
     function getData(currentPage) {
         $scope.isLoading = true;
-        let apiUrl = host + '/admin/rest/giay/get-all-giay';
+        let apiUrl = host + '/rest/admin/giay/get-all-giay';
 
         if ($scope.searchText) {
             giaySearch.ten = ($scope.searchText + "").trim();
@@ -232,7 +232,7 @@ app.controller('giayListController', function ($scope, $http, $location) {
             return;
         }
 
-        $http.put(host + '/admin/rest/giay/update-so-luong', JSON.stringify(giayChange))
+        $http.put(host + '/rest/admin/giay/update-so-luong', JSON.stringify(giayChange))
             .then(function (response) {
                 toastr["success"]("Cập nhật thành công");
                 document.getElementById('closeModalSoLuong').click();
@@ -270,7 +270,7 @@ app.controller('giayListController', function ($scope, $http, $location) {
             return;
         }
 
-        $http.put(host + '/admin/rest/giay/update-gia', JSON.stringify(giayChange))
+        $http.put(host + '/rest/admin/giay/update-gia', JSON.stringify(giayChange))
             .then(function (response) {
                 toastr["success"]("Cập nhật thành công");
                 document.getElementById('closeModalGia').click();

@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/rest/giay")
+@RequestMapping("/rest/admin/giay")
 public class RestGiayController {
 
     @Autowired

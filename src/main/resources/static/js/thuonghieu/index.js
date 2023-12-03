@@ -44,7 +44,7 @@ app.controller("addThuongHieuController", function ($scope, $http, $location) {
             $scope.isLoading = false;
             return;
         }
-        $http.post(host + '/admin/rest/thuong-hieu', $scope.thuongHieu)
+        $http.post(host + '/rest/admin/thuong-hieu', $scope.thuongHieu)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -89,7 +89,7 @@ app.controller("thuongHieuListController", function ($scope, $http, $window, $lo
 
     function getData(currentPage) {
         $scope.isLoading = true;
-        let apiUrl = host + '/admin/rest/thuong-hieu?page=' + currentPage;
+        let apiUrl = host + '/rest/admin/thuong-hieu?page=' + currentPage;
         if (searchText) {
             apiUrl += '&search=' + searchText;
         }
@@ -142,7 +142,7 @@ app.controller("updateThuongHieuController", function ($scope, $http, $routePara
     $scope.change = function (input) {
         input.$dirty = true;
     }
-    $http.get(host + '/admin/rest/thuong-hieu/' + id)
+    $http.get(host + '/rest/admin/thuong-hieu/' + id)
         .then(function (response) {
             $scope.thuongHieu = response.data;
         }).catch(function (error) {
@@ -171,7 +171,7 @@ app.controller("updateThuongHieuController", function ($scope, $http, $routePara
             $scope.isLoading = false;
             return;
         }
-        $http.put(host + '/admin/rest/thuong-hieu/' + id, $scope.thuongHieu)
+        $http.put(host + '/rest/admin/thuong-hieu/' + id, $scope.thuongHieu)
             .then(function (response) {
                 if (response.status == 200) {
                     toastr["success"]("Cập nhật thành công")

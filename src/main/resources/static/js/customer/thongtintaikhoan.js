@@ -29,7 +29,7 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
     }
 
     function getData(currentPage) {
-        let apiUrl = host + '/admin/rest/dia-chi-nhan-hang?page=' + currentPage;
+        let apiUrl = host + '/rest/admin/dia-chi-nhan-hang?page=' + currentPage;
 
         if ($scope.status == 0) {
             apiUrl += '&status=' + 0;
@@ -58,7 +58,7 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
 
         $http({
             method: 'PUT',
-            url: 'http://localhost:8080/admin/rest/dia-chi-nhan-hang/update-trang-thai/' + dieuKien ,
+            url: 'http://localhost:8080/rest/admin/dia-chi-nhan-hang/update-trang-thai/' + dieuKien ,
             data:$scope.trangThai
         }).then(function successCallback(response) {
             // Xử lý khi API UPDATE thành công
@@ -77,7 +77,7 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
     $scope.removeDieuKien = function (dieuKien) {
         $http({
             method: 'DELETE',
-            url: 'http://localhost:8080/admin/rest/dia-chi-nhan-hang/delete/' + dieuKien
+            url: 'http://localhost:8080/rest/admin/dia-chi-nhan-hang/delete/' + dieuKien
         }).then(function successCallback(response) {
             // Xử lý khi API DELETE thành công
             console.log('Xóa điều kiện giảm giá thành công', response);
@@ -97,7 +97,7 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
         input.$dirty = true;
     }
     console.log("thông tin phương đây")
-    $http.get(host + '/admin/rest/khach-hang/' + id)
+    $http.get(host + '/rest/admin/khach-hang/' + id)
         .then(function (response) {
             $scope.khachHang = response.data;
             var ngaySinh = $scope.khachHang.ngaySinh;
@@ -153,7 +153,7 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
 
         console.log("vào đây rùi")
         console.log(id)
-        $http.get(host + '/admin/rest/dia-chi-nhan-hang/' + id)
+        $http.get(host + '/rest/admin/dia-chi-nhan-hang/' + id)
             .then(function (response) {
                 $scope.diaChiNhanHang = response.data;
                 console.log("show dia chi:", $scope.diaChiNhanHang)
@@ -174,7 +174,7 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
             $scope.diaChiNhanHang.provinces = $scope.diaChiNhanHang.provinces.ten;
             $scope.diaChiNhanHang.wards = $scope.diaChiNhanHang.wards.ten;
 
-            $http.put(host + '/admin/rest/dia-chi-nhan-hang/' + id, $scope.diaChiNhanHang)
+            $http.put(host + '/rest/admin/dia-chi-nhan-hang/' + id, $scope.diaChiNhanHang)
                 .then(function (response) {
                     if (response.status == 200) {
                         toastr["success"]("Cập nhật thành công")
@@ -245,7 +245,7 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
 
     const id = $routeParams.id;
 
-    $http.get(host + '/admin/rest/giay/' + id)
+    $http.get(host + '/rest/admin/giay/' + id)
         .then(function (response) {
             $scope.giaySeletect = response.data;
 
@@ -317,7 +317,7 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
 
     function getData(currentPage) {
         $scope.isLoading = true;
-        let apiUrl = host + '/admin/rest/giay/get-all-giay';
+        let apiUrl = host + '/rest/admin/giay/get-all-giay';
 
         if ($scope.searchText) {
             giaySearch.ten = ($scope.searchText + "").trim();

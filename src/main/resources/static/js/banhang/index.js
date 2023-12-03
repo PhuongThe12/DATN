@@ -67,7 +67,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
             return;
         }
 
-        $http.get(host + '/admin/rest/hoa-don/get-full-response/' + id)
+        $http.get(host + '/rest/admin/hoa-don/get-full-response/' + id)
             .then(function (response) {
                 if (response.data.trangThai === 0) {
                     const select = response.data;
@@ -137,7 +137,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                 maGiaoDich: container["vnp_TxnRef"]
             }
             if (info.length === 2) {
-                $http.post(host + "/admin/rest/hoa-don/thanh-toan-tai-quay-banking", request)
+                $http.post(host + "/rest/admin/hoa-don/thanh-toan-tai-quay-banking", request)
                     .then(response => {
                         window.location.href = window.location.origin + window.location.pathname + "?status=00&hd=" + info[0] + "#home";
                     })
@@ -145,7 +145,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                         window.location.href = window.location.origin + window.location.pathname + "?status=02#home";
                     })
             } else if (info.length === 3) {
-                $http.post(host + "/admin/rest/hoa-don/dat-hang-tai-quay-banking", request)
+                $http.post(host + "/rest/admin/hoa-don/dat-hang-tai-quay-banking", request)
                     .then(response => {
                         window.location.href = window.location.origin + window.location.pathname + "?status=00&hd=" + info[0] + "#home";
                     })
@@ -166,7 +166,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
     }
 
     $scope.getAllDotGiamGia = function () {
-        $http.get(host + "/admin/rest/dot-giam-gia/get-all-active")
+        $http.get(host + "/rest/admin/dot-giam-gia/get-all-active")
             .then(function (response) {
                 $scope.dotGiamGias = response.data;
             })
@@ -186,7 +186,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
             return;
         }
 
-        $http.post(host + "/admin/rest/khach-hang/search-by-name", $scope.khachHangSearch)
+        $http.post(host + "/rest/admin/khach-hang/search-by-name", $scope.khachHangSearch)
             .then(function (response) {
                 $scope.khachHangs = response.data;
                 if ($scope.khachHangs.length === 0) {
@@ -245,7 +245,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
             idHoaDon: $scope.selectedHoaDon.id, idGiay: khachHang.id
         }
 
-        $http.post(host + "/admin/rest/hoa-don/add-khach-hang", reqest)
+        $http.post(host + "/rest/admin/hoa-don/add-khach-hang", reqest)
             .then(response => {
                 $scope.selectedKhachHang = response.data;
             })
@@ -393,7 +393,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
             return;
         }
 
-        $http.get(host + '/admin/rest/giay/' + giay.idBienThe + "/so-luong")
+        $http.get(host + '/rest/admin/giay/' + giay.idBienThe + "/so-luong")
             .then(function (response) {
                 soLuong = response.data;
                 if (soLuong < giay.soLuongMua - $scope.oldValue[giay.id]) {
@@ -405,7 +405,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                         idHoaDon: giay.id, idGiay: giay.idBienThe, soLuong: giay.soLuongMua
                     }
                     $scope.isLoading = true;
-                    $http.post(host + '/admin/rest/hoa-don/add-product', requestData)
+                    $http.post(host + '/rest/admin/hoa-don/add-product', requestData)
                         .then(function (response) {
                             const result = response.data;
                             $scope.tongTien = 0;
@@ -459,7 +459,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
         }).then((result) => {
             if (result.isConfirmed) {
                 $scope.isLoading = true;
-                $http.delete(host + "/admin/rest/hoa-don/" + id)
+                $http.delete(host + "/rest/admin/hoa-don/" + id)
                     .then(function (response) {
                         let foundIndex = $scope.hoaDons.findIndex(hd => hd.id === id);
                         if (foundIndex !== -1) {
@@ -482,7 +482,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
 
     function getHoaDonChuaThanhToan() {
         $scope.isLoading = true;
-        $http.get(host + "/admin/rest/hoa-don/chua-thanh-toan-ban-hang")
+        $http.get(host + "/rest/admin/hoa-don/chua-thanh-toan-ban-hang")
             .then(function (response) {
                 $scope.hoaDons = response.data;
                 $scope.isLoading = false;
@@ -497,7 +497,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
     getHoaDonChuaThanhToan();
 
     $scope.createNewHoaDon = function () {
-        $http.post(host + '/admin/rest/hoa-don/new-hoa-don')
+        $http.post(host + '/rest/admin/hoa-don/new-hoa-don')
             .then(function (response) {
                 $scope.hoaDons.push(response.data);
                 $scope.selecteHoaDon(response.data.id)
@@ -510,7 +510,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
 
     function getData(currentPage) {
         $scope.isLoading = true;
-        let apiUrl = host + '/admin/rest/giay/get-all-giay';
+        let apiUrl = host + '/rest/admin/giay/get-all-giay';
 
         if ($scope.searchText && $scope.searchText.length > 0) {
             giaySearch.ten = ($scope.searchText + "").trim();
@@ -578,7 +578,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
 
         if ($scope.checkExits === undefined) {
 
-            $http.get(host + '/admin/rest/giay/' + id)
+            $http.get(host + '/rest/admin/giay/' + id)
                 .then(function (response) {
                     $scope.giaySeletect = response.data;
                     detailGiayChiTiet(response.data);
@@ -658,7 +658,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                     request.phuongThuc = 1;
                     request.tienMat = $scope.tongTienPhaiTra;
                     $scope.isLoading = true;
-                    $http.post(host + "/admin/rest/hoa-don/thanh-toan-tai-quay", request)
+                    $http.post(host + "/rest/admin/hoa-don/thanh-toan-tai-quay", request)
                         .then(response => {
                             const index = $scope.hoaDons.findIndex(item => item.id === response.data);
                             if (index !== -1) {
@@ -692,7 +692,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                     request.tienChuyenKhoan = $scope.chuyenKhoanTaiQuay;
                 }
 
-                $http.post(host + "/admin/rest/hoa-don/thanh-toan-tai-quay", request)
+                $http.post(host + "/rest/admin/hoa-don/thanh-toan-tai-quay", request)
                     .then(response => {
                         // const index = $scope.hoaDons.findIndex(item => item.id === response.data);
                         request.idHoaDon = response.data + "x" + request.phuongThuc;
@@ -729,7 +729,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
             cancelButtonText: "Hủy"
         }).then((result) => {
             if (result.isConfirmed) {
-                $http.get(host + "/admin/rest/hoa-don/get-print/" + idHd)
+                $http.get(host + "/rest/admin/hoa-don/get-print/" + idHd)
                     .then((response) => {
                         $scope.hoaDonPrint = {};
                         const data = response.data;
@@ -929,7 +929,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                 for (let i = 0; i < $scope.listGiaySelected.length; i++) {
                     if ($scope.listGiaySelected[i].id === id) {
                         $scope.isLoading = true;
-                        $http.delete(host + '/admin/rest/hoa-don/delete-hdct/' + id)
+                        $http.delete(host + '/rest/admin/hoa-don/delete-hdct/' + id)
                             .then(function (response) {
                                 const deletedItem = $scope.listGiaySelected.splice(i, 1)[0];
                                 $scope.tongTien -= (deletedItem.giaBan * deletedItem.soLuongMua);
@@ -960,7 +960,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
             }).then((result) => {
                 if (result.isConfirmed) {
                     $scope.isLoading = true;
-                    $http.delete(host + '/admin/rest/hoa-don/delete-all-hdct/' + $scope.selectedHoaDon.id)
+                    $http.delete(host + '/rest/admin/hoa-don/delete-all-hdct/' + $scope.selectedHoaDon.id)
                         .then(function (response) {
                             $scope.listGiaySelected = [];
                             $scope.tongTien = 0;
@@ -1015,7 +1015,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
 
     $scope.addNewHDCT = function (data) {
         $scope.isLoading = true;
-        $http.post(host + '/admin/rest/hoa-don/add-new-hdct', data)
+        $http.post(host + '/rest/admin/hoa-don/add-new-hdct', data)
             .then(function (response) {
                 const result = response.data;
                 $scope.listGiaySelected.push({
@@ -1047,7 +1047,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
 
     $scope.addToOrder = function (data) {
         $scope.isLoading = true;
-        $http.post(host + '/admin/rest/hoa-don/add-product', data)
+        $http.post(host + '/rest/admin/hoa-don/add-product', data)
             .then(function (response) {
                 const result = response.data;
                 $scope.tongTien = 0;
@@ -1160,7 +1160,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                                 // document.getElementById('closeModalCamera').click();
                                 // clearInterval(interval);
                                 scanning = false;
-                                $http.get(host + '/admin/rest/giay/bien-the/' + code.data)
+                                $http.get(host + '/rest/admin/giay/bien-the/' + code.data)
                                     .then(function (response) {
 
                                         if (response.data.soLuong < 1) {
@@ -1201,7 +1201,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                                     },
                                 }, function (result) {
                                     if (result && result.codeResult) {
-                                        $http.get(host + '/admin/rest/giay/bien-the/' + result.codeResult.code)
+                                        $http.get(host + '/rest/admin/giay/bien-the/' + result.codeResult.code)
                                             .then(function (response) {
                                                 if (response.data.soLuong < 1) {
                                                     toastr["error"]("Sản phẩm này đã hết hàng");
@@ -1300,7 +1300,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
             return;
         }
         console.log($scope.khachHang);
-        $http.post(host + '/admin/rest/khach-hang', $scope.khachHang)
+        $http.post(host + '/rest/admin/khach-hang', $scope.khachHang)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -1575,7 +1575,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
         }).then((result) => {
             if (result.isConfirmed) {
 
-                $http.post(host + "/admin/rest/hoa-don/dat-hang-tai-quay", request)
+                $http.post(host + "/rest/admin/hoa-don/dat-hang-tai-quay", request)
                     .then(response => {
                         if (request.phuongThuc === 1) {
                             const index = $scope.hoaDons.findIndex(item => item.id === response.data);

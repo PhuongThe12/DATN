@@ -7,7 +7,7 @@ app.controller("loginController", function ($scope, $http, $location, $window, $
         $http.post(host + '/api/authentication/login-basic' + $scope.userLogin)
             .then(function (response) {
                 if (response.data.role == 1) {
-                    $http.get(host + '/admin/rest/nhan-vien/find-tai-khoan/' + response.data.id)
+                    $http.get(host + '/rest/admin/nhan-vien/find-tai-khoan/' + response.data.id)
                         .then(function (response) {
                             $window.location.href = '/admin/tong-quan#/home';
                         }).catch(function (error) {

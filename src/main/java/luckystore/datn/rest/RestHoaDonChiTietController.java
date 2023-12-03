@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/admin/rest/hoa-don-chi-tiet")
+@RequestMapping("/rest/admin/hoa-don-chi-tiet")
 public class RestHoaDonChiTietController {
 
     @Autowired
