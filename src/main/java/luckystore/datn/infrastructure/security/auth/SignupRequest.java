@@ -1,13 +1,9 @@
 package luckystore.datn.infrastructure.security.auth;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.sql.Date;
 
-@Getter
-@Setter
 public class SignupRequest {
 
     private Long idTaiKhoan;
@@ -24,5 +20,4 @@ public class SignupRequest {
     private Boolean gioiTinh;
 
     private Date ngaySinh;
-
 }

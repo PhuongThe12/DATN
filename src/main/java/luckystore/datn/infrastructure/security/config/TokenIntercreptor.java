@@ -40,9 +40,11 @@ public class TokenIntercreptor implements HandlerInterceptor {
 
         if (userRoles.contains("ROLE_STAFF") && permissionStaff.containsKey(requestUri)) {
             return true;
-        } else if (userRoles.contains("ROLE_ADMIN") && permissionAdmin.containsKey(requestUri)) {
-            return true;
-        } else if (userRoles.contains("ROLE_USER") && requestUri.startsWith("/rest/user")) {
+        }
+//        else if (userRoles.contains("ROLE_ADMIN") && permissionAdmin.containsKey(requestUri)) {
+//            return true;
+//        }
+        else if (userRoles.contains("ROLE_USER") && requestUri.startsWith("/user")) {
             return true;
         }
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
