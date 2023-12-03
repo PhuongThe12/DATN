@@ -11,6 +11,7 @@ app.config(function ($routeProvider, $locationProvider) {
 
 app.controller("homeController", function ($scope, $http, $location, $cookies, $rootScope) {
 
+    document.title = 'Bán hàng';
     $scope.curPage = 1, $scope.itemsPerPage = 12, $scope.maxSize = 5;
     $scope.hoaDon = {};
 
@@ -698,6 +699,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                         request.idHoaDon = response.data + "x" + request.phuongThuc;
                         $http.post(host + "/vnpay/create-vnpay-order-tai-quay", request)
                             .then(response => {
+                                $scope.loading = true;
                                 window.location.href = response.data;
                             })
                             .catch(err => {
@@ -741,7 +743,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                         $scope.hoaDonPrint.conLai = 0;
 
                         $scope.hoaDonPrint.thongTinThanhToan ={};
-                        hoaDon.chiTietThanhToans.forEach(item => {
+                        data.chiTietThanhToans.forEach(item => {
                             $scope.hoaDonPrint.conLai += item.tienThanhToan;
                             $scope.hoaDonPrint.thongTinThanhToan.show = true;
                             if(item.hinhThucThanhToan === 1) {
@@ -775,6 +777,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
 
                     })
                     .catch((error) => {
+                        console.log(error);
                         toastr["error"]("Không tìm thấy hóa đơn vui lòng thử lại");
                     })
             } else {
