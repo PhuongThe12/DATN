@@ -1,5 +1,6 @@
 package luckystore.datn.service.impl;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import luckystore.datn.entity.NhanVien;
 import luckystore.datn.entity.TaiKhoan;
@@ -53,7 +54,7 @@ public class AuthenServiceImpl implements AuthenService {
                 taiKhoanRequest.getMatKhau()));
         String token = provider.generateToken(taiKhoanCheck.get());
         String refreshToken = provider.genetateRefreshToken(new HashMap<>(), taiKhoanCheck.get());
-        UserDetailToken userDetailToken = provider.decodeTheToken(token);
+        UserDetailToken userDetailToken = getUserByToken(token);
         return JwtResponse.builder()
                 .id(userDetailToken.getId())
                 .userName(userDetailToken.getTenDangNhap())

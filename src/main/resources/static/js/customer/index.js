@@ -66,7 +66,7 @@ app.controller('navbarController', function ($scope, $http, $location, $cookies)
 
     // $scope.loadLocalStorage();
     $scope.loadCartByIdKhachHang = function () {
-        $http.get("http://localhost:8080/user/rest/gio-hang/1").then(function (response) {
+        $http.get("http://localhost:8080/rest/user/gio-hang/1").then(function (response) {
             var bienTheGiayList = [];
 
             angular.forEach(response.data.gioHangChiTietResponses, function (gioHangChiTiet) {

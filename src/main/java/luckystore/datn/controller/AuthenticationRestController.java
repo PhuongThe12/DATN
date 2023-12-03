@@ -1,5 +1,6 @@
 package luckystore.datn.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import luckystore.datn.infrastructure.security.auth.JwtResponse;
 import luckystore.datn.infrastructure.security.session.UserDetailToken;
@@ -24,8 +25,8 @@ public class AuthenticationRestController {
     private final KhachHangService khachHangService;
 
     @PostMapping("/singin")
-    public ResponseEntity<JwtResponse> singin (@RequestBody TaiKhoanRequest requets)  {
-        return ResponseEntity.ok(authenService.logInBasic(requets));
+    public ResponseEntity<JwtResponse> singin (@RequestBody TaiKhoanRequest taiKhoanRequest)  {
+        return ResponseEntity.ok(authenService.logInBasic(taiKhoanRequest));
     }
 
     @PostMapping("/signup")

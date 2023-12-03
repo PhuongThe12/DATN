@@ -33,6 +33,8 @@ public class TokenProvider {
 
     private final NhanVienRepository nhanVienRepository;
 
+    private final HttpServletRequest request;
+
     public static final String SECRET = "7A25432A462D4A614E645266556A586E3272357538782F413F4428472B4B6250";
 
     private Key getSiginKey() {
@@ -105,14 +107,17 @@ public class TokenProvider {
         String tenDangNhap = claims.get("tenDangNhap", String.class);
         String role = claims.get("role", String.class);
         UserDetailToken userDetailToken;
+        HttpSession session = request.getSession();
         if (role.equalsIgnoreCase("ROLE_USER")) {
             KhachHang getKhachHangByToken = khachHangRepository.getKhachHangByTaiKhoanId(id);
             userDetailToken = UserDetailToken.builder().id(getKhachHangByToken.getId()).tenDangNhap(tenDangNhap)
                     .hoTen(getKhachHangByToken.getHoTen()).email(getKhachHangByToken.getEmail()).role(role).build();
+            session.setAttribute("customer", getKhachHangByToken);
         } else {
             NhanVien getNhanVienByToken = nhanVienRepository.findNhanVienByIdTaiKhoan(id);
             userDetailToken = UserDetailToken.builder().id(getNhanVienByToken.getId()).tenDangNhap(tenDangNhap)
                     .hoTen(getNhanVienByToken.getHoTen()).email(getNhanVienByToken.getEmail()).role(role).build();
+            session.setAttribute("employee", getNhanVienByToken);
         }
         return userDetailToken;
     }

@@ -22,9 +22,11 @@ app.controller("loginController", function ($rootScope, $scope, $http, $location
                     $rootScope.currentUser =$scope.currentUser;
                     $window.localStorage.setItem('currentUser', JSON.stringify($scope.currentUser));
                     if ($scope.currentUser.role === 'ROLE_USER') {
-                        $window.location.href = '/user/khach-hang/don-mua';
-                    } else {
+                        $window.location.href = '/home';
+                    } else if ($scope.currentUser.role === 'ROLE_STAFF') {
                         $window.location.href = '/admin/ban-hang';
+                    } else {
+                        $window.location.href = '/admin/tong-quan';
                     }
                 }
             }).catch(function (error) {

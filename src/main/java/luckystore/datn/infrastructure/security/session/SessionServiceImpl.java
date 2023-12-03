@@ -3,20 +3,23 @@ package luckystore.datn.infrastructure.security.session;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import luckystore.datn.entity.KhachHang;
+import luckystore.datn.entity.NhanVien;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class SessionServiceImpl implements SessionService{
+public class SessionServiceImpl implements SessionService {
 
     private final HttpSession httpSession;
+
     @Override
-    public UserDetailToken getCustomer() {
-        return (UserDetailToken) httpSession.getAttribute("customer");
+    public KhachHang getCustomer() {
+        return (KhachHang) httpSession.getAttribute("customer");
     }
 
     @Override
-    public UserDetailToken getAdmintrator() {
-        return (UserDetailToken) httpSession.getAttribute("admintrator");
+    public NhanVien getAdmintrator() {
+        return (NhanVien) httpSession.getAttribute("employee");
     }
 }
