@@ -23,7 +23,7 @@ app.config(function ($routeProvider, $locationProvider) {
         }
 
         function getData(currentPage) {
-            let apiUrl = host + '/admin/rest/hoa-don-chi-tiet/get-all?page='+ currentPage;
+            let apiUrl = host + '/rest/admin/hoa-don-chi-tiet/get-all?page='+ currentPage;
 
             if($scope.status == 1) {
                 apiUrl += '&status=' + 1;
@@ -56,7 +56,7 @@ app.config(function ($routeProvider, $locationProvider) {
 app.controller("detailDonMuaController", function ($scope, $http, $window, $location,$routeParams) {
     const id = $routeParams.id;
     console.log("aaaaaaaaaaaaaaaa")
-    $http.get(host + '/admin/rest/hoa-don/' + id)
+    $http.get(host + '/rest/admin/hoa-don/' + id)
         .then(function (response) {
             $scope.hoaDon = response.data;
         }).catch(function (error) {

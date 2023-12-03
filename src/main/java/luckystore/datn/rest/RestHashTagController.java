@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/rest/hash-tag")
+@RequestMapping("/rest/admin/hash-tag")
 public class RestHashTagController {
 
     @Autowired

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/rest/ly-do")
+@RequestMapping("/rest/admin/ly-do")
 public class RestLyDoController {
 
     private final LyDoService lyDoService;

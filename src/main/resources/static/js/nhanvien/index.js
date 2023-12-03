@@ -25,7 +25,7 @@ app.config(function ($routeProvider, $locationProvider) {
 app.controller("addNhanVienController", function ($scope, $http, $location, $window) {
 
     $scope.addTest = function () {
-        $http.post(host + '/admin/rest/nhan-vien', $scope.nhanVien)
+        $http.post(host + '/rest/admin/nhan-vien', $scope.nhanVien)
             .then(function (response) {
             })
             .catch(function (error) {
@@ -41,7 +41,7 @@ app.controller("addNhanVienController", function ($scope, $http, $location, $win
             return;
         }
         console.log($scope.nhanVien);
-        $http.post(host + '/admin/rest/nhan-vien', $scope.nhanVien)
+        $http.post(host + '/rest/admin/nhan-vien', $scope.nhanVien)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -63,7 +63,7 @@ app.controller("addNhanVienController", function ($scope, $http, $location, $win
 
 });
 // app.controller("indexController", function ($scope, $http, $location, $cookies, $window) {
-//     $http.get(host + '/admin/rest/nhan-vien/check-logged')
+//     $http.get(host + '/rest/admin/nhan-vien/check-logged')
 //         .then(function (response) {
 //             if (response.status == 200) {
 //                 $scope.nhanVienLogged = response.data;
@@ -97,7 +97,7 @@ app.controller("detailNhanVienController", function ($scope, $http, $window, $lo
         return result;
     }
 
-    $http.get(host + '/admin/rest/nhan-vien/check-logged')
+    $http.get(host + '/rest/admin/nhan-vien/check-logged')
         .then(function (response) {
             if (response.status == 200) {
                 var nhanVienAsString = convertObjectToString(response.data);
@@ -135,10 +135,10 @@ app.controller("detailNhanVienController", function ($scope, $http, $window, $lo
             updateAccount : updateAccount
         };
         console.log(nhanVienUpdate);
-        $http.put(host + '/admin/rest/nhan-vien/' + nhanVienUpdate.id, nhanVienUpdate)
+        $http.put(host + '/rest/admin/nhan-vien/' + nhanVienUpdate.id, nhanVienUpdate)
             .then(function (response) {
                 if (response.status == 200) {
-                    $http.get(host + '/admin/rest/nhan-vien/check-logged')
+                    $http.get(host + '/rest/admin/nhan-vien/check-logged')
                         .then(function (response) {
                             if (response.status == 200) {
                                 if ($scope.nhanVienLogged.chucVu == 2) {
@@ -186,7 +186,7 @@ app.controller("nhanVienListController", function ($scope, $http, $window, $loca
     }
 
     function getData(currentPage) {
-        let apiUrl = host + '/admin/rest/nhan-vien?page=' + currentPage;
+        let apiUrl = host + '/rest/admin/nhan-vien?page=' + currentPage;
         if (searchText) {
             apiUrl += '&search=' + searchText;
         }
@@ -234,7 +234,7 @@ app.controller("nhanVienListController", function ($scope, $http, $window, $loca
     });
 
     $scope.inBaoCao = function () {
-        $http.get(host + '/admin/rest/nhan-vien/send-report-daily').then(function (response) {
+        $http.get(host + '/rest/admin/nhan-vien/send-report-daily').then(function (response) {
             if (response.status == 200) {
                 toastr["success"]("In báo cáo thành công , vui lòng kiểm tra email");
             }
@@ -271,7 +271,7 @@ app.controller("updateNhanVienController", function ($scope, $http, $routeParams
         input.$dirty = true;
     }
 
-    $http.get(host + '/admin/rest/nhan-vien/' + id)
+    $http.get(host + '/rest/admin/nhan-vien/' + id)
         .then(function (response) {
             var ngaySinh = new Date(response.data.ngaySinh);
             var nhanVienBefore = convertObjectToString(response.data);
@@ -306,7 +306,7 @@ app.controller("updateNhanVienController", function ($scope, $http, $routeParams
             role: 1
         };
         console.log(nhanVienUpdate);
-        $http.put(host + '/admin/rest/nhan-vien/' + id, nhanVienUpdate)
+        $http.put(host + '/rest/admin/nhan-vien/' + id, nhanVienUpdate)
             .then(function (response) {
                 if (response.status == 200) {
                     toastr["success"]("Cập nhật thành công")
