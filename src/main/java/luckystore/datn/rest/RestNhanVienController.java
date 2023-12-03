@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/admin/rest/nhan-vien")
+@RequestMapping("/rest/admin/nhan-vien")
 public class RestNhanVienController {
 
     @Autowired

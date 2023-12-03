@@ -109,7 +109,7 @@ app.controller("yeuCauListController", function ($scope, $http, $window, $locati
 
     function getData(currentPage, startDate, endDate, searchText, trangThai) {
 
-        let apiUrl = host + '/admin/rest/yeu-cau?page=' + currentPage;
+        let apiUrl = host + '/rest/admin/yeu-cau?page=' + currentPage;
         if (startDate != null) {
             apiUrl += '&ngayBatDau=' + encodeURIComponent(formatISOToJavaLocalDateTime(startDate));
         }
@@ -175,7 +175,7 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
     $scope.isLoading = true;
 
 
-    $http.get(host + '/admin/rest/yeu-cau-chi-tiet/list/' + idYeuCau)
+    $http.get(host + '/rest/admin/yeu-cau-chi-tiet/list/' + idYeuCau)
         .then(function (response) {
             $scope.listYeuCauChiTietResponse = response.data;
             $scope.yeuCau = response.data[0].yeuCau;
@@ -288,7 +288,7 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
         $scope.yeuCau.listYeuCauChiTiet = listYeuCauChiTiet;
 
         // Gửi yêu cầu POST đến máy chủ Spring Boot
-        $http.put(host + '/admin/rest/yeu-cau/confirm', JSON.stringify($scope.yeuCau))
+        $http.put(host + '/rest/admin/yeu-cau/confirm', JSON.stringify($scope.yeuCau))
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Đã xác nhận yêu cầu!");
@@ -321,7 +321,7 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
 
         console.log($scope.yeuCau)
         // Gửi yêu cầu POST đến máy chủ Spring Boot
-        $http.put(host + '/admin/rest/yeu-cau/change', JSON.stringify($scope.yeuCau))
+        $http.put(host + '/rest/admin/yeu-cau/change', JSON.stringify($scope.yeuCau))
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Đã lưu yêu cầu!");
@@ -355,7 +355,7 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
 
         console.log($scope.yeuCau)
         // Gửi yêu cầu POST đến máy chủ Spring Boot
-        $http.put(host + '/admin/rest/yeu-cau/unconfirm', JSON.stringify($scope.yeuCau))
+        $http.put(host + '/rest/admin/yeu-cau/unconfirm', JSON.stringify($scope.yeuCau))
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Đã từ chối yêu cầu!");
@@ -376,7 +376,7 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
 
     function getAllLyDo() {
         $scope.isLoading = true;
-        $http.get(host + '/admin/rest/ly-do/list')
+        $http.get(host + '/rest/admin/ly-do/list')
             .then(function (response) {
                 $scope.listLyDo = response.data;
                 $scope.isLoading = false;
@@ -393,7 +393,7 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
 
     function getNhanVien(id) {
         $scope.isLoading = true;
-        $http.get(host + '/admin/rest/nhan-vien/' + id)
+        $http.get(host + '/rest/admin/nhan-vien/' + id)
             .then(function (response) {
                 $scope.nhanVien = response.data;
                 $scope.isLoading = false;
@@ -559,7 +559,7 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
     //fill biến thể giày cho người dùng chọn
     $scope.chonGiayDoi = function (giay) {
         $scope.isLoading = true;
-        $http.get(host + '/admin/rest/giay/' + giay.id)
+        $http.get(host + '/rest/admin/giay/' + giay.id)
             .then(function (response) {
                 detailGiayChiTiet(response.data); // Trả về dữ liệu khi sẵn sàng
                 $scope.isLoading = false;
@@ -694,7 +694,7 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
                 console.log($scope.yeuCau)
 
                 // Gửi yêu cầu POST đến máy chủ Spring Boot
-                $http.post(host + '/admin/rest/yeu-cau/add', JSON.stringify($scope.yeuCau))
+                $http.post(host + '/rest/admin/yeu-cau/add', JSON.stringify($scope.yeuCau))
                     .then(function (response) {
                         if (response.status === 200) {
                             toastr["success"]("Thêm thành công");
@@ -849,7 +849,7 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
 
     //các hàm get/insert
     function getHoaDon(id) {
-        $http.get(host + '/admin/rest/hoa-don/yeu-cau/' + id)
+        $http.get(host + '/rest/admin/hoa-don/yeu-cau/' + id)
             .then(function (response) {
                 $scope.hoaDon = response.data;
                 console.log($scope.hoaDon)
@@ -900,7 +900,7 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
     function searchGiay(giaySearch) {
         $scope.isLoading = true;
 
-        let apiUrl = host + '/admin/rest/giay/find-all-by-search';
+        let apiUrl = host + '/rest/admin/giay/find-all-by-search';
 
         if ($scope.searchText && $scope.searchText.length > 0) {
             $scope.giaySearch.ten = ($scope.searchText + "").trim();
@@ -923,7 +923,7 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
     }
 
     function getAllLyDo() {
-        $http.get(host + '/admin/rest/ly-do/list')
+        $http.get(host + '/rest/admin/ly-do/list')
             .then(function (response) {
                 $scope.listLyDo = response.data;
             }).catch(function (error) {
@@ -933,7 +933,7 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
     }
 
     function getAllNhanVien() {
-        $http.get(host + '/admin/rest/nhan-vien/get-all')
+        $http.get(host + '/rest/admin/nhan-vien/get-all')
             .then(function (response) {
                 $scope.listNhanVien = response.data;
                 $scope.nguoiThucHien = response.data[0].id;
@@ -944,7 +944,7 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
     }
 
     function insertOrUpdateLyDo(lyDo) {
-        $http.post(host + '/admin/rest/ly-do/list', lyDo)
+        $http.post(host + '/rest/admin/ly-do/list', lyDo)
             .then(function (response) {
                 $scope.listLyDo = response.data;
             }).catch(function (error) {
@@ -1140,7 +1140,7 @@ app.controller("selectedHoaDonController", function ($scope, $http, $location, $
 
     function getData(hoaDonSearch) {
         $scope.isLoading = true;
-        $http.post(host + '/admin/rest/hoa-don/yeu-cau', hoaDonSearch)
+        $http.post(host + '/rest/admin/hoa-don/yeu-cau', hoaDonSearch)
             .then(function (response) {
                 $scope.listHoaDon = response.data.content;
                 console.log($scope.listHoaDon)

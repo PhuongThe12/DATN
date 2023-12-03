@@ -37,7 +37,7 @@ app.controller('hoaDonController', function ($scope, $http, $location) {
 
     function getData(currentPage) {
         $scope.isLoading = true;
-        let apiUrl = host + '/admin/rest/hoa-don/get-all-order-ngay-thanh-toan';
+        let apiUrl = host + '/rest/admin/hoa-don/get-all-order-ngay-thanh-toan';
 
         if ($scope.searchText > 0) {
             hoaDonSearch.id = ($scope.searchText + "").trim();
@@ -65,9 +65,6 @@ app.controller('hoaDonController', function ($scope, $http, $location) {
 
         $http.post(apiUrl, hoaDonSearch)
             .then(function (response) {
-                if (response.data.content.length === 0) {
-                    toastr["warning"]("Không tìm thấy hóa đơn nào");
-                }
                 $scope.hoaDons = response.data.content;
                 $scope.numOfPages = response.data.totalPages;
                 $scope.isLoading = false;
@@ -137,7 +134,7 @@ app.controller('hoaDonController', function ($scope, $http, $location) {
         $scope.hoaDonDoi = {};
         $scope.hoaDonTra = {};
 
-        $http.get(host + "/admin/rest/hoa-don/get-don-doi-tra/" + id)
+        $http.get(host + "/rest/admin/hoa-don/get-don-doi-tra/" + id)
             .then(function (response) {
                 console.log(response.data);
                 $scope.isLoading = false;

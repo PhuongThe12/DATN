@@ -405,7 +405,7 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
 
 
     $scope.getOneBienTheGiay = function (giay) {
-        $http.get(host + '/admin/rest/giay/' + giay.id)
+        $http.get(host + '/rest/admin/giay/' + giay.id)
             .then(function (response) {
                 $scope.giaySeletect = response.data;
                 let lstBienTheGiay = $scope.giaySeletect.lstBienTheGiay;
@@ -463,7 +463,7 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
     }
 
     function getListLyDo() {
-        $http.get(host + '/admin/rest/ly-do/list')
+        $http.get(host + '/rest/admin/ly-do/list')
             .then(function (response) {
                 $scope.listLyDo = response.data;
             }).catch(function (error) {
@@ -475,7 +475,7 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
 
     function searchGiay(giaySearch) {
         $scope.isLoading = true;
-        let apiUrl = host + '/admin/rest/giay/get-all-giay';
+        let apiUrl = host + '/rest/admin/giay/get-all-giay';
 
         if ($scope.searchText && $scope.searchText.length > 0) {
             $scope.giaySearch.ten = ($scope.searchText + "").trim();

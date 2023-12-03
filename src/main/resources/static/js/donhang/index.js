@@ -44,7 +44,7 @@ app.controller("donHangListController", function ($scope, $http, $window, $locat
         $scope.hoaDon = {
             hoaDonChiTiets: []
         }
-        let apiUrl = host + '/admin/rest/hoa-don?page=' + currentPage;
+        let apiUrl = host + '/rest/admin/hoa-don?page=' + currentPage;
         if (searchText) {
             apiUrl += '&search=' + searchText;
         }
@@ -109,7 +109,7 @@ app.controller("donHangListController", function ($scope, $http, $window, $locat
 
 
         selectedRows.forEach(function (selectedRow) {
-            $http.get(host + '/admin/rest/hoa-don-chi-tiet/find-by-id-hoa-don/' + selectedRow.id)
+            $http.get(host + '/rest/admin/hoa-don-chi-tiet/find-by-id-hoa-don/' + selectedRow.id)
                 .then(function (response) {
                     selectedRow.listHoaDonChiTiet = response.data;
                 }).catch(function (error) {
@@ -120,7 +120,7 @@ app.controller("donHangListController", function ($scope, $http, $window, $locat
             selectedRow.trangThai == updateStatus;
         });
 
-        $http.post(host + '/admin/rest/hoa-don/update-list-hdct', selectedRows)
+        $http.post(host + '/rest/admin/hoa-don/update-list-hdct', selectedRows)
             .then(function (response) {
                 console.log(response);
                 toastr["success"]("Cập nhật thành công");
@@ -134,7 +134,7 @@ app.controller("donHangListController", function ($scope, $http, $window, $locat
 
 
     $scope.detailHoaDon = function (id) {
-        $http.get(host + '/admin/rest/hoa-don/' + id)
+        $http.get(host + '/rest/admin/hoa-don/' + id)
             .then(function (response) {
                 $scope.hoaDon = response.data;
             }).catch(function (error) {
@@ -142,7 +142,7 @@ app.controller("donHangListController", function ($scope, $http, $window, $locat
             $location.path("/list");
         });
 
-        $http.get(host + '/admin/rest/hoa-don-chi-tiet/find-by-id-hoa-don/' + id)
+        $http.get(host + '/rest/admin/hoa-don-chi-tiet/find-by-id-hoa-don/' + id)
             .then(function (response) {
                 $scope.hoaDonChiTiets = response.data;
             }).catch(function (error) {
@@ -154,7 +154,7 @@ app.controller("donHangListController", function ($scope, $http, $window, $locat
 
 app.controller("detailDonHangController", function ($scope, $http, $window, $location, $routeParams) {
     const id = $routeParams.id;
-    $http.get(host + '/admin/rest/hoa-don/' + id)
+    $http.get(host + '/rest/admin/hoa-don/' + id)
         .then(function (response) {
             $scope.hoaDon = response.data;
         }).catch(function (error) {
@@ -162,7 +162,7 @@ app.controller("detailDonHangController", function ($scope, $http, $window, $loc
         $location.path("/list");
     });
 
-    $http.get(host + '/admin/rest/hoa-don-chi-tiet/find-by-id-hoa-don/' + id)
+    $http.get(host + '/rest/admin/hoa-don-chi-tiet/find-by-id-hoa-don/' + id)
         .then(function (response) {
             $scope.hoaDonChiTiets = response.data;
         }).catch(function (error) {

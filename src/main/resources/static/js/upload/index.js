@@ -70,7 +70,7 @@ app.controller("uploadController", function ($scope, $http, $location) {
             formData.append('files', imageFile);
         });
 
-        fetch(host + '/admin/rest/images/upload', {
+        fetch(host + '/rest/admin/images/upload', {
             method: 'POST',
             body: formData
         })
@@ -94,7 +94,7 @@ app.controller("uploadController", function ($scope, $http, $location) {
     };
 
     const getImages = function () {
-        $http.get(host + '/admin/rest/images')
+        $http.get(host + '/rest/admin/images')
             .then((response) => {
                 $scope.images = [];
                 const images = response.data;
@@ -116,7 +116,7 @@ app.controller("uploadController", function ($scope, $http, $location) {
     getImages();
 
     $scope.removeImageFromList = function (name) {
-        // $http.delete(host + '/admin/rest/images/' + name)
+        // $http.delete(host + '/rest/admin/images/' + name)
         //     .then(function (response) {
         //         toastr["success"]("Xóa thành công");
         //         $scope.images.splice($scope.images.findIndex((find) => {
@@ -128,7 +128,7 @@ app.controller("uploadController", function ($scope, $http, $location) {
         //         toastr["error"](error.data);
         //     })
 
-        fetch(host + '/admin/rest/images/' + name, {
+        fetch(host + '/rest/admin/images/' + name, {
             method: 'DELETE'
         })
             .then(response => {

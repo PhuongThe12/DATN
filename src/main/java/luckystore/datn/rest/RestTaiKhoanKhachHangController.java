@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/rest/tai-khoan")
+@RequestMapping("/rest/admin/tai-khoan")
 public class RestTaiKhoanKhachHangController {
     @Autowired
     private TaiKhoanKhachHangService taiKhoanKhachHangService;

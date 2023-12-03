@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/user/rest/gio-hang")
+@RequestMapping("/rest/user/gio-hang")
 public class RestGioHangController {
 
     @Autowired

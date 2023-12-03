@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/rest/mau-sac")
+@RequestMapping("/rest/admin/mau-sac")
 public class RestMauSacController {
 
     @Autowired
