@@ -40,4 +40,6 @@ public interface KhachHangRepository extends JpaRepository<KhachHang,Long> {
     Boolean existsByEmail(String email);
 
     Boolean existsByEmailAndIdNot(String email, Long id);
+
+    KhachHang getKhachHangByTaiKhoanId(Long idTaiKhoan);
 }
