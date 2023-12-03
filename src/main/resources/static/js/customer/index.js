@@ -120,10 +120,11 @@ app.controller('listProductController', function ($scope, $http, $location) {
         }
         giaySearch.currentPage = currentPage;
         giaySearch.pageSize = $scope.itemsPerPage;
-
+        console.log(giaySearch);
         $http.post(apiUrl, giaySearch)
             .then(function (response) {
                 $scope.giays = response.data.content;
+                console.log($scope.giays);
                 for (let bienTheGiayObject of $scope.giays) {
                     let lstBienTheGiay = bienTheGiayObject.lstBienTheGiay;
                     let giaThapNhat = lstBienTheGiay[0].giaBan;
@@ -396,34 +397,37 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
         } else {
             $http.get("http://localhost:8080/admin/rest/giay/" + $scope.giayDetail.id + "/so-luong")
                 .then(function (response) {
+                    var soLuongTrongKho = response.data;
                     // $http.get("http://localhost:8080/admin/rest/giay/" + $scope.giayDetail.id + "/so-luong")
-                    $scope.getSoLuongInGhct($scope.giayChoosed.id);
+                    $http.get("http://localhost:8080/user/rest/gio-hang/16/so-luong/" + $scope.giayDetail.id)
+                        .then(function (response) {
+                            $scope.soLuongGioHangChiTiet = response.data;
+                            console.log($scope.soLuongMua + response.data);
+                            if ($scope.soLuongMua + response.data > soLuongTrongKho) {
+                                toastr["warning"]("Số lượng vượt quá trong kho");
+                            } else {
+                                $http.get("http://localhost:8080/user/rest/gio-hang/1").then(function (response) {
+                                    $scope.gioHangChiTiet = {};
+                                    $scope.gioHangChiTiet.gioHang = response.data.id;
+                                    $scope.gioHangChiTiet.bienTheGiay = $scope.giayChoosed.id;
+                                    $scope.gioHangChiTiet.soLuong = $scope.soLuongMua;
+                                    $http.post("http://localhost:8080/user/rest/gio-hang", $scope.gioHangChiTiet)
+                                        .then(function (response) {
+                                            $scope.$parent.isCartVisible = true;
+                                            $scope.loadCartByIdKhachHang();
 
-                    console.log($scope.soLuongGioHangChiTiet);
+                                        }).catch(function (error) {
 
-                    if ($scope.soLuongMua + $scope.soLuongGioHangChiTiet > response.data) {
-                        toastr["warning"]("Số lượng vượt quá trong kho");
-                    } else {
-                        $http.get("http://localhost:8080/user/rest/gio-hang/1").then(function (response) {
-                            $scope.gioHangChiTiet = {};
-                            $scope.gioHangChiTiet.gioHang = response.data.id;
-                            $scope.gioHangChiTiet.bienTheGiay = $scope.giayChoosed.id;
-                            $scope.gioHangChiTiet.soLuong = $scope.soLuongMua;
-                            $http.post("http://localhost:8080/user/rest/gio-hang", $scope.gioHangChiTiet)
-                                .then(function (response) {
-                                    $scope.$parent.isCartVisible = true;
-                                    $scope.loadCartByIdKhachHang();
-
+                                    })
                                 }).catch(function (error) {
-
-                            })
+                                    console.log(error);
+                                    toastr["error"]("Lấy dữ liệu thất bại");
+                                    $scope.isLoading = false;
+                                });
+                            }
                         }).catch(function (error) {
-                            console.log(error);
-                            toastr["error"]("Lấy dữ liệu thất bại");
-                            $scope.isLoading = false;
-                        });
-                    }
 
+                    })
                 }).catch(function (error) {
                 console.log(error);
             });
