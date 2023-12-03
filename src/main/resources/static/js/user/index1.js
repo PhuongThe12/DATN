@@ -21,7 +21,11 @@ app.controller("loginController", function ($rootScope, $scope, $http, $location
                     $scope.currentUser.role =response.data.role
                     $rootScope.currentUser =$scope.currentUser;
                     $window.localStorage.setItem('currentUser', JSON.stringify($scope.currentUser));
-                    $window.location.href = '/admin/ban-hang';
+                    if ($scope.currentUser.role === 'ROLE_USER') {
+                        $window.location.href = '/user/khach-hang/don-mua';
+                    } else {
+                        $window.location.href = '/admin/ban-hang';
+                    }
                 }
             }).catch(function (error) {
             console.log(error)

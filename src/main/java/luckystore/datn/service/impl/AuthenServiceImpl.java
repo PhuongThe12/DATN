@@ -8,6 +8,7 @@ import luckystore.datn.infrastructure.security.auth.JwtResponse;
 import luckystore.datn.infrastructure.security.auth.TokenRefreshRequest;
 import luckystore.datn.infrastructure.security.session.UserDetailToken;
 import luckystore.datn.infrastructure.security.token.TokenProvider;
+import luckystore.datn.model.request.KhachHangRequest;
 import luckystore.datn.model.request.TaiKhoanRequest;
 import luckystore.datn.repository.KhachHangRepository;
 import luckystore.datn.repository.NhanVienRepository;
@@ -37,19 +38,6 @@ public class AuthenServiceImpl implements AuthenService {
 
     private final TokenProvider provider;
 
-    @Override
-    public TaiKhoan signUp(TaiKhoanRequest taiKhoanRequest) {
-        Optional<TaiKhoan> taiKhoanCheck = taiKhoanRepository.findByTenDangNhap(taiKhoanRequest.getTenDangNhap());
-        if (taiKhoanCheck.isPresent()) {
-            throw new RestApiException("Tên đăng nhập đã tồn tại trong hệ thống.");
-        }
-        NhanVien nhanVienCheck = nhanVienRepository.findNhanVienByIdTaiKhoan(taiKhoanRequest.getId());
-//        if (nhanVienCheck == null)
-        String pass = passwordEncoder.encode(taiKhoanRequest.getMatKhau());
-        TaiKhoan taiKhoan = TaiKhoan.builder().tenDangNhap(taiKhoanRequest.getTenDangNhap())
-                .matKhau(pass).role(taiKhoanRequest.getRole()).trangThai(1).build();
-        return taiKhoanRepository.save(taiKhoan);
-    }
 
     @Override
     public JwtResponse logInBasic(TaiKhoanRequest taiKhoanRequest) {

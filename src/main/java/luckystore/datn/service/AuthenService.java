@@ -8,8 +8,6 @@ import luckystore.datn.model.request.TaiKhoanRequest;
 
 public interface AuthenService {
 
-    TaiKhoan signUp(TaiKhoanRequest taiKhoanRequest);
-
     JwtResponse logInBasic(TaiKhoanRequest taiKhoanRequest);
 
     JwtResponse refreshToken(TokenRefreshRequest request);
