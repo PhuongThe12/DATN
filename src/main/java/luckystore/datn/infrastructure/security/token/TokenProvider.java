@@ -94,7 +94,7 @@ public class TokenProvider {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public UserDetailToken decodeTheToken(String token, HttpServletRequest request) {
+    public UserDetailToken decodeTheToken(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(SECRET)
                 .build()
@@ -104,19 +104,15 @@ public class TokenProvider {
         Long id = claims.get("id", Long.class);
         String tenDangNhap = claims.get("tenDangNhap", String.class);
         String role = claims.get("role", String.class);
-
         UserDetailToken userDetailToken;
-        HttpSession session = request.getSession();
-        if (role.equalsIgnoreCase(Role.ROLE_USER.toString())) {
+        if (role.equalsIgnoreCase("ROLE_USER")) {
             KhachHang getKhachHangByToken = khachHangRepository.getKhachHangByTaiKhoanId(id);
             userDetailToken = UserDetailToken.builder().id(getKhachHangByToken.getId()).tenDangNhap(tenDangNhap)
                     .hoTen(getKhachHangByToken.getHoTen()).email(getKhachHangByToken.getEmail()).role(role).build();
-            session.setAttribute("customer", userDetailToken);
         } else {
             NhanVien getNhanVienByToken = nhanVienRepository.findNhanVienByIdTaiKhoan(id);
             userDetailToken = UserDetailToken.builder().id(getNhanVienByToken.getId()).tenDangNhap(tenDangNhap)
                     .hoTen(getNhanVienByToken.getHoTen()).email(getNhanVienByToken.getEmail()).role(role).build();
-            session.setAttribute("admintrator", userDetailToken);
         }
         return userDetailToken;
     }

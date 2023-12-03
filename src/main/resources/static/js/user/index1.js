@@ -1,12 +1,26 @@
+
 var app = angular.module("app", ["ngRoute", "ui.bootstrap","ngCookies"]);
-app.controller("loginController", function ($scope, $http, $location, $window, $cookies) {
+
+app.controller("loginController", function ($rootScope, $scope, $http, $location, $window, $cookies) {
+
+    $scope.currentUser ={
+        idKhachHang:"",
+        username :"",
+        role : "",
+        token :""
+    };
 
     $scope.loginUser = function () {
-        console.log($scope.userLogin);
         $http.post(host + '/api/authentication/singin',$scope.userLogin)
             .then(function (response) {
                 if (response.status == 200) {
                     setTokenCookie(response.data.token, 1)
+                    $scope.currentUser.username = response.data.userName
+                    $scope.currentUser.token =response.data.token
+                    $scope.currentUser.idKhachHang =response.data.id
+                    $scope.currentUser.role =response.data.role
+                    $rootScope.currentUser =$scope.currentUser;
+                    $window.localStorage.setItem('currentUser', JSON.stringify($scope.currentUser));
                     $window.location.href = '/admin/ban-hang';
                 }
             }).catch(function (error) {

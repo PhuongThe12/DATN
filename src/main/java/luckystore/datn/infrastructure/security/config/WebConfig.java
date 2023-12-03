@@ -7,13 +7,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @RequiredArgsConstructor
-public class WebConfig implements WebMvcConfigurer{
+public class WebConfig implements WebMvcConfigurer {
 
     private final TokenIntercreptor tokenIntercreptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(tokenIntercreptor)
-                .addPathPatterns("/admin/**", "/user/**", "/customer/**", "/admin/ban-hang");
+        WebMvcConfigurer.super.addInterceptors(registry);
+        registry.addInterceptor(tokenIntercreptor).addPathPatterns("/rest/user/**", "/admin/ban-hang");
     }
 }

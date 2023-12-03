@@ -4,10 +4,12 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import luckystore.datn.infrastructure.Role;
 import luckystore.datn.infrastructure.security.token.TokenProvider;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -26,20 +28,23 @@ public class TokenIntercreptor implements HandlerInterceptor {
             return false;
         }
 
-        String role = provider.decodeTheToken(token, request).getRole();
-        if (role != null) {
-            if (role.equals(Role.ROLE_ADMIN.name()) && requestedPath.startsWith("/staff")) {
-                return true; // Cho phép truy cập đến endpoint admin
-            } else if (role.equals(Role.ROLE_STAFF.name()) && requestedPath.startsWith("/admin")) {
-                return true; // Cho phép truy cập đến endpoint user
-            } else if (role.equals(Role.ROLE_USER.name()) && requestedPath.startsWith("/user")
-                    || requestedPath.equals("/admin/ban-hang")) {
-                return true; // Cho phép truy cập đến endpoint customer
-            }
-        }
+        String requestUri = request.getRequestURI();
+        String userRoles = provider.decodeTheToken(token).getRole();
+        Map<String, Integer> rolesStaff = new HashMap<>();
+        rolesStaff.put("/admin/ban-hang", 1);
 
+        if (userRoles.contains("ROLE_STAFF") && rolesStaff.containsKey(requestUri)) {
+            return true;
+        }
+        else if (userRoles.contains("ROLE_ADMIN")) {
+            return true;
+        } else if (userRoles.contains("ROLE_USER")) {
+            return true;
+        }
+        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.sendRedirect("/access-denied");
         return false;
+
     }
 
     private String extractTokenFromCookies(HttpServletRequest request) {

@@ -42,9 +42,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
 
-                        request -> request.requestMatchers("/api/authentication/**","/login", "/client/**", "/cart/**",
-                                        "/admin/poin/**", "/cart-detail/**", "/admin/promotion", "/admin/voucher"
-                                        , "/ws/**", "/admin/**","/user/**").permitAll()
+                        request -> request.requestMatchers("/api/authentication/**","/admin/**","/user/**",
+                                        "/login", "/signup").permitAll()
 //                                .requestMatchers(" admin/rest/hoa-don/**").hasAuthority("ROLE_USER")
 //                                .requestMatchers(" admin/rest/khach-hang/**").hasAuthority("ROLE_USER")
 //                                .requestMatchers(" admin/rest/yeu-cau/**").hasAuthority("ROLE_USER")
