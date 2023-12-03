@@ -33,4 +33,7 @@ public interface MuiGiayRepository extends JpaRepository<MuiGiay, Long> {
     List<MuiGiayResponse> getIdsByName(Set<String> names);
 
     Optional<MuiGiay> findByTen(String ten);
+
+    @Query("select lg.ten from MuiGiay lg")
+    String[] getAllTen();
 }

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/rest/dot-giam-gia")
+@RequestMapping("/rest/admin/dot-giam-gia")
 public class RestDotGiamGiaController {
 
     @Autowired

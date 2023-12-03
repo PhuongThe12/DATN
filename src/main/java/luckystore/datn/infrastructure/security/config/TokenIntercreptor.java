@@ -30,15 +30,19 @@ public class TokenIntercreptor implements HandlerInterceptor {
 
         String requestUri = request.getRequestURI();
         String userRoles = provider.decodeTheToken(token).getRole();
-        Map<String, Integer> rolesStaff = new HashMap<>();
-        rolesStaff.put("/admin/ban-hang", 1);
+        Map<String, Integer> permissionStaff = new HashMap<>();
+        permissionStaff.put("/admin/ban-hang", 1);
 
-        if (userRoles.contains("ROLE_STAFF") && rolesStaff.containsKey(requestUri)) {
+        Map<String, Integer> permissionAdmin = new HashMap<>();
+        permissionAdmin.put("/admin", 1);
+
+
+
+        if (userRoles.contains("ROLE_STAFF") && permissionStaff.containsKey(requestUri)) {
             return true;
-        }
-        else if (userRoles.contains("ROLE_ADMIN")) {
+        } else if (userRoles.contains("ROLE_ADMIN") && permissionAdmin.containsKey(requestUri)) {
             return true;
-        } else if (userRoles.contains("ROLE_USER")) {
+        } else if (userRoles.contains("ROLE_USER") && requestUri.startsWith("/rest/user")) {
             return true;
         }
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);

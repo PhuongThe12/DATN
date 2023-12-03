@@ -47,7 +47,7 @@ app.controller("addCoGiayController", function ($scope, $http, $location) {
             return;
         }
 
-        $http.post(host + '/admin/rest/co-giay', $scope.coGiay)
+        $http.post(host + '/rest/admin/co-giay', $scope.coGiay)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -91,7 +91,7 @@ app.controller("coGiayListController", function ($scope, $http, $window, $locati
 
     function getData(currentPage) {
         $scope.isLoading = true;
-        let apiUrl = host + '/admin/rest/co-giay?page=' + currentPage;
+        let apiUrl = host + '/rest/admin/co-giay?page=' + currentPage;
         if (searchText) {
             apiUrl += '&search=' + searchText;
         }
@@ -145,7 +145,7 @@ app.controller("updateCoGiayController", function ($scope, $http, $routeParams, 
     }
 
     $scope.isLoading = true;
-    $http.get(host + '/admin/rest/co-giay/' + id)
+    $http.get(host + '/rest/admin/co-giay/' + id)
         .then(function (response) {
             $scope.coGiay = response.data;
             $scope.isLoading = false;
@@ -175,7 +175,7 @@ app.controller("updateCoGiayController", function ($scope, $http, $routeParams, 
             $scope.isLoading = false;
             return;
         }
-        $http.put(host + '/admin/rest/co-giay/' + id, $scope.coGiay)
+        $http.put(host + '/rest/admin/co-giay/' + id, $scope.coGiay)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Cập nhật thành công")

@@ -33,4 +33,7 @@ public interface ChatLieuRepository extends JpaRepository<ChatLieu, Long> {
     List<ChatLieuResponse> getIdsByName(Set<String> names);
 
     Optional<ChatLieu> findByTen(String ten);
+
+    @Query("select lg.ten from ChatLieu lg")
+    String[] getAllTen();
 }

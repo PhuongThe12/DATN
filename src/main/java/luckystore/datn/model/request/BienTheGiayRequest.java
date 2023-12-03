@@ -45,4 +45,8 @@ public class BienTheGiayRequest {
     @Min(value = 0, message = "Số lượng không được âm", groups = {CreateGroup.class, UpdateGroup.class, UpdateSoLuongGroup.class})
     private Integer soLuong;
 
+    @NotNull(message = "Không được để trống", groups = {CreateGroup.class, UpdateGroup.class, UpdateSoLuongGroup.class})
+    @Min(value = 0, message = "Số lượng không được âm", groups = {CreateGroup.class, UpdateGroup.class, UpdateSoLuongGroup.class})
+    private Integer soLuongLoi;
+
 }

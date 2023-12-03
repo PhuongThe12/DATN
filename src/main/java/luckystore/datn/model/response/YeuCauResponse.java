@@ -32,6 +32,9 @@ public class YeuCauResponse {
     private Integer trangThai;
     private LocalDateTime ngayTao;
     private LocalDateTime ngaySua;
+    private String thongTinNhanHang;
+    private Long nguoiTao;
+    private Long nguoiSua;
     private String ghiChu;
 
     private List<String> listAnhGiayTra = new ArrayList<>();
@@ -42,13 +45,17 @@ public class YeuCauResponse {
         if(yeuCau != null){
             this.id = yeuCau.getId();
             this.nguoiThucHien = yeuCau.getNguoiThucHien();
-            this.hoaDon = new HoaDonYeuCauRespone(yeuCau.getHoaDon(),null);
+            this.hoaDon = new HoaDonYeuCauRespone(yeuCau.getHoaDon(),"getAllYeuCau");
             this.trangThai = yeuCau.getTrangThai();
+            this.thongTinNhanHang = yeuCau.getThongTinNhanHang();
             this.ngayTao = yeuCau.getNgayTao();
             this.ngaySua = yeuCau.getNgaySua();
+            this.nguoiTao = yeuCau.getNguoiTao();
+            this.nguoiSua = yeuCau.getNguoiSua();
             this.ghiChu = yeuCau.getGhiChu();
         }
     }
+
 
     public YeuCauResponse(YeuCauResponse responseByStatus) {
         if(responseByStatus != null){

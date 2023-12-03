@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/rest/mui-giay")
+@RequestMapping("/rest/admin/mui-giay")
 public class RestMuiGiayController {
 
     @Autowired

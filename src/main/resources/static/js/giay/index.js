@@ -239,7 +239,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
     //Select lot giay
     $scope.lotGiays = [];
     setTimeout(function () {
-        $http.get(host + "/admin/rest/lot-giay/get-all")
+        $http.get(host + "/rest/admin/lot-giay/get-all")
             .then(function (response) {
                 $scope.lotGiays = response.data;
                 $scope.selectedLotGiay = $scope.lotGiays[0] ? $scope.lotGiays[0] : {};
@@ -253,7 +253,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
     //Select de giay
     $scope.deGiays = [];
     setTimeout(function () {
-        $http.get(host + "/admin/rest/de-giay/get-all")
+        $http.get(host + "/rest/admin/de-giay/get-all")
             .then(function (response) {
                 $scope.deGiays = response.data;
                 $scope.selectedDeGiay = $scope.deGiays[0] ? $scope.deGiays[0] : {};
@@ -266,7 +266,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
     //Select mui giay
     $scope.muiGiays = [];
     setTimeout(function () {
-        $http.get(host + "/admin/rest/mui-giay/get-all")
+        $http.get(host + "/rest/admin/mui-giay/get-all")
             .then(function (response) {
                 $scope.muiGiays = response.data;
                 $scope.selectedMuiGiay = $scope.muiGiays[0] ? $scope.muiGiays[0] : {};
@@ -280,7 +280,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
     //Select co giay
     $scope.coGiays = [];
     setTimeout(function () {
-        $http.get(host + "/admin/rest/co-giay/get-all")
+        $http.get(host + "/rest/admin/co-giay/get-all")
             .then(function (response) {
                 $scope.coGiays = response.data;
                 $scope.selectedCoGiay = $scope.coGiays[0] ? $scope.coGiays[0] : {};
@@ -294,7 +294,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
     //Select thuong hieu
     $scope.thuongHieus = [];
     setTimeout(function () {
-        $http.get(host + "/admin/rest/thuong-hieu/get-all")
+        $http.get(host + "/rest/admin/thuong-hieu/get-all")
             .then(function (response) {
                 $scope.thuongHieus = response.data;
                 $scope.selectedThuongHieu = $scope.thuongHieus[0] ? $scope.thuongHieus[0] : {};
@@ -308,7 +308,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
     //Select chat lieu
     $scope.chatLieus = [];
     setTimeout(function () {
-        $http.get(host + "/admin/rest/chat-lieu/get-all")
+        $http.get(host + "/rest/admin/chat-lieu/get-all")
             .then(function (response) {
                 $scope.chatLieus = response.data;
                 $scope.selectedChatLieu = $scope.chatLieus[0] ? $scope.chatLieus[0] : {};
@@ -322,7 +322,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
     //Select day giay
     $scope.dayGiays = [];
     setTimeout(function () {
-        $http.get(host + "/admin/rest/day-giay/get-all")
+        $http.get(host + "/rest/admin/day-giay/get-all")
             .then(function (response) {
                 $scope.dayGiays = response.data;
                 $scope.selectedDayGiay = $scope.dayGiays[0] ? $scope.dayGiays[0] : {};
@@ -336,7 +336,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
     //Select mau sac
     $scope.mauSacs = [];
     setTimeout(function () {
-        $http.get(host + "/admin/rest/mau-sac/get-all")
+        $http.get(host + "/rest/admin/mau-sac/get-all")
             .then(function (response) {
                 $scope.mauSacs = response.data;
             })
@@ -349,7 +349,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
     //Select size
     $scope.kichThuocs = [];
     setTimeout(function () {
-        $http.get(host + "/admin/rest/kich-thuoc/get-all")
+        $http.get(host + "/rest/admin/kich-thuoc/get-all")
             .then(function (response) {
                 $scope.kichThuocs = response.data;
             })
@@ -362,7 +362,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
     //Select hashtag
     $scope.hashTags = [];
     setTimeout(function () {
-        $http.get(host + "/admin/rest/hash-tag/get-all")
+        $http.get(host + "/rest/admin/hash-tag/get-all")
             .then(function (response) {
                 $scope.hashTags = response.data;
             })
@@ -455,7 +455,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
                 Promise.all($scope.selectedMauSacs.map(processMauSac))
                     .then(() => {
                         giayRequest.bienTheGiays = bienTheGiays;
-                        $http.post(host + '/admin/rest/giay/add', JSON.stringify(giayRequest))
+                        $http.post(host + '/rest/admin/giay/add', JSON.stringify(giayRequest))
                             .then(function (response) {
                                 toastr["success"]("Thêm thành công");
                                 $location.path("/list");
@@ -700,7 +700,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
         if ($scope.chatLieuForm.$invalid) {
             return;
         }
-        $http.post(host + '/admin/rest/chat-lieu', $scope.chatLieu)
+        $http.post(host + '/rest/admin/chat-lieu', $scope.chatLieu)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -726,7 +726,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
         if ($scope.lotGiayForm.$invalid) {
             return;
         }
-        $http.post(host + '/admin/rest/lot-giay', $scope.lotGiay)
+        $http.post(host + '/rest/admin/lot-giay', $scope.lotGiay)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -752,7 +752,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
         if ($scope.muiGiayForm.$invalid) {
             return;
         }
-        $http.post(host + '/admin/rest/mui-giay', $scope.muiGiay)
+        $http.post(host + '/rest/admin/mui-giay', $scope.muiGiay)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -778,7 +778,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
         if ($scope.coGiayForm.$invalid) {
             return;
         }
-        $http.post(host + '/admin/rest/co-giay', $scope.coGiay)
+        $http.post(host + '/rest/admin/co-giay', $scope.coGiay)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -804,7 +804,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
         if ($scope.thuongHieuForm.$invalid) {
             return;
         }
-        $http.post(host + '/admin/rest/thuong-hieu', $scope.thuongHieu)
+        $http.post(host + '/rest/admin/thuong-hieu', $scope.thuongHieu)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -831,7 +831,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
         if ($scope.dayGiayForm.$invalid) {
             return;
         }
-        $http.post(host + '/admin/rest/day-giay', $scope.dayGiay)
+        $http.post(host + '/rest/admin/day-giay', $scope.dayGiay)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -857,7 +857,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
         if ($scope.deGiayForm.$invalid) {
             return;
         }
-        $http.post(host + '/admin/rest/de-giay', $scope.deGiay)
+        $http.post(host + '/rest/admin/de-giay', $scope.deGiay)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -883,7 +883,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
         if ($scope.hashTagForm.$invalid) {
             return;
         }
-        $http.post(host + '/admin/rest/de-giay', $scope.hashTag)
+        $http.post(host + '/rest/admin/de-giay', $scope.hashTag)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -911,7 +911,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
         if ($scope.kichThuocForm.$invalid) {
             return;
         }
-        $http.post(host + '/admin/rest/kich-thuoc', $scope.kichThuoc)
+        $http.post(host + '/rest/admin/kich-thuoc', $scope.kichThuoc)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -939,7 +939,7 @@ app.controller('addGiayController', function ($scope, $http, $location, DetailEn
         if ($scope.mauSacForm.$invalid) {
             return;
         }
-        $http.post(host + '/admin/rest/mau-sac', $scope.mauSac)
+        $http.post(host + '/rest/admin/mau-sac', $scope.mauSac)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");

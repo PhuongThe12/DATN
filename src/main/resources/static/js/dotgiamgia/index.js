@@ -79,7 +79,7 @@ app.controller("addDotGiamGiaController", function ($scope, $http, $location) {
             };
         });
 
-        $http.post(host + '/admin/rest/dot-giam-gia', $scope.dotGiamGia)
+        $http.post(host + '/rest/admin/dot-giam-gia', $scope.dotGiamGia)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -121,7 +121,7 @@ app.controller("addDotGiamGiaController", function ($scope, $http, $location) {
 
 app.controller("detailMauSacController", function ($scope, $http, $location, $routeParams) {
     const id = $routeParams.id;
-    $http.get(host + '/admin/rest/mau-sac/' + id)
+    $http.get(host + '/rest/admin/mau-sac/' + id)
         .then(function (response) {
             $scope.mauSac = response.data;
         }).catch(function (error) {
@@ -154,7 +154,7 @@ app.controller("dotGiamGiaListController", function ($scope, $http, $window, $lo
     }
 
     function getData(currentPage) {
-        let apiUrl = host + '/admin/rest/dot-giam-gia?page=' + currentPage;
+        let apiUrl = host + '/rest/admin/dot-giam-gia?page=' + currentPage;
         if (searchText) {
             apiUrl += '&search=' + searchText;
         }
@@ -178,7 +178,7 @@ app.controller("dotGiamGiaListController", function ($scope, $http, $window, $lo
 
     $scope.detailDotGiamGia = function (val) {
         var id = val;
-        $http.get(host + '/admin/rest/dot-giam-gia/' + id)
+        $http.get(host + '/rest/admin/dot-giam-gia/' + id)
             .then(function (response) {
                 $scope.dotGiamGiaDetail = response.data;
                 const button = document.querySelector('[data-bs-target="#showDotGiamGia"]');
@@ -204,7 +204,7 @@ app.controller("updateDotGiamGiaController", function ($scope, $http, $location,
     $scope.dotGiamGia.dieuKienRequests = [];
 
     $scope.init = function () {
-        $http.get(host + '/admin/rest/dot-giam-gia/' + $scope.dotGiamGia.id)
+        $http.get(host + '/rest/admin/dot-giam-gia/' + $scope.dotGiamGia.id)
             .then(function (response) {
                 if (response.status === 200) {
                     $scope.dotGiamGia = response.data;
@@ -269,7 +269,7 @@ app.controller("updateDotGiamGiaController", function ($scope, $http, $location,
         $scope.dotGiamGia.dieuKienResponses.splice(index, 1)
         $http({
             method: 'DELETE',
-            url: 'http://localhost:8080/admin/rest/dot-giam-gia/delete-dieu-kien/' + dieuKien
+            url: 'http://localhost:8080/rest/admin/dot-giam-gia/delete-dieu-kien/' + dieuKien
         }).then(function successCallback(response) {
             // Xử lý khi API DELETE thành công
             console.log('Xóa điều kiện giảm giá thành công', response);
@@ -299,7 +299,7 @@ app.controller("updateDotGiamGiaController", function ($scope, $http, $location,
 
         console.log($scope.dotGiamGia);
 
-        $http.put(host + '/admin/rest/dot-giam-gia/' + $scope.dotGiamGia.id, $scope.dotGiamGia)
+        $http.put(host + '/rest/admin/dot-giam-gia/' + $scope.dotGiamGia.id, $scope.dotGiamGia)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Cập nhật thành công");

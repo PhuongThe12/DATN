@@ -85,20 +85,41 @@
                         <ul class="cat-sub-menu">
 
                             <li>
-                                <a href="new-post.html">Hóa đơn</a>
+                                <a href="http://localhost:8080/admin/hoa-don#/hoa-don">Hóa đơn</a>
                             </li>
 
                             <li>
-                                <a href="new-post.html">Tạo Yêu Cầu Đổi Trả</a>
+                                <a href="http://localhost:8080/admin/hoa-don#/hoa-don-cho">Chờ xác nhận</a>
                             </li>
+
+                            <li>
+                                <a href="http://localhost:8080/admin/hoa-don#/hoa-don-hoan">Đơn hoàn</a>
+                            </li>
+
                         </ul>
 
                     </li>
 
                     <li>
-                        <a href="##"><i class="icon fas fa-info-circle"></i></span>
-                            Thông tin cá nhân</a>
+                        <a class="show-cat-btn" href="##">
+                            <i class="icon fas fa-file-invoice"></i></span>Đổi trả
+                            <span class="category__btn transparent-btn" title="Open list">
+                                    <span class="sr-only">Open list</span>
+                                    <i class="icon fas fa-angle-down"></i>
+                                </span>
+                        </a>
+                        <ul class="cat-sub-menu">
+                            <li>
+                                <a href="new-post.html">Tạo yêu cầu đổi</a>
+                            </li>
+                        </ul>
+
                     </li>
+
+<!--                    <li>-->
+<!--                        <a href="##"><i class="icon fas fa-info-circle"></i></span>-->
+<!--                            Thông tin cá nhân</a>-->
+<!--                    </li>-->
                 </ul>
             </div>
         </div>
@@ -108,7 +129,6 @@
         <div ng-view></div>
     </div>
 </div>
-
 <script src="/QRReader/quagga.min.js"></script>
 <script src="/QRReader/jsQr.js"></script>
 <script src="/sweetalert2/dist/sweetalert2.min.js"></script>

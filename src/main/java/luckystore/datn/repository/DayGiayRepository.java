@@ -35,4 +35,7 @@ public interface DayGiayRepository extends JpaRepository<DayGiay, Long> {
     List<DayGiayResponse> getIdsByName(Set<String> names);
 
     Optional<DayGiay> findByTen(String ten);
+
+    @Query("select lg.ten from DayGiay lg")
+    String[] getAllTen();
 }

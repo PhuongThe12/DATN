@@ -18,13 +18,17 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
     let giayClone;
 
     $scope.isLoading = true;
-    setTimeout(function() {
-        $http.get(host + '/admin/rest/giay/' + id)
+
+    setTimeout(function () {
+        $http.get(host + '/rest/admin/giay/' + id)
             .then(function (response) {
                 $scope.giay = response.data;
                 setData();
                 giayClone = angular.copy($scope.giay);
                 $scope.isLoading = false;
+                setTimeout(() => {
+                    document.getElementById('tenGiay').click();
+                }, 20);
             })
             .catch(function (error) {
                 console.log(error);
@@ -33,6 +37,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                 // $scope.isLoading = false;
             });
     }, 10);
+
 
     $scope.changeSelectedKichThuoc = function () {
         // Sao chép selectedMauSacs
@@ -262,7 +267,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
 //Select lot giay
     $scope.lotGiays = [];
     setTimeout(function () {
-        $http.get(host + "/admin/rest/lot-giay/get-all")
+        $http.get(host + "/rest/admin/lot-giay/get-all")
             .then(function (response) {
                 $scope.lotGiays = response.data;
             })
@@ -275,7 +280,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
 //Select de giay
     $scope.deGiays = [];
     setTimeout(function () {
-        $http.get(host + "/admin/rest/de-giay/get-all")
+        $http.get(host + "/rest/admin/de-giay/get-all")
             .then(function (response) {
                 $scope.deGiays = response.data;
             })
@@ -287,7 +292,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
 //Select mui giay
     $scope.muiGiays = [];
     setTimeout(function () {
-        $http.get(host + "/admin/rest/mui-giay/get-all")
+        $http.get(host + "/rest/admin/mui-giay/get-all")
             .then(function (response) {
                 $scope.muiGiays = response.data;
 
@@ -301,7 +306,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
 //Select co giay
     $scope.coGiays = [];
     setTimeout(function () {
-        $http.get(host + "/admin/rest/co-giay/get-all")
+        $http.get(host + "/rest/admin/co-giay/get-all")
             .then(function (response) {
                 $scope.coGiays = response.data;
 
@@ -315,7 +320,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
 //Select thuong hieu
     $scope.thuongHieus = [];
     setTimeout(function () {
-        $http.get(host + "/admin/rest/thuong-hieu/get-all")
+        $http.get(host + "/rest/admin/thuong-hieu/get-all")
             .then(function (response) {
                 $scope.thuongHieus = response.data;
 
@@ -329,7 +334,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
 //Select chat lieu
     $scope.chatLieus = [];
     setTimeout(function () {
-        $http.get(host + "/admin/rest/chat-lieu/get-all")
+        $http.get(host + "/rest/admin/chat-lieu/get-all")
             .then(function (response) {
                 $scope.chatLieus = response.data;
 
@@ -343,7 +348,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
 //Select day giay
     $scope.dayGiays = [];
     setTimeout(function () {
-        $http.get(host + "/admin/rest/day-giay/get-all")
+        $http.get(host + "/rest/admin/day-giay/get-all")
             .then(function (response) {
                 $scope.dayGiays = response.data;
 
@@ -357,7 +362,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
 //Select mau sac
     $scope.mauSacs = [];
     setTimeout(function () {
-        $http.get(host + "/admin/rest/mau-sac/get-all")
+        $http.get(host + "/rest/admin/mau-sac/get-all")
             .then(function (response) {
                 $scope.mauSacs = response.data;
             })
@@ -370,7 +375,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
 //Select size
     $scope.kichThuocs = [];
     setTimeout(function () {
-        $http.get(host + "/admin/rest/kich-thuoc/get-all")
+        $http.get(host + "/rest/admin/kich-thuoc/get-all")
             .then(function (response) {
                 $scope.kichThuocs = response.data;
             })
@@ -383,7 +388,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
 //Select hashtag
     $scope.hashTags = [];
     setTimeout(function () {
-        $http.get(host + "/admin/rest/hash-tag/get-all")
+        $http.get(host + "/rest/admin/hash-tag/get-all")
             .then(function (response) {
                 $scope.hashTags = response.data;
             })
@@ -494,7 +499,8 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                     soLuong: kichThuoc.soLuong,
                     giaBan: kichThuoc.giaBan,
                     trangThai: kichThuoc.trangThai === 0 ? 0 : 1,
-                    barcode: kichThuoc.barcode
+                    barcode: kichThuoc.barcode,
+                    soLuongLoi: kichThuoc.soLuongLoi? kichThuoc.soLuongLoi : 0,
                 }
                 bienTheGiays.push(bienTheGiay);
             });
@@ -506,7 +512,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                 Promise.all($scope.selectedMauSacs.map(processMauSac))
                     .then(() => {
                         giayRequest.bienTheGiays = bienTheGiays;
-                        $http.put(host + '/admin/rest/giay/update/' + id, JSON.stringify(giayRequest))
+                        $http.put(host + '/rest/admin/giay/update/' + id, JSON.stringify(giayRequest))
                             .then(function (response) {
                                 toastr["success"]("Cập nhật thành công");
                                 $location.path("/list");
@@ -619,6 +625,18 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                     count++;
                 }
 
+                if (isNaN(kichThuoc.soLuongLoi)) {
+                    kichThuoc.soLuongLoi = null;
+                    kichThuoc.errors.soLuongLoi = 'Không được bỏ trống số lượng';
+                    valid = false;
+                    count++;
+                } else if (kichThuoc.soLuongLoi < 0) {
+                    kichThuoc.soLuongLoi = null;
+                    kichThuoc.errors.soLuongLoi = 'Số lượng không được âm';
+                    valid = false;
+                    count++;
+                }
+
                 if (!kichThuoc.barcode) {
                     kichThuoc.barcode = '';
                     kichThuoc.errors.barcode = 'Không được bỏ trống barcode';
@@ -659,6 +677,10 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
         }
         if (model === 'soLuong' && $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.soLuong) {
             $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.soLuong = null;
+        }
+
+        if (model === 'soLuongLoi' && $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.soLuongLoi) {
+            $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.soLuongLoi = null;
         }
 
     }
@@ -709,6 +731,15 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                 $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.soLuong = null;
             }
         }
+
+        if (model === 'soLuongLoi') {
+            if (isNaN($scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].soLuongLoi)) {
+                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.soLuongLoi = 'Không được để trống';
+                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].soLuongLoi = null;
+            } else {
+                $scope.selectedMauSacs[msIndex].selectedKichThuocs[ktIndex].errors.soLuongLoi = null;
+            }
+        }
     }
 
     $scope.updateForAll = function () {
@@ -736,6 +767,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                 $scope.blurInput(msIndex, ktIndex, 'barcode');
                 $scope.blurInput(msIndex, ktIndex, 'giaBan');
                 $scope.blurInput(msIndex, ktIndex, 'soLuong');
+                $scope.blurInput(msIndex, ktIndex, 'soLuongLoi');
             })
         })
         $scope.resetFormForAll();
@@ -818,11 +850,13 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                             kt.trangThai = bt.trangThai;
                             kt.barcode = bt.barCode;
                             kt.soLuong = bt.soLuong;
+                            kt.soLuongLoi = bt.soLuongLoi ? bt.soLuongLoi : 0;
                         } else {
                             kt.giaBan = 0;
                             kt.trangThai = 0;
                             kt.barcode = new Date().getTime();
                             kt.soLuong = 0;
+                            kt.soLuongLoi = bt.soLuongLoi ? bt.soLuongLoi : 0;
                         }
                     });
                 });
@@ -838,7 +872,6 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
 
 
         }
-                document.getElementById('tenGiay').click();
 
         fetchDataAndProcess();
 
@@ -866,7 +899,6 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
             $scope.image5 = 1;
             loadImageFromBase64(lstAnh[4], 'selectedImage5');
         }
-
     }
 
 
@@ -875,7 +907,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
         if ($scope.chatLieuForm.$invalid) {
             return;
         }
-        $http.post(host + '/admin/rest/chat-lieu', $scope.chatLieu)
+        $http.post(host + '/rest/admin/chat-lieu', $scope.chatLieu)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -901,7 +933,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
         if ($scope.lotGiayForm.$invalid) {
             return;
         }
-        $http.post(host + '/admin/rest/lot-giay', $scope.lotGiay)
+        $http.post(host + '/rest/admin/lot-giay', $scope.lotGiay)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -927,7 +959,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
         if ($scope.muiGiayForm.$invalid) {
             return;
         }
-        $http.post(host + '/admin/rest/mui-giay', $scope.muiGiay)
+        $http.post(host + '/rest/admin/mui-giay', $scope.muiGiay)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -953,7 +985,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
         if ($scope.coGiayForm.$invalid) {
             return;
         }
-        $http.post(host + '/admin/rest/co-giay', $scope.coGiay)
+        $http.post(host + '/rest/admin/co-giay', $scope.coGiay)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -979,7 +1011,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
         if ($scope.thuongHieuForm.$invalid) {
             return;
         }
-        $http.post(host + '/admin/rest/thuong-hieu', $scope.thuongHieu)
+        $http.post(host + '/rest/admin/thuong-hieu', $scope.thuongHieu)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -1006,7 +1038,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
         if ($scope.dayGiayForm.$invalid) {
             return;
         }
-        $http.post(host + '/admin/rest/day-giay', $scope.dayGiay)
+        $http.post(host + '/rest/admin/day-giay', $scope.dayGiay)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -1032,7 +1064,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
         if ($scope.deGiayForm.$invalid) {
             return;
         }
-        $http.post(host + '/admin/rest/de-giay', $scope.deGiay)
+        $http.post(host + '/rest/admin/de-giay', $scope.deGiay)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -1058,7 +1090,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
         if ($scope.hashTagForm.$invalid) {
             return;
         }
-        $http.post(host + '/admin/rest/de-giay', $scope.hashTag)
+        $http.post(host + '/rest/admin/de-giay', $scope.hashTag)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -1086,7 +1118,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
         if ($scope.kichThuocForm.$invalid) {
             return;
         }
-        $http.post(host + '/admin/rest/kich-thuoc', $scope.kichThuoc)
+        $http.post(host + '/rest/admin/kich-thuoc', $scope.kichThuoc)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -1114,7 +1146,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
         if ($scope.mauSacForm.$invalid) {
             return;
         }
-        $http.post(host + '/admin/rest/mau-sac', $scope.mauSac)
+        $http.post(host + '/rest/admin/mau-sac', $scope.mauSac)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");

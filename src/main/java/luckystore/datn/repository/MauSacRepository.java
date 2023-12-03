@@ -37,4 +37,6 @@ public interface MauSacRepository extends JpaRepository<MauSac, Long> {
     @Query("select new luckystore.datn.model.response.MauSacResponse(g.id, g.ten) from MauSac g where g.ten in :names")
     List<MauSacResponse> getIdsByName(Set<String> names);
 
+    @Query("select lg.ten from MauSac lg")
+    String[] getAllTen();
 }
