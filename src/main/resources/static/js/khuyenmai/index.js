@@ -42,7 +42,7 @@ app.controller("addKhuyenMaiController", function ($scope, $http, $location) {
         giaySearch.currentPage = currentPage;
         giaySearch.pageSize = $scope.itemsPerPage;
 
-        $http.post('http://localhost:8080/admin/rest/giay/find-all-by-search', giaySearch)
+        $http.post('http://localhost:8080/rest/admin/giay/find-all-by-search', giaySearch)
             .then(function (response) {
                 $scope.giays = response.data;
                 console.log("Load giày: ", $scope.giays);
@@ -102,7 +102,7 @@ app.controller("addKhuyenMaiController", function ($scope, $http, $location) {
         }).map(function (giay) {
             return giay.id;
         });
-        $http.post('http://localhost:8080/admin/rest/giay/get-giay-contains', $scope.selectedGiay)
+        $http.post('http://localhost:8080/rest/admin/giay/get-giay-contains', $scope.selectedGiay)
             .then(function (response) {
                 // Xử lý dữ liệu từ API ở đây
                 $scope.selectedGiayTableData = response.data;
@@ -134,7 +134,7 @@ app.controller("addKhuyenMaiController", function ($scope, $http, $location) {
         })
 
         console.log("Khuyến mại chi tiết: ", $scope.khuyenMai.khuyenMaiChiTietRequests)
-        $http.post(host + '/admin/rest/khuyen-mai', $scope.khuyenMai)
+        $http.post(host + '/rest/admin/khuyen-mai', $scope.khuyenMai)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -215,7 +215,7 @@ app.controller("khuyenMaiListController", function ($scope, $http, $window, $loc
     }
 
     function getData(currentPage) {
-        let apiUrl = host + '/admin/rest/khuyen-mai?page=' + currentPage;
+        let apiUrl = host + '/rest/admin/khuyen-mai?page=' + currentPage;
         if (searchText) {
             apiUrl += '&search=' + searchText;
         }
@@ -239,7 +239,7 @@ app.controller("khuyenMaiListController", function ($scope, $http, $window, $loc
 
     $scope.detailKhuyenMai = function (val) {
         var id = val;
-        $http.get(host + '/admin/rest/khuyen-mai/' + id)
+        $http.get(host + '/rest/admin/khuyen-mai/' + id)
             .then(function (response) {
                 $scope.khuyenMaiDetail = response.data;
                 const button = document.querySelector('[data-bs-target="#showKhuyenMai"]');
@@ -273,7 +273,7 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
     $scope.selectedGiayTableDataUpdate = [];
 
     $scope.init = function () {
-        $http.get(host + '/admin/rest/khuyen-mai/giay/' + id)
+        $http.get(host + '/rest/admin/khuyen-mai/giay/' + id)
             .then(function (response) {
                 if (response.status === 200) {
                     $scope.khuyenMaiDetail = response.data;
@@ -332,7 +332,7 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
         giaySearch.currentPage = currentPage;
         giaySearch.pageSize = $scope.itemsPerPage;
 
-        $http.post('http://localhost:8080/admin/rest/giay/find-all-by-search', giaySearch)
+        $http.post('http://localhost:8080/rest/admin/giay/find-all-by-search', giaySearch)
             .then(function (response) {
                 $scope.giays = response.data;
                 console.log("Load giày: ", $scope.giays);
@@ -397,7 +397,7 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
 
         console.log("Id giày insert: ", $scope.selectedGiayInsert);
 
-        $http.post('http://localhost:8080/admin/rest/giay/get-giay-contains', $scope.selectedGiayInsert)
+        $http.post('http://localhost:8080/rest/admin/giay/get-giay-contains', $scope.selectedGiayInsert)
             .then(function (response) {
                 $scope.selectedGiayTableDataInsert = response.data;
 
@@ -453,7 +453,7 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
         console.log("post:",$scope.khuyenMai);
 
 
-        $http.put(host + '/admin/rest/khuyen-mai/'+id, $scope.khuyenMai)
+        $http.put(host + '/rest/admin/khuyen-mai/'+id, $scope.khuyenMai)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Cập nhật thành công");

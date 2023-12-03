@@ -35,5 +35,8 @@ public interface DeGiayRepository extends JpaRepository<DeGiay, Long> {
     List<DeGiayResponse> getIdsByName(Set<String> names);
 
     Optional<DeGiay> findByTen(String ten);
+
+    @Query("select lg.ten from DeGiay lg")
+    String[] getAllTen();
 }
 

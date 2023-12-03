@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/rest/chat-lieu")
+@RequestMapping("/rest/adminchat-lieu")
 public class RestChatLieuController {
 
     @Autowired

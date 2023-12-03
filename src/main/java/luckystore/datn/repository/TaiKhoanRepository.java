@@ -17,12 +17,14 @@ import java.util.Optional;
 public interface TaiKhoanRepository extends JpaRepository<TaiKhoan,Long> {
     Boolean existsByTenDangNhap(String tenDangNhap);
 
+    Optional<TaiKhoan> findByTenDangNhap(String tenDangNhap);
+
     @Query(value = "SELECT TOP 1 * FROM TaiKhoan WHERE TEN_DANG_NHAP = ?1 AND MAT_KHAU = ?2" , nativeQuery = true)
     TaiKhoan findByTenDangNhapAndMatKhau(String tenDangNhap , String matKhau);
 
 //    Boolean existsByHoTenAndIdNot(String ten, Long id);
 //    cuong them tai khoan khach hang
-    Optional<KhachHang> findByTenDangNhap(String email);
+//    Optional<KhachHang> findByTenDangNhap(String email);
     @Query("select new luckystore.datn.model.response.TaiKhoanResponse(tk) from TaiKhoan tk")
     List<TaiKhoanResponse> findAllResponse();
 

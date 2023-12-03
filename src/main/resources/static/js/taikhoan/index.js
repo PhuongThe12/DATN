@@ -22,7 +22,7 @@ app.controller("addTaiKhoanController", function ($scope, $http, $location) {
         if ($scope.taiKhoanForm.$invalid) {
             return;
         }
-        $http.post(host + '/admin/rest/tai-khoan', $scope.taiKhoan)
+        $http.post(host + '/rest/admin/tai-khoan', $scope.taiKhoan)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Đăng kí thành công");
@@ -55,7 +55,7 @@ app.controller("taiKhoanListController", function ($scope, $http, $window, $loca
         getData(1);
     }
     function getData(currentPage) {
-        let apiUrl = host + '/admin/rest/tai-khoan?page=' + currentPage;
+        let apiUrl = host + '/rest/admin/tai-khoan?page=' + currentPage;
 
         console.log(apiUrl);
 
@@ -83,7 +83,7 @@ app.controller("taiKhoanListController", function ($scope, $http, $window, $loca
     };
     $scope.loginUser = function() {
         // Make sure to replace the URL with the correct endpoint
-        var apiUrl = 'http://localhost:8080/admin/rest/tai-khoan/login';
+        var apiUrl = 'http://localhost:8080/rest/admin/tai-khoan/login';
         $http.post(apiUrl, $scope.userLogin)
             .then(function(response) {
                 // Successful login

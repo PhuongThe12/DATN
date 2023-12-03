@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -51,7 +52,7 @@ public class YeuCauServiceIplm implements YeuCauService {
     @Override
     public YeuCauResponse addYeuCau(YeuCauRequest yeuCauRequest) {
         HoaDon hoaDon = hoaDonRepository.findById(yeuCauRequest.getHoaDon()).orElse(null);
-        YeuCau yeuCauSaved = new YeuCau(yeuCauRequest, hoaDon, new Date(), new Date());
+        YeuCau yeuCauSaved = new YeuCau(yeuCauRequest, hoaDon,null,LocalDateTime.now(), LocalDateTime.now());
         List<YeuCauChiTiet> listYeuCauChiTiet = new ArrayList<>();
         for (YeuCauChiTietRequest ycctRequest : yeuCauRequest.getListYeuCauChiTiet()) {
             LyDo lyDo = lyDoRepository.findById(ycctRequest.getLyDo()).orElse(null);
@@ -77,7 +78,7 @@ public class YeuCauServiceIplm implements YeuCauService {
     @Override
     public YeuCauResponse confirmYeuCau(YeuCauRequest yeuCauRequest) {
         HoaDon hoaDon = hoaDonRepository.findById(yeuCauRequest.getHoaDon()).orElse(null);
-        YeuCau yeuCauSaved = YeuCau.builder().id(yeuCauRequest.getId()).hoaDon(hoaDon).nguoiThucHien(yeuCauRequest.getNguoiThucHien()).trangThai(yeuCauRequest.getTrangThai()).ngayTao(yeuCauRequest.getNgayTao()).ngaySua(new Date()).ghiChu(yeuCauRequest.getGhiChu()).build();
+        YeuCau yeuCauSaved = YeuCau.builder().id(yeuCauRequest.getId()).hoaDon(hoaDon).nguoiThucHien(yeuCauRequest.getNguoiThucHien()).trangThai(yeuCauRequest.getTrangThai()).ngayTao(yeuCauRequest.getNgayTao()).ngaySua(LocalDateTime.now()).ghiChu(yeuCauRequest.getGhiChu()).build();
         List<YeuCauChiTiet> listYeuCauChiTiet = new ArrayList<>();
 
         for (YeuCauChiTietRequest ycctRequest : yeuCauRequest.getListYeuCauChiTiet()) {
@@ -100,15 +101,15 @@ public class YeuCauServiceIplm implements YeuCauService {
 
 
                 if (ycctRequest.getLoaiYeuCauChiTiet() == 1) { //nếu đổi
-                    YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(bienTheGiayDoi).lyDo(lyDoUpdate).soLuong(ycctRequest.getSoLuong()).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).trangThai(1).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).ghiChu(ycctRequest.getGhiChu()).build();
+                    YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(bienTheGiayDoi).lyDo(lyDoUpdate).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).trangThai(1).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).ghiChu(ycctRequest.getGhiChu()).build();
                     listYeuCauChiTiet.add(yeuCauChiTietSaved);
                 } else if (ycctRequest.getLoaiYeuCauChiTiet() == 2) { //nếu trả
                     if (bienTheGiayDoi != null) { //trả từ hủy đổi
                         bienTheGiayDoi.setSoLuong(bienTheGiayDoi.getSoLuong() + 1);
-                        YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(bienTheGiayDoi).lyDo(lyDoUpdate).soLuong(ycctRequest.getSoLuong()).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).trangThai(4).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).ghiChu(ycctRequest.getGhiChu()).build();
+                        YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(bienTheGiayDoi).lyDo(lyDoUpdate).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).trangThai(4).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).ghiChu(ycctRequest.getGhiChu()).build();
                         listYeuCauChiTiet.add(yeuCauChiTietSaved);
                     } else { //trả thờng
-                        YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(null).lyDo(lyDoUpdate).soLuong(ycctRequest.getSoLuong()).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).trangThai(1).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).ghiChu(ycctRequest.getGhiChu()).build();
+                        YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(null).lyDo(lyDoUpdate).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).trangThai(1).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).ghiChu(ycctRequest.getGhiChu()).build();
                         listYeuCauChiTiet.add(yeuCauChiTietSaved);
                     }
                 }
@@ -116,7 +117,7 @@ public class YeuCauServiceIplm implements YeuCauService {
                 if (bienTheGiayDoi != null) {
                     bienTheGiayDoi.setSoLuong(bienTheGiayDoi.getSoLuong() + 1);
                 }
-                YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(bienTheGiayDoi).lyDo(lyDoUpdate).soLuong(ycctRequest.getSoLuong()).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).trangThai(ycctRequest.getTrangThai()).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).ghiChu(ycctRequest.getGhiChu()).build();
+                YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(bienTheGiayDoi).lyDo(lyDoUpdate).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).trangThai(ycctRequest.getTrangThai()).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).ghiChu(ycctRequest.getGhiChu()).build();
                 listYeuCauChiTiet.add(yeuCauChiTietSaved);
             }
         }
@@ -127,14 +128,13 @@ public class YeuCauServiceIplm implements YeuCauService {
     @Override
     public YeuCauResponse unConfirmYeuCau(YeuCauRequest yeuCauRequest) {
         YeuCau yeuCauSaved = yeuCauRepository.findById(yeuCauRequest.getId()).orElse(null);
-        yeuCauSaved.setNgaySua(new Date());
+        yeuCauSaved.setNgaySua(LocalDateTime.now());
         yeuCauSaved.setGhiChu(yeuCauRequest.getGhiChu());
         yeuCauSaved.setTrangThai(3);
 
         for (YeuCauChiTietRequest ycctRequest : yeuCauRequest.getListYeuCauChiTiet()) {
             YeuCauChiTiet yeuCauChiTiet = yeuCauChiTietRepository.findById(ycctRequest.getId()).orElse(null);
             yeuCauChiTiet.setLoaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet());
-            yeuCauChiTiet.setSoLuong(ycctRequest.getSoLuong());
             yeuCauChiTiet.setTrangThai(ycctRequest.getTrangThai());
             yeuCauChiTiet.setTinhTrangSanPham(ycctRequest.getTinhTrangSanPham());
             if (ycctRequest.getBienTheGiay()!=null) {
@@ -152,7 +152,7 @@ public class YeuCauServiceIplm implements YeuCauService {
     public YeuCauResponse updateYeuCau(YeuCauRequest yeuCauRequest) {
 
         YeuCau yeuCauSaved = yeuCauRepository.findById(yeuCauRequest.getId()).orElse(null);
-        yeuCauSaved.setNgaySua(new Date());
+        yeuCauSaved.setNgaySua(LocalDateTime.now());
         yeuCauSaved.setGhiChu(yeuCauRequest.getGhiChu());
 
         for (YeuCauChiTietRequest ycctRequest : yeuCauRequest.getListYeuCauChiTiet()) {
@@ -191,7 +191,7 @@ public class YeuCauServiceIplm implements YeuCauService {
     }
 
     @Override
-    public Page<YeuCauResponse> getPage(Integer page, Long searchText, Date ngayBatDau, Date ngayKetThuc, Integer trangThai) {
+    public Page<YeuCauResponse> getPage(Integer page, Long searchText, LocalDateTime ngayBatDau, LocalDateTime ngayKetThuc, Integer trangThai) {
         return yeuCauRepository.getPageResponse(PageRequest.of((page - 1), 6), searchText, ngayBatDau, ngayKetThuc, trangThai);
     }
 

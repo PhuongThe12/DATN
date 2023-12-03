@@ -10,7 +10,7 @@ app.controller('excelController', function ($scope, $http, $location) {
         }
 
         $scope.isLoading = true;
-        $http.post("http://localhost:8080/admin/rest/giay/add-excel", JSON.stringify($scope.requestData))
+        $http.post("http://localhost:8080/rest/admin/giay/add-excel", JSON.stringify($scope.requestData))
             .then(function (response) {
                 toastr["success"]("Thêm thành công");
                 $location.path("/list");
@@ -73,7 +73,7 @@ app.controller('excelController', function ($scope, $http, $location) {
 
                 let lastKey;
                 // Duyệt qua từng dòng bắt đầu từ dòng thứ 6
-                for (let row = 5; row <= range.e.r; row++) {
+                for (let row = 5; row <= 999 && row <= range.e.r; row++) {
 
                     //Lưu dữ liệu của một dòng
                     const giay = {};
@@ -506,7 +506,7 @@ app.controller('excelController', function ($scope, $http, $location) {
                         });
 
                         // const start = new Date().getTime();
-                        // $http.post("http://localhost:8080/admin/rest/giay/test", dataRequest)
+                        // $http.post("http://localhost:8080/rest/admin/giay/test", dataRequest)
                         //     .then(function (response) {
                         //         console.log("response");
                         //         console.log("time: ", new Date().getTime() - start);

@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import luckystore.datn.infrastructure.Role;
 import org.hibernate.validator.constraints.Length;
 
 import java.sql.Date;
@@ -59,7 +60,7 @@ public class NhanVienRequest {
     @NotNull(message = "Không được để trống mật khẩu")
     private String matKhau;
 
-    private Integer role;
+    private Role role;
 
     private Integer updateAccount;
 }

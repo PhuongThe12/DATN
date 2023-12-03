@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import luckystore.datn.validation.groups.CreateGroup;
 import luckystore.datn.validation.groups.UpdateGroup;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,9 @@ public class YeuCauChiTietRequest {
 
     private Long lyDo;
 
-    private Integer soLuong;
+    private BigDecimal thanhTien;
+
+    private BigDecimal tienGiam;
 
     private Long bienTheGiayTra;
 
@@ -44,3 +47,4 @@ public class YeuCauChiTietRequest {
 //    @NotNull(message = "Không được để trống hình ảnh", groups = {UpdateGroup.class, CreateGroup.class})
 //    List<String> listAnhGiayTra = new ArrayList<>();
 }
+

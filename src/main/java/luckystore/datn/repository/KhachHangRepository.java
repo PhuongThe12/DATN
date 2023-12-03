@@ -31,9 +31,13 @@ public interface KhachHangRepository extends JpaRepository<KhachHang,Long> {
     KhachHang findIdKH(KhachHang khachHang);
 
     @Query("select new luckystore.datn.model.response.KhachHangResponse(kh) from KhachHang kh " +
-            "where kh.hoTen like %:searchText% or kh.soDienThoai like %:searchText%")
+            "where kh.hoTen like %:searchText% or kh.soDienThoai like %:searchText% or kh.email like %:searchText%")
     List<KhachHangResponse> searchByName(String searchText);
 
     @Query("select hd.khachHang from HoaDon hd where hd.id = :id")
     KhachHang findByHDId(Long id);
+
+    Boolean existsByEmail(String email);
+
+    Boolean existsByEmailAndIdNot(String email, Long id);
 }

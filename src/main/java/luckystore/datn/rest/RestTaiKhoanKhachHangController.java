@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/rest/tai-khoan")
+@RequestMapping("/rest/admin/tai-khoan")
 public class RestTaiKhoanKhachHangController {
     @Autowired
     private TaiKhoanKhachHangService taiKhoanKhachHangService;
@@ -45,15 +45,15 @@ public class RestTaiKhoanKhachHangController {
     }
 
 
-        @PostMapping("/login")
-        public ResponseEntity<TaiKhoanResponse> khachHangLogin(@RequestBody TaiKhoanRequest taiKhoanRequest) {
-            try {
-                TaiKhoanResponse response = taiKhoanKhachHangService.khachHanglogin(taiKhoanRequest);
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            } catch (NotFoundException e) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        }
+//        @PostMapping("/login")
+//        public ResponseEntity<TaiKhoanResponse> khachHangLogin(@RequestBody TaiKhoanRequest taiKhoanRequest) {
+//            try {
+//                TaiKhoanResponse response = taiKhoanKhachHangService.khachHanglogin(taiKhoanRequest);
+//                return new ResponseEntity<>(response, HttpStatus.OK);
+//            } catch (NotFoundException e) {
+//                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//            }
+//        }
 
 
     private ResponseEntity getErrorJson(BindingResult result) {

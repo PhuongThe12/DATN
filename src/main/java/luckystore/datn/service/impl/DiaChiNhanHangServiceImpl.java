@@ -28,7 +28,7 @@ public class DiaChiNhanHangServiceImpl implements DiaChiNhanHangService {
 
     @Override
     public Page<DiaChiNhanHangResponse> getPage(int page, String searchText, Integer status) {
-        return diaChiNhanHangRepo.getPageResponse(searchText, status, PageRequest.of((page - 1), 5));
+        return diaChiNhanHangRepo.getPageResponse(searchText, status, PageRequest.of((page - 1), 4));
     }
 
     @Override
@@ -110,6 +110,7 @@ public class DiaChiNhanHangServiceImpl implements DiaChiNhanHangService {
         diaChiNhanHang.setDiaChiNhan(diaChiNhanHangRequest.getDiaChiNhan());
         diaChiNhanHang.setSoDienThoaiNhan(diaChiNhanHangRequest.getSoDienThoaiNhan());
         diaChiNhanHang.setIdKhachHang(diaChiNhanHangRequest.getKhachHang());
+        diaChiNhanHang.setDiaChiNhan(diaChiNhanHangRequest.getDiaChiNhan());
         diaChiNhanHang.setProvince(diaChiNhanHangRequest.getProvinces());
         diaChiNhanHang.setDistrict(diaChiNhanHangRequest.getDistricts());
         diaChiNhanHang.setWard(diaChiNhanHangRequest.getWards());

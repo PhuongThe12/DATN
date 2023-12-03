@@ -26,7 +26,7 @@ app.controller("addChatLieuController", function ($scope, $http, $location) {
     }
 
     $scope.comfirmAdd = function () {
-        Swal.fire({
+        Swal({
             text: "Xác nhận thêm?",
             icon: "info",
             showCancelButton: true,
@@ -48,7 +48,7 @@ app.controller("addChatLieuController", function ($scope, $http, $location) {
             $scope.isLoading = false;
             return;
         }
-        $http.post(host + '/admin/rest/chat-lieu', $scope.chatLieu)
+        $http.post(host + '/rest/admin/chat-lieu', $scope.chatLieu)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -91,7 +91,7 @@ app.controller("chatLieuListController", function ($scope, $http, $window, $loca
     }
 
     function getData(currentPage) {
-        let apiUrl = host + '/admin/rest/chat-lieu?page=' + currentPage;
+        let apiUrl = host + '/rest/admin/chat-lieu?page=' + currentPage;
         if (searchText) {
             apiUrl += '&search=' + searchText;
         }
@@ -150,7 +150,7 @@ app.controller("updateChatLieuController", function ($scope, $http, $routeParams
         input.$dirty = true;
     }
     $scope.isLoading = true;
-    $http.get(host + '/admin/rest/chat-lieu/' + id)
+    $http.get(host + '/rest/admin/chat-lieu/' + id)
         .then(function (response) {
             $scope.chatLieu = response.data;
             $scope.isLoading = false;
@@ -183,7 +183,7 @@ app.controller("updateChatLieuController", function ($scope, $http, $routeParams
             return;
         }
 
-        $http.put(host + '/admin/rest/chat-lieu/' + id, $scope.chatLieu)
+        $http.put(host + '/rest/admin/chat-lieu/' + id, $scope.chatLieu)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Cập nhật thành công");

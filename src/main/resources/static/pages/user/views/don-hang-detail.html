@@ -1,87 +1,148 @@
-<div class="container">
-<div class="row">
-    <div class="col-md-4"></div>
-    <div class="col-md-8">
-        <div >
-            <form action="">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label">Họ và tên *</label>
-                            <input type="text" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label">Số điện thoại *</label>
-                            <input type="text" class="form-control">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="mb-3">
-                            <label class="form-label">Email *</label>
-                            <input type="text" class="form-control">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label">Tỉnh / Thành Phố  *</label>
-                            <input type="text" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label">Quận / Huyện  *</label>
-                            <input type="text" class="form-control">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label">Xã / Phường  *</label>
-                            <input type="text" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label">Địa chỉ chi tiết *</label>
-                            <input type="text" class="form-control">
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <div>
-            <table>
-                <tr>
-                    <td>Sản Phẩm</td>
-                    <td>Đơn Giá</td>
-                    <td>Số Lượng</td>
-                    <td>Tổng Tiền (VNĐ)</td>
-                    <td>Trạng Thái</td>
-                </tr>
-                <tr ng-repeat="hdct in lstHoaDonChiTiet">
-                    <th><div class="">
+<style>
+    .bg-black{
+        background: black;
+    }
+</style>
+<div class="container mt-3 pb-5">
+<div class="w-75 m-auto">
+    <div class="row">
+        <div class="col-md-12 border-bottom-1 pb-3">
 
-                        <div class="d-flex align-items-center">
-                            <img width="50px" src="https://giaymt.com.vn/wp-content/uploads/2022/10/giay-the-thao-nu-MY861-6.jpg" alt="">
-                            <div class="ps-2">
-                                <p class="font-size-14-ncl">{{hdct.bienTheGiay.giayResponse.ten}}</p>
-                                <p class="font-size-12-ncl">{{hdct.bienTheGiay.kichThuoc.ten}} - {{hdct.bienTheGiay.mauSac.ten}} </p>
+            <div class="row">
+                <div class="col-md-3">
+                </div>
+                <div class="col-md-9">
+                    <div class="" style="padding-left: 21%;">
+                        <div class="row">
+                            <div class="col-auto">
+                                <div>
+                                    <a class="text-decoration-none text-dark fw-bold" href="">Thông Tin Cá Nhân</a>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <div>
+                                    <a class="text-decoration-none text-dark fw-bold" href="" style="border-bottom: 2px solid #212529;">Đơn Hàng</a>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <div>
+                                    <a class="text-decoration-none text-dark fw-bold" href="">Yêu Thích</a>
+                                </div>
                             </div>
                         </div>
-                    </div></th>
-                    <th>{{hdct.donGia}}</th>
-                    <th>{{hdct.soLuong}}</th>
-                    <th>{{hdct.donGia * hdct.soLuong}}</th>
-                    <th>{{hdct.trangThai}}</th>
-                </tr>
-            </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 py-3">
+                <div class="d-flex py-3">
+                    <h5 class=" fw-bold">THÔNG TIN NHẬN HÀNG</h5>
+                </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div >
+                        <form action="">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Họ và tên *</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Số điện thoại *</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label class="form-label">Email *</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Tỉnh / Thành Phố  *</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Quận / Huyện  *</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Xã / Phường  *</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Địa chỉ chi tiết *</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="d-flex py-3">
+                        <h5 class=" fw-bold">SẢN PHẨM</h5>
+                    </div>
+                    <div>
+                        <table class="w-100">
+                            <tr>
+                                <td>Sản Phẩm</td>
+                                <td>Đơn Giá</td>
+                                <td>Số Lượng</td>
+                                <td>Tổng Tiền (VNĐ)</td>
+                                <td>Trạng Thái</td>
+                            </tr>
+                            <tr ng-repeat="hdct in lstHoaDonChiTiet">
+                                <th><div class="">
+
+                                    <div class="d-flex align-items-center">
+                                        <img class="rounded" width="70px" src="https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg" alt="">
+                                        <div class="ps-2">
+                                            <p class="font-size-14-ncl">{{hdct.bienTheGiay.giayResponse.ten}}</p>
+                                            <p class="font-size-12-ncl">Kích cỡ : {{hdct.bienTheGiay.kichThuoc.ten}} / Màu Sắc : {{hdct.bienTheGiay.mauSac.ten}} </p>
+                                        </div>
+                                    </div>
+                                </div></th>
+                                <th>{{hdct.bienTheGiay.giaBan | number}} ₫</th>
+                                <th>{{hdct.soLuong}}</th>
+                                <th>{{hdct.bienTheGiay.giaBan * hdct.soLuong | number}} ₫</th>
+                                <th>{{hdct.trangThai}}</th>
+                            </tr>
+                        </table>
+                        <hr>
+                        <div class="justify-content-end d-flex mb-3 ">
+                            <h5 class="font-size-16-ncl ">Hình thức thanh toán : <span>Chuyển khoản</span> </h5>
+                        </div>
+                        <div class="justify-content-end d-flex mb-3 ">
+                            <h5 class="font-size-16-ncl ">Phí vận chuyển : <span>500,000</span> đ</h5>
+                        </div>
+                        <div class="justify-content-end d-flex mb-3 ">
+                            <h5 class="font-size-16-ncl ">Tổng khuyến mãi : <span>500,000</span> đ</h5>
+                        </div>
+                        <div class="justify-content-end d-flex mb-3">
+                            <h5 class="font-size-16-ncl fw-bold">Tổng thanh toán : <span>500,000</span> đ</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
         </div>
     </div>
 </div>

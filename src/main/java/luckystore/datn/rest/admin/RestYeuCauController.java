@@ -78,6 +78,7 @@ public class RestYeuCauController {
                 ngayBatDau = new java.sql.Date(ngayBatDauUtil.getTime());
             }
 
+
             if (ngayKetThucStr != null) {
                 java.util.Date ngayKetThucUtil = sdf.parse(ngayKetThucStr);
 
@@ -91,11 +92,12 @@ public class RestYeuCauController {
             }
             System.out.println(ngayBatDau);
             System.out.println(ngayKetThuc);
-            return new ResponseEntity(yeuCauService.getPage(page,searchText,ngayBatDau,ngayKetThuc,trangThai), HttpStatus.OK);
+            return new ResponseEntity(yeuCauService.getPage(page,searchText,null,null,trangThai), HttpStatus.OK);
         } catch (ParseException e) {
             // Xử lý lỗi nếu ngày không đúng định dạng
             return new ResponseEntity("Ngày không đúng định dạng (yyyy-MM-dd)", HttpStatus.BAD_REQUEST);
         }
+
     }
 
     private ResponseEntity getErrorJson(BindingResult result) {
@@ -109,7 +111,6 @@ public class RestYeuCauController {
         }
         return null;
     }
-
 
 }
 
