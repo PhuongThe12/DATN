@@ -30,17 +30,22 @@ public class YeuCauServiceIplm implements YeuCauService {
     private final HoaDonChiTietRepository hoaDonChiTietRepository;
     private final BienTheGiayRepository bienTheGiayRepository;
     private final LyDoRepository lyDoRepository;
+    private final KhachHangRepository khachHangRepository;
+
+    private final NhanVienRepository nhanVienRepository;
     private final YeuCauChiTietService yeuCauChiTietService;
     private final ImageHubService imageHubService;
 
     @Autowired
-    public YeuCauServiceIplm(YeuCauRepository yeuCauRepo, YeuCauChiTietRepository yeuCauChiTietRepository, HoaDonRepository hoaDonRepository, HoaDonChiTietRepository hoaDonChiTietRepository, BienTheGiayRepository bienTheGiayRepository, LyDoRepository lyDoRepository, YeuCauChiTietService yeuCauChiTietService, ImageHubService imageHubService) {
+    public YeuCauServiceIplm(YeuCauRepository yeuCauRepo, YeuCauChiTietRepository yeuCauChiTietRepository, HoaDonRepository hoaDonRepository, HoaDonChiTietRepository hoaDonChiTietRepository, BienTheGiayRepository bienTheGiayRepository, LyDoRepository lyDoRepository, KhachHangRepository khachHangRepository, KhachHangRepository khachHangRepository1, NhanVienRepository nhanVienRepository, YeuCauChiTietService yeuCauChiTietService, ImageHubService imageHubService) {
         this.yeuCauRepository = yeuCauRepo;
         this.yeuCauChiTietRepository = yeuCauChiTietRepository;
         this.hoaDonRepository = hoaDonRepository;
         this.hoaDonChiTietRepository = hoaDonChiTietRepository;
         this.bienTheGiayRepository = bienTheGiayRepository;
         this.lyDoRepository = lyDoRepository;
+        this.khachHangRepository = khachHangRepository1;
+        this.nhanVienRepository = nhanVienRepository;
         this.yeuCauChiTietService = yeuCauChiTietService;
         this.imageHubService = imageHubService;
     }
@@ -78,7 +83,8 @@ public class YeuCauServiceIplm implements YeuCauService {
     @Override
     public YeuCauResponse confirmYeuCau(YeuCauRequest yeuCauRequest) {
         HoaDon hoaDon = hoaDonRepository.findById(yeuCauRequest.getHoaDon()).orElse(null);
-        YeuCau yeuCauSaved = YeuCau.builder().id(yeuCauRequest.getId()).hoaDon(hoaDon).nguoiThucHien(yeuCauRequest.getNguoiThucHien()).trangThai(yeuCauRequest.getTrangThai()).ngayTao(yeuCauRequest.getNgayTao()).ngaySua(LocalDateTime.now()).ghiChu(yeuCauRequest.getGhiChu()).build();
+        YeuCau yeuCauSaved = YeuCau.builder().id(yeuCauRequest.getId()).hoaDon(hoaDon).nguoiThucHien(yeuCauRequest.getNguoiThucHien()).trangThai(yeuCauRequest.getTrangThai()).thongTinNhanHang(yeuCauRequest.getThongTinNhanHang()).ngayTao(yeuCauRequest.getNgayTao()).ngaySua(LocalDateTime.now()).ghiChu(yeuCauRequest.getGhiChu()).build();
+
         List<YeuCauChiTiet> listYeuCauChiTiet = new ArrayList<>();
 
         for (YeuCauChiTietRequest ycctRequest : yeuCauRequest.getListYeuCauChiTiet()) {
@@ -88,7 +94,9 @@ public class YeuCauServiceIplm implements YeuCauService {
             BienTheGiay bienTheGiayDoi = ycctRequest.getBienTheGiay() == null ? null : bienTheGiayRepository.findById(ycctRequest.getBienTheGiay()).orElse(null);
             LyDo lyDoUpdate = lyDoRepository.findById(ycctRequest.getLyDo()).orElse(null);
 
-            if (ycctRequest.getLoaiYeuCauChiTiet() != 3) {
+            if (ycctRequest.getLoaiYeuCauChiTiet() != 3) { // Nếu không bị hủy yêu câù chi tiết nào
+
+                //Kiểm tra giày lỗi
                 if (ycctRequest.getTinhTrangSanPham() == false) { //giày không lỗi
                     bienTheGiayTra.setSoLuong(bienTheGiayTra.getSoLuong() + 1);
                     bienTheGiayRepository.save(bienTheGiayTra);
@@ -100,24 +108,28 @@ public class YeuCauServiceIplm implements YeuCauService {
                 hoaDonChiTietUpdate.setSoLuongTra(hoaDonChiTietUpdate.getSoLuongTra() + 1);
 
 
-                if (ycctRequest.getLoaiYeuCauChiTiet() == 1) { //nếu đổi
-                    YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(bienTheGiayDoi).lyDo(lyDoUpdate).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).trangThai(1).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).ghiChu(ycctRequest.getGhiChu()).build();
+                if (ycctRequest.getLoaiYeuCauChiTiet() == 1) { // Đổi Giày
+                    bienTheGiayDoi.setSoLuong(bienTheGiayDoi.getSoLuong() - 1);//trừ sản phẩm đổi trong db
+                    YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(bienTheGiayDoi).lyDo(lyDoUpdate).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).trangThai(4).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).ghiChu(ycctRequest.getGhiChu()).build();
                     listYeuCauChiTiet.add(yeuCauChiTietSaved);
+                    if(hoaDon.getLoaiHoaDon() ==1){//hóa đơn mua
+
+                    }else if(hoaDon.getLoaiHoaDon()==1){
+                        System.out.println("ji");
+                    }
                 } else if (ycctRequest.getLoaiYeuCauChiTiet() == 2) { //nếu trả
-                    if (bienTheGiayDoi != null) { //trả từ hủy đổi
-                        bienTheGiayDoi.setSoLuong(bienTheGiayDoi.getSoLuong() + 1);
-                        YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(bienTheGiayDoi).lyDo(lyDoUpdate).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).trangThai(4).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).ghiChu(ycctRequest.getGhiChu()).build();
+
+                    if (bienTheGiayDoi != null) { //Trả hàng - Từ chối đổi
+                        YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(bienTheGiayDoi).lyDo(lyDoUpdate).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).trangThai(3).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).ghiChu(ycctRequest.getGhiChu()).build();
                         listYeuCauChiTiet.add(yeuCauChiTietSaved);
-                    } else { //trả thờng
-                        YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(null).lyDo(lyDoUpdate).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).trangThai(1).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).ghiChu(ycctRequest.getGhiChu()).build();
+                    } else { //Trả bình thường
+                        YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(null).lyDo(lyDoUpdate).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).trangThai(4).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).ghiChu(ycctRequest.getGhiChu()).build();
                         listYeuCauChiTiet.add(yeuCauChiTietSaved);
                     }
+
                 }
-            } else { // nếu là hủy
-                if (bienTheGiayDoi != null) {
-                    bienTheGiayDoi.setSoLuong(bienTheGiayDoi.getSoLuong() + 1);
-                }
-                YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(bienTheGiayDoi).lyDo(lyDoUpdate).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).trangThai(ycctRequest.getTrangThai()).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).ghiChu(ycctRequest.getGhiChu()).build();
+            } else { // nếu là hủy = từ chối
+                YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(bienTheGiayDoi).lyDo(lyDoUpdate).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).trangThai(5).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).ghiChu(ycctRequest.getGhiChu()).build();
                 listYeuCauChiTiet.add(yeuCauChiTietSaved);
             }
         }
@@ -125,10 +137,24 @@ public class YeuCauServiceIplm implements YeuCauService {
         return new YeuCauResponse(yeuCauRepository.save(yeuCauSaved));
     }
 
+
+    private void taoHoaDonDoi(YeuCauRequest yeuCauRequest){
+        HoaDon hoaDon = hoaDonRepository.findById(yeuCauRequest.getHoaDon()).orElse(null);
+        KhachHang khachHang = khachHangRepository.findById(hoaDon.getKhachHang().getId()).orElse(null);
+        NhanVien nhanVien = nhanVienRepository.findById(yeuCauRequest.getNguoiThucHien()).orElse(null);
+
+//        if(hoaDon.getLoaiHoaDon()==1){
+//            hoaDonSaved = HoaDon.builder()..build();
+//        }
+    }
+
     @Override
     public YeuCauResponse unConfirmYeuCau(YeuCauRequest yeuCauRequest) {
+        NhanVien nhanVien = nhanVienRepository.findById(yeuCauRequest.getNguoiThucHien()).orElse(null);
+
         YeuCau yeuCauSaved = yeuCauRepository.findById(yeuCauRequest.getId()).orElse(null);
         yeuCauSaved.setNgaySua(LocalDateTime.now());
+        yeuCauSaved.setNguoiSua(nhanVien.getId());
         yeuCauSaved.setGhiChu(yeuCauRequest.getGhiChu());
         yeuCauSaved.setTrangThai(3);
 
@@ -137,11 +163,6 @@ public class YeuCauServiceIplm implements YeuCauService {
             yeuCauChiTiet.setLoaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet());
             yeuCauChiTiet.setTrangThai(ycctRequest.getTrangThai());
             yeuCauChiTiet.setTinhTrangSanPham(ycctRequest.getTinhTrangSanPham());
-            if (ycctRequest.getBienTheGiay()!=null) {
-                BienTheGiay bienTheGiayDoi = bienTheGiayRepository.findById(ycctRequest.getBienTheGiay()).orElse(null);
-                bienTheGiayDoi.setSoLuong(bienTheGiayDoi.getSoLuong() + 1);
-                bienTheGiayRepository.save(bienTheGiayDoi);
-            }
             yeuCauChiTietRepository.save(yeuCauChiTiet);
         }
 
@@ -150,10 +171,13 @@ public class YeuCauServiceIplm implements YeuCauService {
 
     @Override
     public YeuCauResponse updateYeuCau(YeuCauRequest yeuCauRequest) {
+        NhanVien nhanVien = nhanVienRepository.findById(yeuCauRequest.getNguoiThucHien()).orElse(null);
 
         YeuCau yeuCauSaved = yeuCauRepository.findById(yeuCauRequest.getId()).orElse(null);
         yeuCauSaved.setNgaySua(LocalDateTime.now());
         yeuCauSaved.setGhiChu(yeuCauRequest.getGhiChu());
+        yeuCauSaved.setNguoiSua(nhanVien.getId());
+
 
         for (YeuCauChiTietRequest ycctRequest : yeuCauRequest.getListYeuCauChiTiet()) {
             YeuCauChiTiet yeuCauChiTiet = yeuCauChiTietRepository.findById(ycctRequest.getId()).orElse(null);

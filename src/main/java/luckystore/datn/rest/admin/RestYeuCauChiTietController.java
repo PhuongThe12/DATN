@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/rest/yeu-cau-chi-tiet")
+@RequestMapping("/rest/admin/yeu-cau-chi-tiet")
 public class RestYeuCauChiTietController {
 
 

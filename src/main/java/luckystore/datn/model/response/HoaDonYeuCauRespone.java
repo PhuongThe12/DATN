@@ -67,12 +67,14 @@ public class HoaDonYeuCauRespone {
     public HoaDonYeuCauRespone(HoaDon hoaDon, String getAllYeuCauPage) {
         this.id = hoaDon.getId();
         this.hoaDonGoc = hoaDon.getHoaDonGoc() == null ? null : hoaDon.getHoaDonGoc();
-        this.khachHang = new KhachHangResponse(hoaDon.getKhachHang().getId(), hoaDon.getKhachHang().getHoTen());
+        this.khachHang = new KhachHangResponse(hoaDon.getKhachHang().getId(), hoaDon.getKhachHang().getHoTen(),hoaDon.getKhachHang().getSoDienThoai(),hoaDon.getKhachHang().getEmail());
         this.nhanVien = new NhanVienResponse(hoaDon.getNhanVien().getId(), hoaDon.getNhanVien().getHoTen());
         this.loaiHoaDon = hoaDon.getLoaiHoaDon();
         this.ngayTao = hoaDon.getNgayTao();
         this.kenhBan = hoaDon.getKenhBan();
         this.trangThai = hoaDon.getTrangThai();
+        this.tongTienKhachThanhToan = tongTienKhachThanhToan((hoaDon.getChiTietThanhToans().stream().map(ChiTietThanhToanResponse::new).collect(Collectors.toList())));
+        this.phanTramGiam = tinhPhanTramGiam(this.tongGiaTriHoaDon,hoaDon.getTienGiam()) == null ? 0 :tinhPhanTramGiam(this.tongGiaTriHoaDon,hoaDon.getTienGiam()) ;
     }
 
 

@@ -18,7 +18,7 @@ import java.util.Calendar;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/rest/yeu-cau")
+@RequestMapping("/rest/admin/yeu-cau")
 public class RestYeuCauController {
 
     @Autowired

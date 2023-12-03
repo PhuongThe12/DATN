@@ -47,7 +47,6 @@ public class YeuCauKhachHangServiceImpl implements YeuCauKhachHangService {
         for (YeuCauChiTietRequest ycct: yeuCauRequest.getListYeuCauChiTiet()) {
             HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findById(ycct.getHoaDonChiTiet()).orElse(null);
             LyDo lyDo = lyDoRepository.findById(ycct.getLyDo()).orElse(null);
-            BienTheGiay bienTheGiayTra = bienTheGiayRepository.findById(ycct.getBienTheGiayTra()).orElse(null);
             BienTheGiay bienTheGiayDoi = ycct.getBienTheGiay() == null ? null : bienTheGiayRepository.findById(ycct.getBienTheGiayTra()).orElse(null);
             YeuCauChiTiet yeuCauChiTiet = new YeuCauChiTiet(yeuCauSave,hoaDonChiTiet,bienTheGiayDoi,lyDo,ycct.getTienGiam(),ycct.getThanhTien(),ycct.getTrangThai(),ycct.getLoaiYeuCauChiTiet(),ycct.getTinhTrangSanPham(),ycct.getGhiChu());
             yeuCauChiTietList.add(yeuCauChiTiet);

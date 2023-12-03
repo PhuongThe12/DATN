@@ -22,6 +22,7 @@ app.controller("yeuCauKhachHangListController", function ($scope, $http, $window
 
 app.controller("addYeuCauKhachHangController", function ($scope, $http, $routeParams, $window, $location) {
     const idHoaDon = $routeParams.id;
+
     $scope.mapSanPhamTra = new Map(), $scope.mapSanPhamThayThe = new Map(), $scope.mapYeuCauChiTiet = new Map();
     $scope.listHoaDonChiTiet = [], $scope.listLyDo = [], $scope.listGiaySearch = [];
     $scope.giayChoosed = {}, $scope.giaySearch = {}, $scope.hoaDon = {};
@@ -30,14 +31,36 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
     $scope.tongTienTraHang = 0, $scope.tongTienDoiHang = 0, $scope.tongTienHangDoi = 0;
     $scope.tongTienGiamGia = 0, $scope.tongTienThanhToan = 0;
     $scope.thongTinNhanHang = {}, $scope.thongTinNhanHang.soDienThoaiNhan = '', $scope.thongTinNhanHang.diaChiNhan = '', $scope.thongTinNhanHang.tenNguoiNhan = '';
-    $scope.yeuCau = {};
+    $scope.yeuCau = {},$scope.soLuong = 0,$scope.feeShippingPerOne = 0;
+
     $scope.$watch('curPage + numPerPage', function () {
         $scope.isLoading = true;
         getListHoaDonChiTiet(idHoaDon);
         searchGiay($scope.giaySearch)
         getListLyDo();
     });
+    // $scope.
+    // $watch('feeShippingPerOne', function (value) {
+    //     tinhTienShip();
+    // });
 
+
+    // function tinhTienShip() {
+    //     if ($scope.soLuong <= 0) {
+    //         return;
+    //     }
+    //
+    //     let soDonHang = 0;
+    //     if ($scope.soLuong % 30 === 0) {
+    //         soDonHang = parseInt($scope.soLuong / 30);
+    //     } else {
+    //         soDonHang = parseInt($scope.soLuong / 30) + 1;
+    //     }
+    //
+    //     $scope.phiVanChuyen = Math.round(soDonHang * $scope.feeShippingPerOne);
+    //     $scope.tongTienPhaiTraDatHang = $scope.tongTienPhaiTra + $scope.phiVanChuyen;
+    //
+    // }
 
     $scope.tinhTongTienThanhToan = function () {
         $scope.tongTienThanhToan = 0;
@@ -59,10 +82,11 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
 
     $scope.tinhTongTienHangDoi = function () {
         $scope.tongTienHangDoi = 0;
-
+        $scope.soLuong = 0;
         $scope.mapSanPhamThayThe.forEach((item) => {
             let giaBan = item.bienTheGiay.giaBan;
             $scope.tongTienHangDoi += giaBan;
+            $scope.soLuong += item.soLuongDoi;
         })
         $scope.tinhTongtienGiamGia();
         $scope.tongTienDoiHang = $scope.tongTienHangDoi - $scope.tongTienGiamGia;
@@ -171,7 +195,8 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
     $scope.addToMapSanPhamThayThe = function (bienTheGiayDoi) {
         // Cấu trúc dữ liệu mới cho map
         $scope.mapSanPhamThayThe.set($scope.sanPhamTra.key, {
-            bienTheGiay: bienTheGiayDoi
+            bienTheGiay: bienTheGiayDoi,
+            soLuongDoi: 1
         });
         $scope.listSanPhamDoi = Array.from($scope.mapSanPhamThayThe, ([key, value]) => ({key, value}));
         $scope.tinhTongTienHangDoi();
@@ -528,6 +553,7 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
             });
     }
 
+
     //Chọn địa chỉ
     $scope.diaChiNhanHangMoi = {};
 
@@ -543,6 +569,44 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
         }
         return true;
     }
+
+    // $scope.submitDiaChi = function () {
+    //
+    //     if($scope.checkAddDress() == false) {
+    //         toastr["error"]("Địa chỉ nhận không hợp lệ");
+    //         return;
+    //     }
+    //
+    //     if (!$scope.diaChiNhanHangMoi.provinces || !$scope.diaChiNhanHangMoi.districts || !$scope.diaChiNhanHangMoi.wards || !$scope.diaChiNhanHangMoi.addDress) {
+    //         toastr["error"]("Lấy thông tin địa chỉ thất bại");
+    //         return;
+    //     }
+    //
+    //     $scope.isLoading = true;
+    //     $scope.tenNguoiNhan = $scope.diaChi.tenNguoiNhan;
+    //     $scope.sdtNhan = $scope.diaChi.sdtNguoiNhan;
+    //     $scope.diaChiNhan = $scope.diaChi.detailAdress + ", " + $scope.diaChi.xa.ten + ", " + $scope.diaChi.huyen.ten + ", " + $scope.diaChi.tinh.ten;
+    //     document.getElementById('closeModalThongTinNhanHang').click();
+    //
+    //     logisticInfo.to_address = $scope.diaChi.detailAdress;
+    //     logisticInfo.to_ward_name = $scope.diaChi.xa.ten;
+    //     logisticInfo.to_district_name = $scope.diaChi.huyen.ten;
+    //     logisticInfo.to_province_name = $scope.diaChi.tinh.ten;
+    //     if ($scope.tongTienPhaiTra < 80000000) {
+    //         logisticInfo.insurance_value = parseInt($scope.tongTienPhaiTra);
+    //     }
+    //
+    //     $http.post('https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/preview', logisticInfo)
+    //         .then(response => {
+    //             $scope.feeShippingPerOne = response.data.data.total_fee;
+    //             $scope.isLoading = false;
+    //         })
+    //         .catch(error => {
+    //             toastr["error"]("Lấy thông tin thất bại");
+    //             $scope.feeShippingPerOne = 50000;
+    //             $scope.isLoading = false;
+    //         })
+    // }
 
     //lấy dữ liệu huyện theo id tỉnh
     $scope.changeProvince = function () {
