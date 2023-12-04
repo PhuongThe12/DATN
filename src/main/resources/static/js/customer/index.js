@@ -27,71 +27,32 @@ app.config(function ($routeProvider, $locationProvider) {
         .otherwise({redirectTo: '/list'});
 });
 
-app.controller('navbarController', function ($scope, $http, $location, $cookies) {
+app.controller('navbarController', function ($scope, $http, $location, $cookies, $window) {
 
     $scope.listBienTheGiayLocalStorage = [];
     $scope.tongTien = 0;
-    $scope.loadLocalStorage = function () {
-        var gioHangFromCookies = localStorage.getItem('gioHang') || '[]';
-        $scope.gioHang = JSON.parse(gioHangFromCookies);
-        $scope.gioHang.sort(function (a, b) {
-            return a.idBienTheGiay - b.idBienTheGiay;
-        });
-        var idList = $scope.gioHang.map(function (item) {
-            return item.idBienTheGiay || item.bienTheGiay;
-        });
-        var resultJson = {"ids": idList};
-        $http.post("http://localhost:8080/rest/admin/giay/bien-the/get-all-by-list-id", resultJson)
+    $scope.currentUser = {};
+
+    var storedUserData = $window.localStorage.getItem('currentUser');
+
+    if (storedUserData) {
+        $scope.currentUser = JSON.parse(storedUserData);
+        $http.get("http://localhost:8080/rest/admin/khach-hang/" + $scope.currentUser.idKhachHang)
             .then(function (response) {
-                $scope.listBienTheGiayLocalStorage = response.data;
-                $scope.gioHang.forEach(function (item1) {
-                    var correspondingObject = $scope.listBienTheGiayLocalStorage.find(function (item2) {
-                        return item2.id === item1.idBienTheGiay;
-                    });
-                    if (correspondingObject) {
-                        correspondingObject.soLuongMua = item1.soLuong;
-                    }
-                });
-                $scope.tongTien = 0;
-                $scope.listBienTheGiayLocalStorage.forEach(function (item) {
-                    $scope.tongTien += item.soLuongMua * item.giaBan;
-                })
-            })
-            .catch(function (error) {
-                console.log(error);
-                toastr["error"]("Lấy dữ liệu thất bại");
-                $scope.isLoading = false;
-            });
+                $scope.currentUser.hoTen = response.data.hoTen;
+            }).catch(function (error) {
+
+        })
+
+        $http.get("http://localhost:8080/rest/user/gio-hang/khach-hang/" + $scope.currentUser.idKhachHang)
+            .then(function (response) {
+                $scope.currentUser.idGioHang = response.data.id;
+                console.log($scope.currentUser);
+                $window.localStorage.setItem('currentUser', JSON.stringify($scope.currentUser));
+            }).catch(function (error) {
+
+        })
     }
-
-    // $scope.loadLocalStorage();
-    $scope.loadCartByIdKhachHang = function () {
-        $http.get("http://localhost:8080/rest/user/gio-hang/khach-hang/1").then(function (response) {
-            var bienTheGiayList = [];
-            angular.forEach(response.data.gioHangChiTietResponses, function (gioHangChiTiet) {
-                var bienTheGiay = gioHangChiTiet.bienTheGiay;
-                bienTheGiay.soLuongMua = gioHangChiTiet.soLuong;
-                bienTheGiay.idGioHang = gioHangChiTiet.id;
-                bienTheGiayList.push(bienTheGiay);
-            });
-            $scope.listBienTheGiayLocalStorage = bienTheGiayList;
-            $scope.tongTien = 0;
-            $scope.listBienTheGiayLocalStorage.forEach(function (item) {
-                $scope.tongTien += item.soLuongMua * item.giaBan;
-            });
-
-        }).catch(function (error) {
-            console.log(error);
-            toastr["error"]("Lấy dữ liệu thất bại");
-            $scope.isLoading = false;
-        });
-
-    }
-
-
-    $scope.loadCartByIdKhachHang();
-
-
     $scope.isCartVisible = false;
 
     $scope.hideCart = function () {
@@ -316,7 +277,7 @@ app.controller('listProductController', function ($scope, $http, $location) {
     };
 });
 
-app.controller('detailProductController', function ($scope, $http, $location, $cookies, $routeParams) {
+app.controller('detailProductController', function ($scope, $http, $location, $cookies, $routeParams, $window) {
     $scope.giayChoosed = {}; // Biến thể giày được chọn khi chọn màu + size
 
     const id = $routeParams.id;
@@ -366,76 +327,83 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
 
 
     $scope.themVaoGioHang = function () {
-        //Khách chưa Login
-
-        // if ($scope.giayChoosed.id === undefined) {
-        //     toastr["warning"]("Vui lòng chọn sản phẩm");
-        // } else {
-        //     var giaTriCanThem = {idBienTheGiay: $scope.giayChoosed.id, soLuong: 1};
-        //
-        //     var tonTai = kiemTraTonTai($scope.gioHang, giaTriCanThem.idBienTheGiay);
-        //     if (!tonTai) {
-        //         $scope.gioHang.push(giaTriCanThem);
-        //         $scope.listBienTheGiayLocalStorage.push($scope.giayChoosed);
-        //         toastr["success"]("Thêm vào giỏ hàng thành công");
-        //     } else {
-        //         var index = timViTri($scope.gioHang, giaTriCanThem.idBienTheGiay);
-        //         $scope.gioHang[index].soLuong++;
-        //     }
-        //
-        //     localStorage.setItem('gioHang', JSON.stringify($scope.gioHang));
-        //     $scope.loadLocalStorage();
-        // }
-
-        //Khách đã Login
 
         if (angular.equals({}, $scope.giayChoosed)) {
             toastr["warning"]("Vui lòng chọn sản phẩm");
         } else if ($scope.soLuongMua < 1) {
             toastr["warning"]("Hãy nhập số lượng lớn hơn 0");
         } else {
-            $http.get("http://localhost:8080/rest/admin/giay/" + $scope.giayDetail.id + "/so-luong")
-                .then(function (response) {
-                    var soLuongTrongKho = response.data;
-                    // $http.get("http://localhost:8080/admin/rest/giay/" + $scope.giayDetail.id + "/so-luong")
-                    $http.get("http://localhost:8080/rest/user/gio-hang/1/so-luong/" + $scope.giayDetail.id)
+            var storedUserData = $window.localStorage.getItem('currentUser');
+            if (storedUserData) {
+                $scope.currentUser = JSON.parse(storedUserData);
+                $http.get("http://localhost:8080/rest/admin/giay/" + $scope.giayDetail.id + "/so-luong")
+                    .then(function (response) {
+                        var soLuongTrongKho = response.data;
+                        // $http.get("http://localhost:8080/admin/rest/giay/" + $scope.giayDetail.id + "/so-luong")
+                        $http.get("http://localhost:8080/rest/user/gio-hang/" + $scope.currentUser.idGioHang + "/so-luong/" + $scope.giayDetail.id)
+                            .then(function (response) {
+                                $scope.soLuongGioHangChiTiet = response.data;
+                                console.log(response.data);
+
+                                if ($scope.soLuongMua + response.data > soLuongTrongKho) {
+                                    toastr["warning"]("Số lượng vượt quá trong kho");
+                                } else {
+                                    $http.get("http://localhost:8080/rest/user/gio-hang/khach-hang/" + $scope.currentUser.idKhachHang).then(function (response) {
+                                        $scope.gioHangChiTiet = {};
+                                        $scope.gioHangChiTiet.gioHang = response.data.id;
+                                        $scope.gioHangChiTiet.bienTheGiay = $scope.giayChoosed.id;
+                                        $scope.gioHangChiTiet.soLuong = $scope.soLuongMua;
+                                        console.log($scope.gioHangChiTiet);
+                                        $http.post("http://localhost:8080/rest/user/gio-hang", $scope.gioHangChiTiet)
+                                            .then(function (response) {
+                                                $scope.$parent.isCartVisible = true;
+                                                $scope.loadCartByIdKhachHang();
+
+                                            }).catch(function (error) {
+
+                                        })
+                                    }).catch(function (error) {
+                                        console.log(error);
+                                        toastr["error"]("Lấy dữ liệu thất bại");
+                                        $scope.isLoading = false;
+                                    });
+                                }
+                            }).catch(function (error) {
+
+                        })
+                    }).catch(function (error) {
+                    console.log(error);
+                });
+            } else {
+                var gioHangFromCookies = localStorage.getItem('gioHang') || '[]';
+                $scope.gioHang = JSON.parse(gioHangFromCookies);
+
+                var giaTriCanThem = {idBienTheGiay: $scope.giayChoosed.id, soLuong: $scope.soLuongMua};
+
+                var tonTai = kiemTraTonTai($scope.gioHang, giaTriCanThem.idBienTheGiay);
+                if (!tonTai) {
+                    $scope.gioHang.push(giaTriCanThem);
+                    $scope.listBienTheGiayLocalStorage.push($scope.giayChoosed);
+                    localStorage.setItem('gioHang', JSON.stringify($scope.gioHang));
+                    toastr["success"]("Thêm vào giỏ hàng thành công");
+                } else {
+                    var index = timViTri($scope.gioHang, giaTriCanThem.idBienTheGiay);
+                    $http.get("http://localhost:8080/rest/admin/giay/" + $scope.giayDetail.id + "/so-luong")
                         .then(function (response) {
-                            $scope.soLuongGioHangChiTiet = response.data;
-                            console.log( response.data);
-
-                            if ($scope.soLuongMua + response.data > soLuongTrongKho) {
-                                toastr["warning"]("Số lượng vượt quá trong kho");
+                            if (($scope.gioHang[index].soLuong + $scope.soLuongMua) <= response.data) {
+                                $scope.gioHang[index].soLuong += $scope.soLuongMua;
+                                localStorage.setItem('gioHang', JSON.stringify($scope.gioHang));
                             } else {
-                                $http.get("http://localhost:8080/rest/user/gio-hang/khach-hang/1").then(function (response) {
-                                    $scope.gioHangChiTiet = {};
-                                    $scope.gioHangChiTiet.gioHang = response.data.id;
-                                    $scope.gioHangChiTiet.bienTheGiay = $scope.giayChoosed.id;
-                                    $scope.gioHangChiTiet.soLuong = $scope.soLuongMua;
-                                    console.log($scope.gioHangChiTiet);
-                                    $http.post("http://localhost:8080/rest/user/gio-hang", $scope.gioHangChiTiet)
-                                        .then(function (response) {
-                                            $scope.$parent.isCartVisible = true;
-                                            $scope.loadCartByIdKhachHang();
-
-                                        }).catch(function (error) {
-
-                                    })
-                                }).catch(function (error) {
-                                    console.log(error);
-                                    toastr["error"]("Lấy dữ liệu thất bại");
-                                    $scope.isLoading = false;
-                                });
+                                toastr["error"]("Số lượng trong kho không đủ");
                             }
                         }).catch(function (error) {
-
                     })
-                }).catch(function (error) {
-                console.log(error);
-            });
+                }
+            }
         }
     }
 
-    $scope.getSoLuongInGhct = function(idBienTheGiay) {
+    $scope.getSoLuongInGhct = function (idBienTheGiay) {
         $http.get("http://localhost:8080/rest/user/gio-hang/16/so-luong/" + idBienTheGiay)
             .then(function (response) {
                 $scope.soLuongGioHangChiTiet = response.data;
@@ -787,10 +755,12 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
 })
 
 
-app.controller('cartProductController', function ($scope, $http, $location, $cookies, $timeout) {
+app.controller('cartProductController', function ($scope, $http, $location, $cookies, $timeout, $window) {
     $scope.listBienTheGiayLocalStorage = [];
     $scope.tongTien = 0;
-    // Khách chưa Login
+
+    $scope.gioHang = [];
+
     $scope.loadLocalStorage = function () {
         var gioHangFromCookies = localStorage.getItem('gioHang') || '[]';
         $scope.gioHang = JSON.parse(gioHangFromCookies);
@@ -828,97 +798,140 @@ app.controller('cartProductController', function ($scope, $http, $location, $coo
                 $scope.isLoading = false;
             });
     }
-    //fix_
-    // Khách đã Login
-    $scope.loadCartByIdKhachHang = function () {
-        $http.get("http://localhost:8080/rest/user/gio-hang/khach-hang/1").then(function (response) {
-            console.log(response.data);
-            var bienTheGiayList = [];
 
-            angular.forEach(response.data.gioHangChiTietResponses, function (gioHangChiTiet) {
-                var bienTheGiay = gioHangChiTiet.bienTheGiay;
-                bienTheGiay.soLuongMua = gioHangChiTiet.soLuong;
-                bienTheGiay.idGioHang = gioHangChiTiet.id;
-                bienTheGiayList.push(bienTheGiay);
+    var storedUserData = $window.localStorage.getItem('currentUser');
+
+    if (storedUserData) {
+        $scope.currentUser = JSON.parse(storedUserData);
+        // Khách đã Login
+        $scope.loadCartByIdKhachHang = function () {
+            $http.get("http://localhost:8080/rest/user/gio-hang/khach-hang/" + $scope.currentUser.idKhachHang).then(function (response) {
+                console.log(response.data);
+                var bienTheGiayList = [];
+
+                angular.forEach(response.data.gioHangChiTietResponses, function (gioHangChiTiet) {
+                    var bienTheGiay = gioHangChiTiet.bienTheGiay;
+                    bienTheGiay.soLuongMua = gioHangChiTiet.soLuong;
+                    bienTheGiay.idGioHang = gioHangChiTiet.id;
+                    bienTheGiayList.push(bienTheGiay);
+                });
+                $scope.listBienTheGiayLocalStorage = bienTheGiayList;
+                $scope.tongTien = 0;
+                $scope.listBienTheGiayLocalStorage.forEach(function (item) {
+                    $scope.tongTien += item.soLuongMua * item.giaBan;
+                });
+                console.log($scope.listBienTheGiayLocalStorage);
+
+            }).catch(function (error) {
+                console.log(error);
+                toastr["error"]("Lấy dữ liệu thất bại");
+                $scope.isLoading = false;
             });
-            $scope.listBienTheGiayLocalStorage = bienTheGiayList;
-            $scope.tongTien = 0;
-            $scope.listBienTheGiayLocalStorage.forEach(function (item) {
-                $scope.tongTien += item.soLuongMua * item.giaBan;
-            });
-            console.log($scope.listBienTheGiayLocalStorage);
 
-        }).catch(function (error) {
-            console.log(error);
-            toastr["error"]("Lấy dữ liệu thất bại");
-            $scope.isLoading = false;
-        });
+        }
 
+        $scope.loadCartByIdKhachHang();
+        // $scope.loadLocalStorage();
+    } else {
+        // Khách chưa Login
+        $scope.loadLocalStorage();
     }
-
-
-    $scope.loadCartByIdKhachHang();
-    // $scope.loadLocalStorage();
-
-
     $scope.subtraction = function (bienTheGiay) {
-        console.log(bienTheGiay);
         if (bienTheGiay.soLuongMua < 2) {
             toastr["warning"]("Số lượng phải lớn hơn 0");
         } else {
-            var gioHangChiTietUpdate = {};
-            gioHangChiTietUpdate.id = bienTheGiay.idGioHang;
-            gioHangChiTietUpdate.soLuong = bienTheGiay.soLuongMua - 1;
-            $http.put("http://localhost:8080/rest/user/gio-hang/update/so-luong", gioHangChiTietUpdate)
-                .then(function (response) {
-                    $scope.loadCartByIdKhachHang();
-                }).catch(function (error) {
+            if (!angular.equals({}, $scope.currentUser)) {
+                var gioHangChiTietUpdate = {};
+                gioHangChiTietUpdate.id = bienTheGiay.idGioHang;
+                gioHangChiTietUpdate.soLuong = bienTheGiay.soLuongMua - 1;
+                $http.put("http://localhost:8080/rest/user/gio-hang/update/so-luong", gioHangChiTietUpdate)
+                    .then(function (response) {
+                        $scope.loadCartByIdKhachHang();
+                    }).catch(function (error) {
 
-            })
+                })
+            } else {
+                var index = timViTri($scope.gioHang, bienTheGiay.id);
+                if ($scope.gioHang[index].soLuong >= 2) {
+                    $scope.gioHang[index].soLuong--;
+                }
+                localStorage.setItem('gioHang', JSON.stringify($scope.gioHang));
+                $scope.loadLocalStorage();
+            }
+
+
         }
     }
 
     $scope.summation = function (bienTheGiay) {
-
-        $http.get("http://localhost:8080/rest/admin/giay/" + bienTheGiay.id + "/so-luong")
-            .then(function (response) {
-                if (bienTheGiay.soLuongMua > response.data - 1) {
-                    toastr["warning"]("Số lượng vượt quá trong kho");
-                } else {
-                    var gioHangChiTietUpdate = {};
-                    gioHangChiTietUpdate.id = bienTheGiay.idGioHang;
-                    gioHangChiTietUpdate.soLuong = bienTheGiay.soLuongMua + 1;
-                    $http.put("http://localhost:8080/rest/user/gio-hang/update/so-luong", gioHangChiTietUpdate)
-                        .then(function (response) {
-                            $scope.loadCartByIdKhachHang();
-                        }).catch(function (error) {
-
-                    })
-
-                }
-
-            }).catch(function (error) {
-            console.log(error);
-        })
-
+        if (!angular.equals({}, $scope.currentUser)) {
+            $http.get("http://localhost:8080/rest/admin/giay/" + bienTheGiay.id + "/so-luong")
+                .then(function (response) {
+                    if (bienTheGiay.soLuongMua > response.data - 1) {
+                        toastr["warning"]("Số lượng vượt quá trong kho");
+                    } else {
+                        var gioHangChiTietUpdate = {};
+                        gioHangChiTietUpdate.id = bienTheGiay.idGioHang;
+                        gioHangChiTietUpdate.soLuong = bienTheGiay.soLuongMua + 1;
+                        $http.put("http://localhost:8080/rest/user/gio-hang/update/so-luong", gioHangChiTietUpdate)
+                            .then(function (response) {
+                                $scope.loadCartByIdKhachHang();
+                            }).catch(function (error) {
+                        })
+                    }
+                }).catch(function (error) {
+                console.log(error);
+            })
+        } else {
+            var index = timViTri($scope.gioHang, bienTheGiay.id);
+            $http.get("http://localhost:8080/rest/admin/giay/" + bienTheGiay.id + "/so-luong")
+                .then(function (response) {
+                    if ($scope.gioHang[index].soLuong + 1 > response.data) {
+                        toastr["warning"]("Số lượng vượt quá trong kho");
+                    } else {
+                        $scope.gioHang[index].soLuong++;
+                        localStorage.setItem('gioHang', JSON.stringify($scope.gioHang));
+                        $scope.loadLocalStorage();
+                    }
+                }).catch(function (error) {
+            })
+        }
     }
 
     $scope.deleteBienTheGiay = function (bienTheGiay) {
-        var gioHangChiTietUpdate = {};
-        gioHangChiTietUpdate.id = bienTheGiay.idGioHang;
-        gioHangChiTietUpdate.soLuong = bienTheGiay.soLuongMua
-        console.log(gioHangChiTietUpdate);
-        $http.delete("http://localhost:8080/rest/user/gio-hang/delete", {
-            data: JSON.stringify(gioHangChiTietUpdate),
-            headers: {'Content-Type': 'application/json;charset=utf-8'}
-        })
-            .then(function (response) {
-                $scope.loadCartByIdKhachHang();
+        if (!angular.equals({}, $scope.currentUser)) {
+            var gioHangChiTietUpdate = {};
+            gioHangChiTietUpdate.id = bienTheGiay.idGioHang;
+            gioHangChiTietUpdate.soLuong = bienTheGiay.soLuongMua
+            console.log(gioHangChiTietUpdate);
+            $http.delete("http://localhost:8080/rest/user/gio-hang/delete", {
+                data: JSON.stringify(gioHangChiTietUpdate),
+                headers: {'Content-Type': 'application/json;charset=utf-8'}
             })
-            .catch(function (error) {
-                console.error('Error:', error);
-            });
+                .then(function (response) {
+                    $scope.loadCartByIdKhachHang();
+                })
+                .catch(function (error) {
+                    console.error('Error:', error);
+                });
+        } else {
+            var index = timViTri($scope.gioHang, bienTheGiay.id);
+            $scope.gioHang.splice(index, 1);
+            localStorage.setItem('gioHang', JSON.stringify($scope.gioHang));
+
+        }
+
     }
+
+    function timViTri(arr, id) {
+        for (var i = 0; i < arr.length; i++) {
+            if (arr[i].idBienTheGiay === id) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
 
     $scope.productsLessQuantity = [];
     $scope.productsSoldOutQuantity = [];
@@ -970,6 +983,9 @@ app.controller('cartProductController', function ($scope, $http, $location, $coo
 
     }
 
+    $scope.deleteSoldOut = function(){
+        console.log($scope.productsSoldOutQuantity);
+    }
 
     $scope.giamSoLuong = function () {
         if ($scope.soLuongMua > 1) {
@@ -1129,7 +1145,7 @@ app.controller("detailDonHangController", function ($scope, $http, $window, $loc
     });
 });
 
-app.controller("thanhToanController", function ($scope, $http, $window, $location, $routeParams,$timeout) {
+app.controller("thanhToanController", function ($scope, $http, $window, $location, $routeParams, $timeout) {
     $scope.listBienTheGiayLocalStorage = [];
     $scope.tongTien = 0;
     $scope.idGioHang;
@@ -1153,7 +1169,6 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
         $http.get(host + "/rest/districts/" + $scope.diaChiNhanHang.provinces.id)
             .then(function (response) {
                 $scope.districts = response.data;
-                // console.log($scope.diaChiNhanHang.provinces)
             })
             .catch(function (error) {
                 toastr["error"]("Lấy dữ huyện thất bại");
@@ -1174,16 +1189,8 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
         }
 
     }
-//fix_
-    $http.get(host + '/rest/admin/dia-chi-nhan-hang/2')
-        .then(function (response) {
-            $scope.diaChiNhanHang = response.data;
-            setData();
-        }).catch(function (error) {
-        toastr["error"]("Lấy dữ liệu thất bại");
-        // $location.path("/list");
-    });
 
+//fix_
     function setData() {
         for (let i = 0; i < $scope.provinces.length; i++) {
             if ($scope.provinces[i].ten === $scope.diaChiNhanHang.provinces) {
@@ -1222,77 +1229,92 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
 
     }
 
-//fix_
-    $http.get("http://localhost:8080/rest/admin/khach-hang/1").then(function (response) {
-        $scope.khachHang = response.data;
-    }).catch(function (error) {
-        console.log(error)
-    })
+    var storedUserData = $window.localStorage.getItem('currentUser');
 
-    $scope.loadLocalStorage = function () {
-        var gioHangFromCookies = localStorage.getItem('gioHang') || '[]';
-        $scope.gioHang = JSON.parse(gioHangFromCookies);
-        $scope.gioHang.sort(function (a, b) {
-            return a.idBienTheGiay - b.idBienTheGiay;
-        });
-
-        var idList = $scope.gioHang.map(function (item) {
-            return item.idBienTheGiay || item.bienTheGiay;
-        });
-        var resultJson = {"ids": idList};
-        $http.post("http://localhost:8080/rest/admin/giay/bien-the/get-all-by-list-id", resultJson)
+    if (storedUserData) {
+        $http.get(host + '/rest/admin/dia-chi-nhan-hang/2')
             .then(function (response) {
-                $scope.listBienTheGiayLocalStorage = response.data;
-                $scope.gioHang.forEach(function (item1) {
-                    var correspondingObject = $scope.listBienTheGiayLocalStorage.find(function (item2) {
-                        return item2.id === item1.idBienTheGiay;
-                    });
-                    if (correspondingObject) {
-                        correspondingObject.soLuongMua = item1.soLuong;
-                    }
+                $scope.diaChiNhanHang = response.data;
+                setData();
+            }).catch(function (error) {
+            toastr["error"]("Lấy dữ liệu thất bại");
+            // $location.path("/list");
+        });
+        $scope.currentUser = JSON.parse(storedUserData);
+        $http.get("http://localhost:8080/rest/admin/khach-hang/" + $scope.currentUser.idKhachHang).then(function (response) {
+            $scope.khachHang = response.data;
+        }).catch(function (error) {
+            console.log(error)
+        })
+
+        $scope.loadCartByIdKhachHang = function () {
+            $http.get("http://localhost:8080/rest/user/gio-hang/khach-hang/" + $scope.currentUser.idKhachHang).then(function (response) {
+                console.log(response.data);
+                var bienTheGiayList = [];
+                $scope.idGioHang = response.data.id;
+                angular.forEach(response.data.gioHangChiTietResponses, function (gioHangChiTiet) {
+                    var bienTheGiay = gioHangChiTiet.bienTheGiay;
+                    bienTheGiay.soLuongMua = gioHangChiTiet.soLuong;
+                    bienTheGiay.idGioHang = gioHangChiTiet.id;
+                    bienTheGiayList.push(bienTheGiay);
                 });
+                $scope.listBienTheGiayLocalStorage = bienTheGiayList;
                 $scope.tongTien = 0;
                 $scope.listBienTheGiayLocalStorage.forEach(function (item) {
                     $scope.tongTien += item.soLuongMua * item.giaBan;
                 });
-
                 console.log($scope.listBienTheGiayLocalStorage);
 
-            })
-            .catch(function (error) {
+            }).catch(function (error) {
                 console.log(error);
                 toastr["error"]("Lấy dữ liệu thất bại");
                 $scope.isLoading = false;
             });
-    }
-//fix_
-    $scope.loadCartByIdKhachHang = function () {
-        $http.get("http://localhost:8080/rest/user/gio-hang/khach-hang/1").then(function (response) {
-            console.log(response.data);
-            var bienTheGiayList = [];
-            $scope.idGioHang = response.data.id;
-            angular.forEach(response.data.gioHangChiTietResponses, function (gioHangChiTiet) {
-                var bienTheGiay = gioHangChiTiet.bienTheGiay;
-                bienTheGiay.soLuongMua = gioHangChiTiet.soLuong;
-                bienTheGiay.idGioHang = gioHangChiTiet.id;
-                bienTheGiayList.push(bienTheGiay);
-            });
-            $scope.listBienTheGiayLocalStorage = bienTheGiayList;
-            $scope.tongTien = 0;
-            $scope.listBienTheGiayLocalStorage.forEach(function (item) {
-                $scope.tongTien += item.soLuongMua * item.giaBan;
-            });
-            console.log($scope.listBienTheGiayLocalStorage);
 
-        }).catch(function (error) {
-            console.log(error);
-            toastr["error"]("Lấy dữ liệu thất bại");
-            $scope.isLoading = false;
-        });
+        }
+        // $scope.loadLocalStorage();
+        $scope.loadCartByIdKhachHang();
+    } else {
+        $scope.loadLocalStorage = function () {
+            var gioHangFromCookies = localStorage.getItem('gioHang') || '[]';
+            $scope.gioHang = JSON.parse(gioHangFromCookies);
+            $scope.gioHang.sort(function (a, b) {
+                return a.idBienTheGiay - b.idBienTheGiay;
+            });
 
+            var idList = $scope.gioHang.map(function (item) {
+                return item.idBienTheGiay || item.bienTheGiay;
+            });
+            var resultJson = {"ids": idList};
+            $http.post("http://localhost:8080/rest/admin/giay/bien-the/get-all-by-list-id", resultJson)
+                .then(function (response) {
+                    $scope.listBienTheGiayLocalStorage = response.data;
+                    $scope.gioHang.forEach(function (item1) {
+                        var correspondingObject = $scope.listBienTheGiayLocalStorage.find(function (item2) {
+                            return item2.id === item1.idBienTheGiay;
+                        });
+                        if (correspondingObject) {
+                            correspondingObject.soLuongMua = item1.soLuong;
+                        }
+                    });
+                    $scope.tongTien = 0;
+                    $scope.listBienTheGiayLocalStorage.forEach(function (item) {
+                        $scope.tongTien += item.soLuongMua * item.giaBan;
+                    });
+
+                    console.log($scope.listBienTheGiayLocalStorage);
+
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    toastr["error"]("Lấy dữ liệu thất bại");
+                    $scope.isLoading = false;
+                });
+        }
+
+        $scope.loadLocalStorage();
     }
-    // $scope.loadLocalStorage();
-    $scope.loadCartByIdKhachHang();
+
     $scope.getErrorId = function (error) {
         return error.split(':')[0].trim();
     };
@@ -1302,27 +1324,60 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
     // Thanh toán
     $scope.thanhToan = function () {
         if ($scope.listBienTheGiayLocalStorage.length != 0) {
-            $scope.hoaDonThanhToan = {};
-            $scope.hoaDonThanhToan.khachHang = $scope.khachHang;
-            $scope.hoaDonThanhToan.phiShip = 1000;
-            $scope.hoaDonThanhToan.soDienThoaiNhan = $scope.diaChiNhanHang.soDienThoaiNhan;
-            $scope.hoaDonThanhToan.diaChiNhan = $scope.diaChiNhanHang.wards.fullName + ', ' + $scope.diaChiNhanHang.districts.fullName + ', ' + $scope.diaChiNhanHang.provinces.fullName;
-            $scope.hoaDonThanhToan.trangThai = 4;
-            $scope.hoaDonThanhToan.email = $scope.khachHang.email;
-            $scope.hoaDonThanhToan.bienTheGiayRequests = $scope.listBienTheGiayLocalStorage;
-            $scope.hoaDonThanhToan.id = $scope.idGioHang;
-            console.log($scope.hoaDonThanhToan);
-            $http.post("http://localhost:8080/rest/user/hoa-don", $scope.hoaDonThanhToan)
+
+            $http.post("/rest/user/gio-hang/check-so-luong", $scope.listBienTheGiayLocalStorage)
                 .then(function (response) {
-                    $location.path("/don-hang");
+                    $scope.hoaDonThanhToan = {};
+                    $scope.hoaDonThanhToan.khachHang = $scope.khachHang;
+                    $scope.hoaDonThanhToan.phiShip = 1000;
+                    $scope.hoaDonThanhToan.soDienThoaiNhan = $scope.diaChiNhanHang.soDienThoaiNhan;
+                    $scope.hoaDonThanhToan.diaChiNhan = $scope.diaChiNhanHang.wards.fullName + ', ' + $scope.diaChiNhanHang.districts.fullName + ', ' + $scope.diaChiNhanHang.provinces.fullName;
+                    $scope.hoaDonThanhToan.trangThai = 4;
+                    $scope.hoaDonThanhToan.email = $scope.khachHang.email;
+                    $scope.hoaDonThanhToan.bienTheGiayRequests = $scope.listBienTheGiayLocalStorage;
+                    $scope.hoaDonThanhToan.id = $scope.idGioHang;
+                    $http.post("http://localhost:8080/rest/user/hoa-don", $scope.hoaDonThanhToan)
+                        .then(function (response) {
+                            $location.path("/don-hang");
+                        }).catch(function (error) {
+                        console.log(error);
+                        if (error.status == 400) {
+                            toastr["warning"]("Giỏ hàng đã được thanh toán , vui lòng load lại trang để kiểm tra lại !");
+                        }
+                    })
+
+                    $scope.showErrorMessages = function (errorData) {
+
+
+                        for (let i = 0; i < errorData.length; i++) {
+                            let errorParts = errorData[i].split(':');
+                            let errorId = errorParts[0].trim();
+                            let status = errorParts[1].trim();
+
+                            // Tìm sản phẩm có ID trùng với errorId trong danh sách và hiển thị message
+                            let productWithError = $scope.listBienTheGiayLocalStorage.find(function (product) {
+                                return product.id === parseInt(errorId);
+                            });
+
+                            if (productWithError && parseInt(status) === 2) {
+                                $scope.productsLessQuantity.push(productWithError);
+                            } else {
+                                $scope.productsSoldOutQuantity.push(productWithError);
+                            }
+                        }
+                        if ($scope.productsLessQuantity.length > 0 || $scope.productsSoldOutQuantity.length > 0) {
+                            var soldoutElement = document.getElementById('soldout');
+                            if (soldoutElement) {
+                                $timeout(function () {
+                                    soldoutElement.click();
+                                });
+                            }
+                        }
+                    };
                 }).catch(function (error) {
-                console.log(error);
-                if (error.status == 400) {
-                    toastr["warning"]("Giỏ hàng đã được thanh toán , vui lòng load lại trang để kiểm tra lại !");
-                } else if (error.status == 409) {
-                    $scope.showErrorMessages(error.data);
-                }
             })
+
+
         } else {
             toastr["warning"]("Giỏ hàng trống , vui lòng thêm sản phẩm !");
         }
@@ -1382,7 +1437,3 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
         $scope.isExpanded = !$scope.isExpanded;
     };
 })
-app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $location, $routeParams) {
-
-
-});

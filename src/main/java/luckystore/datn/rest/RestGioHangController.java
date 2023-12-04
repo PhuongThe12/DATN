@@ -40,7 +40,6 @@ public class RestGioHangController {
 
     @GetMapping("/{idGioHang}/so-luong/{id}")
     public ResponseEntity<?> getSoLuong(@PathVariable("idGioHang") Long idGioHang, @PathVariable("id") Long id) {
-        System.out.println(idGioHang + " " + id);
         return ResponseEntity.ok(gioHangService.getSoLuong(id, idGioHang));
     }
 

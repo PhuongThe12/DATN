@@ -91,6 +91,7 @@
                           </div>
                       </div>
                   </div>
+                  <button class="btn btn-dark" ng-click="deleteSoldOut()">Xóa hết</button>
               </div>
                 <div ng-show="productsLessQuantity.length > 0">
                     <h5>Sản phẩm vượt quá số lượng</h5>
@@ -107,6 +108,11 @@
                             <div class="d-flex align-items-center justify-content-between">
                                 <p class="font-size-14-ncl text-secondary">Kích cỡ : {{bienTheGiay.kichThuoc.ten}} / Màu Sắc : {{bienTheGiay.mauSac.ten}}</p>
                                 <p class="font-size-16-ncl fw-bold text-dark">{{bienTheGiay.giaBan | number}} ₫</p>
+                            </div>
+                            <div>
+                                <p class="font-size-14-ncl text-secondary">Số lượng còn trong kho : {{bienTheGiay.soLuong}}</p>
+                                <p class="font-size-14-ncl text-secondary">Số lượng mua: {{bienTheGiay.soLuongMua}}</p>
+
                             </div>
                         </div>
                     </div>

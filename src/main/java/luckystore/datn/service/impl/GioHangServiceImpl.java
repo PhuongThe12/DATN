@@ -65,6 +65,16 @@ public class GioHangServiceImpl implements GioHangService {
         return gioHangChiTietRepository.getSoLuong(id, idGioHang);
     }
 
+    @Override
+    public void deleteAllGioHangChiTiet(List<GioHangChiTietRequest> gioHangChiTietRequestList) {
+        List<GioHangChiTiet> gioHangChiTietList = new ArrayList<>();
+        for (GioHangChiTietRequest ghct : gioHangChiTietRequestList) {
+            GioHangChiTiet gioHangChiTiet = getGioHangChiTiet(new GioHangChiTiet(), ghct);
+            gioHangChiTietList.add(gioHangChiTiet);
+        }
+        gioHangChiTietRepository.deleteAll(gioHangChiTietList);
+    }
+
     public GioHangChiTiet getGioHangChiTiet(GioHangChiTiet gioHangChiTiet, GioHangChiTietRequest gioHangChiTietRequest) {
         GioHangChiTietResponse gioHangChiTietResponse = gioHangChiTietRepository.findByGioHangAndBienTheGiay(gioHangChiTietRequest.getGioHang(), gioHangChiTietRequest.getBienTheGiay());
         if (gioHangChiTietResponse == null) {
@@ -91,12 +101,13 @@ public class GioHangServiceImpl implements GioHangService {
     private void checkSoLuongForList(Set<BienTheGiayGioHangRequest> list) {
         List<String> errors = new ArrayList<>();
         for (BienTheGiayGioHangRequest bienTheGiayRequest : list) {
-            if (bienTheGiayRequest.getSoLuongMua() > bienTheGiayRepository.getSoLuong(bienTheGiayRequest.getId())) {
+            Integer soLuongKho = bienTheGiayRepository.getSoLuong(bienTheGiayRequest.getId());
+            if (bienTheGiayRequest.getSoLuongMua() > soLuongKho) {
                 String error = "";
                 if (bienTheGiayRepository.getSoLuong(bienTheGiayRequest.getId()) == 0) {
                     error = "" + bienTheGiayRequest.getId() + ": 1";
                 } else {
-                    error = "" + bienTheGiayRequest.getId() + ": 2";
+                    error = "" + bienTheGiayRequest.getId() + ": 2" + ": " + soLuongKho;
                 }
                 errors.add(error);
 

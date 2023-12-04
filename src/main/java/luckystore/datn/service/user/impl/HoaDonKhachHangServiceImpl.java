@@ -58,7 +58,7 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
 
 
         if (gioHangChiTietResponseList.size() != 0) {
-            checkSoLuong(gioHangThanhToanRequest.getBienTheGiayRequests());
+//            checkSoLuong(gioHangThanhToanRequest.getBienTheGiayRequests());
             HoaDon hoaDonSaved = hoaDonRepository.save(getHoaDon(new HoaDon(), gioHangThanhToanRequest));
             Set<HoaDonChiTiet> hoaDonChiTiets = getBienTheGiay(gioHangThanhToanRequest.getBienTheGiayRequests(), hoaDonSaved);
             hoaDonChiTietRepository.saveAll(hoaDonChiTiets);

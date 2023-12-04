@@ -36,6 +36,12 @@
         <div class=" collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav ms-auto ">
                 <div>
+                     <span ng-if="currentUser.username">
+                        {{ currentUser.hoTen }}
+                    </span>
+                                    <span ng-if="!currentUser.username">
+                        Login
+                    </span>
                     <a href=""><i class="far fa-user" style="color: black;font-size: 23px;"></i></a>
                 </div>
                 <div class="ps-3">
