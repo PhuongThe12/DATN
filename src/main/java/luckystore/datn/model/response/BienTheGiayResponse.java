@@ -30,7 +30,7 @@ public class BienTheGiayResponse extends BaseBienTheResponse {
     private String hinhAnh;
 
     private BigDecimal giaBan;
-    
+
     private Integer khuyenMai = 0;
 
     private String barCode;
@@ -43,7 +43,7 @@ public class BienTheGiayResponse extends BaseBienTheResponse {
 
     private GiayResponse giayResponse;
 
-    public BienTheGiayResponse(BienTheGiay bienTheGiay, int ...level) {
+    public BienTheGiayResponse(BienTheGiay bienTheGiay, int... level) {
         if (bienTheGiay != null) {
             this.id = bienTheGiay.getId();
             this.soLuong = bienTheGiay.getSoLuong();
@@ -54,7 +54,7 @@ public class BienTheGiayResponse extends BaseBienTheResponse {
             this.trangThai = bienTheGiay.getTrangThai();
             this.mauSac = new MauSacResponse(bienTheGiay.getMauSac());
             this.kichThuoc = new KichThuocResponse(bienTheGiay.getKichThuoc());
-            if(bienTheGiay.getGiay() != null && level != null) {
+            if (bienTheGiay.getGiay() != null && level != null) {
                 giayResponse = new GiayResponse();
                 giayResponse.setId(bienTheGiay.getGiay().getId());
                 giayResponse.setLstAnh(bienTheGiay.getGiay().getLstAnh().stream().map(HinhAnh::getLink).toList());
@@ -75,10 +75,12 @@ public class BienTheGiayResponse extends BaseBienTheResponse {
         this.kichThuoc = KichThuocResponse.builder().ten(tenKT).build();
     }
 
-    public BienTheGiayResponse(Long id, String tenKT, String tenMS, Integer soLuong, BigDecimal giaBan, Giay giay) {
+    public BienTheGiayResponse(Long id, String tenKT, String tenMS, Integer soLuong, BigDecimal giaBan, String hinhAnh, Integer trangThai, Giay giay) {
         this.id = id;
         this.soLuong = soLuong;
         this.giaBan = giaBan;
+        this.hinhAnh = hinhAnh;
+        this.trangThai = trangThai;
         this.mauSac = MauSacResponse.builder().ten(tenMS).build();
         this.kichThuoc = KichThuocResponse.builder().ten(tenKT).build();
         this.giayResponse = GiayResponse.builder().ten(giay.getTen()).build();

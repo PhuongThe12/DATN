@@ -13,6 +13,10 @@ public class UserDetailToken {
 
     private String tenDangNhap;
 
+    private String hoTen;
+
+    private String email;
+
     private String role;
 
 }

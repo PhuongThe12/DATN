@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/rest/hang-khach-hang")
+@RequestMapping("/rest/admin/hang-khach-hang")
 public class RestHangKhachHangController {
     @Autowired
     private HangKhachHangService hangKhachHangService;

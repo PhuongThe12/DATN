@@ -3,20 +3,24 @@ package luckystore.datn.repository;
 import luckystore.datn.infrastructure.constraints.TrangThaiHoaDon;
 import luckystore.datn.entity.HoaDon;
 import luckystore.datn.model.request.HoaDonSearch;
+import luckystore.datn.model.request.HoaDonSearchP;
 import luckystore.datn.model.response.HoaDonBanHangResponse;
 import luckystore.datn.model.response.HoaDonResponse;
 import luckystore.datn.model.response.HoaDonYeuCauRespone;
+import luckystore.datn.model.response.MuiGiayResponse;
 import luckystore.datn.model.response.print.HoaDonPrintResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
+public interface HoaDonRepository extends JpaRepository<HoaDon,Long> {
 
     @Query("select new luckystore.datn.model.response.HoaDonResponse(hd) from HoaDon hd")
     List<HoaDonResponse> findAllResponse();
@@ -25,7 +29,7 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
             "WHERE (:searchText IS NULL OR hd.ghiChu LIKE %:searchText%) AND (:status IS NULL OR hd.trangThai = :status)")
     Page<HoaDonResponse> getPageResponse(String searchText, Integer status, Pageable pageable);
 
-    @Query("SELECT new luckystore.datn.model.response.HoaDonYeuCauRespone(hd, hd.hoaDonGoc.id)" +
+    @Query("SELECT new luckystore.datn.model.response.HoaDonYeuCauRespone(hd, 'getAllYeuCau' )" +
             "FROM HoaDon hd " +
             "left JOIN hd.khachHang kh on hd.khachHang.id = kh.id " +
             "left JOIN hd.nhanVien nv on hd.nhanVien.id = nv.id " +
@@ -49,50 +53,18 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
             " order by hd.ngayTao desc")
     List<HoaDonBanHangResponse> getAllChuaThanhToanBanHang();
 
+    @Query("SELECT new luckystore.datn.model.response.HoaDonYeuCauRespone(hd) FROM HoaDon hd WHERE hd.id = :id")
+    HoaDonYeuCauRespone getOneHoaDonYeuCau(Long id);
+
     @Query("SELECT new luckystore.datn.model.response.HoaDonBanHangResponse(hd.id, hdct, hd.trangThai)  FROM HoaDon hd " +
             "left join hd.listHoaDonChiTiet hdct " +
             "where hd.id = :id ")
     List<HoaDonBanHangResponse> getAllById(Long id);
 
-    @Query("SELECT new luckystore.datn.model.response.HoaDonBanHangResponse(hd.id)  FROM HoaDon hd " +
-            "where hd.trangThai = " + TrangThaiHoaDon.CHUA_THANH_TOAN +
-            " order by hd.ngayTao desc")
-    List<HoaDonBanHangResponse> getAllChuaThanhToan();
-
-    @Query("SELECT new luckystore.datn.model.response.HoaDonBanHangResponse(hd.id)  FROM HoaDon hd " +
-            "where hd.trangThai = " + TrangThaiHoaDon.DA_HUY +
-            " order by hd.ngayTao desc")
-    List<HoaDonBanHangResponse> getAllDaHuy();
-
-    @Query("SELECT new luckystore.datn.model.response.HoaDonBanHangResponse(hd.id)  FROM HoaDon hd " +
-            "where hd.trangThai = " + TrangThaiHoaDon.DA_THANH_TOAN +
-            " order by hd.ngayTao desc")
-    List<HoaDonBanHangResponse> getAllDaThanhToan();
-
-    @Query("SELECT new luckystore.datn.model.response.HoaDonBanHangResponse(hd.id)  FROM HoaDon hd " +
-            "where hd.trangThai = " + TrangThaiHoaDon.CHO_GIAO_HANG +
-            " order by hd.ngayTao desc")
-    List<HoaDonBanHangResponse> getAllChoGiaoHang();
-
-    @Query("SELECT new luckystore.datn.model.response.HoaDonBanHangResponse(hd.id)  FROM HoaDon hd " +
-            "where hd.trangThai = " + TrangThaiHoaDon.CHO_XAC_NHAN +
-            " order by hd.ngayTao desc")
-    List<HoaDonBanHangResponse> getAllChoXacNhan();
-
-    @Query("SELECT new luckystore.datn.model.response.HoaDonBanHangResponse(hd.id)  FROM HoaDon hd " +
-            "where hd.trangThai = " + TrangThaiHoaDon.HOAN_HANG +
-            " order by hd.ngayTao desc")
-    List<HoaDonBanHangResponse> getAllHoanHang();
-
-    @Query("SELECT new luckystore.datn.model.response.HoaDonBanHangResponse(hd.id)  FROM HoaDon hd " +
-            "where hd.trangThai = " + TrangThaiHoaDon.DA_HOAN_HANG +
-            " order by hd.ngayTao desc")
-    List<HoaDonBanHangResponse> getAllDaHoanHang();
-
     @Query("SELECT hd.id FROM HoaDon hd where hd.id = :id")
     Long getIdById(Long id);
 
-    @Query("select new luckystore.datn.model.response.HoaDonYeuCauRespone(hd, hd.hoaDonGoc.id) from HoaDon hd " +
+    @Query("select new luckystore.datn.model.response.HoaDonYeuCauRespone(hd, hd.hoaDonGoc) from HoaDon hd " +
             "WHERE hd.id = :id")
     HoaDonYeuCauRespone getHoaDonYeuCauResponse(Long id);
 
@@ -103,6 +75,36 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
 
     @Query("select new luckystore.datn.model.response.print.HoaDonPrintResponse(hd) from HoaDon hd where hd.id = :id")
     HoaDonPrintResponse getPrint(Long id);
+
+    @Query("select new luckystore.datn.model.response.print.HoaDonPrintResponse(hd, 2) from HoaDon hd " +
+            "where (:#{#hoaDonSearch.id} is null or hd.id = :#{#hoaDonSearch.id}) " +
+            "and (:#{#hoaDonSearch.denNgay} is null or hd.ngayTao <= :#{#hoaDonSearch.denNgay}) " +
+            "and (:#{#hoaDonSearch.tuNgay} is null or hd.ngayTao >= :#{#hoaDonSearch.tuNgay}) " +
+            "and hd.trangThai = :#{#hoaDonSearch.trangThai} order by hd.ngayTao desc")
+    Page<HoaDonPrintResponse> getAllBySearch(HoaDonSearchP hoaDonSearch, Pageable pageable);
+
+    @Query("select new luckystore.datn.model.response.print.HoaDonPrintResponse(hd, 2) from HoaDon hd " +
+            "where (:#{#hoaDonSearch.id} is null or hd.id = :#{#hoaDonSearch.id}) " +
+            "and (:#{#hoaDonSearch.denNgay} is null or hd.ngayShip <= :#{#hoaDonSearch.denNgay}) " +
+            "and (:#{#hoaDonSearch.tuNgay} is null or hd.ngayShip >= :#{#hoaDonSearch.tuNgay}) " +
+            "and hd.trangThai = :#{#hoaDonSearch.trangThai} order by hd.ngayShip desc")
+    Page<HoaDonPrintResponse> getAllBySearchOrderNgayShip(HoaDonSearchP hoaDonSearch, Pageable pageable);
+
+
+    @Query("select new luckystore.datn.model.response.print.HoaDonPrintResponse(hd, 2) from HoaDon hd " +
+            "where (:#{#hoaDonSearch.id} is null or hd.id = :#{#hoaDonSearch.id}) " +
+            "and (:#{#hoaDonSearch.denNgay} is null or hd.ngayThanhToan <= :#{#hoaDonSearch.denNgay}) " +
+            "and (:#{#hoaDonSearch.tuNgay} is null or hd.ngayThanhToan >= :#{#hoaDonSearch.tuNgay}) " +
+            "and hd.trangThai = :#{#hoaDonSearch.trangThai} order by hd.ngayThanhToan desc")
+    Page<HoaDonPrintResponse> getAllBySearchOrderNgayThanhToan(HoaDonSearchP hoaDonSearch, Pageable pageable);
+
+
+
+    @Query("select hd from HoaDon hd where hd.id in :ids")
+    List<HoaDon> getAllByIds(List<Long> ids);
+
+    @Query("select hd from HoaDon hd where hd.hoaDonGoc = :id")
+    List<HoaDon> getHoaDonDoiTra(Long id);
 }
 
 

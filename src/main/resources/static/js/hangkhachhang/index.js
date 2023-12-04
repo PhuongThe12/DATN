@@ -28,7 +28,7 @@ app.controller("addHangKhachHangController", function ($scope, $http, $location)
         if ($scope.hangKhachHangForm.$invalid) {
             return;
         }
-        $http.post(host + '/admin/rest/hang-khach-hang', $scope.hangKhachHang)
+        $http.post(host + '/rest/admin/hang-khach-hang', $scope.hangKhachHang)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -75,7 +75,7 @@ app.controller("hangKhachHangListController", function ($scope, $http, $window, 
     }
 
     function getData(currentPage) {
-        let apiUrl = host + '/admin/rest/hang-khach-hang?page=' + currentPage;
+        let apiUrl = host + '/rest/admin/hang-khach-hang?page=' + currentPage;
         if (searchText) {
             apiUrl += '&search=' + searchText;
         }
@@ -103,9 +103,11 @@ app.controller("hangKhachHangListController", function ($scope, $http, $window, 
             });
     }
 
+    //modal
+
     $scope.detailHangKhachHang = function (val) {
         var id = val;
-        $http.get(host + '/admin/rest/hang-khach-hang/' + id)
+        $http.get(host + '/rest/admin/hang-khach-hang/' + id)
             .then(function (response) {
                 $scope.HangKhachHangDetail = response.data;
                 const button = document.querySelector('[data-bs-target="#showHangKhachHang"]');
@@ -129,7 +131,7 @@ app.controller("updateHangKhachHangController", function ($scope, $http, $routeP
     $scope.change = function (input) {
         input.$dirty = true;
     }
-    $http.get(host + '/admin/rest/hang-khach-hang/' + id)
+    $http.get(host + '/rest/admin/hang-khach-hang/' + id)
         .then(function (response) {
             $scope.hangKhachHang = response.data;
         }).catch(function (error) {
@@ -141,7 +143,7 @@ app.controller("updateHangKhachHangController", function ($scope, $http, $routeP
         if ($scope.hangKhachHangForm.$invalid) {
             return;
         }
-        $http.put(host + '/admin/rest/hang-khach-hang/' + id, $scope.hangKhachHang)
+        $http.put(host + '/rest/admin/hang-khach-hang/' + id, $scope.hangKhachHang)
             .then(function (response) {
                 if (response.status == 200) {
                     toastr["success"]("Cập nhật thành công")

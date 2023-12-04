@@ -46,7 +46,7 @@ app.controller("addDeGiayController", function ($scope, $http, $location) {
             $scope.isLoading = false;
             return;
         }
-        $http.post(host + '/admin/rest/de-giay', $scope.deGiay)
+        $http.post(host + '/rest/admin/de-giay', $scope.deGiay)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -91,7 +91,7 @@ app.controller("deGiayListController", function ($scope, $http, $window, $locati
 
     function getData(currentPage) {
         $scope.isLoading = true;
-        let apiUrl = host + '/admin/rest/de-giay?page=' + currentPage;
+        let apiUrl = host + '/rest/admin/de-giay?page=' + currentPage;
         if (searchText) {
             apiUrl += '&search=' + searchText;
         }
@@ -145,7 +145,7 @@ app.controller("updateDeGiayController", function ($scope, $http, $routeParams, 
     $scope.change = function (input) {
         input.$dirty = true;
     }
-    $http.get(host + '/admin/rest/de-giay/' + id)
+    $http.get(host + '/rest/admin/de-giay/' + id)
         .then(function (response) {
             $scope.deGiay = response.data;
         }).catch(function (error) {
@@ -176,7 +176,7 @@ app.controller("updateDeGiayController", function ($scope, $http, $routeParams, 
             $scope.isLoading = false;
             return;
         }
-        $http.put(host + '/admin/rest/de-giay/' + id, $scope.deGiay)
+        $http.put(host + '/rest/admin/de-giay/' + id, $scope.deGiay)
             .then(function (response) {
                 if (response.status == 200) {
                     toastr["success"]("Cập nhật thành công")

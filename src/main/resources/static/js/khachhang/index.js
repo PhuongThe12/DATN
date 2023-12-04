@@ -32,7 +32,7 @@ app.controller("addKhachHangController", function ($scope, $http, $location) {
         if ($scope.khachHangForm.$invalid) {
             return;
         }
-        $http.post(host + '/admin/rest/khach-hang', $scope.khachHang)
+        $http.post(host + '/rest/admin/khach-hang', $scope.khachHang)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -161,7 +161,7 @@ app.controller("khachhangListController", function ($scope, $http, $window, $loc
     }
 
     function getData(currentPage) {
-        let apiUrl = host + '/admin/rest/khach-hang?page=' + currentPage;
+        let apiUrl = host + '/rest/admin/khach-hang?page=' + currentPage;
         if (searchText) {
             apiUrl += '&search=' + searchText;
         }
@@ -192,7 +192,7 @@ app.controller("khachhangListController", function ($scope, $http, $window, $loc
 
     $scope.detailKhachHang = function (val) {
         var id = val;
-        $http.get(host + '/admin/rest/khach-hang/' + id)
+        $http.get(host + '/rest/admin/khach-hang/' + id)
             .then(function (response) {
                 $scope.khachHangDetail = response.data;
                 const button = document.querySelector('[data-bs-target="#showKhachHang"]');
@@ -217,7 +217,7 @@ app.controller("updateKhachHangController", function ($scope, $http, $routeParam
         input.$dirty = true;
     }
 
-    $http.get(host + '/admin/rest/khach-hang/' + id)
+    $http.get(host + '/rest/admin/khach-hang/' + id)
         .then(function (response) {
             $scope.khachHang = response.data;
             var ngaySinh = $scope.khachHang.ngaySinh;
@@ -245,7 +245,7 @@ app.controller("updateKhachHangController", function ($scope, $http, $routeParam
 
         };
         console.log($scope.khachHang);
-        $http.put(host + '/admin/rest/khach-hang/' + id, khachHangUpdate)
+        $http.put(host + '/rest/admin/khach-hang/' + id, khachHangUpdate)
             .then(function (response) {
                 if (response.status == 200) {
                     toastr["success"]("Cập nhật thành công")

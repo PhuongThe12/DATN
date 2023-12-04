@@ -13,6 +13,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 public class BaseBienTheResponse {
 
+    private Long idKhuyenMaiChiTiet;
     private Integer phanTramGiam = 0;
 
     public BaseBienTheResponse(Integer phanTramGiam) {

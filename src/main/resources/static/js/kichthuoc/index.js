@@ -44,7 +44,7 @@ app.controller("addKichThuocController", function ($scope, $http, $location) {
             $scope.isLoading = false;
             return;
         }
-        $http.post(host + '/admin/rest/kich-thuoc', $scope.kichThuoc)
+        $http.post(host + '/rest/admin/kich-thuoc', $scope.kichThuoc)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -91,7 +91,7 @@ app.controller("kichThuocListController", function ($scope, $http, $window, $loc
 
     function getData(currentPage) {
         $scope.isLoading = true;
-        let apiUrl = host + '/admin/rest/kich-thuoc?page=' + currentPage;
+        let apiUrl = host + '/rest/admin/kich-thuoc?page=' + currentPage;
         if (searchText) {
             apiUrl += '&search=' + searchText;
         }
@@ -145,7 +145,7 @@ app.controller("updateKichThuocController", function ($scope, $http, $routeParam
     $scope.change = function (input) {
         input.$dirty = true;
     }
-    $http.get(host + '/admin/rest/kich-thuoc/' + id)
+    $http.get(host + '/rest/admin/kich-thuoc/' + id)
         .then(function (response) {
             $scope.kichThuoc = response.data;
         }).catch(function (error) {
@@ -176,7 +176,7 @@ app.controller("updateKichThuocController", function ($scope, $http, $routeParam
             $scope.isLoading = false;
             return;
         }
-        $http.put(host + '/admin/rest/kich-thuoc/' + id, $scope.kichThuoc)
+        $http.put(host + '/rest/admin/kich-thuoc/' + id, $scope.kichThuoc)
             .then(function (response) {
                 if (response.status == 200) {
                     toastr["success"]("Cập nhật thành công")

@@ -44,7 +44,7 @@ app.controller("addMauSacController", function ($scope, $http, $location) {
             $scope.isLoading = false;
             return;
         }
-        $http.post(host + '/admin/rest/mau-sac', $scope.mauSac)
+        $http.post(host + '/rest/admin/mau-sac', $scope.mauSac)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -90,7 +90,7 @@ app.controller("mauSacListController", function ($scope, $http, $window, $locati
 
     function getData(currentPage) {
         $scope.isLoading = true;
-        let apiUrl = host + '/admin/rest/mau-sac?page=' + currentPage;
+        let apiUrl = host + '/rest/admin/mau-sac?page=' + currentPage;
         if (searchText) {
             apiUrl += '&search=' + searchText;
         }
@@ -143,7 +143,7 @@ app.controller("updateMauSacController", function ($scope, $http, $routeParams, 
     $scope.change = function (input) {
         input.$dirty = true;
     }
-    $http.get(host + '/admin/rest/mau-sac/' + id)
+    $http.get(host + '/rest/admin/mau-sac/' + id)
         .then(function (response) {
             $scope.mauSac = response.data;
         }).catch(function (error) {
@@ -174,7 +174,7 @@ app.controller("updateMauSacController", function ($scope, $http, $routeParams, 
             $scope.isLoading = false;
             return;
         }
-        $http.put(host + '/admin/rest/mau-sac/' + id, $scope.mauSac)
+        $http.put(host + '/rest/admin/mau-sac/' + id, $scope.mauSac)
             .then(function (response) {
                 if (response.status == 200) {
                     toastr["success"]("Cập nhật thành công")

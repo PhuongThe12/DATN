@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giày</title>
+
+    <!-- Pagination -->
+    <link rel="stylesheet" href="/pagination/pagination.css">
+    <script src="/pagination/pagination.min.js" defer></script>
+    <!--Boostrap-->
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!--AngularJS-->
+    <script src="/angular-1.8.2/angular.min.js"></script>
+    <script src="/angular-1.8.2/angular-route.min.js"></script>
+    <script src="/angular-1.8.2/angular-cookies.js"><</script>
+    <!--Toastr-->
+    <script src="/toastr/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="/toastr/toastr/build/toastr.min.css">
+    <script src="/toastr/toastr/build/toastr.min.js"></script>
+    <script src="/toastr/toastr/build/toastr.min.js"></script>
+
+    <!-- Icon -->
+    <link rel="stylesheet" href="/icon/css/all.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Carrois+Gothic&family=Fira+Sans:wght@300&family=Jost:wght@300&family=Nunito+Sans:opsz@6..12&family=Nunito:wght@300&family=Ubuntu:wght@300&display=swap" rel="stylesheet">
+
+
+    <!--Sweet Alert -->
+    <link rel="stylesheet" href="/sweetalert2/dist/sweetalert2.min.css">
+
+    <!-- Global -->
+    <script src="/js/global.js"></script>
+    <link rel="stylesheet" href="/css/global-style.css">
+    <link rel="stylesheet" href="/css/cart/style.css">
+    <link rel="stylesheet" href="/css/home/style.css">
+</head>
+<style>
+    body{
+        font-family: 'Nunito Sans', sans-serif;
+    }
+</style>
+<body>
+<div ng-controller="navbarController">
+    <div ng-include="'/pages/user/navbar/navbar.html'"></div>
+    <div class="container" style="    padding: 144px 1px;text-align: center;">
+        <h1 class="fw-bold">404</h1>
+        <h5>Không tìm thấy trang</h5>
+        <p>Trang bạn đang tìm kiếm có thể đã bị xóa, chuyển đi, thay đổi link hoặc chưa bao giờ tồn tại.</p>
+        <button class="btn btn-custom">Trờ về trang chủ</button>
+    </div>
+    <div ng-include="'/pages/user/footer/footer.html'"></div>
+</div>
+<script src="/sweetalert2/dist/sweetalert2.min.js"></script>
+</body>
+

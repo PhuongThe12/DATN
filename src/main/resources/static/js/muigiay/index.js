@@ -44,7 +44,7 @@ app.controller("addMuiGiayController", function ($scope, $http, $location) {
             $scope.isLoading = false;
             return;
         }
-        $http.post(host + '/admin/rest/mui-giay', $scope.muiGiay)
+        $http.post(host + '/rest/admin/mui-giay', $scope.muiGiay)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -89,7 +89,7 @@ app.controller("muiGiayListController", function ($scope, $http, $window, $locat
 
     function getData(currentPage) {
         $scope.isLoading = true;
-        let apiUrl = host + '/admin/rest/mui-giay?page=' + currentPage;
+        let apiUrl = host + '/rest/admin/mui-giay?page=' + currentPage;
         if (searchText) {
             apiUrl += '&search=' + searchText;
         }
@@ -142,7 +142,7 @@ app.controller("updateMuiGiayController", function ($scope, $http, $routeParams,
     $scope.change = function (input) {
         input.$dirty = true;
     }
-    $http.get(host + '/admin/rest/mui-giay/' + id)
+    $http.get(host + '/rest/admin/mui-giay/' + id)
         .then(function (response) {
             $scope.muiGiay = response.data;
         }).catch(function (error) {
@@ -173,7 +173,7 @@ app.controller("updateMuiGiayController", function ($scope, $http, $routeParams,
             $scope.isLoading = false;
             return;
         }
-        $http.put(host + '/admin/rest/mui-giay/' + id, $scope.muiGiay)
+        $http.put(host + '/rest/admin/mui-giay/' + id, $scope.muiGiay)
             .then(function (response) {
                 if (response.status == 200) {
                     toastr["success"]("Cập nhật thành công")
