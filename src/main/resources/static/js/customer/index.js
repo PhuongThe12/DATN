@@ -1367,7 +1367,6 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
             targetElement.style.overflow = 'visible';
             iconDropDown.classList.add("rotate-icon");
 
-
         }
 
         $scope.isExpanded = !$scope.isExpanded;

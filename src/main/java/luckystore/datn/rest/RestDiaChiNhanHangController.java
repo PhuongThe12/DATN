@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/rest/dia-chi-nhan-hang")
+@RequestMapping("/rest/khach-hang/dia-chi-nhan-hang")
 public class RestDiaChiNhanHangController {
     @Autowired
     private DiaChiNhanHangService diaChiNhanHangService;
