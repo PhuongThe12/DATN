@@ -66,7 +66,7 @@ app.controller('navbarController', function ($scope, $http, $location, $cookies)
 
     // $scope.loadLocalStorage();
     $scope.loadCartByIdKhachHang = function () {
-        $http.get("http://localhost:8080/user/rest/gio-hang/1").then(function (response) {
+        $http.get("http://localhost:8080/rest/user/gio-hang/khach-hang/1").then(function (response) {
             var bienTheGiayList = [];
 
             angular.forEach(response.data.gioHangChiTietResponses, function (gioHangChiTiet) {
@@ -399,19 +399,21 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
                 .then(function (response) {
                     var soLuongTrongKho = response.data;
                     // $http.get("http://localhost:8080/admin/rest/giay/" + $scope.giayDetail.id + "/so-luong")
-                    $http.get("http://localhost:8080/user/rest/gio-hang/16/so-luong/" + $scope.giayDetail.id)
+                    $http.get("http://localhost:8080/rest/user/gio-hang/1/so-luong/" + $scope.giayDetail.id)
                         .then(function (response) {
                             $scope.soLuongGioHangChiTiet = response.data;
-                            console.log($scope.soLuongMua + response.data);
+                            console.log( response.data);
+
                             if ($scope.soLuongMua + response.data > soLuongTrongKho) {
                                 toastr["warning"]("Số lượng vượt quá trong kho");
                             } else {
-                                $http.get("http://localhost:8080/user/rest/gio-hang/1").then(function (response) {
+                                $http.get("http://localhost:8080/rest/user/gio-hang/khach-hang/1").then(function (response) {
                                     $scope.gioHangChiTiet = {};
                                     $scope.gioHangChiTiet.gioHang = response.data.id;
                                     $scope.gioHangChiTiet.bienTheGiay = $scope.giayChoosed.id;
                                     $scope.gioHangChiTiet.soLuong = $scope.soLuongMua;
-                                    $http.post("http://localhost:8080/user/rest/gio-hang", $scope.gioHangChiTiet)
+                                    console.log($scope.gioHangChiTiet);
+                                    $http.post("http://localhost:8080/rest/user/gio-hang", $scope.gioHangChiTiet)
                                         .then(function (response) {
                                             $scope.$parent.isCartVisible = true;
                                             $scope.loadCartByIdKhachHang();
@@ -435,7 +437,7 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
     }
 
     $scope.getSoLuongInGhct = function(idBienTheGiay) {
-        $http.get("http://localhost:8080/user/rest/gio-hang/16/so-luong/" + idBienTheGiay)
+        $http.get("http://localhost:8080/rest/user/gio-hang/16/so-luong/" + idBienTheGiay)
             .then(function (response) {
                 $scope.soLuongGioHangChiTiet = response.data;
                 console.log(response.data);
@@ -830,7 +832,7 @@ app.controller('cartProductController', function ($scope, $http, $location, $coo
     //fix_
     // Khách đã Login
     $scope.loadCartByIdKhachHang = function () {
-        $http.get("http://localhost:8080/user/rest/gio-hang/1").then(function (response) {
+        $http.get("http://localhost:8080/rest/user/gio-hang/khach-hang/1").then(function (response) {
             console.log(response.data);
             var bienTheGiayList = [];
 
@@ -868,7 +870,7 @@ app.controller('cartProductController', function ($scope, $http, $location, $coo
             var gioHangChiTietUpdate = {};
             gioHangChiTietUpdate.id = bienTheGiay.idGioHang;
             gioHangChiTietUpdate.soLuong = bienTheGiay.soLuongMua - 1;
-            $http.put("http://localhost:8080/user/rest/gio-hang/update/so-luong", gioHangChiTietUpdate)
+            $http.put("http://localhost:8080/rest/user/gio-hang/update/so-luong", gioHangChiTietUpdate)
                 .then(function (response) {
                     $scope.loadCartByIdKhachHang();
                 }).catch(function (error) {
@@ -887,7 +889,7 @@ app.controller('cartProductController', function ($scope, $http, $location, $coo
                     var gioHangChiTietUpdate = {};
                     gioHangChiTietUpdate.id = bienTheGiay.idGioHang;
                     gioHangChiTietUpdate.soLuong = bienTheGiay.soLuongMua + 1;
-                    $http.put("http://localhost:8080/user/rest/gio-hang/update/so-luong", gioHangChiTietUpdate)
+                    $http.put("http://localhost:8080/rest/user/gio-hang/update/so-luong", gioHangChiTietUpdate)
                         .then(function (response) {
                             $scope.loadCartByIdKhachHang();
                         }).catch(function (error) {
@@ -907,7 +909,7 @@ app.controller('cartProductController', function ($scope, $http, $location, $coo
         gioHangChiTietUpdate.id = bienTheGiay.idGioHang;
         gioHangChiTietUpdate.soLuong = bienTheGiay.soLuongMua
         console.log(gioHangChiTietUpdate);
-        $http.delete("http://localhost:8080/user/rest/gio-hang/delete", {
+        $http.delete("http://localhost:8080/rest/user/gio-hang/delete", {
             data: JSON.stringify(gioHangChiTietUpdate),
             headers: {'Content-Type': 'application/json;charset=utf-8'}
         })
@@ -926,7 +928,7 @@ app.controller('cartProductController', function ($scope, $http, $location, $coo
         $scope.productsLessQuantity = [];
         $scope.productsSoldOutQuantity = [];
         if ($scope.listBienTheGiayLocalStorage.length != 0) {
-            $http.post("/user/rest/gio-hang/check-so-luong", $scope.listBienTheGiayLocalStorage)
+            $http.post("/rest/user/gio-hang/check-so-luong", $scope.listBienTheGiayLocalStorage)
                 .then(function (response) {
                     $location.path("/thanh-toan");
                 }).catch(function (error) {
@@ -1266,7 +1268,7 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
     }
 //fix_
     $scope.loadCartByIdKhachHang = function () {
-        $http.get("http://localhost:8080/user/rest/gio-hang/1").then(function (response) {
+        $http.get("http://localhost:8080/rest/user/gio-hang/khach-hang/1").then(function (response) {
             console.log(response.data);
             var bienTheGiayList = [];
             $scope.idGioHang = response.data.id;
@@ -1311,7 +1313,7 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
             $scope.hoaDonThanhToan.bienTheGiayRequests = $scope.listBienTheGiayLocalStorage;
             $scope.hoaDonThanhToan.id = $scope.idGioHang;
             console.log($scope.hoaDonThanhToan);
-            $http.post("http://localhost:8080/user/rest/hoa-don", $scope.hoaDonThanhToan)
+            $http.post("http://localhost:8080/rest/user/hoa-don", $scope.hoaDonThanhToan)
                 .then(function (response) {
                     $location.path("/don-hang");
                 }).catch(function (error) {

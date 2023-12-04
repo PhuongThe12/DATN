@@ -21,7 +21,7 @@ public class RestGioHangController {
     @Autowired
     GioHangService gioHangService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/khach-hang/{id}")
     public ResponseEntity<?> getGioHangByIdKhachHang(@PathVariable("id") Long id) {
         return new ResponseEntity(gioHangService.getGioHangByKhachHang(id), HttpStatus.OK);
     }
