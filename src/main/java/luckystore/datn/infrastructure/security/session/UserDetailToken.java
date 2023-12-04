@@ -1,7 +1,6 @@
 package luckystore.datn.infrastructure.security.session;
 
 import lombok.*;
-import luckystore.datn.infrastructure.Role;
 
 @Setter
 @Getter
@@ -10,7 +9,7 @@ import luckystore.datn.infrastructure.Role;
 @Builder
 public class UserDetailToken {
 
-    private Integer id;
+    private Long id;
 
     private String tenDangNhap;
 

@@ -2,9 +2,9 @@ package luckystore.datn.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import luckystore.datn.constraints.Config;
-import luckystore.datn.constraints.ErrorMessage;
-import luckystore.datn.constraints.TrangThaiHoaDon;
+import luckystore.datn.infrastructure.constraints.Config;
+import luckystore.datn.infrastructure.constraints.ErrorMessage;
+import luckystore.datn.infrastructure.constraints.TrangThaiHoaDon;
 import luckystore.datn.entity.BienTheGiay;
 import luckystore.datn.entity.ChiTietThanhToan;
 import luckystore.datn.entity.DieuKien;

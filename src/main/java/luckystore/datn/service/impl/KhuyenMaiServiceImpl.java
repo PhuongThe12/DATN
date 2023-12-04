@@ -1,13 +1,12 @@
 package luckystore.datn.service.impl;
 
-import luckystore.datn.constraints.ErrorMessage;
+import luckystore.datn.infrastructure.constraints.ErrorMessage;
 import luckystore.datn.entity.BienTheGiay;
 import luckystore.datn.entity.KhuyenMai;
 import luckystore.datn.entity.KhuyenMaiChiTiet;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.model.request.KhuyenMaiChiTietRequest;
 import luckystore.datn.model.request.KhuyenMaiRequest;
-import luckystore.datn.model.response.DotGiamGiaResponse;
 import luckystore.datn.model.response.KhuyenMaiResponse;
 import luckystore.datn.repository.KhuyenMaiChiTietRepository;
 import luckystore.datn.repository.KhuyenMaiRepository;

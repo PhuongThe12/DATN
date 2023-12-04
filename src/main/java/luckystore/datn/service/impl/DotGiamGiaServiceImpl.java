@@ -1,6 +1,6 @@
 package luckystore.datn.service.impl;
 
-import luckystore.datn.constraints.ErrorMessage;
+import luckystore.datn.infrastructure.constraints.ErrorMessage;
 import luckystore.datn.entity.DieuKien;
 import luckystore.datn.entity.DotGiamGia;
 import luckystore.datn.exception.DuplicateException;

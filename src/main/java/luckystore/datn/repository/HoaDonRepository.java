@@ -1,6 +1,6 @@
 package luckystore.datn.repository;
 
-import luckystore.datn.constraints.TrangThaiHoaDon;
+import luckystore.datn.infrastructure.constraints.TrangThaiHoaDon;
 import luckystore.datn.entity.HoaDon;
 import luckystore.datn.model.request.HoaDonSearch;
 import luckystore.datn.model.response.HoaDonBanHangResponse;

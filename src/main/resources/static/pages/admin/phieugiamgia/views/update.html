@@ -1,0 +1,236 @@
+<style>
+    .deleted-row {
+        text-decoration: line-through;
+    }
+
+    .status {
+        padding: 5px;
+        border-radius: 4px;
+    }
+
+    .cho-xac-nhan { /* Trạng thái Chờ Xác Nhận */
+        background-color: #fa732a;
+        padding: 2px 5px;
+        border-radius: 5px;
+        border: 1px solid black;
+    }
+
+    .da-xac-nhan { /* Trạng thái Đã Xác Nhận */
+        background-color: #97f777;
+        padding: 2px 5px;
+        border-radius: 5px;
+        border: 1px solid black;
+    }
+
+    .da-huy { /* Trạng thái Đã Hủy */
+        background-color: #ed3434;
+        padding: 2px 5px;
+        border-radius: 5px;
+        border: 1px solid black;
+    }
+
+
+</style>
+
+<div ng-show="isLoading" class="loading-spinner">
+    <div class="text-center" style="  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Màu nền đục để làm mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; ">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<div class="title-page">
+    <div class="card-header bg-white">
+        <h5 class="card-title p-2 mt-2">
+            Yêu Cầu Chi Tiết
+        </h5>
+    </div>
+</div>
+
+<div class="box-shadow-page" style="margin: 20px">
+    <div class="card-body">
+        <div class="form-group">
+            <label>Yêu Cầu: YC{{yeuCau.id}}</label>
+        </div>
+        <div class="form-group">
+            <label>Hóa Đơn: <a>{{hoaDon.loaiHoaDon == 1?"HD":"HD_HDD"}}{{ hoaDon.id }} </a>({{hoaDon.loaiHoaDon ==
+                1?"Hóa Đơn Mua":"Hóa Đơn Đổi"}})</label>
+        </div>
+        <div class="form-group">
+            <label>Khách Hàng:{{ hoaDon.khachHang.hoTen }}</label>
+        </div>
+        <div class="form-group">
+            <label>Ngày tạo: {{formatDateView(yeuCau.ngayTao) }} </label>
+        </div>
+        <div class="form-group">
+            <label>Ngày tạo: {{formatDateView(yeuCau.ngaySua) }} </label>
+        </div>
+        <div class="form-group">
+            <label>
+                Trạng Thái:
+                <span class="{{yeuCau.trangThai == 1 ? 'status cho-xac-nhan' :
+                       yeuCau.trangThai == 2 ? 'status da-xac-nhan' :
+                       yeuCau.trangThai == 3 ? 'status da-huy' :
+                       'status'}}">
+            {{yeuCau.trangThai == 1 ? "Chờ Xác Nhận" :
+              yeuCau.trangThai == 2 ? "Đã Xác Nhận" :
+              yeuCau.trangThai == 3 ? "Đã Hủy" :
+              "Trạng Thái Không Xác Định"}}
+        </span>
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label>Kênh Bán: {{hoaDon.kenhBan == 1 ? "Onlline" : "Tại Quầy"}} </label>
+        </div>
+        <div class="form-group">
+            <div class="form-floating">
+                            <textarea class="form-control"
+                                      name="ghiChu" ng-model="yeuCau.ghiChu"
+                                      id="floatingTextarea3" style="height: 100px"
+                            ></textarea>
+                <label for="floatingTextarea3">Ghi Chú</label>
+            </div>
+        </div>
+        <button class="btn btn-primary" type="button" ng-if="yeuCau.trangThai==1" ng-click="xacNhanYeuCau()">
+            <i class="fas fa-plus"></i>
+            <span class="ps-2">Xác Nhận</span>
+        </button>
+        <button class="btn btn-danger" type="button" ng-if="yeuCau.trangThai==1" ng-click="tuChoiNhanYeuCau()">
+            <i class="fas fa-plus"></i>
+            <span class="ps-2">Từ Chối Yêu Cầu</span>
+        </button>
+    </div>
+
+    <div>
+        <form>
+
+            <table class="table align-middle text-center" border="1">
+                <thead>
+                <tr>
+                    <th>Loại</th>
+                    <th>Mã Giày</th>
+                    <th>Tên Sản Phẩm</th>
+                    <th>Số Lượng Trả/Đổi</th>
+                    <th>Kích Cỡ</th>
+                    <th>Màu Sắc</th>
+                    <th>Ảnh Sản Phẩm</th>
+                    <th>Đơn Giá</th>
+                    <th>Trạng Thái</th>
+                    <th>Thao Tác</th>
+                </tr>
+                </thead>
+                <tbody ng-repeat="item in listYeuCauChiTietResponse track by item.id">
+                <!-- Điều chỉnh điều kiện ng-if cho Giày Trả -->
+                <tr>
+                    <td>Giày Trả</td>
+                    <td>SP{{item.hoaDonChiTiet.bienTheGiay.id}}</td>
+                    <td>{{ item.hoaDonChiTiet.bienTheGiay.giayResponse.ten }}</td>
+                    <td>x1</td>
+                    <td>{{ item.hoaDonChiTiet.bienTheGiay.kichThuoc.ten }}</td>
+                    <td>
+                        <div style="background-color: {{item.hoaDonChiTiet.bienTheGiay.mauSac.maMau}};
+                                width: 20px; height: 20px; border-radius: 50%;
+                                display: inline-block; margin-right: 5px;"></div>
+                        {{ item.hoaDonChiTiet.bienTheGiay.mauSac.ten }}
+                    </td>
+                    <td>
+                        <img src="{{ item.hoaDonChiTiet.bienTheGiay.hinhAnh }}" alt="Ảnh sản phẩm" height="50" width="50" style="border-radius: 5px;">
+                    </td>
+                    <td>{{ formatToVND(item.hoaDonChiTiet.donGia) }}</td>
+                    <td>{{ item.trangThai == 0 ? "Chờ Xét Duyệt" : item.trangThai == 1 || item.trangThai == 4 ? "Đã Xác Nhận" : item.trangThai == 2 || item.trangThai == 3 ? "Đã Hủy" : "Không Xác Định"}}</td>
+                    <td>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#exampleModal" data-bs-whatever="@mdo" ng-click="lyDoChiTiet(item)">Chi
+                            Tiết Lý Do
+                        </button>
+                        <button class="btn btn-danger" ng-if="yeuCau.trangThai == 1"
+                                ng-click="confirmDeleteGiayTra(item)">Hủy
+                        </button>
+                    </td>
+                </tr>
+
+                <!-- Điều chỉnh điều kiện ng-if cho Giày Đổi -->
+                <tr ng-if="item.bienTheGiay.id" ng-class="{'deleted-row': item.isDeleted}">
+                    <td>Giày Đổi</td>
+                    <td>SP{{ item.bienTheGiay.id }}</td>
+                    <td>{{ item.bienTheGiay.giayResponse.ten }}</td>
+                    <td>x{{ item.soLuong }}</td>
+                    <td>{{ item.bienTheGiay.kichThuoc.ten }}</td>
+                    <td>
+                        <div style="background-color: {{item.bienTheGiay.mauSac.maMau}};
+                                width: 20px; height: 20px; border-radius: 50%;
+                                display: inline-block; margin-right: 5px;"></div>
+                        {{ item.bienTheGiay.mauSac.ten }}
+                    </td>
+                    <td>
+                        <img src="{{ item.bienTheGiay.hinhAnh }}" alt="Ảnh sản phẩm" height="50" width="50"
+                             style="border-radius: 5px;">
+                    </td>
+                    <td>{{ formatToVND(item.bienTheGiay.giaBan) }}</td>
+                    <td>{{ item.trangThai == 0 ? "Chờ Xét Duyệt" : item.trangThai == 1 ? "Đã Xác Nhận" : item.trangThai == 2 || item.trangThai == 3 || item.trangThai == 4 ? "Đã Hủy" : "Không Xác Định"}}</td>
+                    <td>
+                        <button class="btn btn-danger" ng-if="yeuCau.trangThai == 1"
+                                ng-click="confirmDeleteGiayDoi(item)">Hủy
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Lý Do Chi Tiết</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="floatingSelect">Lý Do:</label>
+                            <select class="form-select" id="floatingSelect"
+                                    placeholder="Chọn Lý Do Đổi/Trả"
+                                    aria-label="Floating label select example" ng-model="lyDo">
+                                <option ng-repeat="lyDo in listLyDo" value="{{lyDo.id}}">{{lyDo.ten}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Mô tả:</label>
+                            <textarea class="form-control" id="message-text" ng-model="ghiChu"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <label class="form-check-label" for="flexSwitchCheckDefault">Sản Phẩm Lỗi</label>
+                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
+                                       ng-model="tinhTrangSanPham">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quay Về</button>
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" ng-click="updateLyDo()">Lưu
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a class="btn btn-primary" href="#/list">Quay Về</a>
+    <a class="btn btn-success" ng-if="yeuCau.trangThai != 1" ng-click="luuYeuCau()">Lưu</a>
+</div>
+

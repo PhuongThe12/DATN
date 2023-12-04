@@ -8,6 +8,8 @@ app.controller("loginController", function ($scope, $http, $location, $window, $
                 if (response.status == 200) {
                     setTokenCookie(response.data.token, 1)
                     $window.location.href = '/admin/ban-hang';
+                    var data = $window.sessionStorage.getItem('staff');
+                    console.log(data)
                 }
             }).catch(function (error) {
             console.log(error)

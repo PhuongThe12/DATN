@@ -89,7 +89,7 @@ public class TokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
 
-        Integer id = claims.get("id", Integer.class);
+        Long id = claims.get("id", Long.class);
         String tenDangNhap = claims.get("tenDangNhap", String.class);
         String role = claims.get("role", String.class);
 

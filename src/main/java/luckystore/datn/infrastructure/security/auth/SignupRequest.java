@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import luckystore.datn.infrastructure.Role;
+import luckystore.datn.infrastructure.constants.Role;
 
 @Setter
 @Getter
