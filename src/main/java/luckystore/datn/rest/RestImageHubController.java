@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/rest/images")
+@RequestMapping("/rest/admin/images")
 public class RestImageHubController {
 
     @Autowired

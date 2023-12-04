@@ -10,9 +10,13 @@ import luckystore.datn.infrastructure.Role;
 @Builder
 public class UserDetailToken {
 
-    private Integer id;
+    private Long id;
 
     private String tenDangNhap;
+
+    private String hoTen;
+
+    private String email;
 
     private String role;
 

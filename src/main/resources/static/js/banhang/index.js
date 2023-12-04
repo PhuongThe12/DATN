@@ -11,6 +11,9 @@ app.config(function ($routeProvider, $locationProvider) {
 
 app.controller("homeController", function ($scope, $http, $location, $cookies, $rootScope) {
 
+    let user = JSON.parse(localStorage.getItem("currentUser"));
+    console.log(user)
+
     $scope.curPage = 1, $scope.itemsPerPage = 12, $scope.maxSize = 5;
     $scope.hoaDon = {};
 
