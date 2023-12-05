@@ -13,7 +13,7 @@ import java.util.List;
 public interface LyDoRepository extends JpaRepository<LyDo, Long> {
 
     @Query("select new luckystore.datn.model.response.LyDoResponse(ld) from LyDo ld " +
-            "where ld.trangThai = 1 order by ld.id desc ")
+            "where ld.trangThai = 1 or ld.trangThai = 2 order by ld.id ASC")
     List<LyDoResponse> findAllActive();
 
     Boolean existsByTen(String ten);

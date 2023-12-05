@@ -22,15 +22,19 @@ app.controller("yeuCauKhachHangListController", function ($scope, $http, $window
 
 app.controller("addYeuCauKhachHangController", function ($scope, $http, $routeParams, $window, $location) {
     const idHoaDon = $routeParams.id;
+
     $scope.mapSanPhamTra = new Map(), $scope.mapSanPhamThayThe = new Map(), $scope.mapYeuCauChiTiet = new Map();
     $scope.listHoaDonChiTiet = [], $scope.listLyDo = [], $scope.listGiaySearch = [];
     $scope.giayChoosed = {}, $scope.giaySearch = {}, $scope.hoaDon = {};
 
     $scope.curPage = 1, $scope.maxSize = 5, $scope.giaySearch.pageSize = 24, $scope.giaySearch.trangThai = 1;
-    $scope.tongTienTraHang = 0, $scope.tongTienDoiHang = 0, $scope.tongTienHangDoi = 0;
-    $scope.tongTienGiamGia = 0, $scope.tongTienThanhToan = 0;
-    $scope.thongTinNhanHang = {}, $scope.thongTinNhanHang.soDienThoaiNhan = '', $scope.thongTinNhanHang.diaChiNhan = '', $scope.thongTinNhanHang.tenNguoiNhan = '';
-    $scope.yeuCau = {};
+    $scope.tongTienTraHang = 0, $scope.tongTienDoiHang = 0, $scope.tongTienHangDoi = 0,$scope.tongTienGiamGia = 0, $scope.tongTienThanhToan = 0,
+    $scope.phiVanChuyen = 0,$scope.soLuong = 0,$scope.feeShippingPerOne = 0;
+    $scope.thongTinNhanHang = {}, $scope.thongTinNhanHang.soDienThoaiNhan = '', $scope.thongTinNhanHang.diaChiNhan = '', $scope.thongTinNhanHang.tenNguoiNhan = '',$scope.diaChiNhanHangMoi = {};
+    $scope.yeuCau = {},$scope.soLuongDaTra = 0;
+
+
+
     $scope.$watch('curPage + numPerPage', function () {
         $scope.isLoading = true;
         getListHoaDonChiTiet(idHoaDon);
@@ -38,10 +42,31 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
         getListLyDo();
     });
 
+    $scope.$watch('feeShippingPerOne', function (value) {
+        tinhTienShip();
+    });
+    $scope.$watch('soLuong', function (value) {
+        tinhTienShip();
+    });
+
+    function tinhTienShip() {
+        $scope.phiVanChuyen = 0;
+        if ($scope.soLuong <= 0) {
+            return;
+        }
+        let soDonHang = 0;
+        if ($scope.soLuong % 30 === 0) {
+            soDonHang = $scope.soLuong / 30;
+        } else {
+            soDonHang = ($scope.soLuong / 30) + 1;
+        }
+        $scope.phiVanChuyen = Math.round(soDonHang * $scope.feeShippingPerOne);
+    }
 
     $scope.tinhTongTienThanhToan = function () {
+        tinhTienShip();
         $scope.tongTienThanhToan = 0;
-        let tongTienThanhToan = $scope.tongTienDoiHang - $scope.tongTienTraHang;
+        let tongTienThanhToan = ($scope.tongTienDoiHang + $scope.phiVanChuyen) - $scope.tongTienTraHang;
         $scope.tongTienThanhToan = tongTienThanhToan < 0 ? Math.abs(tongTienThanhToan) : tongTienThanhToan;
     }
 
@@ -59,10 +84,11 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
 
     $scope.tinhTongTienHangDoi = function () {
         $scope.tongTienHangDoi = 0;
-
+        $scope.soLuong = 0;
         $scope.mapSanPhamThayThe.forEach((item) => {
             let giaBan = item.bienTheGiay.giaBan;
             $scope.tongTienHangDoi += giaBan;
+            $scope.soLuong += item.soLuongDoi;
         })
         $scope.tinhTongtienGiamGia();
         $scope.tongTienDoiHang = $scope.tongTienHangDoi - $scope.tongTienGiamGia;
@@ -85,6 +111,7 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
 
 
     $scope.traHang = function (baseId, hoaDonChiTiet) {
+
         if (hoaDonChiTiet.soLuongTra <= 0) {
             toastr.error('Bạn chưa chọn số lượng muốn trả!');
             return;
@@ -171,7 +198,8 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
     $scope.addToMapSanPhamThayThe = function (bienTheGiayDoi) {
         // Cấu trúc dữ liệu mới cho map
         $scope.mapSanPhamThayThe.set($scope.sanPhamTra.key, {
-            bienTheGiay: bienTheGiayDoi
+            bienTheGiay: bienTheGiayDoi,
+            soLuongDoi: 1
         });
         $scope.listSanPhamDoi = Array.from($scope.mapSanPhamThayThe, ([key, value]) => ({key, value}));
         $scope.tinhTongTienHangDoi();
@@ -364,26 +392,23 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
                     hoaDonChiTiet: sanPhamTra.hoaDonChiTiet.id,
                     bienTheGiay: sanPhamDoi.bienTheGiay ? sanPhamDoi.bienTheGiay.id : null,
                     lyDo: sanPhamTra.lyDo,
-                    thanhTien: sanPhamDoi.bienTheGiay ? tienHoanKhach - (sanPhamDoi.bienTheGiay.giaBan - tienGiamSanPhamDoi) : tienHoanKhach,
-                    tienGiam: tienGiamSanPhamDoi,
+                    thanhTien: tienHoanKhach,
+                    tienGiam: sanPhamDoi.bienTheGiay ? tienGiamSanPhamDoi : 0,
                     bienTheGiayTra: sanPhamTra.hoaDonChiTiet.bienTheGiay.id,
-                    soLuongTra: 1,
                     trangThai: 1,
                     tinhTrangSanPham: false,
                     ghiChu: sanPhamTra.ghiChu,
                     loaiYeuCauChiTiet: sanPhamDoi.bienTheGiay ? 1 : 2
                 });
             });
-            console.log(Array.from($scope.mapYeuCauChiTiet.values()))
 
             $scope.yeuCau.trangThai = 1;
             $scope.yeuCau.hoaDon = $scope.hoaDon.id;
             $scope.yeuCau.nguoiTao = $scope.hoaDon.khachHang.id;
+            $scope.yeuCau.phiShip = $scope.feeShippingPerOne;
             $scope.yeuCau.thongTinNhanHang = '' + $scope.thongTinNhanHang.tenNguoiNhan + '-' + $scope.thongTinNhanHang.soDienThoaiNhan + '-' + $scope.thongTinNhanHang.diaChiNhan;
             $scope.yeuCau.listYeuCauChiTiet = Array.from($scope.mapYeuCauChiTiet.values());
 
-            console.log($scope.yeuCau)
-            // console.log($scope.yeuCau)
             $http.post(host + '/user/rest/yeu-cau-khach-hang/add', JSON.stringify($scope.yeuCau))
                 .then(function (response) {
                     if (response.status === 200) {
@@ -398,8 +423,6 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
                         $scope.errors = error.data;
                     }
                 });
-
-            console.log(JSON.stringify($scope.yeuCau))
         }
     };
 
@@ -528,13 +551,27 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
             });
     }
 
-    //Chọn địa chỉ
-    $scope.diaChiNhanHangMoi = {};
-
     $scope.saveDiaChi = function () {
         let diaChiNhan = $scope.diaChiNhanHangMoi.addDress + '-' + $scope.diaChiNhanHangMoi.wards.ten + ',' + $scope.diaChiNhanHangMoi.districts.ten + ',' + $scope.diaChiNhanHangMoi.provinces.ten;
         $scope.thongTinNhanHang.diaChiNhan = diaChiNhan;
         toastr["success"]("Lưu địa chỉ nhận thành công!");
+        $scope.isLoading = true;
+
+        if ($scope.tongTienDoiHang - $scope.tongTienTraHang > 0 && $scope.tongTienDoiHang - $scope.tongTienTraHang < 80000000) {
+            logisticInfo.insurance_value = ($scope.tongTienDoiHang - $scope.tongTienTraHang);
+        }
+
+        $http.post('https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/preview', logisticInfo)
+            .then(response => {
+                $scope.feeShippingPerOne = response.data.data.total_fee;
+                tinhTienShip();
+                $scope.isLoading = false;
+            })
+            .catch(error => {
+                toastr["error"]("Lấy thông tin thất bại");
+                $scope.feeShippingPerOne = 50000;
+                $scope.isLoading = false;
+            })
     }
 
     $scope.checkAddDress = function () {
@@ -543,6 +580,35 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
         }
         return true;
     }
+
+    let logisticInfo = {
+        "payment_type_id": 2,
+        "note": "Tintest 123",
+        "required_note": "KHONGCHOXEMHANG",
+        "from_name": "TinTest124",
+        "from_phone": "0987654321",
+        "from_address": "Phường Mỹ Đình 2, Quận Nam Từ Liêm, Hà Nội",
+        "from_ward_name": "Phường Mỹ Đình 2",
+        "from_district_name": "Quận Nam Từ Liêm",
+        "from_province_name": "Hà Nội",
+        "to_name": "TinTest124",
+        "to_phone": "0987654321",
+        "to_address": "Xuân Lôi, Lập Thạch, Vĩnh Phúc, Việt Nam",
+        "to_ward_name": "Xuân Lôi",
+        "to_district_name": "Lập Thạch",
+        "to_province_name": "Vĩnh Phúc",
+        "cod_amount": 0,
+        "content": "Theo New York Times",
+        "weight": 150,
+        "length": 150,
+        "width": 19,
+        "height": 10,
+        "cod_failed_amount": 2000000,
+        "insurance_value": 0,
+        "service_id": 0,
+        "service_type_id": 2
+    }
+
 
     //lấy dữ liệu huyện theo id tỉnh
     $scope.changeProvince = function () {
@@ -563,7 +629,6 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
         $http.get(host + "/rest/districts/" + $scope.diaChiNhanHangMoi.provinces.id)
             .then(function (response) {
                 $scope.districts = response.data;
-                // console.log($scope.diaChiNhanHang.provinces)
             })
             .catch(function (error) {
                 toastr["error"]("Lấy dữ huyện thất bại");

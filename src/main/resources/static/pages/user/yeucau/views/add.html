@@ -418,14 +418,21 @@
                             </div>
                         </div>
 
-                        <div class="row" ng-show="(tongTienDoiHang - tongTienTraHang) > 0">
+                        <div class="row">
+                            <div class="mb-3">
+                                <label class="form-label">Phí ship:</label>
+                                <strong class="fw-medium">{{phiVanChuyen | formatToVND}}</strong>
+                            </div>
+                        </div>
+
+                        <div class="row" ng-show="((tongTienDoiHang + phiVanChuyen) - tongTienTraHang) > 0">
                             <div class="mb-3">
                                 <label class="form-label fw-bold" style="font-size: large">Tổng tiền thanh toán:</label>
                                 <strong class="fw-medium">{{tongTienThanhToan | formatToVND}}</strong>
                             </div>
                         </div>
 
-                        <div class="row" ng-show="(tongTienDoiHang - tongTienTraHang) < 0">
+                        <div class="row" ng-show="((tongTienDoiHang + phiVanChuyen) - tongTienTraHang) < 0">
                             <div class="mb-3">
                                 <label class="form-label fw-bold" style="font-size: large">Tổng tiền hoàn:</label>
                                 <strong class="fw-medium">{{tongTienThanhToan | formatToVND}}</strong>
