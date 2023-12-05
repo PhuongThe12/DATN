@@ -101,9 +101,10 @@
                                     <div class="mb-3">
                                         <label class="form-label">Trạng Thái:</label>
                                         <strong class="fw-medium">
-                                            <span class="badge rounded-pill text-bg-warning" style="background-color: #fcad03" ng-show="yeuCau.trangThai == 1">Chờ Xác Nhận</span>
-                                            <span class="badge rounded-pill text-bg-success" style="background-color: #03a106" ng-show="yeuCau.trangThai == 2">Đã Xác Nhận</span>
-                                            <span class="badge rounded-pill text-bg-danger" style="background-color: #bf0606" ng-show="yeuCau.trangThai == 3">Bị Hủy</span>
+                                            <span class="badge rounded-pill text-bg-warning" style="background-color: black" ng-show="yeuCau.trangThai == 1">Chờ Xác Nhận</span>
+                                            <span class="badge rounded-pill text-bg-success" style="background-color: #fcad03" ng-show="yeuCau.trangThai == 2">Đã Xác Nhận</span>
+                                            <span class="badge rounded-pill text-bg-success" style="background-color: #03a106" ng-show="yeuCau.trangThai == 3">Hoàn Thành</span>
+                                            <span class="badge rounded-pill text-bg-danger" style="background-color: #bf0606" ng-show="yeuCau.trangThai == 0">Bị Hủy</span>
                                         </strong>
                                     </div>
                                 </div>
@@ -164,6 +165,13 @@
                                     </div>
                                 </div>
 
+                                <div class="row" style="padding-left: 10px">
+                                    <div class="mb-3">
+                                        <label class="form-label">Phí Ship:</label>
+                                        <strong class="fw-medium">{{phiVanChuyen | formatToVND}} </strong>
+                                    </div>
+                                </div>
+
                                 <div class="row" ng-show="(tongTienHangTra - tongTienHangDoi) > 0" style="padding-left: 10px">
                                     <div class="mb-3">
                                         <label class="form-label">Tổng tiền hoàn:</label>
@@ -193,10 +201,10 @@
                                 </button>
                                 <a class="btn btn-secondary" href="#/list">Quay Về <i class="fas fa-chevron-left"></i></a>
                                 <button type="button" class="btn btn-success" ng-if="yeuCau.trangThai != 1" ng-click="luuYeuCau()">Lưu <i class="fas fa-save"></i></button>
-                                <!-- Button trigger modal -->
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalHoaDon">
-                                    Hóa đơn
-                                </button>
+<!--                                &lt;!&ndash; Button trigger modal &ndash;&gt;-->
+<!--                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalHoaDon">-->
+<!--                                    Hóa đơn-->
+<!--                                </button>-->
                             </div>
                         </div>
                     </div>

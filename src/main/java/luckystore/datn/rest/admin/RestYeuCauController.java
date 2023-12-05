@@ -1,4 +1,4 @@
-package luckystore.datn.rest;
+package luckystore.datn.rest.admin;
 
 import jakarta.validation.Valid;
 import luckystore.datn.model.request.YeuCauRequest;
@@ -21,8 +21,13 @@ import java.util.List;
 @RequestMapping("/rest/admin/yeu-cau")
 public class RestYeuCauController {
 
+
+    private final YeuCauService yeuCauService;
+
     @Autowired
-    private YeuCauService yeuCauService;
+    public RestYeuCauController(YeuCauService yeuCauService) {
+        this.yeuCauService = yeuCauService;
+    }
 
 
     @GetMapping("/get-all")
@@ -47,8 +52,6 @@ public class RestYeuCauController {
 
     @PutMapping("/change")
     public ResponseEntity updateYeuCau(@Valid @RequestBody YeuCauRequest yeuCauRequest, BindingResult result) {
-        ResponseEntity errorJson = getErrorJson(result);
-        if (errorJson != null) return errorJson;
         return new ResponseEntity(yeuCauService.updateYeuCau(yeuCauRequest), HttpStatus.OK);
     }
 

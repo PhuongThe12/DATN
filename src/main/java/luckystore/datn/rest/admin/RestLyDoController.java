@@ -1,4 +1,4 @@
-package luckystore.datn.rest;
+package luckystore.datn.rest.admin;
 
 import jakarta.validation.Valid;
 import luckystore.datn.entity.LyDo;
@@ -36,9 +36,16 @@ public class RestLyDoController {
     public ResponseEntity<?> addLyDo(@Valid @RequestBody LyDoRequest lyDoRequest, BindingResult result) {
         ResponseEntity<?> errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
-
-        return new ResponseEntity<>(lyDoService.insertOrUpate(lyDoRequest), HttpStatus.OK);
+        return new ResponseEntity<>(lyDoService.insert(lyDoRequest), HttpStatus.OK);
     }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> updateLyDo(@Valid @RequestBody LyDoRequest lyDoRequest, BindingResult result) {
+        ResponseEntity<?> errorJson = getErrorJson(result);
+        if (errorJson != null) return errorJson;
+        return new ResponseEntity<>(lyDoService.update(lyDoRequest), HttpStatus.OK);
+    }
+
 
     private ResponseEntity<?> getErrorJson(BindingResult result) {
         if (result.hasErrors()) {

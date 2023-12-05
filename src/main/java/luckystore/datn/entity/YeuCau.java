@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import luckystore.datn.model.request.YeuCauRequest;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -40,6 +41,9 @@ public class YeuCau {
     @Column(name = "THONG_TIN_NHAN_HANG")
     private String thongTinNhanHang;
 
+    @Column(name = "PHI_SHIP")
+    private BigDecimal phiShip;
+
     @Column(name = "NGAY_TAO")
     private LocalDateTime ngayTao;
     @Column(name = "NGAY_SUA")
@@ -59,16 +63,13 @@ public class YeuCau {
 
     public YeuCau(YeuCauRequest yeuCauRequest,HoaDon hoaDon,Long hoaDonDoiTra,LocalDateTime ngayTao,LocalDateTime ngaySua) {
         if (yeuCauRequest != null) {
-            this.nguoiThucHien = yeuCauRequest.getNguoiThucHien();
             this.hoaDon = hoaDon;
-            this.hoaDonDoiTra = hoaDonDoiTra;
             this.trangThai = yeuCauRequest.getTrangThai();
             this.ngayTao = ngayTao;
             this.ngaySua = ngaySua;
-            this.nguoiTao = yeuCauRequest.getNguoiTao();
-            this.nguoiSua = yeuCauRequest.getNguoiSua();
             this.ghiChu = yeuCauRequest.getGhiChu();
             this.thongTinNhanHang = yeuCauRequest.getThongTinNhanHang();
+            this.phiShip = yeuCauRequest.getPhiShip();
         }
     }
 
