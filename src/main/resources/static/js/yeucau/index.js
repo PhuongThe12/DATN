@@ -261,6 +261,7 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
             }
         })
         $scope.tinhTongTienThanhToan();
+        tinhTienShip();
     }
 
     $scope.tinhTongTienHangTra = function () {
@@ -283,6 +284,7 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
                 $scope.listYeuCauChiTietResponse[index].trangThai = 5;
                 $scope.tinhTongTienHangTra();
                 $scope.soLuong = $scope.soLuong - 1;
+                tinhTienShip();
             }
         }
     };
@@ -297,6 +299,7 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
                 $scope.listYeuCauChiTietResponse[index].isDeleted = true; // Thêm thuộc tính isDeleted
                 $scope.tinhTongTienHangDoi();
                 $scope.soLuong = $scope.soLuong - 1;
+                tinhTienShip();
             }
         }
     };

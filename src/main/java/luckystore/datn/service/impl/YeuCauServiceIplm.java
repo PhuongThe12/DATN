@@ -141,7 +141,6 @@ public class YeuCauServiceIplm implements YeuCauService {
 
 
     private void taoHoaDon(YeuCau yeuCauSaved, List<YeuCauChiTiet> listYeuCauChiTiet) {
-        System.out.println("Hóa đơn: " + yeuCauSaved.getHoaDon().getId());
         HoaDon hoaDon = yeuCauSaved.getHoaDon();
         KhachHang khachHang = hoaDon.getKhachHang();
 
@@ -197,8 +196,9 @@ public class YeuCauServiceIplm implements YeuCauService {
         }
 
         if (listHoaDonChiTietTra.size() > 0) { //tạo hóa đơn trả
-
-            HoaDon hoaDonTra = HoaDon.builder().hoaDonGoc(hoaDon.getId()).khachHang(khachHang).nhanVien(null).email(khachHang.getEmail()).ngayTao(LocalDateTime.now()).kenhBan(KenhBan.ONLINE).trangThai(TrangThaiHoaDon.CHUA_THANH_TOAN).ghiChu("Hóa Đơn Trả: HD" + hoaDon.getId()).loaiHoaDon(3).build();
+            Long nguoiSuaAndThucHien = sessionService.getAdmintrator() == null ? null : sessionService.getAdmintrator().getId();
+            NhanVien nhanVien  = nhanVienRepository.findById(nguoiSuaAndThucHien).orElse(null);
+            HoaDon hoaDonTra = HoaDon.builder().hoaDonGoc(hoaDon.getId()).khachHang(khachHang).nhanVien(nhanVien).email(khachHang.getEmail()).ngayTao(LocalDateTime.now()).kenhBan(KenhBan.ONLINE).trangThai(TrangThaiHoaDon.CHUA_THANH_TOAN).ghiChu("Hóa Đơn Trả: HD" + hoaDon.getId()).loaiHoaDon(3).build();
             for (HoaDonChiTiet hoaDonChiTietTra : listHoaDonChiTietTra) {
                 hoaDonChiTietTra.setHoaDon(hoaDonTra);
             }
@@ -219,7 +219,9 @@ public class YeuCauServiceIplm implements YeuCauService {
                 }
             }
 
-            HoaDon hoaDonDoi = HoaDon.builder().hoaDonGoc(hoaDon.getId()).khachHang(khachHang).nhanVien(null).email(khachHang.getEmail()).ngayTao(LocalDateTime.now()).phiShip(yeuCauSaved.getPhiShip()).soDienThoaiNhan(sdtNhan).diaChiNhan(diaChiNhan).kenhBan(KenhBan.ONLINE).trangThai(TrangThaiHoaDon.CHUA_THANH_TOAN).ghiChu("Hóa Đơn Đổi: HD" + hoaDon.getId()).loaiHoaDon(2).tienGiam(tienGiam).build();
+            Long nguoiSuaAndThucHien = sessionService.getAdmintrator() == null ? null : sessionService.getAdmintrator().getId();
+            NhanVien nhanVien  = nhanVienRepository.findById(nguoiSuaAndThucHien).orElse(null);
+            HoaDon hoaDonDoi = HoaDon.builder().hoaDonGoc(hoaDon.getId()).khachHang(khachHang).nhanVien(nhanVien).email(khachHang.getEmail()).ngayTao(LocalDateTime.now()).phiShip(yeuCauSaved.getPhiShip()).soDienThoaiNhan(sdtNhan).diaChiNhan(diaChiNhan).kenhBan(KenhBan.ONLINE).trangThai(TrangThaiHoaDon.CHUA_THANH_TOAN).ghiChu("Hóa Đơn Đổi: HD" + hoaDon.getId()).loaiHoaDon(2).tienGiam(tienGiam).build();
 
             for (HoaDonChiTiet hoaDonChiTietDoi : listHoaDonChiTietDoi) {
                 hoaDonChiTietDoi.setHoaDon(hoaDonDoi);

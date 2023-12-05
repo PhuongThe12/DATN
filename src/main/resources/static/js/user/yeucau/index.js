@@ -45,6 +45,7 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
     $scope.$watch('feeShippingPerOne', function (value) {
         tinhTienShip();
     });
+
     $scope.$watch('soLuong', function (value) {
         tinhTienShip();
     });
