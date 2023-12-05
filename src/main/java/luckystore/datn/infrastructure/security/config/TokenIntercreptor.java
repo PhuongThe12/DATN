@@ -32,10 +32,7 @@ public class TokenIntercreptor implements HandlerInterceptor {
         String userRoles = provider.decodeTheToken(token).getRole();
         Map<String, Integer> permissionStaff = new HashMap<>();
         permissionStaff.put("/admin/ban-hang", 1);
-
-        Map<String, Integer> permissionAdmin = new HashMap<>();
-        permissionAdmin.put("/admin", 1);
-
+        permissionStaff.put("/admin/hoa-don", 1);
 
 
         if (userRoles.contains("ROLE_STAFF") && permissionStaff.containsKey(requestUri)) {
