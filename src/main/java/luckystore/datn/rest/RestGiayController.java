@@ -76,6 +76,11 @@ public class RestGiayController {
         return new ResponseEntity<>(giayService.findAllForList(giaySearch), HttpStatus.OK);
     }
 
+    @PostMapping("/get-all-without-discount")
+    public ResponseEntity<?> getAllGiayWithoutDiscount(@RequestBody GiaySearch giaySearch) {
+        return new ResponseEntity<>(giayService.getAllGiayWithoutDiscount(giaySearch), HttpStatus.OK);
+    }
+
     @PostMapping("/get-simple-by-search")
     public ResponseEntity<?> findSimpleBySearch(@RequestBody GiaySearch giaySearch) {
         return new ResponseEntity<>(giayService.findSimpleBySearch(giaySearch), HttpStatus.OK);

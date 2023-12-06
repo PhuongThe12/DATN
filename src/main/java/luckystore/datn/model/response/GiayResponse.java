@@ -95,11 +95,11 @@ public class GiayResponse {
         }
     }
 
-    public GiayResponse(Long id, String ten, List<HinhAnh> lstAnh, List<BienTheGiay> lstBienTheGiay) {
+    public GiayResponse(Long id, String ten, List<BienTheGiay> lstBienTheGiay) {
         this.id = id;
         this.ten = ten;
-        this.lstAnh = lstAnh.stream().sorted(Comparator.comparingInt(HinhAnh::getUuTien))
-                .map(anh -> ImageHubServiceImpl.getBase64FromFileStatic(anh.getLink())).collect(Collectors.toList());
+//        this.lstAnh = lstAnh.stream().sorted(Comparator.comparingInt(HinhAnh::getUuTien))
+//                .map(anh -> ImageHubServiceImpl.getBase64FromFileStatic(anh.getLink())).collect(Collectors.toList());
         this.lstBienTheGiay = lstBienTheGiay.stream().map(BienTheGiayResponse::new).collect(Collectors.toList());
     }
 
@@ -136,6 +136,18 @@ public class GiayResponse {
     public GiayResponse(Long id, String ten) {
         this.id = id;
         this.ten = ten;
+    }
+
+    public GiayResponse(Long id, String ten, String tenThuongHieu, Long idBienThe, String tenMau, String tenKichThuoc, BigDecimal giaBan) {
+        this.id = id;
+        this.ten = ten;
+        this.thuongHieu = ThuongHieuResponse.builder().ten(tenThuongHieu).build();
+        BienTheGiayResponse bienTheGiayResponse = new BienTheGiayResponse();
+        bienTheGiayResponse.setId(idBienThe);
+        bienTheGiayResponse.setKichThuoc(KichThuocResponse.builder().ten(tenKichThuoc).build());
+        bienTheGiayResponse.setMauSac(MauSacResponse.builder().ten(tenMau).build());
+        bienTheGiayResponse.setGiaBan(giaBan);
+        this.getLstBienTheGiay().add(bienTheGiayResponse);
     }
 
 }

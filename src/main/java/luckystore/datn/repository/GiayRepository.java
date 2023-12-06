@@ -113,4 +113,14 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
 
     Optional<Giay> findByTen(String ten);
 
+    @Query("select new luckystore.datn.model.response.GiayResponse(g.id, g.ten, g.thuongHieu.ten, bienThe.id, bienThe.mauSac.ten, bienThe.kichThuoc.ten, bienThe.giaBan) " +
+            " from Giay g inner join g.lstBienTheGiay bienThe" +
+            " where (:#{#giaySearch.thuongHieuIds} is null or g.thuongHieu.id in :#{#giaySearch.thuongHieuIds}) " +
+            " and g.id not in (" +
+            " select bt.giay.id from BienTheGiay bt " +
+            " inner join bt.khuyenMaiChiTietList kmct " +
+            " inner join kmct.khuyenMai km " +
+            " where km.ngayBatDau < current_date and km.ngayKetThuc > current_date " +
+            ")")
+    List<GiayResponse> getAllGiayWithoutDiscount(GiaySearch giaySearch);
 }
