@@ -10,6 +10,8 @@ public interface LyDoService {
 
     List<LyDoResponse> getAll();
 
-    LyDoResponse insertOrUpate(LyDoRequest lyDoRequest);
+    LyDoResponse insert(LyDoRequest lyDoRequest);
+
+    LyDoResponse update(LyDoRequest lyDoRequest);
 
 }

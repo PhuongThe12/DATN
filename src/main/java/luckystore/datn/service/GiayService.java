@@ -44,4 +44,6 @@ public interface GiayService {
     List<BienTheGiayResponse> getBienTheGiayByListId(List<Long> ids);
 
     Page<GiayResponse> findSimpleBySearch(GiaySearch giaySearch);
+
+    List<GiayResponse> getAllGiayWithoutDiscount(GiaySearch giaySearch);
 }

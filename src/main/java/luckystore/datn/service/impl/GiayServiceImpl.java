@@ -999,6 +999,11 @@ public class GiayServiceImpl implements GiayService {
     }
 
     @Override
+    public List<GiayResponse> getAllGiayWithoutDiscount(GiaySearch giaySearch) {
+        return giayRepository.getAllGiayWithoutDiscount(giaySearch);
+    }
+
+    @Override
     public GiayResponse getResponseById(Long id) {
         GiayResponse giayResponse = giayRepository.findResponseById(id);
         if (giayResponse == null) {

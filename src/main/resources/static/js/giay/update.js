@@ -469,13 +469,13 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
         giayRequest.id = id;
         giayRequest.ten = $scope.giay.ten;
         giayRequest.namSX = $scope.giay.namSX;
-        giayRequest.lotGiayId = $scope.selectedLotGiay.id;
-        giayRequest.muiGiayId = $scope.selectedMuiGiay.id;
-        giayRequest.coGiayId = $scope.selectedCoGiay.id;
-        giayRequest.thuongHieuId = $scope.selectedThuongHieu.id;
-        giayRequest.chatLieuId = $scope.selectedChatLieu.id;
-        giayRequest.dayGiayId = $scope.selectedDayGiay.id;
-        giayRequest.deGiayId = $scope.selectedDeGiay.id;
+        giayRequest.lotGiayId = $scope.selectedLotGiay ? $scope.selectedLotGiay.id : null;
+        giayRequest.muiGiayId = $scope.selectedMuiGiay ? $scope.selectedMuiGiay.id : null;
+        giayRequest.coGiayId = $scope.selectedCoGiay ? $scope.selectedCoGiay.id : null;
+        giayRequest.thuongHieuId = $scope.selectedThuongHieu ? $scope.selectedThuongHieu.id : null;
+        giayRequest.chatLieuId = $scope.selectedChatLieu ? $scope.selectedChatLieu.id : null;
+        giayRequest.dayGiayId = $scope.selectedDayGiay ? $scope.selectedDayGiay.id : null;
+        giayRequest.deGiayId = $scope.selectedDeGiay ? $scope.selectedDeGiay.id : null;
         giayRequest.trangThai = $scope.giay.trangThai;
         giayRequest.moTa = $scope.giay.moTa;
         giayRequest.hashTagIds = $scope.selectedHashTag.filter(hashTag => hashTag.status === 'active').map(hashTag => hashTag.id);
@@ -500,7 +500,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                     giaBan: kichThuoc.giaBan,
                     trangThai: kichThuoc.trangThai === 0 ? 0 : 1,
                     barcode: kichThuoc.barcode,
-                    soLuongLoi: kichThuoc.soLuongLoi? kichThuoc.soLuongLoi : 0,
+                    soLuongLoi: kichThuoc.soLuongLoi ? kichThuoc.soLuongLoi : 0,
                 }
                 bienTheGiays.push(bienTheGiay);
             });
@@ -558,9 +558,90 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
 
 
     };
+
+    $scope.$watch('selectedLotGiay', function () {
+        if (!$scope.selectedLotGiay) {
+            $scope.errors.lotGiay = 'Không được để trống';
+        } else {
+            $scope.errors.lotGiay = null;
+        }
+    });
+    $scope.$watch('selectedMuiGiay', function () {
+        if (!$scope.selectedMuiGiay) {
+            $scope.errors.muiGiay = 'Không được để trống';
+        } else {
+            $scope.errors.muiGiay = null;
+        }
+    });
+    $scope.$watch('selectedCoGiay', function () {
+        if (!$scope.selectedCoGiay) {
+            $scope.errors.coGiay = 'Không được để trống';
+        } else {
+            $scope.errors.coGiay = null;
+        }
+    });
+    $scope.$watch('selectedThuongHieu', function () {
+        if (!$scope.selectedThuongHieu) {
+            $scope.errors.lotGiay = 'Không được để trống';
+        } else {
+            $scope.errors.lotGiay = null;
+        }
+    });
+    $scope.$watch('selectedChatLieu', function () {
+        if (!$scope.selectedChatLieu) {
+            $scope.errors.lotGiay = 'Không được để trống';
+        } else {
+            $scope.errors.lotGiay = null;
+        }
+    });
+    $scope.$watch('selectedDayGiay', function () {
+        if (!$scope.selectedDayGiay) {
+            $scope.errors.lotGiay = 'Không được để trống';
+        } else {
+            $scope.errors.lotGiay = null;
+        }
+    });
+    $scope.$watch('selectedDeGiay', function () {
+        if (!$scope.selectedDeGiay) {
+            $scope.errors.lotGiay = 'Không được để trống';
+        } else {
+            $scope.errors.lotGiay = null;
+        }
+    });
+
     let isValid = function () {
         let valid = true;
         let count = 0;
+
+        if (!$scope.selectedLotGiay) {
+            $scope.errors.lotGiay = 'Không được để trống';
+            count++;
+        }
+        if (!$scope.selectedMuiGiay) {
+            $scope.errors.muiGiay = 'Không được để trống';
+            count++;
+        }
+        if (!$scope.selectedCoGiay) {
+            $scope.errors.coGiay = 'Không được để trống';
+            count++;
+        }
+        if (!$scope.selectedThuongHieu) {
+            $scope.errors.thuongHieu = 'Không được để trống';
+            count++;
+        }
+        if (!$scope.selectedChatLieu) {
+            $scope.errors.chatLieu = 'Không được để trống';
+            count++;
+        }
+        if (!$scope.selectedDayGiay) {
+            $scope.errors.dayGiay = 'Không được để trống';
+            count++;
+        }
+        if (!$scope.selectedDeGiay) {
+            $scope.errors.deGiay = 'Không được để trống';
+            count++;
+        }
+
         if (!$scope.image1) {
             $scope.errors.anh = true;
             valid = false;
@@ -856,7 +937,7 @@ app.controller('updateGiayController', function ($scope, $http, $location, $rout
                             kt.trangThai = 0;
                             kt.barcode = new Date().getTime();
                             kt.soLuong = 0;
-                            kt.soLuongLoi = bt.soLuongLoi ? bt.soLuongLoi : 0;
+                            kt.soLuongLoi = bt ? bt.soLuongLoi ? bt.soLuongLoi  : 0 : 0;
                         }
                     });
                 });

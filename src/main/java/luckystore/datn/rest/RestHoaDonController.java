@@ -29,7 +29,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/rest/hoa-don")
+@RequestMapping("/rest/admin/hoa-don")
 public class RestHoaDonController {
 
     private final HoaDonService hoaDonService;
