@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 @Service
@@ -41,13 +42,20 @@ public class KhuyenMaiServiceImpl implements KhuyenMaiService {
 
     @Override
     public KhuyenMaiResponse addKhuyenMai(KhuyenMaiRequest khuyenMaiRequest) {
+        Calendar calendar = Calendar.getInstance();
+        java.util.Date currentDate = calendar.getTime();
+        long milliseconds = currentDate.getTime();
+        java.sql.Date ngayHienTai = new java.sql.Date(milliseconds);
         KhuyenMai khuyenMai = new KhuyenMai();
         khuyenMai.setTen(khuyenMaiRequest.getTen());
         khuyenMai.setNgayBatDau(khuyenMaiRequest.getNgayBatDau());
         khuyenMai.setNgayKetThuc(khuyenMaiRequest.getNgayKetThuc());
-        khuyenMai.setTrangThai(khuyenMaiRequest.getTrangThai());
+        if (khuyenMai.getNgayBatDau().after(ngayHienTai)) {
+            khuyenMai.setTrangThai(2);
+        } else {
+            khuyenMai.setTrangThai(khuyenMaiRequest.getTrangThai());
+        }
         khuyenMai.setGhiChu(khuyenMaiRequest.getGhiChu());
-
         List<KhuyenMaiChiTiet> chiTietList = new ArrayList<>();
         for (KhuyenMaiChiTietRequest chiTietRequest : khuyenMaiRequest.getKhuyenMaiChiTietRequests()) {
             KhuyenMaiChiTiet chiTiet = new KhuyenMaiChiTiet();
