@@ -864,6 +864,8 @@ public class HoaDonServiceImpl implements HoaDonService {
             hoaDonHoan.setChiTietThanhToans(Collections.singleton(chiTietThanhToanHoan));
         }
 
+        setNhanVienToHoaDon(hoaDonHoan);
+        hoaDonHoan.setKhachHang(hoaDon.getKhachHang());
         hoaDonHoan.setListHoaDonChiTiet(hoaDonChiTietsHoan);
         hoaDonHoan.setNgayTao(LocalDateTime.now());
         hoaDonHoan.setTrangThai(TrangThaiHoaDon.HOAN_HANG);

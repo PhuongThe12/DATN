@@ -158,6 +158,7 @@
                             <label for="lotGiay">Lót giày <sup class="text-danger">(*)</sup></label>
                             <custom-select id="lotGiay" title="lót giày" items="lotGiays" ng-model="selectedLotGiay"
                                            modal-id="modalLotGiay"></custom-select>
+                            <small class="text-danger" ng-show="errors.lotGiay">{{errors.lotGiay}}</small>
                         </div>
                     </div>
 
@@ -174,6 +175,7 @@
                             <label for="coGiay">Cổ giày <sup class="text-danger">(*)</sup></label>
                             <custom-select id="coGiay" title="cổ giày" items="coGiays" ng-model="selectedCoGiay"
                                            modal-id="modalCoGiay"></custom-select>
+                            <small class="text-danger" ng-show="errors.coGiay">{{errors.coGiay}}</small>
                         </div>
                     </div>
                 </div>
@@ -186,6 +188,7 @@
                             <custom-select id="thuongHieu" title="mũi giày" items="thuongHieus"
                                            ng-model="selectedThuongHieu"
                                            modal-id="modalThuongHieu"></custom-select>
+                            <small class="text-danger" ng-show="errors.thuongHieu">{{errors.thuongHieu}}</small>
                         </div>
                     </div>
 
@@ -194,6 +197,7 @@
                             <label for="chatLieu">Chất liệu <sup class="text-danger">(*)</sup></label>
                             <custom-select id="chatLieu" title="chất liệu" items="chatLieus" ng-model="selectedChatLieu"
                                            modal-id="modalChatLieu"></custom-select>
+                            <small class="text-danger" ng-show="errors.chatLieu">{{errors.chatLieu}}</small>
                         </div>
                     </div>
                     <div class="col-md-4 position-relative">
@@ -201,6 +205,7 @@
                             <label for="dayGiay">Đây giày <sup class="text-danger">(*)</sup></label>
                             <custom-select id="dayGiay" title="dây giày" items="dayGiays" ng-model="selectedDayGiay"
                                            modal-id="modalDayGiay"></custom-select>
+                            <small class="text-danger" ng-show="errors.dayGiay">{{errors.dayGiay}}</small>
                         </div>
                     </div>
                 </div>
@@ -211,6 +216,7 @@
                             <label for="deGiay">Đế giày <sup class="text-danger">(*)</sup></label>
                             <custom-select id="deGiay" title="Đế giày" items="deGiays" ng-model="selectedDeGiay"
                                            modal-id="modalDeGiay"></custom-select>
+                            <small class="text-danger" ng-show="errors.deGiay">{{errors.deGiay}}</small>
                         </div>
                     </div>
 

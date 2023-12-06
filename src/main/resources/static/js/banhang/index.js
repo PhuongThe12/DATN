@@ -869,7 +869,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                     // Tạo danh sách ul để chứa thông tin sản phẩm
                     const ul = document.createElement('ul');
                     lstBienTheGiay.forEach(variant => {
-                        if (mauSacIdInt === variant.mauSac.id) {
+                        if (mauSacIdInt === variant.mauSac.id && variant.trangThai === 1) {
                             const li = document.createElement('li');
                             li.textContent = `ID: ${variant.id}, GiaBan: ${variant.giaBan}`;
                             ul.appendChild(li);
@@ -1633,10 +1633,6 @@ app.directive('customSelect', function ($injector) {
                 $scope.selectedItem = item;
                 $scope.isActive = false;
             };
-
-            $scope.changeItem = function (item) {
-                console.log(item);
-            }
 
             $scope.$watch('ngModel', function (newNgModel, oldNgModel) {
                 if (!oldNgModel && newNgModel || newNgModel && newNgModel.id !== oldNgModel.id) {
