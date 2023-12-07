@@ -27,7 +27,57 @@ app.config(function ($routeProvider, $locationProvider) {
         .otherwise({redirectTo: '/list'});
 });
 
-app.controller('navbarController', function ($scope, $http, $location, $cookies, $window) {
+app.controller('navbarController', function ($rootScope, $scope, $http, $location, $cookies, $window) {
+    var storedUserData = $window.localStorage.getItem('currentUser');
+    if (!storedUserData) {
+        $scope.currentUser = {
+            idKhachHang: "",
+            username: "",
+            role: "",
+            token: ""
+        };
+        $scope.userLogin = {};
+
+        $scope.loginUser = function () {
+            $http.post(host + '/api/authentication/singin', $scope.userLogin)
+                .then(function (response) {
+                    if (response.status == 200) {
+                        setTokenCookie(response.data.token, 1)
+                        $scope.currentUser.username = response.data.userName
+                        $scope.currentUser.token = response.data.token
+                        $scope.currentUser.idKhachHang = response.data.id
+                        $scope.currentUser.role = response.data.role
+                        $rootScope.currentUser = $scope.currentUser;
+                        $window.localStorage.setItem('currentUser', JSON.stringify($scope.currentUser));
+                        if ($scope.currentUser.role === 'ROLE_USER') {
+                            $window.location.href = '/home';
+                        } else if ($scope.currentUser.role === 'ROLE_STAFF') {
+                            $window.location.href = '/admin/ban-hang';
+                        } else {
+                            $window.location.href = '/admin/tong-quan';
+                        }
+                    }
+                }).catch(function (error) {
+                console.log(error)
+            });
+        }
+
+        function setTokenCookie(token, expiryDays) {
+            const d = new Date();
+            d.setTime(d.getTime() + (expiryDays * 24 * 60 * 60 * 1000));
+            const expires = "expires=" + d.toUTCString();
+            document.cookie = `token=${token}; ${expires}; path=/`;
+        }
+    }
+
+    $scope.logoutUser = function (response) {
+        var storedUserData = $window.localStorage.getItem('currentUser');
+        if (storedUserData) {
+            $window.localStorage.clear();
+            $window.location.href = '/home';
+        }
+    }
+
 
     $scope.listBienTheGiayLocalStorage = [];
     $scope.tongTien = 0;
@@ -983,7 +1033,7 @@ app.controller('cartProductController', function ($scope, $http, $location, $coo
 
     }
 
-    $scope.deleteSoldOut = function(){
+    $scope.deleteSoldOut = function () {
         console.log($scope.productsSoldOutQuantity);
     }
 
@@ -1000,6 +1050,11 @@ app.controller('cartProductController', function ($scope, $http, $location, $coo
 
 
 app.controller("donHangListController", function ($scope, $http, $window, $location) {
+    var storedUserData = $window.localStorage.getItem('currentUser');
+    if(!storedUserData){
+        $window.location.href = '/home';
+    }
+
     $scope.curPage = 1,
         $scope.itemsPerPage = 9999,
         $scope.maxSize = 9999;
@@ -1328,17 +1383,27 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
             $http.post("/rest/user/gio-hang/check-so-luong", $scope.listBienTheGiayLocalStorage)
                 .then(function (response) {
                     $scope.hoaDonThanhToan = {};
-                    $scope.hoaDonThanhToan.khachHang = $scope.khachHang;
+                    if(storedUserData){
+                        $scope.hoaDonThanhToan.khachHang = $scope.khachHang;
+                        $scope.hoaDonThanhToan.email = $scope.khachHang.email;
+                    }else{
+                        $scope.hoaDonThanhToan.email = $scope.khachHang.email;
+                    }
+
                     $scope.hoaDonThanhToan.phiShip = 1000;
                     $scope.hoaDonThanhToan.soDienThoaiNhan = $scope.diaChiNhanHang.soDienThoaiNhan;
-                    $scope.hoaDonThanhToan.diaChiNhan = $scope.diaChiNhanHang.wards.fullName + ', ' + $scope.diaChiNhanHang.districts.fullName + ', ' + $scope.diaChiNhanHang.provinces.fullName;
+                    $scope.hoaDonThanhToan.diaChiNhan = $scope.diaChiNhanHang.diaChiNhan + ', '+$scope.diaChiNhanHang.wards.fullName + ', ' + $scope.diaChiNhanHang.districts.fullName + ', ' + $scope.diaChiNhanHang.provinces.fullName;
                     $scope.hoaDonThanhToan.trangThai = 4;
-                    $scope.hoaDonThanhToan.email = $scope.khachHang.email;
                     $scope.hoaDonThanhToan.bienTheGiayRequests = $scope.listBienTheGiayLocalStorage;
                     $scope.hoaDonThanhToan.id = $scope.idGioHang;
                     $http.post("http://localhost:8080/rest/user/hoa-don", $scope.hoaDonThanhToan)
                         .then(function (response) {
-                            $location.path("/don-hang");
+                            if(storedUserData){
+                                $location.path("/don-hang");
+                            }else{
+                                $window.localStorage.removeItem('gioHang');
+                                $location.path("/home");
+                            }
                         }).catch(function (error) {
                         console.log(error);
                         if (error.status == 400) {

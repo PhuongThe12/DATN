@@ -38,14 +38,14 @@
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="nhanVienTen" class="form-label">Họ và tên</label>
-                                <input type="text" class="form-control" ng-model="khachHang.hoTen">
+                                <input type="text" class="form-control" ng-model="diaChiNhanHang.hoTen">
 
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="nhanVienTen" class="form-label">Số điện thoại</label>
-                                <input type="text" class="form-control" ng-model="khachHang.soDienThoai">
+                                <input type="text" class="form-control" ng-model="diaChiNhanHang.soDienThoai">
 
                             </div>
                         </div>
@@ -90,7 +90,7 @@
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="exampleFormControlTextarea1" class="form-label">Địa chỉ chi tiết</label>
-                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                <textarea ng-model="diaChiNhanHang.diaChiNhan" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
                             </div>
                         </div>
                     </div>

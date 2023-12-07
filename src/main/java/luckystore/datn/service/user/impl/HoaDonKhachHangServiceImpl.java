@@ -56,8 +56,12 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
 
         List<GioHangChiTietResponse> gioHangChiTietResponseList = gioHangChiTietRepository.findGioHangChiTietByIdGioHang(gioHangThanhToanRequest.getId());
 
-
-        if (gioHangChiTietResponseList.size() != 0) {
+        if (gioHangThanhToanRequest.getKhachHang() == null) {
+            HoaDon hoaDonSaved = hoaDonRepository.save(getHoaDon(new HoaDon(), gioHangThanhToanRequest));
+            Set<HoaDonChiTiet> hoaDonChiTiets = getBienTheGiay(gioHangThanhToanRequest.getBienTheGiayRequests(), hoaDonSaved);
+            hoaDonChiTietRepository.saveAll(hoaDonChiTiets);
+            return new HoaDonResponse(hoaDonSaved);
+        } else if (gioHangChiTietResponseList.size() != 0) {
 //            checkSoLuong(gioHangThanhToanRequest.getBienTheGiayRequests());
             HoaDon hoaDonSaved = hoaDonRepository.save(getHoaDon(new HoaDon(), gioHangThanhToanRequest));
             Set<HoaDonChiTiet> hoaDonChiTiets = getBienTheGiay(gioHangThanhToanRequest.getBienTheGiayRequests(), hoaDonSaved);
@@ -71,8 +75,13 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
     }
 
     private HoaDon getHoaDon(HoaDon hoaDon, GioHangThanhToanRequest gioHangThanhToanRequest) {
+        KhachHang khachHang;
+        if (gioHangThanhToanRequest.getKhachHang() == null) {
+            khachHang = null;
+        } else {
+            khachHang = khachHangRepository.findById(gioHangThanhToanRequest.getKhachHang().getId()).get();
 
-        KhachHang khachHang = khachHangRepository.findById(gioHangThanhToanRequest.getKhachHang().getId()).get();
+        }
 
         hoaDon.setKhachHang(khachHang);
 //        hoaDon.setId(gioHangThanhToanRequest.getId());

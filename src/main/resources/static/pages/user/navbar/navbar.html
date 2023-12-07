@@ -37,9 +37,9 @@
             <ul class="navbar-nav ms-auto ">
                 <div>
                      <span ng-if="currentUser.username">
-                        {{ currentUser.hoTen }}
+                      <span ng-click="logoutUser()" class="pointer">LogOut</span>  {{ currentUser.hoTen }}
                     </span>
-                                    <span ng-if="!currentUser.username">
+                    <span class="pointer" data-bs-toggle="modal" data-bs-target="#exampleModal"  ng-if="!currentUser.username">
                         Login
                     </span>
                     <a href=""><i class="far fa-user" style="color: black;font-size: 23px;"></i></a>
@@ -48,8 +48,8 @@
                     <a href=""><i class="far fa-heart" style="color: black;font-size: 23px;"></i></a>
                 </div>
                 <div class="btn-group ps-3" style="cursor: pointer;">
-                    <div data-bs-toggle="dropdown" class="position-relative" ng-click="openCartDropdown()">
-                        <i class="fas fa-shopping-cart" style="color: black;font-size: 23px;"></i>
+                    <div>
+                        <a href="#/cart"> <i class="fas fa-shopping-cart" style="color: black;font-size: 23px;"></i></a>
                         <span style="position: absolute;top: -7px;padding: 4px 7px; background: #e50000;left: 20px;"
                               class="badge badge-light">{{ gioHang.length }}</span>
                     </div>
@@ -100,3 +100,41 @@
         <div class="overlay" ng-show="isCartVisible"></div>
     </div>
 </nav>
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form name="user" ng-submit="loginUser()">
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Email address</label>
+                        <input type="text" ng-model="userLogin.tenDangNhap" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputPassword1" class="form-label">Password</label>
+                        <input ng-model="userLogin.matKhau" type="password" class="form-control" id="exampleInputPassword1">
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                        <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary" >Submit</button>
+
+                    <a class="btn btn-primary" href="#/signup">Signup</a>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
