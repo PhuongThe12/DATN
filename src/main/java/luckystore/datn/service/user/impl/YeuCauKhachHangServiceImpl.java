@@ -1,6 +1,7 @@
 package luckystore.datn.service.user.impl;
 
 import luckystore.datn.entity.*;
+import luckystore.datn.infrastructure.security.session.SessionService;
 import luckystore.datn.model.request.YeuCauChiTietRequest;
 import luckystore.datn.model.request.YeuCauRequest;
 import luckystore.datn.model.response.HoaDonYeuCauRespone;
@@ -21,16 +22,18 @@ public class YeuCauKhachHangServiceImpl implements YeuCauKhachHangService {
     private final HoaDonChiTietRepository hoaDonChiTietRepository;
     private final LyDoRepository lyDoRepository;
 
+    private final SessionService sessionService;
     private final BienTheGiayRepository bienTheGiayRepository;
 
 
 
     @Autowired
-    public YeuCauKhachHangServiceImpl(HoaDonRepository hoaDonRepository, YeuCauRepository yeuCauRepository, HoaDonChiTietRepository hoaDonChiTietRepository, LyDoRepository lyDoRepository, BienTheGiayRepository bienTheGiayRepository) {
+    public YeuCauKhachHangServiceImpl(HoaDonRepository hoaDonRepository, YeuCauRepository yeuCauRepository, HoaDonChiTietRepository hoaDonChiTietRepository, LyDoRepository lyDoRepository, SessionService sessionService, BienTheGiayRepository bienTheGiayRepository) {
         this.hoaDonRepository = hoaDonRepository;
         this.yeuCauRepository = yeuCauRepository;
         this.hoaDonChiTietRepository = hoaDonChiTietRepository;
         this.lyDoRepository = lyDoRepository;
+        this.sessionService = sessionService;
         this.bienTheGiayRepository = bienTheGiayRepository;
     }
 
@@ -43,9 +46,6 @@ public class YeuCauKhachHangServiceImpl implements YeuCauKhachHangService {
     public YeuCauResponse addYeuCau(YeuCauRequest yeuCauRequest) {
         HoaDon hoaDon = hoaDonRepository.findById(yeuCauRequest.getHoaDon()).orElse(null);
         YeuCau yeuCauSave = new YeuCau(yeuCauRequest,hoaDon,null, LocalDateTime.now(),LocalDateTime.now());
-
-        //Người tạo
-        //Người sửa
 
 
         List<YeuCauChiTiet> yeuCauChiTietList = new ArrayList<>();

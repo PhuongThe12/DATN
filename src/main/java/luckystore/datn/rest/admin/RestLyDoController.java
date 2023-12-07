@@ -32,7 +32,7 @@ public class RestLyDoController {
         return new ResponseEntity<>(lyDoService.getAll(),HttpStatus.OK);
     }
 
-    @PostMapping("/save")
+    @PostMapping("/add")
     public ResponseEntity<?> addLyDo(@Valid @RequestBody LyDoRequest lyDoRequest, BindingResult result) {
         ResponseEntity<?> errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;

@@ -23,90 +23,92 @@ app.controller("yeuCauKhachHangListController", function ($scope, $http, $window
 app.controller("addYeuCauKhachHangController", function ($scope, $http, $routeParams, $window, $location) {
     const idHoaDon = $routeParams.id;
 
-    $scope.mapSanPhamTra = new Map(), $scope.mapSanPhamThayThe = new Map(), $scope.mapYeuCauChiTiet = new Map();
+    $scope.mapYeuCauChiTiet = new Map(), $scope.mapYeuCauChiTietSaved = new Map();
     $scope.listHoaDonChiTiet = [], $scope.listLyDo = [], $scope.listGiaySearch = [];
     $scope.giayChoosed = {}, $scope.giaySearch = {}, $scope.hoaDon = {};
 
-    $scope.curPage = 1, $scope.maxSize = 5, $scope.giaySearch.pageSize = 24, $scope.giaySearch.trangThai = 1;
-    $scope.tongTienTraHang = 0, $scope.tongTienDoiHang = 0, $scope.tongTienHangDoi = 0,$scope.tongTienGiamGia = 0, $scope.tongTienThanhToan = 0,
-    $scope.phiVanChuyen = 0,$scope.soLuong = 0,$scope.feeShippingPerOne = 0;
-    $scope.thongTinNhanHang = {}, $scope.thongTinNhanHang.soDienThoaiNhan = '', $scope.thongTinNhanHang.diaChiNhan = '', $scope.thongTinNhanHang.tenNguoiNhan = '',$scope.diaChiNhanHangMoi = {};
-    $scope.yeuCau = {},$scope.soLuongDaTra = 0;
-
+    $scope.curPage = 1, $scope.maxSize = 5, $scope.giaySearch.pageSize = 12, $scope.giaySearch.trangThai = 1;
+    $scope.tongTienHangTra = 0, $scope.tongTienDoiHang = 0, $scope.tongTienHangDoi = 0, $scope.tongTienGiamGia = 0, $scope.tongTienThanhToan = 0, $scope.phiVanChuyen = 0, $scope.soLuongDoi = 0, $scope.feeShippingPerOne = 0;
+    $scope.thongTinNhanHang = {}, $scope.thongTinNhanHang.soDienThoaiNhan = '', $scope.thongTinNhanHang.diaChiNhan = '', $scope.thongTinNhanHang.tenNguoiNhan = '', $scope.diaChiNhanHangMoi = {};
+    $scope.yeuCau = {}, $scope.soLuongDaTra = 0;
 
 
     $scope.$watch('curPage + numPerPage', function () {
         $scope.isLoading = true;
         getListHoaDonChiTiet(idHoaDon);
+        console.log()
         searchGiay($scope.giaySearch)
         getListLyDo();
     });
+
+
 
     $scope.$watch('feeShippingPerOne', function (value) {
         tinhTienShip();
     });
 
-    $scope.$watch('soLuong', function (value) {
-        tinhTienShip();
-    });
+
+    function tinhTongTienThanhToan() {
+        $scope.tongTienThanhToan = 0;
+        let tongTienThanhToan = $scope.tongTienHangTra - ($scope.tongTienDoiHang + $scope.phiVanChuyen + $scope.phiVanChuyen) ;
+        $scope.tongTienThanhToan = tongTienThanhToan > 0 ?  tongTienThanhToan : Math.abs(tongTienThanhToan);
+    }
 
     function tinhTienShip() {
         $scope.phiVanChuyen = 0;
-        if ($scope.soLuong <= 0) {
+        if ($scope.soLuongDoi <= 0) {
             return;
         }
-        let soDonHang = 0;
+        let soDonHang;
         if ($scope.soLuong % 30 === 0) {
-            soDonHang = $scope.soLuong / 30;
+            soDonHang = $scope.soLuongDoi / 30;
         } else {
-            soDonHang = ($scope.soLuong / 30) + 1;
+            soDonHang = ($scope.soLuongDoi / 30) + 1;
         }
         $scope.phiVanChuyen = Math.round(soDonHang * $scope.feeShippingPerOne);
+        tinhTongTienThanhToan();
     }
 
-    $scope.tinhTongTienThanhToan = function () {
-        tinhTienShip();
-        $scope.tongTienThanhToan = 0;
-        let tongTienThanhToan = ($scope.tongTienDoiHang + $scope.phiVanChuyen) - $scope.tongTienTraHang;
-        $scope.tongTienThanhToan = tongTienThanhToan < 0 ? Math.abs(tongTienThanhToan) : tongTienThanhToan;
-    }
 
-    $scope.tinhTongtienGiamGia = function () {
+    function tinhTongtienGiamGia() {
         $scope.tongTienGiamGia = 0;
 
-        $scope.mapSanPhamThayThe.forEach((item) => {
-            let giaBan = item.bienTheGiay.giaBan;
-            let khuyenMai = item.bienTheGiay.khuyenMai / 100;
-            let tienGiam = khuyenMai > 0 ? giaBan * khuyenMai : 0;
-            $scope.tongTienGiamGia += tienGiam;
+        $scope.mapYeuCauChiTiet.forEach((item) => {
+            if(item.bienTheGiayDoi.id) {
+                let giaBan = item.bienTheGiayDoi.giaBan;
+                let khuyenMai = item.bienTheGiay.khuyenMai / 100;
+                let tienGiam = giaBan * khuyenMai;
+                $scope.tongTienGiamGia += tienGiam;
+            }
         })
     }
 
 
-    $scope.tinhTongTienHangDoi = function () {
+    function tinhTongTienHangDoi() {
         $scope.tongTienHangDoi = 0;
-        $scope.soLuong = 0;
-        $scope.mapSanPhamThayThe.forEach((item) => {
-            let giaBan = item.bienTheGiay.giaBan;
-            $scope.tongTienHangDoi += giaBan;
-            $scope.soLuong += item.soLuongDoi;
+        $scope.soLuongDoi = 0;
+        $scope.mapYeuCauChiTiet.forEach((item) => {
+            if(item.bienTheGiayDoi.id) {
+                let giaBan = item.bienTheGiayDoi.giaBan;
+                $scope.tongTienHangDoi += giaBan;
+                $scope.soLuongDoi += 1;
+            }
         })
-        $scope.tinhTongtienGiamGia();
-        $scope.tongTienDoiHang = $scope.tongTienHangDoi - $scope.tongTienGiamGia;
-        $scope.tinhTongTienThanhToan();
+        tinhTongtienGiamGia();
+        tinhTienShip();
     }
 
 
-    $scope.tinhTongTienHangTra = function () {
-        $scope.tongTienTraHang = 0;
+    function tinhTongTienHangTra() {
+        $scope.tongTienHangTra = 0;
 
-        $scope.mapSanPhamTra.forEach((item) => {
+        $scope.mapYeuCauChiTiet.forEach((item) => {
             let hoaDonChiTiet = item.hoaDonChiTiet;
             let donGia = hoaDonChiTiet.donGia;
-            let soLuong = hoaDonChiTiet.soLuongTra;
-            let phanTramGiam = $scope.hoaDon.phanTramGiam > 0 ? $scope.hoaDon.phanTramGiam / 100 : 0;
+            let soLuong = 1;
+            let phanTramGiam = $scope.hoaDon.phanTramGiam / 100;
             let tienTraHang = (donGia * soLuong) - (donGia * soLuong * phanTramGiam);
-            $scope.tongTienTraHang += tienTraHang;
+            $scope.tongTienHangTra += tienTraHang;
         });
     };
 
@@ -118,97 +120,105 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
             return;
         }
         for (let i = 1; i <= hoaDonChiTiet.soLuongTra; i++) {
-            let key = baseId + "." + i;
-            if (!$scope.mapSanPhamTra.has(key)) {
+            let key = baseId;
+            if (!$scope.mapYeuCauChiTiet.has(key)) {
                 let valueCopy = angular.copy(hoaDonChiTiet);
                 valueCopy.soLuongTra = 1;
 
-                $scope.mapSanPhamTra.set(key, {
+                $scope.mapYeuCauChiTiet.set(key, {
                     hoaDonChiTiet: valueCopy, // value1
+                    bienTheGiayDoi: null,
                     lyDo: null,              // value2
                     ghiChu: ''               // value3
                 });
             }
         }
-        $scope.listSanPhamTra = Array.from($scope.mapSanPhamTra, ([key, value]) => ({key, value}));
-
-        $scope.tinhTongTienHangTra();
+        $scope.listYeuCauChiTiet = Array.from($scope.mapYeuCauChiTiet, ([key, value]) => ({key, value}));
+        tinhTongTienHangTra();
     }
 
-    $scope.deleteGiayTra = function (sanPhamTra) {
-        if ($scope.mapSanPhamTra.has(sanPhamTra.key)) {
-            $scope.mapSanPhamTra.delete(sanPhamTra.key);
-            $scope.listSanPhamTra = Array.from($scope.mapSanPhamTra, ([key, value]) => ({key, value}));
-            if ($scope.mapSanPhamThayThe.has(sanPhamTra.key)) {
-                $scope.mapSanPhamThayThe.delete(sanPhamTra.key);
-                $scope.listSanPhamDoi = Array.from($scope.mapSanPhamThayThe, ([key, value]) => ({key, value}));
-                $scope.tinhTongTienHangDoi();
-            }
-            $scope.tinhTongTienHangTra();
+
+
+    $scope.subtraction = function (hoaDonChiTiet) {
+        if (hoaDonChiTiet.soLuongTra > 0) {
+            hoaDonChiTiet.soLuongTra = hoaDonChiTiet.soLuongTra - 1;
+        }
+    }
+    $scope.summation = function (hoaDonChiTiet) {
+        if (hoaDonChiTiet.soLuongTra < hoaDonChiTiet.soLuongDuocTra) {
+            hoaDonChiTiet.soLuongTra = hoaDonChiTiet.soLuongTra + 1;
+            $scope.tongSoLuongTra += 1;
+        }
+    }
+    $scope.deleteGiayTra = function (yeuCauChiTiet) {
+        if ($scope.mapYeuCauChiTiet.has(yeuCauChiTiet.key)) {
+            $scope.mapYeuCauChiTiet.delete(yeuCauChiTiet.key);
+            $scope.listYeuCauChiTiet = Array.from($scope.mapYeuCauChiTiet, ([key, value]) => ({key, value}));
+            tinhTongTienHangTra();
+            tinhTongTienHangDoi();
         } else {
             toastr["error"]("Không tồn tại giày này trong danh sách sản phẩm trả");
         }
     }
 
-    $scope.deleteGiayDoi = function (sanPhamDoi) {
-        if ($scope.mapSanPhamThayThe.has(sanPhamDoi.key)) {
-            $scope.mapSanPhamThayThe.delete(sanPhamDoi.key);
-            $scope.listSanPhamDoi = Array.from($scope.mapSanPhamThayThe, ([key, value]) => ({key, value}));
-            $scope.tinhTongTienHangDoi();
+    $scope.deleteGiayDoi = function (yeuCauChiTiet) {
+        if ($scope.mapYeuCauChiTiet.has(yeuCauChiTiet.key)) {
+            let value = $scope.mapYeuCauChiTiet.get(yeuCauChiTiet.key);
+            $scope.mapYeuCauChiTiet.set(yeuCauChiTiet.key, {
+                hoaDonChiTiet: value.hoaDonChiTiet, // value1
+                bienTheGiayDoi: null,               // value2
+                lyDo: value.lyDo,                   // value3
+                ghiChu: value.ghiChu                // value4
+            });
+            $scope.listYeuCauChiTiet = Array.from($scope.mapYeuCauChiTiet, ([key, value]) => ({key, value}));
+            tinhTongTienHangDoi();
         } else {
-            toastr["error"]("Không tồn tại giày này trong danh sách sản phẩm đổi");
+            toastr["error"]("Không tồn tại giày này trong danh sách sản phẩm trả");
         }
     }
 
 
-    $scope.updateLyDo = function (key, selectedLyDo, ghiChu) {
-        if ($scope.mapSanPhamTra.has(key)) {
-            let value = $scope.mapSanPhamTra.get(key);
-
-            value.lyDo = selectedLyDo;
-            value.ghiChu = ghiChu;
-
-            $scope.mapSanPhamTra.set(key, value);
-            $scope.listSanPhamTra = Array.from($scope.mapSanPhamTra, ([key, value]) => ({key, value}));
+    $scope.addLyDoView = function (yeuCauChiTiet) {
+        $scope.yeuCauChiTiet = yeuCauChiTiet;
+        if($scope.mapYeuCauChiTiet.get(yeuCauChiTiet.key)){
+            $scope.yeuCauChiTiet.lyDo = $scope.mapYeuCauChiTiet.get(yeuCauChiTiet.key).lyDo;
+            $scope.yeuCauChiTiet.ghiChu = $scope.mapYeuCauChiTiet.get(yeuCauChiTiet.key).ghiChu;
         }
     }
 
-    $scope.resetLyDo = function () {
-        $scope.selectedLyDo = null;
-        $scope.ghiChu = undefined;
-    }
 
-    $scope.addLyDoView = function (sanPhamTra) {
-        $scope.sanPhamTra = sanPhamTra;
-        $scope.resetLyDo();
-        if ($scope.mapSanPhamTra.has($scope.sanPhamTra.key)) {
-            $scope.selectedLyDo = $scope.mapSanPhamTra.get($scope.sanPhamTra.key).lyDo;
-            $scope.ghiChu = $scope.mapSanPhamTra.get($scope.sanPhamTra.key).ghiChu;
+    $scope.updateLyDo = function () {
+        if ($scope.mapYeuCauChiTiet.has($scope.yeuCauChiTiet.key)) {
+            let yeuCauChiTiet = $scope.mapYeuCauChiTiet.get($scope.yeuCauChiTiet.key);
+
+            yeuCauChiTiet.lyDo = $scope.yeuCauChiTiet.lyDo;
+            yeuCauChiTiet.ghiChu = $scope.yeuCauChiTiet.ghiChu;
+
+            $scope.mapYeuCauChiTiet.set($scope.yeuCauChiTiet.key, yeuCauChiTiet);
+            $scope.listYeuCauChiTiet = Array.from($scope.mapYeuCauChiTiet, ([key, value]) => ({key, value}));
+            toastr["success"]("Lưu lý do thành công!");
         } else {
-            toastr["error"]("Lấy dữ liệu thất bại");
+            toastr["error"]("Không tìm thấy dữ liệu!");
         }
+
     }
 
-
-    $scope.addLyDo = function (selectedLyDo, ghiChu) {
-        $scope.updateLyDo($scope.sanPhamTra.key, selectedLyDo, ghiChu);
-        toastr["success"]("Lưu thành công!");
-    }
-
-
-    $scope.addToMapSanPhamThayThe = function (bienTheGiayDoi) {
-        // Cấu trúc dữ liệu mới cho map
-        $scope.mapSanPhamThayThe.set($scope.sanPhamTra.key, {
-            bienTheGiay: bienTheGiayDoi,
-            soLuongDoi: 1
-        });
-        $scope.listSanPhamDoi = Array.from($scope.mapSanPhamThayThe, ([key, value]) => ({key, value}));
-        $scope.tinhTongTienHangDoi();
-    };
 
     $scope.selectedGiayDoi = function () {
-        $scope.addToMapSanPhamThayThe($scope.giayChoosed);
-        $scope.giayChoosed = null;
+        if($scope.listYeuCauChiTiet.has($scope.yeuCauChiTiet.key)){
+            let value = $scope.mapYeuCauChiTiet.get($scope.yeuCauChiTiet.key);
+            $scope.mapYeuCauChiTiet.set($scope.yeuCauChiTiet.key, {
+                hoaDonChiTiet: value.hoaDonChiTiet, // value1
+                bienTheGiayDoi: $scope.giayChoosed,
+                lyDo: value.lyDo,              // value2
+                ghiChu: value.ghiChu               // value3
+            });
+            $scope.listYeuCauChiTiet = Array.from($scope.mapYeuCauChiTiet, ([key, value]) => ({key, value}));
+            $scope.giayChoosed = null;
+            tinhTongTienHangDoi();
+        }else{
+            toastr["error"]("Không tồn tại yêu cầu chi tiết có key: " + $scope.yeuCauChiTiet.key);
+        }
     }
 
     function detailGiayChiTiet(productData) {
@@ -357,65 +367,75 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
         }
     }
 
-
-    $scope.addYeuCau = function () {
+    $scope.taoYeuCau = function () {
         let coPhanTuKhongHopLe = false;
 
-        $scope.mapSanPhamTra.forEach((sanPhamTra, key) => {
-            if (!sanPhamTra.lyDo || !sanPhamTra.ghiChu) {
+        $scope.mapYeuCauChiTiet.forEach((yeuCauChiTiet, key) => {
+            if (!yeuCauChiTiet.lyDo || !yeuCauChiTiet.ghiChu) {
                 toastr["error"]("Bạn chưa điền đủ thông tin lý do hoặc ghi chú cho sản phẩm có mã: " + key);
                 coPhanTuKhongHopLe = true;
             }
         });
 
-        if (!$scope.thongTinNhanHang.tenNguoiNhan || !$scope.thongTinNhanHang.soDienThoaiNhan || !$scope.thongTinNhanHang.diaChiNhan) {
-            toastr["error"]("Bạn chưa điền đủ thông tin nhận hàng");
-            coPhanTuKhongHopLe = true;
-        }
+        // if (!$scope.thongTinNhanHang.tenNguoiNhan || !$scope.thongTinNhanHang.soDienThoaiNhan || !$scope.thongTinNhanHang.diaChiNhan) {
+        //     toastr["error"]("Bạn chưa điền đủ thông tin nhận hàng");
+        //     coPhanTuKhongHopLe = true;
+        // }
 
-        if ($scope.mapSanPhamTra.size === 0) {
-            toastr["error"]("Bạn chưa chọn sản phẩm trả");
+        if ($scope.mapYeuCauChiTiet.size === 0) {
+            toastr["error"]("Vui lòng thêm sản phẩm trả!");
             coPhanTuKhongHopLe = true;
         }
 
 
         // Nếu tất cả các entry đều hợp lệ, thực hiện xử lý tiếp theo
         if (!coPhanTuKhongHopLe) {
-            $scope.mapSanPhamTra.forEach((sanPhamTra, key) => {
-                let sanPhamDoi = $scope.mapSanPhamThayThe.has(key) ? $scope.mapSanPhamThayThe.get(key) : {
+            $scope.mapYeuCauChiTiet.forEach((yeuCauChiTiet, key) => {
+                let sanPhamDoi = $scope.mapYeuCauChiTiet.has(key) ? $scope.mapYeuCauChiTiet.get(key).bienTheGiayDoi : {
+                    bienTheGiayDoi: null
+                };
+
+                let sanPhamTra = $scope.mapYeuCauChiTiet.has(key) ? $scope.mapYeuCauChiTiet.get(key).hoaDonChiTiet.bienTheGiay : {
                     bienTheGiay: null
                 };
 
-                let tienHoanKhach = sanPhamTra.hoaDonChiTiet.donGia - (sanPhamTra.hoaDonChiTiet.donGia * $scope.hoaDon.phanTramGiam / 100);
-                let tienGiamSanPhamDoi = sanPhamDoi.khuyenMai > 0 ? sanPhamDoi.giaBan * sanPhamDoi.khuyenMai / 100 : 0;
-                // Cập nhật mapYeuCauChiTiet
-                $scope.mapYeuCauChiTiet.set(key, {
-                    hoaDonChiTiet: sanPhamTra.hoaDonChiTiet.id,
-                    bienTheGiay: sanPhamDoi.bienTheGiay ? sanPhamDoi.bienTheGiay.id : null,
-                    lyDo: sanPhamTra.lyDo,
-                    thanhTien: tienHoanKhach,
-                    tienGiam: sanPhamDoi.bienTheGiay ? tienGiamSanPhamDoi : 0,
-                    bienTheGiayTra: sanPhamTra.hoaDonChiTiet.bienTheGiay.id,
+                let tienHoanKhach = yeuCauChiTiet.hoaDonChiTiet.donGia - (yeuCauChiTiet.hoaDonChiTiet.donGia * ($scope.hoaDon.phanTramGiam / 100));
+                let tienGiamSanPhamDoi = sanPhamDoi ? sanPhamDoi.giaBan * sanPhamDoi.khuyenMai / 100 : 0;
+
+                $scope.mapYeuCauChiTietSaved.set(key, {
+                    hoaDonChiTiet: yeuCauChiTiet.hoaDonChiTiet.id,
+                    bienTheGiay: yeuCauChiTiet.bienTheGiay ? yeuCauChiTiet.bienTheGiay.id : null,
+                    lyDo: yeuCauChiTiet.lyDo,
                     trangThai: 1,
+                    ghiChu: yeuCauChiTiet.ghiChu,
+                    loaiYeuCauChiTiet: yeuCauChiTiet.bienTheGiay ? 1 : 2,
                     tinhTrangSanPham: false,
-                    ghiChu: sanPhamTra.ghiChu,
-                    loaiYeuCauChiTiet: sanPhamDoi.bienTheGiay ? 1 : 2
+                    tienGiam: yeuCauChiTiet.bienTheGiay ? tienGiamSanPhamDoi : 0,
+                    thanhTien: tienHoanKhach ? tienHoanKhach : 0,
                 });
             });
 
-            $scope.yeuCau.trangThai = 1;
+
             $scope.yeuCau.hoaDon = $scope.hoaDon.id;
+            //Người thực hiện
+            $scope.yeuCau.trangThai = 1;
+            //Ngày tạo
+            //Ngày Sửa
             $scope.yeuCau.nguoiTao = $scope.hoaDon.khachHang.id;
-            $scope.yeuCau.phiShip = $scope.feeShippingPerOne;
+            //Ghi chú
+            //Id hóa đơn đổi trả
             $scope.yeuCau.thongTinNhanHang = '' + $scope.thongTinNhanHang.tenNguoiNhan + '-' + $scope.thongTinNhanHang.soDienThoaiNhan + '-' + $scope.thongTinNhanHang.diaChiNhan;
-            $scope.yeuCau.listYeuCauChiTiet = Array.from($scope.mapYeuCauChiTiet.values());
+            $scope.yeuCau.phiShip = $scope.feeShippingPerOne;
+            //Người Tạo
+            //Người Sửa
+            $scope.yeuCau.listYeuCauChiTiet = Array.from($scope.mapYeuCauChiTietSaved.values());
 
             $http.post(host + '/user/rest/yeu-cau-khach-hang/add', JSON.stringify($scope.yeuCau))
                 .then(function (response) {
                     if (response.status === 200) {
                         toastr["success"]("Thêm thành công");
                     }
-                    $location.path("/list");
+                    $location.path("/home");
                 })
                 .catch(function (error) {
                     toastr["error"]("Thêm thất bại");
@@ -427,11 +447,11 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
         }
     };
 
-
     $scope.getOneBienTheGiay = function (giay) {
         $http.get(host + '/rest/admin/giay/' + giay.id)
             .then(function (response) {
                 $scope.giaySeletect = response.data;
+                console.log($scope.giaySeletect)
                 let lstBienTheGiay = $scope.giaySeletect.lstBienTheGiay;
                 let giaThapNhat = lstBienTheGiay[0].giaBan;
                 let giaLonNhat = lstBienTheGiay[0].giaBan;
@@ -468,34 +488,6 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
         });
     }
 
-
-    function getListHoaDonChiTiet(id) {
-        $scope.isLoading = true;
-        $http.get(host + '/user/rest/yeu-cau-khach-hang/' + id)
-            .then(function (response) {
-                $scope.hoaDon = response.data;
-                $scope.thongTinNhanHang.soDienThoaiNhan = $scope.hoaDon.khachHang.soDienThoai;
-                $scope.thongTinNhanHang.diaChiNhan = $scope.hoaDon.diaChiNhan;
-                $scope.thongTinNhanHang.tenNguoiNhan = $scope.hoaDon.khachHang.hoTen;
-                $scope.listHoaDonChiTiet = response.data.listHoaDonChiTiet;
-                $scope.isLoading = false;
-            }).catch(function (error) {
-            console.log(error);
-            toastr["error"]("Chuyển hóa đơn thất bại. Vui lòng thử lại");
-            $scope.isLoading = false;
-        });
-    }
-
-    function getListLyDo() {
-        $http.get(host + '/rest/admin/ly-do/list')
-            .then(function (response) {
-                $scope.listLyDo = response.data;
-            }).catch(function (error) {
-            console.log(error);
-            toastr["error"]("Lấy dữ liệu thất bại");
-            throw error; // Đẩy lỗi để xử lý ở nơi gọi hàm
-        });
-    }
 
     function searchGiay(giaySearch) {
         $scope.isLoading = true;
@@ -552,14 +544,47 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
             });
     }
 
+    function getListHoaDonChiTiet(id) {
+        $scope.isLoading = true;
+        $http.get(host + '/user/rest/yeu-cau-khach-hang/' + id)
+            .then(function (response) {
+                $scope.hoaDon = response.data;
+                console.log($scope.hoaDon)
+                $scope.listHoaDonChiTiet = response.data.listHoaDonChiTiet;
+                console.log($scope.listHoaDonChiTiet)
+                $scope.thongTinNhanHang.soDienThoaiNhan = $scope.hoaDon.khachHang.soDienThoai;
+                $scope.thongTinNhanHang.diaChiNhan = $scope.hoaDon.diaChiNhan;
+                $scope.thongTinNhanHang.tenNguoiNhan = $scope.hoaDon.khachHang.hoTen;
+                $scope.isLoading = false;
+            }).catch(function (error) {
+            console.log(error);
+            toastr["error"]("Chuyển hóa đơn thất bại. Vui lòng thử lại");
+            $scope.isLoading = false;
+        });
+    }
+
+    function getListLyDo() {
+        $http.get(host + '/rest/admin/ly-do/list')
+            .then(function (response) {
+                $scope.listLyDo = response.data;
+            }).catch(function (error) {
+            console.log(error);
+            toastr["error"]("Lấy dữ liệu thất bại");
+            throw error; // Đẩy lỗi để xử lý ở nơi gọi hàm
+        });
+    }
+
+
+
+
     $scope.saveDiaChi = function () {
         let diaChiNhan = $scope.diaChiNhanHangMoi.addDress + '-' + $scope.diaChiNhanHangMoi.wards.ten + ',' + $scope.diaChiNhanHangMoi.districts.ten + ',' + $scope.diaChiNhanHangMoi.provinces.ten;
         $scope.thongTinNhanHang.diaChiNhan = diaChiNhan;
         toastr["success"]("Lưu địa chỉ nhận thành công!");
         $scope.isLoading = true;
 
-        if ($scope.tongTienDoiHang - $scope.tongTienTraHang > 0 && $scope.tongTienDoiHang - $scope.tongTienTraHang < 80000000) {
-            logisticInfo.insurance_value = ($scope.tongTienDoiHang - $scope.tongTienTraHang);
+        if ($scope.tongTienDoiHang - $scope.tongTienHangTra > 0 && $scope.tongTienDoiHang - $scope.tongTienHangTra < 80000000) {
+            logisticInfo.insurance_value = ($scope.tongTienDoiHang - $scope.tongTienHangTra);
         }
 
         $http.post('https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/preview', logisticInfo)
@@ -672,15 +697,15 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
         e.target.value = value;
     });
 
-
 });
 
 app.filter('formatToVND', function () {
     return function (number) {
         if (number !== undefined && number !== null) {
-            return number.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'});
+            // Sử dụng toLocaleString để định dạng số, nhưng thêm " ₫" vào cuối
+            return number.toLocaleString('vi-VN') + ' ₫';
         } else {
-            return '0 VND'; // Hoặc giá trị mặc định khác
+            return '0 ₫'; // Hoặc giá trị mặc định khác
         }
     };
 });

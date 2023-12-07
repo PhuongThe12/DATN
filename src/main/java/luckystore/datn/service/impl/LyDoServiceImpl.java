@@ -30,23 +30,34 @@ public class LyDoServiceImpl implements LyDoService {
     }
 
     @Override
-    public LyDoResponse insert(LyDoRequest lyDoRequest) {
-        checkWhenInsert(lyDoRequest);
-        LyDo lyDo = new LyDo(lyDoRequest);
-        return new LyDoResponse(lyDoRepository.save(new LyDo(lyDoRequest)));
+    public boolean insert(LyDoRequest lyDoRequest) {
+        if (checkWhenInsert(lyDoRequest)==true) {
+            lyDoRepository.save(new LyDo(lyDoRequest));
+            return checkWhenInsert(lyDoRequest);
+        }else {
+            return checkWhenInsert(lyDoRequest);
+        }
     }
     @Override
-    public LyDoResponse update(LyDoRequest lyDoRequest) {
-        return new LyDoResponse(lyDoRepository.save(new LyDo(lyDoRequest)));
+    public boolean update(LyDoRequest lyDoRequest) {
+        if (checkWhenInsert(lyDoRequest)==true) {
+            lyDoRepository.save(new LyDo(lyDoRequest));
+            return checkWhenInsert(lyDoRequest);
+        }else {
+            return checkWhenInsert(lyDoRequest);
+        }
     }
 
-    private void checkWhenInsert(LyDoRequest lyDoRequest) {
+    private boolean checkWhenInsert(LyDoRequest lyDoRequest) {
+        boolean check =false;
         String error = "";
         if (lyDoRepository.existsByTen(lyDoRequest.getTen())) {
             error += JsonString.errorToJsonObject("ten", "Lý Do Đã Tồn Tại");
+            check = true;
         }
         if(!error.isBlank()) {
             throw new DuplicateException(JsonString.stringToJson(error));
         }
+        return check;
     }
 }

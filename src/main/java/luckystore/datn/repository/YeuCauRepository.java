@@ -3,6 +3,7 @@ package luckystore.datn.repository;
 
 
 import luckystore.datn.entity.YeuCau;
+import luckystore.datn.model.request.YeuCauSearch;
 import luckystore.datn.model.response.YeuCauResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,12 +21,19 @@ public interface YeuCauRepository extends JpaRepository<YeuCau,Long> {
     List<YeuCauResponse> finAllResponse();
 
     @Query("SELECT new luckystore.datn.model.response.YeuCauResponse(yc) FROM YeuCau yc " +
-            "WHERE (:ngayBatDau is NULL or yc.ngayTao >= :ngayBatDau) " +
-            "AND (:ngayKetThuc is NULL or yc.ngayTao <= :ngayKetThuc)" +
-            "AND (:trangThai is NULL or yc.trangThai = :trangThai) " +
-            "AND (:searchText IS NULL OR yc.id = :searchText) " +
+            "left JOIN yc.hoaDon hd on yc.hoaDon.id = yc.id " +
+            "left JOIN hd.khachHang kh on hd.khachHang.id = kh.id " +
+            "left JOIN hd.nhanVien nv on hd.nhanVien.id = nv.id " +
+            "WHERE (:#{#yeuCauSearch.ngayBatDau} is NULL or yc.ngayTao >= :#{#yeuCauSearch.ngayBatDau}) " +
+            "AND (:#{#yeuCauSearch.ngayKetThuc} is NULL or yc.ngayTao <= :#{#yeuCauSearch.ngayKetThuc})" +
+            "AND (:#{#yeuCauSearch.trangThai} is NULL or yc.trangThai = :#{#yeuCauSearch.trangThai}) " +
+            "AND (:#{#yeuCauSearch.idYeuCau} IS NULL OR yc.id = :#{#yeuCauSearch.idYeuCau}) " +
+            "AND (:#{#yeuCauSearch.idNhanVien} IS NULL OR nv.id = :#{#yeuCauSearch.idNhanVien}) " +
+            "AND (:#{#yeuCauSearch.tenKhachHang} IS NULL OR kh.hoTen like %:#{#yeuCauSearch.tenKhachHang}%) " +
+            "AND (:#{#yeuCauSearch.soDienThoaiKhachHang} IS NULL OR kh.soDienThoai like %:#{#yeuCauSearch.soDienThoaiKhachHang}%) " +
+            "AND (:#{#yeuCauSearch.email} IS NULL OR kh.email like %:#{#yeuCauSearch.email}%) " +
             "ORDER BY yc.id DESC" )
-    Page<YeuCauResponse> getPageResponse(Pageable pageable, Long searchText, LocalDateTime ngayBatDau, LocalDateTime ngayKetThuc, Integer trangThai);
+    Page<YeuCauResponse> getPageResponse(Pageable pageable, YeuCauSearch yeuCauSearch);
 
     @Query("select new luckystore.datn.model.response.YeuCauResponse(yc) from YeuCau yc  where yc.trangThai = 0")
     YeuCauResponse findResponseByStatus();
