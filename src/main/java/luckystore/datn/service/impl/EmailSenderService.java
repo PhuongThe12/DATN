@@ -17,9 +17,29 @@ import java.util.Random;
 @Service
 public class EmailSenderService {
     @Autowired
-    private  JavaMailSender mailSender;
+    private static JavaMailSender mailSender;
 
-    public  void sendSimpleEmail(String toEmail, String subject, String body, File attachment
+    public void sendSimpleEmail(String toEmail, String subject, String body, File attachment
+    ) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        helper.setFrom("qmaychem@gmail.com"); // Thay thế bằng địa chỉ email của bạn
+        helper.setTo(toEmail);
+        helper.setSubject(subject);
+        helper.setText(body);
+
+        // Thêm tệp đính kèm
+        if (attachment != null) {
+            FileSystemResource file = new FileSystemResource(attachment);
+            helper.addAttachment(file.getFilename(), file);
+        }
+
+        mailSender.send(message);
+        System.out.println("Mail Send...");
+    }
+
+    public static void sendEmailOrder(String toEmail, String subject, String body, File attachment
     ) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -38,7 +58,8 @@ public class EmailSenderService {
         mailSender.send(message);
         System.out.println("Mail Send...");
     }
-    public  void triggerMail() throws MessagingException {
+
+    public void triggerMail() throws MessagingException {
         String toEmail = "quanchun11022@gmail.com";
         String subject = "This is email subject";
         String body = "This is email body";

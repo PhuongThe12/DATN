@@ -43,16 +43,19 @@ public class YeuCauKhachHangServiceImpl implements YeuCauKhachHangService {
     public YeuCauResponse addYeuCau(YeuCauRequest yeuCauRequest) {
         HoaDon hoaDon = hoaDonRepository.findById(yeuCauRequest.getHoaDon()).orElse(null);
         YeuCau yeuCauSave = new YeuCau(yeuCauRequest,hoaDon,null, LocalDateTime.now(),LocalDateTime.now());
+
+        //Người tạo
+        //Người sửa
+
+
         List<YeuCauChiTiet> yeuCauChiTietList = new ArrayList<>();
         for (YeuCauChiTietRequest ycct: yeuCauRequest.getListYeuCauChiTiet()) {
             HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findById(ycct.getHoaDonChiTiet()).orElse(null);
             LyDo lyDo = lyDoRepository.findById(ycct.getLyDo()).orElse(null);
-            BienTheGiay bienTheGiayTra = bienTheGiayRepository.findById(ycct.getBienTheGiayTra()).orElse(null);
-            BienTheGiay bienTheGiayDoi = ycct.getBienTheGiay() == null ? null : bienTheGiayRepository.findById(ycct.getBienTheGiayTra()).orElse(null);
+            BienTheGiay bienTheGiayDoi = ycct.getBienTheGiay() == null ? null : bienTheGiayRepository.findById(ycct.getBienTheGiay()).orElse(null);
             YeuCauChiTiet yeuCauChiTiet = new YeuCauChiTiet(yeuCauSave,hoaDonChiTiet,bienTheGiayDoi,lyDo,ycct.getTienGiam(),ycct.getThanhTien(),ycct.getTrangThai(),ycct.getLoaiYeuCauChiTiet(),ycct.getTinhTrangSanPham(),ycct.getGhiChu());
             yeuCauChiTietList.add(yeuCauChiTiet);
         }
-
         yeuCauSave.setListYeuCauChiTiet(yeuCauChiTietList);
         return new YeuCauResponse(yeuCauRepository.save(yeuCauSave));
     }

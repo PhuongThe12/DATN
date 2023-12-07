@@ -19,6 +19,8 @@ public interface KhuyenMaiRepository extends JpaRepository<KhuyenMai, Long> {
     @Query("select new luckystore.datn.model.response.KhuyenMaiResponse(km) from KhuyenMai km " +
             "WHERE (:searchText IS NULL OR km.ten LIKE %:searchText%) AND (:status IS NULL OR km.trangThai = :status)")
     Page<KhuyenMaiResponse> getPageResponse(String searchText, Integer status, Pageable pageable);
+
+    List<KhuyenMai> findAllByTrangThai(int i);
 //
 //    Boolean existsByTen(String ten);
 //
