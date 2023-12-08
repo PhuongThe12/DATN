@@ -9,13 +9,13 @@ import java.time.LocalDateTime;
 @Setter
 public class FindPhieuGiamGiaRequest extends PageableRequest {
 
-    private String maPhieu;
+    private String maGiamGia;
 
-    private String tenHangKH;
+    private String hangKhachHang;
 
-    private Integer phanTramGiam;
+    private Long ngayBatDau;
 
-    private LocalDateTime ngayBatDau;
+    private Long ngayKetThuc;
 
-    private LocalDateTime ngayKetThuc;
+    private Integer trangThai;
 }

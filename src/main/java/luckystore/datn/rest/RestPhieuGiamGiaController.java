@@ -2,7 +2,6 @@ package luckystore.datn.rest;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import luckystore.datn.model.request.DayGiayRequest;
 import luckystore.datn.model.request.FindPhieuGiamGiaRequest;
 import luckystore.datn.model.request.PhieuGiamGiaRequest;
 import luckystore.datn.service.PhieuGiamGiaService;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -25,33 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/rest/phieu-giam-gia")
+@RequestMapping("/rest/admin/phieu-giam-gia")
 @RequiredArgsConstructor
-public class PhieuGiamGiaRestController {
+public class RestPhieuGiamGiaController {
 
     private final PhieuGiamGiaService phieuGiamGiaService;
 
-//    @PostMapping
-//    public ResponseEntity<?> addChatLieu(@Valid @RequestBody ChatLieuRequest chatLieuRequest, BindingResult result) {
-//        ResponseEntity<?> errorJson = getErrorJson(result);
-//        if (errorJson != null) return errorJson;
-//
-//        return new ResponseEntity<>(chatLieuService.addChatLieu(chatLieuRequest), HttpStatus.OK);
-//    }
-//
-//    @PutMapping("/{id}")
-//    public ResponseEntity<?> updateChatLieu(@PathVariable("id") Long id, @Valid @RequestBody ChatLieuRequest chatLieuRequest, BindingResult result) {
-//        ResponseEntity<?> errorJson = getErrorJson(result);
-//        if (errorJson != null) return errorJson;
-//
-//        return new ResponseEntity<>(chatLieuService.updateChatLieu(id, chatLieuRequest), HttpStatus.OK);
-//    }
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity<?> getChatLieu(@PathVariable("id") Long id) {
-//        return new ResponseEntity<>(chatLieuService.findById(id), HttpStatus.OK);
-//    }
-//
     @GetMapping("")
     public ResponseEntity<?> getPagePhieuGiamGia(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                                  @RequestParam(value = "search", required = false) String searchText,
@@ -69,8 +46,13 @@ public class PhieuGiamGiaRestController {
         return new ResponseEntity<>(phieuGiamGiaService.getAll(), HttpStatus.OK);
     }
 
+    @GetMapping("/get-all-by-hang-khach-hang")
+    public ResponseEntity<?> getgetAll(@RequestParam String hangKhachHang) {
+        return new ResponseEntity<>(phieuGiamGiaService.getListPhieuByHangKhachHang(hangKhachHang), HttpStatus.OK);
+    }
+
     @PostMapping("/add")
-    public ResponseEntity<?> addPhieuGiamGia(@Valid @RequestBody PhieuGiamGiaRequest request, BindingResult result) {
+    public ResponseEntity<?> addPhieuGiamGia(@RequestBody PhieuGiamGiaRequest request, BindingResult result) {
         ResponseEntity<?>errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
@@ -78,7 +60,7 @@ public class PhieuGiamGiaRestController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> getListSearchPhieu(@RequestBody FindPhieuGiamGiaRequest request, BindingResult result) {
+    public ResponseEntity<?> getListSearchPhieu(@RequestBody FindPhieuGiamGiaRequest request) {
 
         return new ResponseEntity<>(phieuGiamGiaService.getListSearchPhieu(request), HttpStatus.OK);
     }
@@ -89,7 +71,7 @@ public class PhieuGiamGiaRestController {
         ResponseEntity<?>errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
-        return new ResponseEntity<>(phieuGiamGiaService.addPhieuGiamGia(request), HttpStatus.OK);
+        return new ResponseEntity<>(phieuGiamGiaService.updatePhieuGiamGia(id, request), HttpStatus.OK);
     }
 
     private ResponseEntity<?> getErrorJson(BindingResult result) {

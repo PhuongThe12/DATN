@@ -1,26 +1,22 @@
 package luckystore.datn.service.impl;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import luckystore.datn.entity.Giay;
 import luckystore.datn.entity.HangKhachHang;
-import luckystore.datn.entity.NhanVien;
 import luckystore.datn.entity.PhieuGiamGia;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.exception.NullException;
 import luckystore.datn.infrastructure.constraints.ErrorMessage;
-import luckystore.datn.infrastructure.security.session.UserDetailToken;
+import luckystore.datn.infrastructure.security.session.SessionService;
 import luckystore.datn.model.request.FindPhieuGiamGiaRequest;
 import luckystore.datn.model.request.PhieuGiamGiaRequest;
 import luckystore.datn.model.response.PhieuGiamGiaResponse;
-import luckystore.datn.repository.GiayRepository;
 import luckystore.datn.repository.HangKhachHangRepository;
 import luckystore.datn.repository.NhanVienRepository;
 import luckystore.datn.repository.PhieuGiamGiaRepository;
 import luckystore.datn.service.PhieuGiamGiaService;
+import luckystore.datn.util.ConvertDateToLong;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -35,11 +31,8 @@ public class PhieuGiamGiaServiceimpl implements PhieuGiamGiaService {
 
     private final HangKhachHangRepository hangKhachHangRepository;
 
-    private final NhanVienRepository nhanVienRepository;
+    private final SessionService sessionService;
 
-    private final GiayRepository giayRepository;
-
-    private final HttpSession httpSession;
     @Override
     public List<PhieuGiamGiaResponse> getAll() {
         return phieuGiamGiaRepository.getAll();
@@ -47,7 +40,7 @@ public class PhieuGiamGiaServiceimpl implements PhieuGiamGiaService {
 
     @Override
     public Page<PhieuGiamGiaResponse> getpage(int page, String searchText, Integer status) {
-        return phieuGiamGiaRepository.getPage(PageRequest.of(page-1, 5), searchText, status);
+        return phieuGiamGiaRepository.getPage(PageRequest.of(page - 1, 5), searchText, status);
     }
 
     @Override
@@ -84,18 +77,22 @@ public class PhieuGiamGiaServiceimpl implements PhieuGiamGiaService {
     }
 
     @Override
-    public List<PhieuGiamGiaResponse> getListSearchPhieu(FindPhieuGiamGiaRequest request) {
-        return phieuGiamGiaRepository.getListSearchPhieu(request);
+    public Page<PhieuGiamGiaResponse> getListSearchPhieu(FindPhieuGiamGiaRequest request) {
+        return phieuGiamGiaRepository.getListSearchPhieu(PageRequest.of(request.getCurrentPage() -1,
+                request.getSize()),request);
+    }
+
+    @Override
+    public List<PhieuGiamGiaResponse> getListPhieuByHangKhachHang(String hangKhachHang) {
+        return phieuGiamGiaRepository.getListPhieuByHangKhachHang(hangKhachHang);
     }
 
     private PhieuGiamGia getPhieuGiamGia(PhieuGiamGia phieuGiamGia, PhieuGiamGiaRequest request) {
 
-        UserDetailToken userDetailToken = (UserDetailToken) httpSession.getAttribute("staff");
-        Optional<HangKhachHang> hangKhachHangCheck = hangKhachHangRepository.findById(request.getHangKhachHangId());
-        Optional<NhanVien> nhanVien = nhanVienRepository.findById(userDetailToken.getId());
+        Optional<HangKhachHang> hangKhachHangCheck = hangKhachHangRepository.getHangKhachHangByTenHang(request.getHangKhachHang());
+        long currentSeconds = (System.currentTimeMillis() / 1000) * 1000;
         LocalDateTime currentTimes = LocalDateTime.now();
-
-        phieuGiamGia.setMaGiamGia(request.getMaPhieu());
+        phieuGiamGia.setMaGiamGia(request.getMaGiamGia());
         phieuGiamGia.setPhanTramGiam(request.getPhanTramGiam());
         phieuGiamGia.setSoLuongPhieu(request.getSoLuongPhieu());
         phieuGiamGia.setNgayBatDau(request.getNgayBatDau());
@@ -106,16 +103,15 @@ public class PhieuGiamGiaServiceimpl implements PhieuGiamGiaService {
             phieuGiamGia.setDoiTuongApDung(hangKhachHangCheck.get());
         }
 
-        if (request.getNgayBatDau().isEqual(currentTimes) ||
-                (request.getNgayBatDau().isBefore(currentTimes) && request.getNgayKetThuc().isAfter(currentTimes))) {
+        if (request.getNgayBatDau() <= (System.currentTimeMillis() / 1000) * 1000 &&
+                (System.currentTimeMillis() / 1000) * 1000 <= request.getNgayKetThuc()) {
             phieuGiamGia.setTrangThai(0);
         } else {
             phieuGiamGia.setTrangThai(1);
         }
         phieuGiamGia.setNgayTao(currentTimes);
-        if (nhanVien.isPresent()) {
-            phieuGiamGia.setNguoiTao(nhanVien.get());
-        }
+        phieuGiamGia.setNguoiTao(sessionService.getAdmintrator());
         return phieuGiamGia;
     }
+
 }

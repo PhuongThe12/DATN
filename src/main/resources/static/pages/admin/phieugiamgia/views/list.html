@@ -25,47 +25,58 @@
 
 <div class="box-shadow-page" style="margin: 20px">
     <div class="card-body">
-
-        <div class="d-flex flex-column flex-md-row add-search-custom">
-            <div class="col-md-4 mb-3">
+        <div class="d-flex flex-column flex-md-row add-search-custom justify-content-center">
+            <div class="col-md-6 mb-3">
                 <div class="input-group">
                     <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
-                    <input id="seachText" class="form-control" type="text" ng-model="searchTextYeuCau"
-                           placeholder="Nhập thông tin tìm kiếm">
-                    <button class="btn btn-custom" ng-click="searchYeuCau()">Tìm kiếm</button>
-                </div>
-            </div>
-            <div class="col-md-4">
+                    <input id="seachText" class="form-control" type="text" ng-model="maGiamGia"
+                           placeholder="Nhập mã phiếu giảm giá">
+                </div> <br>
+                <div class="mb-3">
+                    <select class="form-select" ng-model="hangKhachHang"
+                            aria-label="Default select example">
+                        <option value="" disabled selected>Hạng khách hàng</option>
+                        <option ng-repeat="item in options" value="{{item.tenHang}}">{{item.tenHang}}</option>
+                    </select>
+                </div><br>
                 <div class="input-group">
                     <span class="input-group-text">Ngày Bắt Đầu/Ngày Kết Thúc:</span>
-                    <input type="date" class="form-control" id="ngayBatDau" name="ngayBatDau">
-                    <input type="date" class="form-control" id="ngayKetThuc" name="ngayKetThuc">
+                    <input type="date" class="form-control" id="ngayBatDau" ng-model="ngayBatDau">
+                    <input type="date" class="form-control" id="ngayKetThuc" ng-model="ngayKetThuc">
+                </div><br>
+                <div class="d-flex justify-content-around">
+                    <button class="btn btn-custom"  ng-click="search()">Tìm kiếm</button>
+                    <button class="btn btn-custom"  ng-click="resetInputSearch()">Làm mới</button>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <a class="btn btn-primary" href="#/add"><i class="fas fa-plus px-2 small"></i>Thêm phiếu giảm
-                    giá</a>
+
             </div>
         </div>
 
-        <div class="d-flex justify-content-start radio-filter">
-            <div class="custom-radio">
-                <input type="radio" id="all" name="status" ng-model="status" value="-1"
-                       ng-checked="status != 0 && status != 1"
-                       ng-change="changeRadio(-1)">
-                <label class="radio-label" for="all">Tất cả</label>
+        <div class="d-flex justify-content-between radio-filter">
+            <div>
+                <div class="custom-radio">
+                    <input type="radio" id="all" name="status" ng-model="status" value="-1"
+                           ng-checked="status != 0 && status != 1"
+                           ng-change="changeRadio(-1)">
+                    <label class="radio-label" for="all">Tất cả</label>
+                </div>
+
+                <div class="custom-radio">
+                    <input type="radio" id="active" name="status" ng-model="status" value="1" ng-checked="status == 0"
+                           ng-change="changeRadio(0)">
+                    <label class="radio-label" for="active">Còn hạn</label>
+                </div>
+
+                <div class="custom-radio">
+                    <input type="radio" id="disable" name="status" ng-model="status" value="0" ng-checked="status == 1"
+                           ng-change="changeRadio(1)">
+                    <label class="radio-label" for="disable">Hết hạn</label>
+                </div>
             </div>
 
-            <div class="custom-radio">
-                <input type="radio" id="active" name="status" ng-model="status" value="1" ng-checked="status == 0"
-                       ng-change="changeRadio(0)">
-                <label class="radio-label" for="active">Còn hạn</label>
-            </div>
-
-            <div class="custom-radio">
-                <input type="radio" id="disable" name="status" ng-model="status" value="0" ng-checked="status == 1"
-                       ng-change="changeRadio(1)">
-                <label class="radio-label" for="disable">Hết hạn</label>
+            <div class="d-flex flex-row">
+                <a class="btn btn-primary" href="#/add"><i class="fas fa-plus px-2 small"></i>Thêm phiếu giảm
+                    giá</a>
             </div>
         </div>
 
@@ -88,11 +99,11 @@
                     <td>{{pgg.maGiamGia}}</td>
                     <td>{{pgg.phanTramGiam}}</td>
                     <td>{{pgg.soLuongPhieu}}</td>
-                    <td>{{pgg.ngayBatDau | date: 'yyyy-MM-dd'}}</td>
-                    <td>{{pgg.ngayKetThuc | date: 'yyyy-MM-dd'}}</td>
+                    <td>{{pgg.ngayBatDau | longToDate}}</td>
+                    <td>{{pgg.ngayKetThuc | longToDate}}</td>
                     <td>{{pgg.giaTriDonToiThieu}}</td>
                     <td>{{pgg.giaTriGiamToiDa}}</td>
-                    <td>{{pgg.tenhang}}</td>
+                    <td>{{pgg.hangKhachHang}}</td>
                     <td>
                         <h5>
                             <span ng-class="{'badge bd-success-custom': pgg.trangThai == '0', 'badge bd-danger-custom': pgg.trangThai != '0'}">
@@ -105,7 +116,7 @@
                             <button class="btn btn-custom" ng-click="detailPhieuGiamGia(pgg.id)" data-bs-toggle="modal" data-bs-target="#showPhieuGiamGia">
                                 <i class="fas fa-eye"></i>
                             </button>
-                            <a class="btn btn-custom" ng-href="#/update/{{dayGiay.id}}"><i class="far fa-edit"></i></a>
+                            <a class="btn btn-custom" ng-href="#/update/{{pgg.id}}"><i class="far fa-edit"></i></a>
                         </div>
                     </td>
                 </tr>
@@ -151,12 +162,12 @@
 
                     <tr>
                         <td>Ngày bắt đầu :</td>
-                        <th>{{pggDetail.ngayBatDau | date: 'dd/MM/yyyy HH:mm:ss'}}</th>
+                        <th>{{pggDetail.ngayBatDau | longToDate}}</th>
                     </tr>
 
                     <tr>
                         <td>Ngày kết thúc :</td>
-                        <th>{{pggDetail.ngayKetThuc | date: 'dd/MM/yyyy HH:mm:ss'}}</th>
+                        <th>{{pggDetail.ngayKetThuc | longToDate}}</th>
                     </tr>
 
                     <tr>
@@ -171,7 +182,7 @@
 
                     <tr>
                         <td>Đối tượng áp dụng :</td>
-                        <th>{{pggDetail.tenhang}}</th>
+                        <th>{{pggDetail.hangKhachHang}}</th>
                     </tr>
 
                     <tr>

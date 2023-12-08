@@ -1,5 +1,8 @@
 package luckystore.datn.infrastructure.security.config;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import luckystore.datn.infrastructure.security.token.TokenProvider;
 import org.springframework.stereotype.Component;
@@ -34,19 +37,16 @@ public class TokenIntercreptor implements HandlerInterceptor {
         permissionAdmin.put("/admin", 1);
 
 
-
         if (userRoles.contains("ROLE_STAFF") && permissionStaff.containsKey(requestUri)) {
             return true;
         } else if (userRoles.contains("ROLE_ADMIN") && requestUri.startsWith("/admin")) {
             return true;
-        }
-        else if (userRoles.contains("ROLE_USER") && requestUri.startsWith("/user")) {
+        } else if (userRoles.contains("ROLE_USER") && requestUri.startsWith("/user")) {
             return true;
         }
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.sendRedirect("/access-denied");
         return false;
-
     }
 
     private String extractTokenFromCookies(HttpServletRequest request) {

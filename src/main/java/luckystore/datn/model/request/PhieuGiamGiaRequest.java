@@ -10,21 +10,21 @@ import java.time.LocalDateTime;
 @Setter
 public class PhieuGiamGiaRequest {
 
-    private String maPhieu;
+    private String maGiamGia;
 
     private Integer phanTramGiam;
 
     private Integer soLuongPhieu;
 
-    private LocalDateTime ngayBatDau;
+    private Long ngayBatDau;
 
-    private LocalDateTime ngayKetThuc;
+    private Long ngayKetThuc;
 
     private BigDecimal giaTriDonToiThieu;
 
     private BigDecimal giaTriGiamToiDa;
 
-    private Long hangKhachHangId;
+    private String hangKhachHang;
 
     private Long nhanVienId;
 

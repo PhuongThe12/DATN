@@ -14,7 +14,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Getter
@@ -39,10 +38,10 @@ public class PhieuGiamGia {
     private Integer soLuongPhieu;
 
     @Column(name = "NGAY_BAT_DAU")
-    private LocalDateTime ngayBatDau;
+    private Long ngayBatDau;
 
     @Column(name = "NGAY_KET_THUC")
-    private LocalDateTime ngayKetThuc;
+    private Long ngayKetThuc;
 
     @Column(name = "GIA_TRI_DON_TOI_THIEU", precision = 18)
     private BigDecimal giaTriDonToiThieu;
@@ -50,11 +49,11 @@ public class PhieuGiamGia {
     @Column(name = "GIA_TRI_GIAM_TOI_DA", precision = 18)
     private BigDecimal giaTriGiamToiDa;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "DOI_TUONG_AP_DUNG")
     private HangKhachHang doiTuongApDung;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "NGUOI_TAO")
     private NhanVien nguoiTao;
 
@@ -63,8 +62,5 @@ public class PhieuGiamGia {
 
     @Column(name = "TRANG_THAI")
     private Integer trangThai;
-
-    @Column(name = "SO_LUONG_GIAY_TOI_THIEU")
-    private Integer soLuongGiayToiThieu;
 
 }

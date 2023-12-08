@@ -14,11 +14,13 @@ public interface PhieuGiamGiaService {
 
     Page<PhieuGiamGiaResponse> getpage(int page, String searchText, Integer status);
 
+    Page<PhieuGiamGiaResponse> getListSearchPhieu(FindPhieuGiamGiaRequest request);
+
     PhieuGiamGiaResponse getPhieuResponseById(Long id);
 
     PhieuGiamGia addPhieuGiamGia(PhieuGiamGiaRequest request);
 
     PhieuGiamGia updatePhieuGiamGia(Long id, PhieuGiamGiaRequest request);
 
-    List<PhieuGiamGiaResponse> getListSearchPhieu(FindPhieuGiamGiaRequest request);
+    List<PhieuGiamGiaResponse>getListPhieuByHangKhachHang(String hangKhachHang);
 }

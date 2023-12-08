@@ -1,37 +1,3 @@
-<style>
-    .deleted-row {
-        text-decoration: line-through;
-    }
-
-    .status {
-        padding: 5px;
-        border-radius: 4px;
-    }
-
-    .cho-xac-nhan { /* Trạng thái Chờ Xác Nhận */
-        background-color: #fa732a;
-        padding: 2px 5px;
-        border-radius: 5px;
-        border: 1px solid black;
-    }
-
-    .da-xac-nhan { /* Trạng thái Đã Xác Nhận */
-        background-color: #97f777;
-        padding: 2px 5px;
-        border-radius: 5px;
-        border: 1px solid black;
-    }
-
-    .da-huy { /* Trạng thái Đã Hủy */
-        background-color: #ed3434;
-        padding: 2px 5px;
-        border-radius: 5px;
-        border: 1px solid black;
-    }
-
-
-</style>
-
 <div ng-show="isLoading" class="loading-spinner">
     <div class="text-center" style="  position: fixed;
   top: 0;
@@ -48,189 +14,127 @@
         </div>
     </div>
 </div>
-
-<div class="title-page">
-    <div class="card-header bg-white">
-        <h5 class="card-title p-2 mt-2">
-            Yêu Cầu Chi Tiết
-        </h5>
-    </div>
-</div>
-
-<div class="box-shadow-page" style="margin: 20px">
+<button class="ms-4 mb-3 btn btn-primary" ng-click="backToList()"><i class="fas fa-chevron-left"></i> Danh sách</button>
+<h1 class="d-flex justify-content-center">Cập nhật phiếu giảm giá</h1>
+<div class="card ng-scope" style="margin: 20px">
     <div class="card-body">
-        <div class="form-group">
-            <label>Yêu Cầu: YC{{yeuCau.id}}</label>
-        </div>
-        <div class="form-group">
-            <label>Hóa Đơn: <a>{{hoaDon.loaiHoaDon == 1?"HD":"HD_HDD"}}{{ hoaDon.id }} </a>({{hoaDon.loaiHoaDon ==
-                1?"Hóa Đơn Mua":"Hóa Đơn Đổi"}})</label>
-        </div>
-        <div class="form-group">
-            <label>Khách Hàng:{{ hoaDon.khachHang.hoTen }}</label>
-        </div>
-        <div class="form-group">
-            <label>Ngày tạo: {{formatDateView(yeuCau.ngayTao) }} </label>
-        </div>
-        <div class="form-group">
-            <label>Ngày tạo: {{formatDateView(yeuCau.ngaySua) }} </label>
-        </div>
-        <div class="form-group">
-            <label>
-                Trạng Thái:
-                <span class="{{yeuCau.trangThai == 1 ? 'status cho-xac-nhan' :
-                       yeuCau.trangThai == 2 ? 'status da-xac-nhan' :
-                       yeuCau.trangThai == 3 ? 'status da-huy' :
-                       'status'}}">
-            {{yeuCau.trangThai == 1 ? "Chờ Xác Nhận" :
-              yeuCau.trangThai == 2 ? "Đã Xác Nhận" :
-              yeuCau.trangThai == 3 ? "Đã Hủy" :
-              "Trạng Thái Không Xác Định"}}
-        </span>
-            </label>
-        </div>
-
-        <div class="form-group">
-            <label>Kênh Bán: {{hoaDon.kenhBan == 1 ? "Onlline" : "Tại Quầy"}} </label>
-        </div>
-        <div class="form-group">
-            <div class="form-floating">
-                            <textarea class="form-control"
-                                      name="ghiChu" ng-model="yeuCau.ghiChu"
-                                      id="floatingTextarea3" style="height: 100px"
-                            ></textarea>
-                <label for="floatingTextarea3">Ghi Chú</label>
+        <form class="row g-3" name="phieuGiamGiaForm" ng-submit="comfirmUpdate()">
+            <div class="d-flex justify-content-center">
+                <div class="col-md-4">
+                    <label class="form-label" for="maGiamGia">Mã phiếu <sup class="text-danger">(*)</sup></label>
+                    <input type="text" class="form-control" id="maGiamGia" name="maGiamGia"
+                           ng-model="phieuGiamGia.maGiamGia"
+                           ng-maxlength="10" ng-required="true"
+                           ng-change="change(phieuGiamGiaForm.maGiamGia)">
+                    <small class="text-danger"
+                           ng-show="(phieuGiamGiaForm.maGiamGia.$dirty || phieuGiamGiaForm.maGiamGia.$touched) &&
+               phieuGiamGiaForm.maGiamGia.$error.required">Không
+                        được để
+                        trống mã</small>
+                    <small class="text-danger"
+                           ng-show="(phieuGiamGiaForm.maGiamGia.$dirty || phieuGiamGiaForm.maGiamGia.$touched) &&
+               phieuGiamGiaForm.maGiamGia.$error.maxlength">Mã
+                        không được
+                        vượt quá 10 ký tự</small>
+                    <small class="text-danger"
+                           ng-show="errors.maGiamGia && ! phieuGiamGiaForm.maGiamGia.$dirty">{{errors.maGiamGia}}</small>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" for="maGiamGia">Hạng khách hàng <sup class="text-danger">(*)</sup></label>
+                    <select class="form-select" ng-model="phieuGiamGia.hangKhachHang"
+                            aria-label="Default select example">
+                        <option value="" disabled selected>Chọn hạng khách hàng</option>
+                        <option ng-repeat="item in options" value="{{item.tenHang}}">{{item.tenHang}}</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" for="phanTramGiam">Giá trị giảm <sup class="text-danger">(*)</sup></label>
+                    <input type="number" class="form-control" id="phanTramGiam" name="phanTramGiam"
+                           ng-model="phieuGiamGia.phanTramGiam"
+                           ng-required="true"
+                           ng-change="change(phieuGiamGiaForm.phanTramGiam)">
+                    <small class="text-danger"
+                           ng-show="(phieuGiamGiaForm.phanTramGiam.$dirty || phieuGiamGiaForm.phanTramGiam.$touched) &&
+                       phieuGiamGiaForm.phanTramGiam.$error.required">Không
+                        được để
+                        trống giá trị giảm</small>
+                    <small class="text-danger"
+                           ng-show="errors.phanTramGiam && ! phieuGiamGiaForm.phanTramGiam.$dirty">{{errors.phanTramGiam}}</small>
+                </div>
             </div>
-        </div>
-        <button class="btn btn-primary" type="button" ng-if="yeuCau.trangThai==1" ng-click="xacNhanYeuCau()">
-            <i class="fas fa-plus"></i>
-            <span class="ps-2">Xác Nhận</span>
-        </button>
-        <button class="btn btn-danger" type="button" ng-if="yeuCau.trangThai==1" ng-click="tuChoiNhanYeuCau()">
-            <i class="fas fa-plus"></i>
-            <span class="ps-2">Từ Chối Yêu Cầu</span>
-        </button>
-    </div>
 
-    <div>
-        <form>
 
-            <table class="table align-middle text-center" border="1">
-                <thead>
-                <tr>
-                    <th>Loại</th>
-                    <th>Mã Giày</th>
-                    <th>Tên Sản Phẩm</th>
-                    <th>Số Lượng Trả/Đổi</th>
-                    <th>Kích Cỡ</th>
-                    <th>Màu Sắc</th>
-                    <th>Ảnh Sản Phẩm</th>
-                    <th>Đơn Giá</th>
-                    <th>Trạng Thái</th>
-                    <th>Thao Tác</th>
-                </tr>
-                </thead>
-                <tbody ng-repeat="item in listYeuCauChiTietResponse track by item.id">
-                <!-- Điều chỉnh điều kiện ng-if cho Giày Trả -->
-                <tr>
-                    <td>Giày Trả</td>
-                    <td>SP{{item.hoaDonChiTiet.bienTheGiay.id}}</td>
-                    <td>{{ item.hoaDonChiTiet.bienTheGiay.giayResponse.ten }}</td>
-                    <td>x1</td>
-                    <td>{{ item.hoaDonChiTiet.bienTheGiay.kichThuoc.ten }}</td>
-                    <td>
-                        <div style="background-color: {{item.hoaDonChiTiet.bienTheGiay.mauSac.maMau}};
-                                width: 20px; height: 20px; border-radius: 50%;
-                                display: inline-block; margin-right: 5px;"></div>
-                        {{ item.hoaDonChiTiet.bienTheGiay.mauSac.ten }}
-                    </td>
-                    <td>
-                        <img src="{{ item.hoaDonChiTiet.bienTheGiay.hinhAnh }}" alt="Ảnh sản phẩm" height="50" width="50" style="border-radius: 5px;">
-                    </td>
-                    <td>{{ formatToVND(item.hoaDonChiTiet.donGia) }}</td>
-                    <td>{{ item.trangThai == 0 ? "Chờ Xét Duyệt" : item.trangThai == 1 || item.trangThai == 4 ? "Đã Xác Nhận" : item.trangThai == 2 || item.trangThai == 3 ? "Đã Hủy" : "Không Xác Định"}}</td>
-                    <td>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#exampleModal" data-bs-whatever="@mdo" ng-click="lyDoChiTiet(item)">Chi
-                            Tiết Lý Do
-                        </button>
-                        <button class="btn btn-danger" ng-if="yeuCau.trangThai == 1"
-                                ng-click="confirmDeleteGiayTra(item)">Hủy
-                        </button>
-                    </td>
-                </tr>
+            <div class="d-flex justify-content-center">
+                <!--    Ngày bắt đầu-->
+                <div class="col-md-4">
+                    <label class="form-label">Ngày bắt đầu <sup class="text-danger">(*)</sup></label>
+                    <input type="date" class="form-control" name="ngayBatDau" id="ngayBatDau"
+                           ng-model="phieuGiamGia.ngayBatDau" ng-required="true">
+                    <small class="error-message"
+                           ng-show="(phieuGiamGiaForm.ngayBatDau.$dirty || phieuGiamGiaForm.ngayBatDau.$touched) && phieuGiamGiaForm.ngayBatDau.$error.required">Không
+                        được để trống ngày bắt đầu</small>
+                </div>
 
-                <!-- Điều chỉnh điều kiện ng-if cho Giày Đổi -->
-                <tr ng-if="item.bienTheGiay.id" ng-class="{'deleted-row': item.isDeleted}">
-                    <td>Giày Đổi</td>
-                    <td>SP{{ item.bienTheGiay.id }}</td>
-                    <td>{{ item.bienTheGiay.giayResponse.ten }}</td>
-                    <td>x{{ item.soLuong }}</td>
-                    <td>{{ item.bienTheGiay.kichThuoc.ten }}</td>
-                    <td>
-                        <div style="background-color: {{item.bienTheGiay.mauSac.maMau}};
-                                width: 20px; height: 20px; border-radius: 50%;
-                                display: inline-block; margin-right: 5px;"></div>
-                        {{ item.bienTheGiay.mauSac.ten }}
-                    </td>
-                    <td>
-                        <img src="{{ item.bienTheGiay.hinhAnh }}" alt="Ảnh sản phẩm" height="50" width="50"
-                             style="border-radius: 5px;">
-                    </td>
-                    <td>{{ formatToVND(item.bienTheGiay.giaBan) }}</td>
-                    <td>{{ item.trangThai == 0 ? "Chờ Xét Duyệt" : item.trangThai == 1 ? "Đã Xác Nhận" : item.trangThai == 2 || item.trangThai == 3 || item.trangThai == 4 ? "Đã Hủy" : "Không Xác Định"}}</td>
-                    <td>
-                        <button class="btn btn-danger" ng-if="yeuCau.trangThai == 1"
-                                ng-click="confirmDeleteGiayDoi(item)">Hủy
-                        </button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                <!--    Ngày kết thúc-->
+                <div class="col-md-4">
+                    <label class="form-label">Ngày kết thúc <sup class="text-danger">(*)</sup></label>
+                    <input type="date" class="form-control" name="ngayKetThuc" id="ngayKetThuc"
+                           ng-model="phieuGiamGia.ngayKetThuc" ng-required="true">
+                    <small class="error-message"
+                           ng-show="(phieuGiamGiaForm.ngayKetThuc.$dirty || phieuGiamGiaForm.ngayKetThuc.$touched) && phieuGiamGiaForm.ngayKetThuc.$error.required">Không
+                        được để trống ngày kết thúc</small>
+                </div>
+
+                <div class="col-md-4"></div>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <div class="col-md-4">
+                    <label class="form-label" for="soLuongPhieu">Số lượng phiếu <sup class="text-danger">(*)</sup></label>
+                    <input type="number" class="form-control" id="soLuongPhieu" name="soLuongPhieu"
+                           ng-model="phieuGiamGia.soLuongPhieu"
+                           ng-required="true"
+                           ng-change="change(phieuGiamGiaForm.soLuongPhieu)">
+                    <small class="text-danger"
+                           ng-show="(phieuGiamGiaForm.soLuongPhieu.$dirty || phieuGiamGiaForm.soLuongPhieu.$touched) &&
+               phieuGiamGiaForm.soLuongPhieu.$error.required">Không
+                        được để
+                        trống số lượng phiếu</small>
+                    <small class="text-danger"
+                           ng-show="errors.soLuongPhieu && ! phieuGiamGiaForm.soLuongPhieu.$dirty">{{errors.soLuongPhieu}}</small>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" for="giaTriDonToiThieu">Giá trị đơn tối thiểu <sup class="text-danger">(*)</sup></label>
+                    <input type="number" class="form-control" id="giaTriDonToiThieu" name="giaTriDonToiThieu"
+                           ng-model="phieuGiamGia.giaTriDonToiThieu"
+                           ng-required="true"
+                           ng-change="change(phieuGiamGiaForm.giaTriDonToiThieu)">
+                    <small class="text-danger"
+                           ng-show="(phieuGiamGiaForm.giaTriDonToiThieu.$dirty || phieuGiamGiaForm.giaTriDonToiThieu.$touched) &&
+                                phieuGiamGiaForm.giaTriDonToiThieu.$error.required">Không
+                        được để
+                        trống giá trị đơn tối thiểu</small>
+                    <small class="text-danger"
+                           ng-show="errors.giaTriDonToiThieu && ! phieuGiamGiaForm.giaTriDonToiThieu.$dirty">{{errors.giaTriDonToiThieu}}</small>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" for="giaTriGiamToiDa">Giá trị giảm tối đa <sup class="text-danger">(*)</sup></label>
+                    <input type="number" class="form-control" id="giaTriGiamToiDa" name="giaTriGiamToiDa"
+                           ng-model="phieuGiamGia.giaTriGiamToiDa"
+                           ng-required="true"
+                           ng-change="change(phieuGiamGiaForm.giaTriGiamToiDa)">
+                    <small class="text-danger"
+                           ng-show="(phieuGiamGiaForm.giaTriGiamToiDa.$dirty || phieuGiamGiaForm.giaTriGiamToiDa.$touched) &&
+                                phieuGiamGiaForm.giaTriGiamToiDa.$error.required">Không
+                        được để
+                        trống giá trị giảm tối đa</small>
+                    <small class="text-danger"
+                           ng-show="errors.giaTriGiamToiDa && ! phieuGiamGiaForm.giaTriGiamToiDa.$dirty">{{errors.giaTriGiamToiDa}}</small>
+                </div>
+            </div>
+            <div class="d-flex justify-content-start">
+                <button type="submit" class="btn btn-primary">Cập nhật</button>
+            </div>
         </form>
     </div>
-
-
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Lý Do Chi Tiết</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="mb-3">
-                            <label for="floatingSelect">Lý Do:</label>
-                            <select class="form-select" id="floatingSelect"
-                                    placeholder="Chọn Lý Do Đổi/Trả"
-                                    aria-label="Floating label select example" ng-model="lyDo">
-                                <option ng-repeat="lyDo in listLyDo" value="{{lyDo.id}}">{{lyDo.ten}}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="message-text" class="col-form-label">Mô tả:</label>
-                            <textarea class="form-control" id="message-text" ng-model="ghiChu"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <div class="form-check form-switch">
-                                <label class="form-check-label" for="flexSwitchCheckDefault">Sản Phẩm Lỗi</label>
-                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
-                                       ng-model="tinhTrangSanPham">
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quay Về</button>
-                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" ng-click="updateLyDo()">Lưu
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <a class="btn btn-primary" href="#/list">Quay Về</a>
-    <a class="btn btn-success" ng-if="yeuCau.trangThai != 1" ng-click="luuYeuCau()">Lưu</a>
 </div>
-

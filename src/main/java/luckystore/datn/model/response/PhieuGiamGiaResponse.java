@@ -1,5 +1,6 @@
 package luckystore.datn.model.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import luckystore.datn.entity.Giay;
 import luckystore.datn.entity.HangKhachHang;
 import luckystore.datn.entity.PhieuGiamGia;
@@ -10,6 +11,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Projection(types = {PhieuGiamGia.class, HangKhachHang.class, Giay.class} )
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public interface PhieuGiamGiaResponse {
 
     @Value("#{target.id}")
@@ -25,10 +27,10 @@ public interface PhieuGiamGiaResponse {
     Integer getSoLuongPhieu();
 
     @Value("#{target.NGAY_BAT_DAU}")
-    LocalDateTime getNgayBatDau();
+    Long getNgayBatDau();
 
     @Value("#{target.NGAY_KET_THUC}")
-    LocalDateTime getNgayKetThuc();
+    Long getNgayKetThuc();
 
     @Value("#{target.GIA_TRI_DON_TOI_THIEU}")
     BigDecimal getGiaTriDonToiThieu();
@@ -37,12 +39,12 @@ public interface PhieuGiamGiaResponse {
     BigDecimal getGiaTriGiamToiDa();
 
     @Value("#{target.TEN_HANG}")
-    String getTenhang();
+    String getHangKhachHang();
 
     @Value("#{target.TRANG_THAI}")
     Integer getTrangThai();
 
-    @Value("#{target.NGUOI_TAO}")
+    @Value("#{target.EMAIL}")
     String getNguoiTao();
 
     @Value("#{target.NGAY_TAO}")

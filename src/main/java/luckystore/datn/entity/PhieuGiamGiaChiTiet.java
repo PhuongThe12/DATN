@@ -13,6 +13,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -38,7 +39,7 @@ public class PhieuGiamGiaChiTiet {
     private BigDecimal giaSauGiam;
 
     @Column(name = "NGAY_TAO")
-    private Instant ngayTao;
+    private LocalDateTime ngayTao;
 
     @Column(name = "TRANG_THAI")
     private Integer trangThai;
