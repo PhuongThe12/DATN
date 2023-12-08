@@ -70,7 +70,11 @@ app.controller("addDiaChiNhanHangController", function ($scope, $http, $location
         $scope.diaChiNhanHang.wards = $scope.diaChiNhanHang.wards.ten;
 
         console.log($scope.diaChiNhanHang);
+<<<<<<< HEAD
+        $http.post(host + '/rest/khach-hang/dia-chi-nhan-hang', $scope.diaChiNhanHang)
+=======
         $http.post(host + '/rest/admin/dia-chi-nhan-hang', $scope.diaChiNhanHang)
+>>>>>>> b299a53425c7148c52aa36ed18e2d180a68d618c
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -114,7 +118,11 @@ app.controller("diaChiNhanHangListController", function ($scope, $http, $window,
     }
 
     function getData(ahhoang) {
+<<<<<<< HEAD
+        let apiUrl = host + '/rest/khach-hang/dia-chi-nhan-hang?page=' + ahhoang;
+=======
         let apiUrl = host + '/rest/admin/dia-chi-nhan-hang?page=' + ahhoang;
+>>>>>>> b299a53425c7148c52aa36ed18e2d180a68d618c
         if (searchText) {
             apiUrl += '&search=' + searchText;
         }
@@ -147,7 +155,11 @@ app.controller("diaChiNhanHangListController", function ($scope, $http, $window,
     $scope.removeDieuKien = function (dieuKien) {
         $http({
             method: 'DELETE',
+<<<<<<< HEAD
+            url: 'http://localhost:8080/rest/khach-hang/dia-chi-nhan-hang/delete/' + dieuKien
+=======
             url: 'http://localhost:8080/rest/admin/dia-chi-nhan-hang/delete/' + dieuKien
+>>>>>>> b299a53425c7148c52aa36ed18e2d180a68d618c
         }).then(function successCallback(response) {
             // Xử lý khi API DELETE thành công
             console.log('Xóa điều kiện giảm giá thành công', response);
@@ -169,7 +181,11 @@ app.controller("diaChiNhanHangListController", function ($scope, $http, $window,
 
         $http({
             method: 'PUT',
+<<<<<<< HEAD
+            url: 'http://localhost:8080/rest/khach-hang/dia-chi-nhan-hang/update-trang-thai/' + dieuKien ,
+=======
             url: 'http://localhost:8080/rest/admin/dia-chi-nhan-hang/update-trang-thai/' + dieuKien ,
+>>>>>>> b299a53425c7148c52aa36ed18e2d180a68d618c
             data:$scope.trangThai
         }).then(function successCallback(response) {
             // Xử lý khi API UPDATE thành công
@@ -227,7 +243,11 @@ app.controller("updateDiaChiNhanHangController", function ($scope, $http, $route
         }
 
     }
+<<<<<<< HEAD
+    $http.get(host + '/rest/khach-hang/dia-chi-nhan-hang/' + id)
+=======
     $http.get(host + '/rest/admin/dia-chi-nhan-hang/' + id)
+>>>>>>> b299a53425c7148c52aa36ed18e2d180a68d618c
         .then(function (response) {
             $scope.diaChiNhanHang = response.data;
             setData();
@@ -282,7 +302,11 @@ app.controller("updateDiaChiNhanHangController", function ($scope, $http, $route
         $scope.diaChiNhanHang.provinces = $scope.diaChiNhanHang.provinces.ten;
         $scope.diaChiNhanHang.wards = $scope.diaChiNhanHang.wards.ten;
 
+<<<<<<< HEAD
+        $http.put(host + '/rest/khach-hang/dia-chi-nhan-hang/' + id, $scope.diaChiNhanHang)
+=======
         $http.put(host + '/rest/admin/dia-chi-nhan-hang/' + id, $scope.diaChiNhanHang)
+>>>>>>> b299a53425c7148c52aa36ed18e2d180a68d618c
             .then(function (response) {
                 if (response.status == 200) {
                     toastr["success"]("Cập nhật thành công")
@@ -300,4 +324,3 @@ app.controller("updateDiaChiNhanHangController", function ($scope, $http, $route
         })
     };
 });
-

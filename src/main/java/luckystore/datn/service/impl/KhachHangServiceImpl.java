@@ -60,14 +60,26 @@ public class KhachHangServiceImpl implements KhachHangService {
 
         KhachHang khachHang = getKhachHang(new KhachHang(), khachHangRequest);
         khachHang.setDiemTichLuy(0);
+
+        System.out.println("Den Day");
         setHangKhachHang(khachHang);
 
         TaiKhoan taiKhoan = new TaiKhoan();
+        taiKhoan.setMatKhau(khachHangRequest.getSoDienThoai());
+        taiKhoan.setTenDangNhap(khachHangRequest.getEmail());
+        taiKhoan.setRole(Role.ROLE_USER);
+        taiKhoan.setTrangThai(khachHang.getTrangThai());
+
+
+        setHangKhachHang(khachHang);
+
+//        mã hoá mật khẩu
         taiKhoan.setMatKhau(passwordEncoder.encode(khachHangRequest.getSoDienThoai()));
         taiKhoan.setTenDangNhap(khachHangRequest.getEmail());
         taiKhoan.setRole(Role.ROLE_USER);
         taiKhoan.setTrangThai(khachHang.getTrangThai());
         taiKhoanRepository.save(taiKhoan);
+
         khachHang.setTaiKhoan(taiKhoan);
 
         return new KhachHangResponse(khachHangRepo.save(khachHang));
@@ -124,4 +136,8 @@ public class KhachHangServiceImpl implements KhachHangService {
         khachHang.setTrangThai(khachHangRequest.getTrangThai() == null || khachHangRequest.getTrangThai() == 0 ? 0 : 1);
         return khachHang;
     }
+
 }
+
+
+
