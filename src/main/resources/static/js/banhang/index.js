@@ -11,9 +11,7 @@ app.config(function ($routeProvider, $locationProvider) {
 
 app.controller("homeController", function ($scope, $http, $location, $cookies, $rootScope) {
 
-    let user = JSON.parse(localStorage.getItem("currentUser"));
-    console.log(user)
-
+    document.title = 'Bán hàng';
     $scope.curPage = 1, $scope.itemsPerPage = 12, $scope.maxSize = 5;
     $scope.hoaDon = {};
 
@@ -701,6 +699,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                         request.idHoaDon = response.data + "x" + request.phuongThuc;
                         $http.post(host + "/vnpay/create-vnpay-order-tai-quay", request)
                             .then(response => {
+                                $scope.loading = true;
                                 window.location.href = response.data;
                             })
                             .catch(err => {
@@ -744,7 +743,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                         $scope.hoaDonPrint.conLai = 0;
 
                         $scope.hoaDonPrint.thongTinThanhToan ={};
-                        hoaDon.chiTietThanhToans.forEach(item => {
+                        data.chiTietThanhToans.forEach(item => {
                             $scope.hoaDonPrint.conLai += item.tienThanhToan;
                             $scope.hoaDonPrint.thongTinThanhToan.show = true;
                             if(item.hinhThucThanhToan === 1) {
@@ -778,6 +777,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
 
                     })
                     .catch((error) => {
+                        console.log(error);
                         toastr["error"]("Không tìm thấy hóa đơn vui lòng thử lại");
                     })
             } else {
@@ -869,7 +869,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                     // Tạo danh sách ul để chứa thông tin sản phẩm
                     const ul = document.createElement('ul');
                     lstBienTheGiay.forEach(variant => {
-                        if (mauSacIdInt === variant.mauSac.id) {
+                        if (mauSacIdInt === variant.mauSac.id && variant.trangThai === 1) {
                             const li = document.createElement('li');
                             li.textContent = `ID: ${variant.id}, GiaBan: ${variant.giaBan}`;
                             ul.appendChild(li);
@@ -1633,10 +1633,6 @@ app.directive('customSelect', function ($injector) {
                 $scope.selectedItem = item;
                 $scope.isActive = false;
             };
-
-            $scope.changeItem = function (item) {
-                console.log(item);
-            }
 
             $scope.$watch('ngModel', function (newNgModel, oldNgModel) {
                 if (!oldNgModel && newNgModel || newNgModel && newNgModel.id !== oldNgModel.id) {

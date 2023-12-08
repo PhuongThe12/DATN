@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import luckystore.datn.validation.groups.CreateGroup;
 import luckystore.datn.validation.groups.UpdateGroup;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -38,6 +39,8 @@ public class YeuCauRequest {
     private Long nguoiSua;
 
     private String thongTinNhanHang;
+
+    private BigDecimal phiShip;
 
     private List<YeuCauChiTietRequest> listYeuCauChiTiet;
 
