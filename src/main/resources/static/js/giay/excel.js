@@ -279,6 +279,7 @@ app.controller('excelController', function ($scope, $http, $location) {
                 const errors = [];
                 const promises = [];
                 for (const k in giayData) {
+
                     if (!giayData[k].ten) {
                         errors.push("Lỗi ở ô " + XLSX.utils.encode_cell({
                             r: giayData[k].row,
@@ -391,6 +392,9 @@ app.controller('excelController', function ($scope, $http, $location) {
                         );
                     }
 
+                    if(giayData[k].hashTags.length === 1 && giayData[k].hashTags[0] === 'null') {
+                        giayData[k].hashTags = [];
+                    }
 
                     giayData[k].mauSacImages = {};
                     giayData[k].bienTheGiays = [];
@@ -520,7 +524,7 @@ app.controller('excelController', function ($scope, $http, $location) {
 
                 function readImageFromURL(url) {
 
-                    if(!url) {
+                    if (!url) {
                         return;
                     }
 

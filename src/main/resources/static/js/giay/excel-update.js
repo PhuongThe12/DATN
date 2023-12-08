@@ -322,7 +322,9 @@ app.controller('excelUpdateController', function ($scope, $http, $location) {
                             );
                         }
                     }
-
+                    if(giayData[k].hashTags.length === 1 && giayData[k].hashTags[0] === 'null') {
+                        giayData[k].hashTags = [];
+                    }
 
                     giayData[k].mauSacImages = {};
                     giayData[k].bienTheGiays = [];

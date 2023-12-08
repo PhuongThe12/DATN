@@ -1,9 +1,9 @@
 package luckystore.datn.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import luckystore.datn.constraints.Config;
-import luckystore.datn.constraints.ErrorMessage;
-import luckystore.datn.constraints.TrangThaiHoaDon;
+import luckystore.datn.infrastructure.constraints.Config;
+import luckystore.datn.infrastructure.constraints.ErrorMessage;
+import luckystore.datn.infrastructure.constraints.TrangThaiHoaDon;
 import luckystore.datn.entity.BienTheGiay;
 import luckystore.datn.entity.ChiTietThanhToan;
 import luckystore.datn.entity.DieuKien;
@@ -864,6 +864,8 @@ public class HoaDonServiceImpl implements HoaDonService {
             hoaDonHoan.setChiTietThanhToans(Collections.singleton(chiTietThanhToanHoan));
         }
 
+        setNhanVienToHoaDon(hoaDonHoan);
+        hoaDonHoan.setKhachHang(hoaDon.getKhachHang());
         hoaDonHoan.setListHoaDonChiTiet(hoaDonChiTietsHoan);
         hoaDonHoan.setNgayTao(LocalDateTime.now());
         hoaDonHoan.setTrangThai(TrangThaiHoaDon.HOAN_HANG);

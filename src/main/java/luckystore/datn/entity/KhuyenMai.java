@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.sql.Date;
 import java.util.List;
 
 @Entity
@@ -27,10 +27,10 @@ public class KhuyenMai {
     private String ten;
 
     @Column(name = "NGAY_BAT_DAU", columnDefinition = "DATETIME", nullable = false)
-    private LocalDateTime ngayBatDau;
+    private Date ngayBatDau;
 
     @Column(name = "NGAY_KET_THUC", columnDefinition = "DATETIME", nullable = false)
-    private LocalDateTime ngayKetThuc;
+    private Date ngayKetThuc;
 
     @Column(name = "TRANG_THAI", columnDefinition = "INT", nullable = false)
     private Integer trangThai;

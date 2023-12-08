@@ -135,14 +135,15 @@ app.controller('hoaDonController', function ($scope, $http, $location) {
 
         $http.get(host + "/rest/admin/hoa-don/get-don-doi-tra/" + id)
             .then(function (response) {
-                console.log(response.data);
-                response.data.forEach(item => {
-                    if(item.loaiHoaDon === 1) {
-                        $scope.hoaDonDoi = item;
-                    } else {
-                        $scope.hoaDonTra = item;
-                    }
-                })
+                if (response.data) {
+                    response.data.forEach(item => {
+                        if (item.loaiHoaDon === 1) {
+                            $scope.hoaDonDoi = item;
+                        } else {
+                            $scope.hoaDonTra = item;
+                        }
+                    })
+                }
 
                 $scope.isLoading = false;
             })
