@@ -78,6 +78,7 @@ public class RestYeuCauController {
                 ngayBatDau = new java.sql.Date(ngayBatDauUtil.getTime());
             }
 
+
             if (ngayKetThucStr != null) {
                 java.util.Date ngayKetThucUtil = sdf.parse(ngayKetThucStr);
 
@@ -96,6 +97,7 @@ public class RestYeuCauController {
             // Xử lý lỗi nếu ngày không đúng định dạng
             return new ResponseEntity("Ngày không đúng định dạng (yyyy-MM-dd)", HttpStatus.BAD_REQUEST);
         }
+
     }
 
     private ResponseEntity getErrorJson(BindingResult result) {

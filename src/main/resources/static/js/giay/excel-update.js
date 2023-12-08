@@ -10,7 +10,7 @@ app.controller('excelUpdateController', function ($scope, $http, $location) {
         }
 
         $scope.isLoading = true;
-        $http.post("http://localhost:8080/admin/rest/giay/update-excel", JSON.stringify($scope.requestData))
+        $http.post("http://localhost:8080/rest/admin/giay/update-excel", JSON.stringify($scope.requestData))
             .then(function (response) {
                 toastr["success"]("Cập nhật thành công");
                 $location.path("/list");

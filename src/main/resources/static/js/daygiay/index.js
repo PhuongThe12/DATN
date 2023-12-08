@@ -44,7 +44,7 @@ app.controller("addDayGiayController", function ($scope, $http, $location) {
             $scope.isLoading = false;
             return;
         }
-        $http.post(host + '/admin/rest/day-giay', $scope.dayGiay)
+        $http.post(host + '/rest/admin/day-giay', $scope.dayGiay)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -88,7 +88,7 @@ app.controller("dayGiayListController", function ($scope, $http, $window, $locat
 
     function getData(currentPage) {
         $scope.isLoading = true;
-        let apiUrl = host + '/admin/rest/day-giay?page=' + currentPage;
+        let apiUrl = host + '/rest/admin/day-giay?page=' + currentPage;
         if (searchText) {
             apiUrl += '&search=' + searchText;
         }
@@ -142,7 +142,7 @@ app.controller("updateDayGiayController", function ($scope, $http, $routeParams,
     $scope.change = function (input) {
         input.$dirty = true;
     }
-    $http.get(host + '/admin/rest/day-giay/' + id)
+    $http.get(host + '/rest/admin/day-giay/' + id)
         .then(function (response) {
             $scope.dayGiay = response.data;
         }).catch(function (error) {
@@ -173,7 +173,7 @@ app.controller("updateDayGiayController", function ($scope, $http, $routeParams,
             $scope.isLoading = false;
             return;
         }
-        $http.put(host + '/admin/rest/day-giay/' + id, $scope.dayGiay)
+        $http.put(host + '/rest/admin/day-giay/' + id, $scope.dayGiay)
             .then(function (response) {
                 if (response.status == 200) {
                     toastr["success"]("Cập nhật thành công")

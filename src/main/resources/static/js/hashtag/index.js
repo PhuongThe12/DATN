@@ -44,7 +44,7 @@ app.controller("addHashTagController", function ($scope, $http, $location) {
             $scope.isLoading = false;
             return;
         }
-        $http.post(host + '/admin/rest/hash-tag', $scope.hashTag)
+        $http.post(host + '/rest/admin/hash-tag', $scope.hashTag)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -89,7 +89,7 @@ app.controller("hashTagListController", function ($scope, $http, $window, $locat
 
     function getData(currentPage) {
         $scope.isLoading = true;
-        let apiUrl = host + '/admin/rest/hash-tag?page=' + currentPage;
+        let apiUrl = host + '/rest/admin/hash-tag?page=' + currentPage;
         if (searchText) {
             apiUrl += '&search=' + searchText;
         }
@@ -142,7 +142,7 @@ app.controller("updateHashTagController", function ($scope, $http, $routeParams,
     $scope.change = function (input) {
         input.$dirty = true;
     }
-    $http.get(host + '/admin/rest/hash-tag/' + id)
+    $http.get(host + '/rest/admin/hash-tag/' + id)
         .then(function (response) {
             $scope.hashTag = response.data;
         }).catch(function (error) {
@@ -172,7 +172,7 @@ app.controller("updateHashTagController", function ($scope, $http, $routeParams,
             $scope.isLoading = false;
             return;
         }
-        $http.put(host + '/admin/rest/hash-tag/' + id, $scope.hashTag)
+        $http.put(host + '/rest/admin/hash-tag/' + id, $scope.hashTag)
             .then(function (response) {
                 if (response.status == 200) {
                     toastr["success"]("Cập nhật thành công")

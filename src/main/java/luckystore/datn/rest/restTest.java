@@ -18,7 +18,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/rest/test")
+@RequestMapping("/rest/admin/test")
 public class restTest {
 
    @Autowired

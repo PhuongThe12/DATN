@@ -19,7 +19,7 @@ app.controller('hoaDonChoController', function ($scope, $http, $location) {
 
     function getData(currentPage) {
         $scope.isLoading = true;
-        let apiUrl = host + '/admin/rest/hoa-don/get-all';
+        let apiUrl = host + '/rest/admin/hoa-don/get-all';
 
         if ($scope.searchText > 0) {
             hoaDonSearch.id = ($scope.searchText + "").trim();
@@ -39,7 +39,7 @@ app.controller('hoaDonChoController', function ($scope, $http, $location) {
         }
 
         if ($scope.status === 3) {
-            apiUrl = host + '/admin/rest/hoa-don/get-all-order-ngay-ship';
+            apiUrl = host + '/rest/admin/hoa-don/get-all-order-ngay-ship';
         }
 
         hoaDonSearch.tuNgay = $scope.tu;
@@ -51,9 +51,6 @@ app.controller('hoaDonChoController', function ($scope, $http, $location) {
 
         $http.post(apiUrl, hoaDonSearch)
             .then(function (response) {
-                if (response.data.content.length === 0) {
-                    toastr["warning"]("Không tìm thấy hóa đơn nào");
-                }
                 $scope.hoaDons = response.data.content;
                 $scope.numOfPages = response.data.totalPages;
                 $scope.isLoading = false;
@@ -151,7 +148,7 @@ app.controller('hoaDonChoController', function ($scope, $http, $location) {
         }).then((result) => {
             if (result.isConfirmed) {
                 console.log(hoaDonSelecteds);
-                $http.post(host + "/admin/rest/hoa-don/xac-nhan-don-hang", hoaDonSelecteds)
+                $http.post(host + "/rest/admin/hoa-don/xac-nhan-don-hang", hoaDonSelecteds)
                     .then((response) => {
                         if (Number.isInteger(response.data)) {
                             if (response.data === hoaDonSelecteds.length) {
@@ -268,7 +265,7 @@ app.controller('hoaDonChoController', function ($scope, $http, $location) {
                     });
                 });
 
-                $http.post(host + "/admin/rest/hoa-don/tra-mot-phan", request)
+                $http.post(host + "/rest/admin/hoa-don/tra-mot-phan", request)
                     .then((response) => {
                         if (Number.isInteger(response.data)) {
                             toastr["success"]("Đã hoàn thành hóa đơn");
@@ -277,6 +274,7 @@ app.controller('hoaDonChoController', function ($scope, $http, $location) {
                             } else {
                                 $scope.hoaDons = [];
                             }
+                            document.getElementById('closeModalTraMotPhan').click();
                         }
 
                     })
@@ -310,7 +308,7 @@ app.controller('hoaDonChoController', function ($scope, $http, $location) {
         }).then((result) => {
             if (result.isConfirmed) {
                 console.log(hoaDonSelecteds);
-                $http.post(host + "/admin/rest/hoa-don/xac-nhan-giao-hang", hoaDonSelecteds)
+                $http.post(host + "/rest/admin/hoa-don/xac-nhan-giao-hang", hoaDonSelecteds)
                     .then((response) => {
                         if (Number.isInteger(response.data)) {
                             if (response.data === hoaDonSelecteds.length) {
@@ -350,7 +348,7 @@ app.controller('hoaDonChoController', function ($scope, $http, $location) {
         }).then((result) => {
             if (result.isConfirmed) {
                 console.log(hoaDonSelecteds);
-                $http.post(host + "/admin/rest/hoa-don/hoan-thanh-don-hang", hoaDonSelecteds)
+                $http.post(host + "/rest/admin/hoa-don/hoan-thanh-don-hang", hoaDonSelecteds)
                     .then((response) => {
                         if (Number.isInteger(response.data)) {
                             if (response.data === hoaDonSelecteds.length) {
@@ -440,7 +438,7 @@ app.controller('hoaDonChoController', function ($scope, $http, $location) {
         }).then((result) => {
             if (result.isConfirmed) {
                 console.log(hoaDonSelecteds);
-                $http.post(host + "/admin/rest/hoa-don/huy-don-hang", request)
+                $http.post(host + "/rest/admin/hoa-don/huy-don-hang", request)
                     .then((response) => {
                         if (Number.isInteger(response.data)) {
                             if (response.data === hoaDonSelecteds.length) {

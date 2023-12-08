@@ -26,6 +26,7 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
     }
 
     function getData(currentPage) {
+
         let apiUrl = host + '/rest/khach-hang/dia-chi-nhan-hang?page=' + currentPage;
 
         if ($scope.status == 0) {
@@ -56,6 +57,7 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
         $http({
             method: 'PUT',
             url: 'http://localhost:8080/rest/khach-hang/dia-chi-nhan-hang/update-trang-thai/' + dieuKien ,
+
             data:$scope.trangThai
         }).then(function successCallback(response) {
             // Xử lý khi API UPDATE thành công
@@ -75,6 +77,7 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
         $http({
             method: 'DELETE',
             url: 'http://localhost:8080/rest/khach-hang/dia-chi-nhan-hang/delete/' + dieuKien
+
         }).then(function successCallback(response) {
             // Xử lý khi API DELETE thành công
             console.log('Xóa điều kiện giảm giá thành công', response);
@@ -208,7 +211,9 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
     $scope.updateDiaChiNhan = function (id) {
         console.log("vào update")
         console.log(id)
+
         $http.get(host + '/rest/khach-hang/dia-chi-nhan-hang/' + id)
+
             .then(function (response) {
                 $scope.diaChiNhanHang = response.data;
                 console.log("show dia chi:", $scope.diaChiNhanHang)
@@ -233,12 +238,14 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
                 districts: $scope.diaChiNhanHang.districts.ten,
                 wards: $scope.diaChiNhanHang.wards.ten
 
+
             };
             // $scope.diaChiNhanHang.districts = $scope.diaChiNhanHang.districts.ten;
             // $scope.diaChiNhanHang.provinces = $scope.diaChiNhanHang.provinces.ten;
             // $scope.diaChiNhanHang.wards = $scope.diaChiNhanHang.wards.ten;
 
             $http.put(host + '/rest/khach-hang/dia-chi-nhan-hang/' + id,diaChiNhanHangUpdate)
+
                 .then(function (response) {
                     if (response.status == 200) {
                         toastr["success"]("Cập nhật thành công")
@@ -380,10 +387,7 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
 
     }
 
-
     $scope.$watch('curPage + numPerPage', function () {
         getData($scope.curPage);
     });
 });
-
-

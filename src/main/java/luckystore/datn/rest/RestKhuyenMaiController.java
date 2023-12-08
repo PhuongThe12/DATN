@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/admin/rest/khuyen-mai")
+@RequestMapping("/rest/admin/khuyen-mai")
 public class RestKhuyenMaiController {
 
     @Autowired

@@ -1,8 +1,7 @@
 package luckystore.datn.rest;
 
-import luckystore.datn.model.request.DiaChiNhanHangRequest;
+
 import luckystore.datn.model.request.SanPhamYeuThichRequest;
-import luckystore.datn.service.ProvincesService;
 import luckystore.datn.service.SanPhamYeuThichService;
 import luckystore.datn.util.JsonString;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -27,9 +27,11 @@ public class RestSanPhamYeuThichController {
     @Autowired
     private SanPhamYeuThichService sanPhamYeuThichService;
 
-    @GetMapping()
-    public ResponseEntity<?> getAll() {
-        return new ResponseEntity<>(sanPhamYeuThichService.getAll(), HttpStatus.OK);
+    @GetMapping
+    public ResponseEntity getSanPhamYeuThichPage(@RequestParam(value = "page", defaultValue = "1") Integer page,
+                                               @RequestParam(value = "search", required = false) String searchText
+                                               ) {
+        return new ResponseEntity(sanPhamYeuThichService.getPage(page, searchText), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")

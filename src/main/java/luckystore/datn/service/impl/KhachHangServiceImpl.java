@@ -12,11 +12,13 @@ import luckystore.datn.model.request.KhachHangRequest;
 import luckystore.datn.model.response.KhachHangResponse;
 import luckystore.datn.repository.HangKhachHangRepository;
 import luckystore.datn.repository.KhachHangRepository;
+import luckystore.datn.repository.TaiKhoanRepository;
 import luckystore.datn.service.KhachHangService;
 import luckystore.datn.util.JsonString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,6 +32,12 @@ public class KhachHangServiceImpl implements KhachHangService {
 
     @Autowired
     private HangKhachHangRepository hangKhachHangRepo;
+
+    @Autowired
+    private TaiKhoanRepository taiKhoanRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public List<KhachHangResponse> getAll() {
@@ -52,6 +60,7 @@ public class KhachHangServiceImpl implements KhachHangService {
 
         KhachHang khachHang = getKhachHang(new KhachHang(), khachHangRequest);
         khachHang.setDiemTichLuy(0);
+
         System.out.println("Den Day");
         setHangKhachHang(khachHang);
 
@@ -60,6 +69,16 @@ public class KhachHangServiceImpl implements KhachHangService {
         taiKhoan.setTenDangNhap(khachHangRequest.getEmail());
         taiKhoan.setRole(Role.ROLE_USER);
         taiKhoan.setTrangThai(khachHang.getTrangThai());
+
+
+        setHangKhachHang(khachHang);
+
+//        mã hoá mật khẩu
+        taiKhoan.setMatKhau(passwordEncoder.encode(khachHangRequest.getSoDienThoai()));
+        taiKhoan.setTenDangNhap(khachHangRequest.getEmail());
+        taiKhoan.setRole(Role.ROLE_USER);
+        taiKhoan.setTrangThai(khachHang.getTrangThai());
+        taiKhoanRepository.save(taiKhoan);
 
         khachHang.setTaiKhoan(taiKhoan);
 
@@ -117,4 +136,8 @@ public class KhachHangServiceImpl implements KhachHangService {
         khachHang.setTrangThai(khachHangRequest.getTrangThai() == null || khachHangRequest.getTrangThai() == 0 ? 0 : 1);
         return khachHang;
     }
+
 }
+
+
+

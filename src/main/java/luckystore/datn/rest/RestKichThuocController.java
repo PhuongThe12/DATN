@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/rest/kich-thuoc")
+@RequestMapping("/rest/admin/kich-thuoc")
 public class RestKichThuocController {
 
     @Autowired

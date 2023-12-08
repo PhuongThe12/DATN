@@ -41,7 +41,7 @@ app.controller('navbarController', function ($scope, $http, $location, $cookies)
             return item.idBienTheGiay || item.bienTheGiay;
         });
         var resultJson = {"ids": idList};
-        $http.post("http://localhost:8080/admin/rest/giay/bien-the/get-all-by-list-id", resultJson)
+        $http.post("http://localhost:8080/rest/admin/giay/bien-the/get-all-by-list-id", resultJson)
             .then(function (response) {
                 $scope.listBienTheGiayLocalStorage = response.data;
                 $scope.gioHang.forEach(function (item1) {
@@ -66,7 +66,7 @@ app.controller('navbarController', function ($scope, $http, $location, $cookies)
 
     // $scope.loadLocalStorage();
     $scope.loadCartByIdKhachHang = function () {
-        $http.get("http://localhost:8080/user/rest/gio-hang/1").then(function (response) {
+        $http.get("http://localhost:8080/rest/user/gio-hang/1").then(function (response) {
             var bienTheGiayList = [];
 
             angular.forEach(response.data.gioHangChiTietResponses, function (gioHangChiTiet) {
@@ -113,7 +113,7 @@ app.controller('listProductController', function ($scope, $http, $location) {
 
     function getData(currentPage) {
         $scope.isLoading = true;
-        let apiUrl = host + '/admin/rest/giay/get-all-giay';
+        let apiUrl = host + '/rest/admin/giay/get-all-giay';
 
         if ($scope.searchText) {
             giaySearch.ten = ($scope.searchText + "").trim();
@@ -325,7 +325,7 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
     $scope.soLuongGioHangChiTiet;
 
 
-    $http.get(host + '/admin/rest/giay/' + id)
+    $http.get(host + '/rest/admin/giay/' + id)
         .then(function (response) {
             $scope.giaySeletect = response.data;
 
@@ -394,9 +394,9 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
         } else if ($scope.soLuongMua < 1) {
             toastr["warning"]("Hãy nhập số lượng lớn hơn 0");
         } else {
-            $http.get("http://localhost:8080/admin/rest/giay/" + $scope.giayDetail.id + "/so-luong")
+            $http.get("http://localhost:8080/rest/admin/giay/" + $scope.giayDetail.id + "/so-luong")
                 .then(function (response) {
-                    // $http.get("http://localhost:8080/admin/rest/giay/" + $scope.giayDetail.id + "/so-luong")
+                    // $http.get("http://localhost:8080/rest/admin/giay/" + $scope.giayDetail.id + "/so-luong")
                     getSoLuongInGhct($scope.giayChoosed.id);
                     if ($scope.soLuongMua + $scope.soLuongGioHangChiTiet > response.data) {
                         toastr["warning"]("Số lượng vượt quá trong kho");
@@ -447,7 +447,7 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
 
     function getData(currentPage) {
         $scope.isLoading = true;
-        let apiUrl = host + '/admin/rest/giay/get-all-giay';
+        let apiUrl = host + '/rest/admin/giay/get-all-giay';
 
         if ($scope.searchText) {
             giaySearch.ten = ($scope.searchText + "").trim();
@@ -752,7 +752,7 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
 
 
     $scope.themSoLuong = function (bienTheGiay) {
-        $http.get("http://localhost:8080/admin/rest/giay/" + bienTheGiay.id + "/so-luong")
+        $http.get("http://localhost:8080/rest/admin/giay/" + bienTheGiay.id + "/so-luong")
             .then(function (response) {
                 if ($scope.soLuongMua > response.data - 1) {
                     toastr["warning"]("Số lượng vượt quá trong kho");
@@ -773,7 +773,48 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
         }
 
     }
+// cường làm thêm yêu thích vào đây
+    $scope.sanPhamYeuThich = function (){
+        console.log("vào trong rùi")
+        // Dữ liệu bạn muốn gửi đến API
+        var requestData = {
+            "khachHangId": 5,
+            "giayId": $scope.giayDetail.id
+        };
+        // Địa chỉ URL của API
+        var apiUrl = 'http://localhost:8080/rest/khach-hang/san-pham-yeu-thich';
 
+        // Thiết lập các tùy chọn cho cuộc gọi Fetch
+        var requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json', // Kiểu dữ liệu bạn đang gửi đi
+                // Các header khác nếu cần
+            },
+            body: JSON.stringify(requestData), // Chuyển đổi đối tượng thành chuỗi JSON
+        };
+        // Thực hiện cuộc gọi Fetch
+        fetch(apiUrl, requestOptions)
+            .then(function(response) {
+                // Kiểm tra trạng thái của phản hồi từ API
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json(); // Chuyển đổi dữ liệu JSON từ phản hồi
+            })
+            .then(function successCallback(response) {
+                // Xử lý dữ liệu từ phản hồi thành công
+                console.log('Đã thêm thành công danh sách yêu thích', response);
+                console.log(response);
+            })
+            .catch(function(error) {
+                // Xử lý lỗi nếu có
+                console.error('Error:', error);
+            });
+
+    }
+
+//
 
 })
 
@@ -793,7 +834,7 @@ app.controller('cartProductController', function ($scope, $http, $location, $coo
             return item.idBienTheGiay || item.bienTheGiay;
         });
         var resultJson = {"ids": idList};
-        $http.post("http://localhost:8080/admin/rest/giay/bien-the/get-all-by-list-id", resultJson)
+        $http.post("http://localhost:8080/rest/admin/giay/bien-the/get-all-by-list-id", resultJson)
             .then(function (response) {
                 $scope.listBienTheGiayLocalStorage = response.data;
                 $scope.gioHang.forEach(function (item1) {
@@ -871,7 +912,7 @@ app.controller('cartProductController', function ($scope, $http, $location, $coo
 
     $scope.summation = function (bienTheGiay) {
 
-        $http.get("http://localhost:8080/admin/rest/giay/" + bienTheGiay.id + "/so-luong")
+        $http.get("http://localhost:8080/rest/admin/giay/" + bienTheGiay.id + "/so-luong")
             .then(function (response) {
                 if (bienTheGiay.soLuongMua > response.data - 1) {
                     toastr["warning"]("Số lượng vượt quá trong kho");
@@ -1000,7 +1041,7 @@ app.controller("donHangListController", function ($scope, $http, $window, $locat
         $scope.hoaDon = {
             hoaDonChiTiets: []
         }
-        let apiUrl = host + '/admin/rest/hoa-don/khach-hang/1?page=' + currentPage;
+        let apiUrl = host + '/rest/admin/hoa-don/khach-hang/1?page=' + currentPage;
         if (searchText) {
             apiUrl += '&search=' + searchText;
         }
@@ -1065,7 +1106,7 @@ app.controller("donHangListController", function ($scope, $http, $window, $locat
 
 
         selectedRows.forEach(function (selectedRow) {
-            $http.get(host + '/admin/rest/hoa-don-chi-tiet/find-by-id-hoa-don/' + selectedRow.id)
+            $http.get(host + '/rest/admin/hoa-don-chi-tiet/find-by-id-hoa-don/' + selectedRow.id)
                 .then(function (response) {
                     selectedRow.listHoaDonChiTiet = response.data;
                 }).catch(function (error) {
@@ -1076,7 +1117,7 @@ app.controller("donHangListController", function ($scope, $http, $window, $locat
             selectedRow.trangThai == updateStatus;
         });
 
-        $http.post(host + '/admin/rest/hoa-don/update-list-hdct', selectedRows)
+        $http.post(host + '/rest/admin/hoa-don/update-list-hdct', selectedRows)
             .then(function (response) {
                 console.log(response);
                 toastr["success"]("Cập nhật thành công");
@@ -1090,7 +1131,7 @@ app.controller("donHangListController", function ($scope, $http, $window, $locat
 
 
     $scope.detailHoaDon = function (id) {
-        $http.get(host + '/admin/rest/hoa-don/' + id)
+        $http.get(host + '/rest/admin/hoa-don/' + id)
             .then(function (response) {
                 $scope.hoaDon = response.data;
             }).catch(function (error) {
@@ -1098,7 +1139,7 @@ app.controller("donHangListController", function ($scope, $http, $window, $locat
             $location.path("/list");
         });
 
-        $http.get(host + '/admin/rest/hoa-don-chi-tiet/find-by-id-hoa-don/' + id)
+        $http.get(host + '/rest/admin/hoa-don-chi-tiet/find-by-id-hoa-don/' + id)
             .then(function (response) {
                 $scope.hoaDonChiTiets = response.data;
             }).catch(function (error) {
@@ -1110,7 +1151,7 @@ app.controller("donHangListController", function ($scope, $http, $window, $locat
 
 app.controller("detailDonHangController", function ($scope, $http, $window, $location, $routeParams) {
     const id = $routeParams.id;
-    $http.get("http://localhost:8080/admin/rest/hoa-don-chi-tiet/find-by-id-hoa-don/" + id)
+    $http.get("http://localhost:8080/rest/admin/hoa-don-chi-tiet/find-by-id-hoa-don/" + id)
         .then(function (response) {
             $scope.lstHoaDonChiTiet = response.data;
             console.log($scope.lstHoaDonChiTiet);
@@ -1166,7 +1207,7 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
 
     }
 //fix_
-    $http.get(host + '/admin/rest/dia-chi-nhan-hang/2')
+    $http.get(host + '/rest/admin/dia-chi-nhan-hang/2')
         .then(function (response) {
             $scope.diaChiNhanHang = response.data;
             setData();
@@ -1214,7 +1255,7 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
     }
 
 //fix_
-    $http.get("http://localhost:8080/admin/rest/khach-hang/1").then(function (response) {
+    $http.get("http://localhost:8080/rest/admin/khach-hang/1").then(function (response) {
         $scope.khachHang = response.data;
     }).catch(function (error) {
         console.log(error)
@@ -1231,7 +1272,7 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
             return item.idBienTheGiay || item.bienTheGiay;
         });
         var resultJson = {"ids": idList};
-        $http.post("http://localhost:8080/admin/rest/giay/bien-the/get-all-by-list-id", resultJson)
+        $http.post("http://localhost:8080/rest/admin/giay/bien-the/get-all-by-list-id", resultJson)
             .then(function (response) {
                 $scope.listBienTheGiayLocalStorage = response.data;
                 $scope.gioHang.forEach(function (item1) {

@@ -29,7 +29,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/rest/hoa-don")
+@RequestMapping("/rest/admin/hoa-don")
 public class RestHoaDonController {
 
     private final HoaDonService hoaDonService;
@@ -52,10 +52,10 @@ public class RestHoaDonController {
     @PostMapping("/yeu-cau")
     public ResponseEntity getPageHoaDonYeuCauPage(@RequestBody HoaDonSearch hoaDonSearch) {
         if (hoaDonSearch.getNgayBatDau() != null) {
-            hoaDonSearch.setNgayBatDau(adjustToStartOfDay(hoaDonSearch.getNgayBatDau()));
+            hoaDonSearch.setNgayBatDau(hoaDonSearch.getNgayBatDau().toLocalDate().atStartOfDay());
         }
         if (hoaDonSearch.getNgayKetThuc() != null) {
-            hoaDonSearch.setNgayBatDau(adjustToEndOfDay(hoaDonSearch.getNgayKetThuc()));
+            hoaDonSearch.setNgayBatDau(LocalDateTime.of(hoaDonSearch.getNgayKetThuc().toLocalDate(), LocalTime.MAX));
         }
         return new ResponseEntity<>(hoaDonService.getPageHoaDonYeuCau(hoaDonSearch), HttpStatus.OK);
     }
@@ -203,16 +203,8 @@ public class RestHoaDonController {
     }
 
     @GetMapping("/get-don-doi-tra/{id}")
-    public ResponseEntity<?> getHoaDonDoiTra(@PathVariable("id") Long id) {
+    public ResponseEntity<?> getHoaDonDoiTra(@PathVariable("id")Long id) {
         return ResponseEntity.ok(hoaDonService.getHoaDonDoiTra(id));
-    }
-
-    public static LocalDateTime adjustToStartOfDay(LocalDateTime dateTime) {
-        return dateTime.toLocalDate().atStartOfDay();
-    }
-
-    public static LocalDateTime adjustToEndOfDay(LocalDateTime dateTime) {
-        return LocalDateTime.of(dateTime.toLocalDate(), LocalTime.MAX);
     }
 
 }

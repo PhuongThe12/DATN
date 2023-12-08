@@ -44,7 +44,7 @@ app.controller("addLotGiayController", function ($scope, $http, $location) {
             $scope.isLoading = false;
             return;
         }
-        $http.post(host + '/admin/rest/lot-giay', $scope.lotGiay)
+        $http.post(host + '/rest/admin/lot-giay', $scope.lotGiay)
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Thêm thành công");
@@ -89,7 +89,7 @@ app.controller("lotGiayListController", function ($scope, $http, $window, $locat
 
     function getData(currentPage) {
         $scope.isLoading = true;
-        let apiUrl = host + '/admin/rest/lot-giay?page=' + currentPage;
+        let apiUrl = host + '/rest/admin/lot-giay?page=' + currentPage;
         if (searchText) {
             apiUrl += '&search=' + searchText;
         }
@@ -141,7 +141,7 @@ app.controller("updateLotGiayController", function ($scope, $http, $routeParams,
     $scope.change = function (input) {
         input.$dirty = true;
     }
-    $http.get(host + '/admin/rest/lot-giay/' + id)
+    $http.get(host + '/rest/admin/lot-giay/' + id)
         .then(function (response) {
             $scope.lotGiay = response.data;
         }).catch(function (error) {
@@ -172,7 +172,7 @@ app.controller("updateLotGiayController", function ($scope, $http, $routeParams,
             $scope.isLoading = false;
             return;
         }
-        $http.put(host + '/admin/rest/lot-giay/' + id, $scope.lotGiay)
+        $http.put(host + '/rest/admin/lot-giay/' + id, $scope.lotGiay)
             .then(function (response) {
                 if (response.status == 200) {
                     toastr["success"]("Cập nhật thành công")
