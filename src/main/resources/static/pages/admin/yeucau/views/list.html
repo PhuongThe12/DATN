@@ -16,101 +16,273 @@
     </div>
 </div>
 
-<div class="title-page">
-    <div class="card-header bg-white">
-        <h5 class="card-title p-2 mt-2">
-            Phiếu giảm giá
-        </h5>
+<div class="box-shadow-page" style="border-radius: 10px 10px 0px 0px">
+    <div class="row" style="height: 760px; margin-left: 1px; margin-right: 10px">
+        <div class="col-md-12 position-relative" style="height: 100%">
+            <div style="position: sticky;top: 0; height: 100%">
+                <div class="card" style="height: 20%; border-radius: 10px 10px 0px 0px">
+                    <div class="card-body">
+                        <div class="row col-md-12">
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <div class="mb-3">
+                                        <div class="input-group">
+                                    <span class="input-group-text" id="basic-addon1"><i
+                                            class="fas fa-search"></i></span>
+                                            <select class="form-select" aria-label="Default select example" ng-model="typeSearch">
+                                                <option value="1" selected>ID</option>
+                                                <option value="2">Tên Nhân Viên</option>
+                                                <option value="3">Tên Khách Hàng</option>
+                                                <option value="4">SĐT</option>
+                                                <option value="5">Gmail</option>
+                                            </select>
+                                            <input type="text" class="form-control" id="basic-url"
+                                                   aria-describedby="basic-addon3"
+                                                   placeholder="Nhập từ khóa" ng-model="textSearch">
+                                            <button class="btn btn-custom" ng-click="searchYeuCau()">Tìm kiếm</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+
+                            </div>
+
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#staticBackdrop">
+                                    <i class="fas fa-plus px-2 small"></i> Thêm Lý Do
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="height: 80%;border-radius: 0px 0px 10px 10px">
+                    <div class="card-header" style="background-color: #222222">
+                        <label class="fw-medium" style="color: white">Danh Sách Yêu Cầu</label>
+                    </div>
+                    <div class="card-body" style="overflow-y: auto">
+
+                        <div class="d-flex justify-content-start">
+                            <div class="custom-radio">
+                                <input type="radio" id="all" name="trangThai" ng-model="trangThai" value="0"
+                                       ng-checked="trangThai != 1 && trangThai != 2"
+                                       ng-change="changeRadioYeuCau(null)">
+                                <label class="radio-label" for="all">Tất cả</label>
+                            </div>
+
+                            <div class="custom-radio">
+                                <input type="radio" id="choXacNhan" name="trangThai" ng-model="trangThai" value="1"
+                                       ng-checked="trangThai == 1" ng-change="changeRadioYeuCau(1)">
+                                <label class="radio-label" for="choXacNhan">Chờ Xác Nhận</label>
+                            </div>
+
+                            <div class="custom-radio">
+                                <input type="radio" id="daXacNhan" name="trangThai" ng-model="trangThai" value="2"
+                                       ng-checked="trangThai == 2" ng-change="changeRadioYeuCau(2)">
+                                <label class="radio-label" for="daXacNhan">Đã Xác Nhận</label>
+                            </div>
+
+                            <div class="custom-radio">
+                                <input type="radio" id="hoanThanh" name="trangThai" ng-model="trangThai" value="3"
+                                       ng-checked="trangThai == 3" ng-change="changeRadioYeuCau(3)">
+                                <label class="radio-label" for="hoanThanh">Hoàn Thành</label>
+                            </div>
+
+                            <div class="custom-radio">
+                                <input type="radio" id="biHuy" name="trangThai" ng-model="trangThai" value="0"
+                                       ng-checked="trangThai == 3" ng-change="changeRadioYeuCau(0)">
+                                <label class="radio-label" for="biHuy">Đã Bị Hủy</label>
+                            </div>
+
+                        </div>
+
+                        <div class="change-product-table table-responsive">
+                            <table class="table table-hover align-middle table-borderless text-center mw-100 fixed-header"
+                                   border="1">
+                                <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Mã</th>
+                                    <th>Hóa Đơn</th>
+                                    <th>Khách Hàng</th>
+                                    <th>SĐT</th>
+                                    <th>Nhân Viên</th>
+                                    <th>Ngày Tạo</th>
+                                    <th>Ngày Sửa</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Thao Tác</th>
+                                </tr>
+                                </thead>
+                                <tbody ng-repeat="yeuCau in listYeuCau">
+                                <tr>
+                                    <td>{{index+1}}</td>
+                                    <td>YC{{yeuCau.id}}</td>
+                                    <td><a>{{yeuCau.hoaDon.loaiHoaDon == 1? "HD" : "HD_HDD"}}{{yeuCau.hoaDon.id}}</a>
+                                    </td>
+                                    <td>{{ yeuCau.hoaDon.khachHang.hoTen}}</td>
+                                    <td>{{ yeuCau.hoaDon.khachHang.soDienThoai}}</td>
+                                    <td>{{ yeuCau.hoaDon.nhanVien.hoTen}}</td>
+                                    <td>{{ yeuCau.ngayTao | formatDate}}</td>
+                                    <td>{{ yeuCau.ngaySua | formatDate}}</td>
+                                    <td>
+                                        <span class="badge rounded-pill text-bg-warning" style="background-color: black"
+                                              ng-show="yeuCau.trangThai == 1">Chờ Xác Nhận</span>
+                                        <span class="badge rounded-pill text-bg-success"
+                                              style="background-color: #fcad03" ng-show="yeuCau.trangThai == 2">Đã Xác Nhận</span>
+                                        <span class="badge rounded-pill text-bg-success"
+                                              style="background-color: #03a106" ng-show="yeuCau.trangThai == 3">Hoàn Thành</span>
+                                        <span class="badge rounded-pill text-bg-danger"
+                                              style="background-color: #bf0606"
+                                              ng-show="yeuCau.trangThai == 0">Bị Hủy</span>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-info">
+                                            <a ng-href="#/update/{{yeuCau.id}}">Chi Tiết</a>
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages"
+                                 data-current-page="curPage"
+                                 data-max-size="maxSize"
+                                 data-boundary-links="true">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
-<div class="box-shadow-page" style="margin: 20px">
-    <div class="card-body">
-
-        <div class="d-flex flex-column flex-md-row add-search-custom">
-            <div class="col-md-4 mb-3">
-                <div class="input-group">
-                    <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
-                    <input id="seachText" class="form-control" type="text" ng-model="searchTextYeuCau" placeholder="Nhập Mã Yêu Cầu">
-                    <button class="btn btn-custom" ng-click="searchYeuCau()">Tìm kiếm</button>
+    <!-- Modal Danh Sách Lý Do -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Quản Lý - Lý Do</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="card" style="height: 50%;border-radius: 0px 0px 10px 10px">
+                        <div class="card-header" style="background-color: #222222">
+                            <label class="fw-medium" style="color: white">Danh Sách Lý Do</label>
+                        </div>
+                        <div class="card-body" style="overflow-y: auto">
+                            <div class="change-product-table table-responsive">
+                                <table class="table table-hover align-middle table-borderless text-center mw-100 fixed-header"
+                                       border="1">
+                                    <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>MÃ</th>
+                                        <th>Tên Lý Do</th>
+                                        <th>Trạng Thái</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody ng-repeat="lyDo in listLyDo">
+                                    <tr>
+                                        <td>{{index+1}}</td>
+                                        <td>LD{{lyDo.id}}</td>
+                                        <td>{{lyDo.ten}}</td>
+                                        <td>
+                                            <span class="badge text-bg-success" style="background-color: #019136"
+                                                  ng-show="lyDo.trangThai == 1">Đang Hoạt Động</span>
+                                            <span class="badge text-bg-success" style="background-color: #b80000"
+                                                  ng-show="lyDo.trangThai == 2">Ngừng Hoạt Động</span>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-light" data-bs-toggle="modal"
+                                                    data-bs-target="#staticBackdrop2" ng-click="detailLyDo(lyDo)"><i
+                                                    class="fas fa-info"></i></button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Trở Về</button>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop3"><i class="fas fa-plus"></i> Thêm Mới
+                    </button>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="input-group">
-                    <span class="input-group-text">Ngày Bắt Đầu/Ngày Kết Thúc:</span>
-                    <input type="date" class="form-control" id="ngayBatDau" name="ngayBatDau">
-                    <input type="date" class="form-control" id="ngayKetThuc" name="ngayKetThuc">
+        </div>
+    </div>
+
+
+    <!-- Modal Detail Lý Do-->
+    <div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel2">Chi Tiết Lý Do</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput1" value="lyDo.id" ng-model="lyDo.id"
+                               disabled>
+                        <label for="floatingInput1">Mã Lý Do:</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput2" value="lyDo.ten"
+                               ng-model="lyDo.ten">
+                        <label for="floatingInput2">Tên Lý Do:</label>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch"
+                               id="flexSwitchCheckChecked{{lyDo.id}}" ng-checked="lyDo.trangThai == 1" ng-true-value="1"
+                               ng-false-value="2" ng-model="lyDo.trangThai">
+                        <label class="form-check-label" for="flexSwitchCheckChecked{{lyDo.id}}">{{lyDo.trangThai == 1?
+                            "Đang Hoạt Động" : "Ngừng Hoạt Động"}}</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Trở Về</button>
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" ng-click="updateLyDo()">Lưu <i
+                            class="fas fa-save"></i></button>
                 </div>
             </div>
-            <div class="col-md-4">
-                <a class="btn btn-primary" href="#/hoa-don"><i class="fas fa-plus px-2 small"></i>Thêm yêu cầu</a>
-            </div>
         </div>
+    </div>
 
-        <div class="d-flex justify-content-start">
-            <div class="custom-radio">
-                <input type="radio" id="all" name="trangThai" ng-model="trangThai" value="0"
-                       ng-checked="trangThai != 1 && trangThai != 2" ng-change="changeRadioYeuCau(null)">
-                <label class="radio-label" for="all">Tất cả</label>
+
+    <!-- Modal Thêm Mới Lý Do-->
+    <div class="modal fade" id="staticBackdrop3" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel3">Thêm Mới - Lý Do</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput3" ng-model="lyDo.ten">
+                        <label for="floatingInput2">Tên Lý Do:</label>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
+                               ng-true-value="1" ng-false-value="2" ng-model="lyDo.trangThai">
+                        <label class="form-check-label" for="flexSwitchCheckChecked">{{lyDo.trangThai == 1? "Đang Hoạt
+                            Động" : "Ngừng Hoạt Động"}}</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Trở Về</button>
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" ng-click="addLyDo()">Lưu <i
+                            class="fas fa-save"></i></button>
+                </div>
             </div>
-
-            <div class="custom-radio">
-                <input type="radio" id="active" name="trangThai" ng-model="trangThai" value="1"
-                       ng-checked="trangThai == 1" ng-change="changeRadioYeuCau(1)">
-                <label class="radio-label" for="active">Chưa Xét Duyệt</label>
-            </div>
-
-            <div class="custom-radio">
-                <input type="radio" id="disable" name="trangThai" ng-model="trangThai" value="2"
-                       ng-checked="trangThai == 2" ng-change="changeRadioYeuCau(2)">
-                <label class="radio-label" for="disable">Đã Bị Hủy</label>
-            </div>
-        </div>
-
-        <div>
-            <table class="table align-middle text-center" border="1">
-                <tr>
-                    <th>ID</th>
-                    <th>Hóa Đơn</th>
-                    <th>Khách Hàng</th>
-                    <th>Nhân Viên</th>
-                    <th>Ngày Tạo</th>
-                    <th>Ngày Sửa</th>
-                    <th>Trạng Thái</th>
-                    <th>Ghi Chú</th>
-                    <th>Thao Tác</th>
-                </tr>
-
-                <tr ng-repeat="yeuCau in listYeuCau">
-                    <td>{{yeuCau.id}}</td>
-                    <td><a>{{yeuCau.hoaDon.loaiHoaDon == 1? "HD" : "HD_HDD"}}{{yeuCau.hoaDon.id}}</a></td>
-                    <td>{{ yeuCau.hoaDon.khachHang.hoTen}}</td>
-                    <td>{{ yeuCau.hoaDon.nhanVien.hoTen}}</td>
-                    <td>{{ yeuCau.ngayTao | formatDate}}</td>
-                    <td>{{ yeuCau.ngaySua | formatDate}}</td>
-                    <td>
-                        <span ng-class="{
-                            'trang-thai-cho-xet-duyet': yeuCau.trangThai == 1,
-                            'trang-thai-da-xet-duyet': yeuCau.trangThai == 2,
-                            'trang-thai-da-hoan-thanh': yeuCau.trangThai == 3,
-                            'trang-thai-bi-huy': yeuCau.trangThai == 4}">
-                            {{yeuCau.trangThai == 1 ? 'Chờ Xét Duyệt' : yeuCau.trangThai == 2 ? 'Đã Xét Duyệt' : yeuCau.trangThai == 3 ? 'Đã Hoàn Thành' : 'Bị Hủy'}}
-                        </span>
-                    </td>
-                    <td>{{yeuCau.ghiChu}}</td>
-                    <td>
-                        <button type="button" class="btn btn-info">
-                            <a ng-href="#/update/{{yeuCau.id}}">Chi Tiết</a>
-                        </button>
-                    </td>
-                </tr>
-            </table>
-
-            <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages" data-current-page="curPage"
-                 data-max-size="maxSize"
-                 data-boundary-links="true">
-            </div>
-
         </div>
     </div>
 </div>

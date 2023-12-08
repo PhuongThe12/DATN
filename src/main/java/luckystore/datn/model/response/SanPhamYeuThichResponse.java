@@ -4,9 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import luckystore.datn.entity.Giay;
-import luckystore.datn.entity.KhachHang;
+import luckystore.datn.entity.BienTheGiay;
 import luckystore.datn.entity.SanPhamYeuThich;
+
+import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
@@ -17,18 +18,39 @@ public class SanPhamYeuThichResponse {
 
     private Long id;
 
-    private Long idKhachHang;
+    private KhachHangResponse khachHangResponse;
 
-    private Long idGiay;
+    private GiayResponse giayResponse;
 
-    private String tenGiay;
+    private BigDecimal giaBan;
+
+    private String hinhAnh;
+
+    private Integer soLuong;
+
 
     public SanPhamYeuThichResponse(SanPhamYeuThich sanPhamYeuThich) {
         if (sanPhamYeuThich != null) {
             this.id = sanPhamYeuThich.getId();
-            this.idGiay=sanPhamYeuThich.getGiay().getId();
-            this.idKhachHang = sanPhamYeuThich.getKhachHang().getId();
-            this.tenGiay =sanPhamYeuThich.getGiay().getTen();
+            if(sanPhamYeuThich.getKhachHang() != null){
+                 khachHangResponse = new KhachHangResponse();
+                 khachHangResponse.setId(sanPhamYeuThich.getKhachHang().getId());
+                 khachHangResponse.setHoTen(sanPhamYeuThich.getKhachHang().getHoTen());
+            }
+            if(sanPhamYeuThich.getGiay() != null){
+                giayResponse = new GiayResponse();
+                giayResponse.setId(sanPhamYeuThich.getGiay().getId());
+                giayResponse.setTen(sanPhamYeuThich.getGiay().getTen());
+                giayResponse.setLstBienTheGiay(null);
+
+            }
+            if (sanPhamYeuThich.getGiay() != null && sanPhamYeuThich.getGiay().getLstBienTheGiay() != null
+                    && !sanPhamYeuThich.getGiay().getLstBienTheGiay().isEmpty()) {
+                BienTheGiay bienTheGiay = sanPhamYeuThich.getGiay().getLstBienTheGiay().get(0);
+                this.giaBan = bienTheGiay.getGiaBan();
+                this.hinhAnh = bienTheGiay.getHinhAnh();
+                this.soLuong = bienTheGiay.getSoLuong();
+            }
         }
     }
 }

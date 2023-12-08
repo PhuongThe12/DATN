@@ -69,6 +69,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -995,6 +996,11 @@ public class GiayServiceImpl implements GiayService {
         Pageable pageable = PageRequest.of(giaySearch.getCurrentPage() - 1, giaySearch.getPageSize());
         return giayRepository.findPageForSearch(giaySearch, pageable);
 
+    }
+
+    @Override
+    public List<GiayResponse> getAllGiayWithoutDiscount(GiaySearch giaySearch) {
+        return giayRepository.getAllGiayWithoutDiscount(giaySearch);
     }
 
     @Override

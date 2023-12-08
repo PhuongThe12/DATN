@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,9 +20,9 @@ public class ChiTietKhuyenMaiResponse {
 
     private String ten;
 
-    private LocalDateTime ngayBatDau;
+    private Date ngayBatDau;
 
-    private LocalDateTime ngayKetThuc;
+    private Date ngayKetThuc;
 
     private String ghiChu;
 

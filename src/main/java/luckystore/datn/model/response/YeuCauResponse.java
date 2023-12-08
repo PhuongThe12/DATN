@@ -11,6 +11,7 @@ import luckystore.datn.entity.YeuCau;
 import luckystore.datn.entity.YeuCauChiTiet;
 import luckystore.datn.service.impl.ImageHubServiceImpl;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class YeuCauResponse {
     private LocalDateTime ngayTao;
     private LocalDateTime ngaySua;
     private String thongTinNhanHang;
+    private BigDecimal phiShip;
     private Long nguoiTao;
     private Long nguoiSua;
     private String ghiChu;
@@ -48,6 +50,7 @@ public class YeuCauResponse {
             this.hoaDon = new HoaDonYeuCauRespone(yeuCau.getHoaDon(),"getAllYeuCau");
             this.trangThai = yeuCau.getTrangThai();
             this.thongTinNhanHang = yeuCau.getThongTinNhanHang();
+            this.phiShip = yeuCau.getPhiShip();
             this.ngayTao = yeuCau.getNgayTao();
             this.ngaySua = yeuCau.getNgaySua();
             this.nguoiTao = yeuCau.getNguoiTao();
