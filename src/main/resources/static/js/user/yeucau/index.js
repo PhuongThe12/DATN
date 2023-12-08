@@ -36,7 +36,6 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
     $scope.$watch('curPage + numPerPage', function () {
         $scope.isLoading = true;
         getListHoaDonChiTiet(idHoaDon);
-        console.log()
         searchGiay($scope.giaySearch)
         getListLyDo();
     });
@@ -50,7 +49,7 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
 
     function tinhTongTienThanhToan() {
         $scope.tongTienThanhToan = 0;
-        let tongTienThanhToan = $scope.tongTienHangTra - ($scope.tongTienDoiHang + $scope.phiVanChuyen + $scope.phiVanChuyen) ;
+        let tongTienThanhToan = $scope.tongTienHangTra - ($scope.tongTienDoiHang + $scope.phiVanChuyen) ;
         $scope.tongTienThanhToan = tongTienThanhToan > 0 ?  tongTienThanhToan : Math.abs(tongTienThanhToan);
     }
 
@@ -60,11 +59,12 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
             return;
         }
         let soDonHang;
-        if ($scope.soLuong % 30 === 0) {
+        if ($scope.soLuongDoi % 30 === 0) {
             soDonHang = $scope.soLuongDoi / 30;
         } else {
             soDonHang = ($scope.soLuongDoi / 30) + 1;
         }
+        $scope.feeShippingPerOne = $scope.feeShippingPerOne ? $scope.feeShippingPerOne : 50000;
         $scope.phiVanChuyen = Math.round(soDonHang * $scope.feeShippingPerOne);
         tinhTongTienThanhToan();
     }
@@ -76,11 +76,12 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
         $scope.mapYeuCauChiTiet.forEach((item) => {
             if(item.bienTheGiayDoi.id) {
                 let giaBan = item.bienTheGiayDoi.giaBan;
-                let khuyenMai = item.bienTheGiay.khuyenMai / 100;
+                let khuyenMai =  item.bienTheGiayDoi.khuyenMai ? item.bienTheGiayDoi.khuyenMai / 100 : 0;
                 let tienGiam = giaBan * khuyenMai;
                 $scope.tongTienGiamGia += tienGiam;
             }
         })
+        tinhTongTienThanhToan();
     }
 
 
@@ -110,6 +111,7 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
             let tienTraHang = (donGia * soLuong) - (donGia * soLuong * phanTramGiam);
             $scope.tongTienHangTra += tienTraHang;
         });
+        tinhTongTienThanhToan();
     };
 
 
@@ -205,7 +207,8 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
 
 
     $scope.selectedGiayDoi = function () {
-        if($scope.listYeuCauChiTiet.has($scope.yeuCauChiTiet.key)){
+        console.log($scope.giayChoosed)
+        if($scope.mapYeuCauChiTiet.has($scope.yeuCauChiTiet.key)){
             let value = $scope.mapYeuCauChiTiet.get($scope.yeuCauChiTiet.key);
             $scope.mapYeuCauChiTiet.set($scope.yeuCauChiTiet.key, {
                 hoaDonChiTiet: value.hoaDonChiTiet, // value1
@@ -222,7 +225,6 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
     }
 
     function detailGiayChiTiet(productData) {
-
         $scope.giayDetail = productData;
         const mauSacImages = productData.mauSacImages;
         for (const key in mauSacImages) {
@@ -287,24 +289,19 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
                             // Tạo nút kích thước và xử lý sự kiện click
                             const sizeButton = document.createElement("button");
                             sizeButton.textContent = variant.kichThuoc.ten;
-                            sizeButton.className = "btn border btn-size";
-
+                            sizeButton.className = "btn border";
 
                             $scope.$watch('giayDetail', function (newGiayDetail, oldGiayDetail) {
                                 $scope.giayDetail = newGiayDetail;
                             });
 
                             sizeButton.addEventListener("click", () => {
-                                const listButton = document.querySelectorAll(".btn-size");
-                                listButton.forEach((button) => {
-                                    button.classList.remove("click-button");
-                                });
-
-                                sizeButton.classList.add("click-button");
                                 $scope.giayDetail = variant;
                                 $scope.giayChoosed = variant;
                                 $scope.giayChoosed.ten = productData.ten;
-                                $scope.$apply();
+                                if ($scope.giayDetail) {
+                                    $scope.$apply();
+                                }
                             });
                             sizeButtons.appendChild(sizeButton);
                         }
@@ -328,15 +325,6 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
                 });
                 outerDiv.className = "button_color";
                 buttonsContainer.appendChild(outerDiv);
-                // if (!buttonsContainer.firstClickExecuted) {
-                //     outerDiv.click();
-                //     buttonsContainer.firstClickExecuted = true;
-                // }
-                // const firstSizeButton = sizeButtons.querySelector(".btn-size");
-                // if (firstSizeButton && !buttonsContainer.firstSizeButtonClickExecuted) {
-                //     firstSizeButton.click();
-                //     buttonsContainer.firstSizeButtonClickExecuted = true;
-                // }
             }
         }
     }
@@ -344,26 +332,24 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
     function displayImages(imageList) {
         const carouselInner = document.querySelector('#carouselExampleControls .carousel-inner');
         const carouselItems = document.querySelectorAll('#carouselExampleControls .carousel-item');
-        let imageUrl = 'https://product.hstatic.net/1000361048/product/dz0482_001_a_d718733fb6d344febec840aee172ca23_master.jpg';
+
         // Xóa tất cả các carousel items hiện tại
         carouselItems.forEach(item => {
             carouselInner.removeChild(item);
         });
 
         // Tạo các carousel items mới từ danh sách ảnh mới
-        if (imageList.length > 0) {
-            for (let i = 0; i < imageList.length; i++) {
-                imageUrl = imageList[i];
-                const div = document.createElement('div');
-                div.className = i === 0 ? 'carousel-item active' : 'carousel-item';
+        for (let i = 0; i < imageList.length; i++) {
+            const imageUrl = imageList[i];
+            const div = document.createElement('div');
+            div.className = i === 0 ? 'carousel-item active' : 'carousel-item';
 
-                const img = document.createElement('img');
-                img.src = imageUrl;
-                img.className = 'd-block w-100';
+            const img = document.createElement('img');
+            img.src = imageUrl;
+            img.className = 'd-block w-100';
 
-                div.appendChild(img);
-                carouselInner.appendChild(div);
-            }
+            div.appendChild(img);
+            carouselInner.appendChild(div);
         }
     }
 
@@ -377,10 +363,10 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
             }
         });
 
-        // if (!$scope.thongTinNhanHang.tenNguoiNhan || !$scope.thongTinNhanHang.soDienThoaiNhan || !$scope.thongTinNhanHang.diaChiNhan) {
-        //     toastr["error"]("Bạn chưa điền đủ thông tin nhận hàng");
-        //     coPhanTuKhongHopLe = true;
-        // }
+        if (!$scope.thongTinNhanHang.tenNguoiNhan || !$scope.thongTinNhanHang.soDienThoaiNhan || !$scope.thongTinNhanHang.diaChiNhan) {
+            toastr["error"]("Bạn chưa điền đủ thông tin nhận hàng");
+            coPhanTuKhongHopLe = true;
+        }
 
         if ($scope.mapYeuCauChiTiet.size === 0) {
             toastr["error"]("Vui lòng thêm sản phẩm trả!");
@@ -424,26 +410,28 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
             $scope.yeuCau.nguoiTao = $scope.hoaDon.khachHang.id;
             //Ghi chú
             //Id hóa đơn đổi trả
-            $scope.yeuCau.thongTinNhanHang = '' + $scope.thongTinNhanHang.tenNguoiNhan + '-' + $scope.thongTinNhanHang.soDienThoaiNhan + '-' + $scope.thongTinNhanHang.diaChiNhan;
+            $scope.yeuCau.thongTinNhanHang = $scope.thongTinNhanHang.tenNguoiNhan + '-' + $scope.thongTinNhanHang.soDienThoaiNhan + '-' + $scope.thongTinNhanHang.diaChiNhan;
             $scope.yeuCau.phiShip = $scope.feeShippingPerOne;
             //Người Tạo
             //Người Sửa
             $scope.yeuCau.listYeuCauChiTiet = Array.from($scope.mapYeuCauChiTietSaved.values());
 
-            $http.post(host + '/user/rest/yeu-cau-khach-hang/add', JSON.stringify($scope.yeuCau))
-                .then(function (response) {
-                    if (response.status === 200) {
-                        toastr["success"]("Thêm thành công");
-                    }
-                    $location.path("/home");
-                })
-                .catch(function (error) {
-                    toastr["error"]("Thêm thất bại");
-                    if (error.status === 400) {
-                        $scope.addYeuCauForm.hoaDon.$dirty = false;
-                        $scope.errors = error.data;
-                    }
-                });
+            console.log($scope.yeuCau)
+
+            // $http.post(host + '/user/rest/yeu-cau-khach-hang/add', JSON.stringify($scope.yeuCau))
+            //     .then(function (response) {
+            //         if (response.status === 200) {
+            //             toastr["success"]("Thêm thành công");
+            //         }
+            //         $location.path("/home");
+            //     })
+            //     .catch(function (error) {
+            //         toastr["error"]("Thêm thất bại");
+            //         if (error.status === 400) {
+            //             $scope.addYeuCauForm.hoaDon.$dirty = false;
+            //             $scope.errors = error.data;
+            //         }
+            //     });
         }
     };
 
@@ -551,10 +539,10 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
                 $scope.hoaDon = response.data;
                 console.log($scope.hoaDon)
                 $scope.listHoaDonChiTiet = response.data.listHoaDonChiTiet;
-                console.log($scope.listHoaDonChiTiet)
                 $scope.thongTinNhanHang.soDienThoaiNhan = $scope.hoaDon.khachHang.soDienThoai;
                 $scope.thongTinNhanHang.diaChiNhan = $scope.hoaDon.diaChiNhan;
                 $scope.thongTinNhanHang.tenNguoiNhan = $scope.hoaDon.khachHang.hoTen;
+                layPhiShip($scope.hoaDon.diaChiNhan);
                 $scope.isLoading = false;
             }).catch(function (error) {
             console.log(error);
@@ -575,27 +563,42 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
     }
 
 
-
-
     $scope.saveDiaChi = function () {
-        let diaChiNhan = $scope.diaChiNhanHangMoi.addDress + '-' + $scope.diaChiNhanHangMoi.wards.ten + ',' + $scope.diaChiNhanHangMoi.districts.ten + ',' + $scope.diaChiNhanHangMoi.provinces.ten;
+        $scope.isLoading = true;
+        let diaChiNhan = $scope.diaChiNhanHangMoi.addDress + ', ' + $scope.diaChiNhanHangMoi.wards.ten + ', ' + $scope.diaChiNhanHangMoi.districts.ten + ', ' + $scope.diaChiNhanHangMoi.provinces.ten;
         $scope.thongTinNhanHang.diaChiNhan = diaChiNhan;
         toastr["success"]("Lưu địa chỉ nhận thành công!");
-        $scope.isLoading = true;
+        layPhiShip(diaChiNhan);
+    }
 
-        if ($scope.tongTienDoiHang - $scope.tongTienHangTra > 0 && $scope.tongTienDoiHang - $scope.tongTienHangTra < 80000000) {
-            logisticInfo.insurance_value = ($scope.tongTienDoiHang - $scope.tongTienHangTra);
+    function layPhiShip(diaChiNhan) {
+        $scope.feeShippingPerOne = 0;
+        if(diaChiNhan){
+            let addressParts = diaChiNhan.split(", ").map(part => part.trim());
+
+            let province = addressParts[addressParts.length - 1]; // Hà Nội
+            let district = addressParts[addressParts.length - 2]; // Đông Anh
+            let ward = addressParts[addressParts.length - 3]; // Cổ Loa
+            let detailAddress = addressParts.slice(0, addressParts.length - 3).join(", "); // địa chỉ còn lại
+
+            logisticInfo.to_address = detailAddress;
+            logisticInfo.to_ward_name = ward;
+            logisticInfo.to_district_name =district;
+            logisticInfo.to_province_name =province;
+        }
+
+
+        if ($scope.tongTienHangDoi >= 0 && $scope.tongTienHangDoi< 80000000) {
+            logisticInfo.insurance_value = $scope.tongTienHangDoi;
         }
 
         $http.post('https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/preview', logisticInfo)
             .then(response => {
-                $scope.feeShippingPerOne = response.data.data.total_fee;
-                tinhTienShip();
+               $scope.feeShippingPerOne = response.data.data.total_fee;
                 $scope.isLoading = false;
             })
             .catch(error => {
-                toastr["error"]("Lấy thông tin thất bại");
-                $scope.feeShippingPerOne = 50000;
+                $scope.feeShippingPerOne =  50000;
                 $scope.isLoading = false;
             })
     }
@@ -676,26 +679,97 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
         }
     }
 
-    document.getElementById('tenNguoiNhan').addEventListener('input', function (e) {
-        let value = e.target.value;
-        // Cho phép các chữ cái, số, khoảng trắng và ký tự tiếng Việt
-        value = value.replace(/[^a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝàáâãèéêìíòóôõùúýĂăĐđĨĩŨũƠơƯưẠạẢảẤấẦầẨẩẪẫẬậẮắẰằẲẳẴẵẶặẸẹẺẻẼẽẾếỀềỂểỄễỆệỈỉỊịỌọỎỏỐốỒồỔổỖỗỘộỚớỜờỞởỠỡỢợỤụỦủỨứỪừỬửỮữỰựỲỳỴỵỶỷỸỹ _]/g, "");
-        e.target.value = value;
+    function removeAscent(str) {
+        if (str === null || str === undefined) return str;
+        str = str.toLowerCase();
+        str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+        str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+        str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+        str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+        str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+        str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+        str = str.replace(/đ/g, "d");
+        return str;
+    }
+
+    function isValid(string) {
+        const re = /^[a-zA-Z\s]+$/g; // Chỉ chấp nhận chữ cái và khoảng trắng
+        return re.test(removeAscent(string));
+    }
+
+    // Cho trường 'tenNguoiNhan'
+    var inputTenNguoiNhan = document.getElementById('tenNguoiNhan');
+    var errorMessageTen = document.getElementById('error-message-ten'); // Sử dụng một ID khác cho thông báo lỗi của trường này
+
+    inputTenNguoiNhan.addEventListener('input', function(e) {
+        var value = e.target.value;
+        if (!isValid(value)) {
+            errorMessageTen.textContent = 'Sai định dạng tên người nhận.';
+            e.target.classList.add('invalid');
+        } else {
+            errorMessageTen.textContent = '';
+            e.target.classList.remove('invalid');
+        }
     });
 
-    document.getElementById('soDienThoaiNhan').addEventListener('input', function (e) {
-        let value = e.target.value;
-        // Loại bỏ mọi ký tự không phải là số và kiểm tra định dạng
-        value = value.replace(/[^\d]/g, "").replace(/^(0[0-9]{9})?.*$/, '$1');
-        e.target.value = value;
+    inputTenNguoiNhan.addEventListener('blur', function(e) {
+        if (e.target.classList.contains('invalid')) {
+            e.target.focus();
+        }
     });
 
-    document.getElementById('addDress').addEventListener('input', function (e) {
-        let value = e.target.value;
-        // Loại bỏ ký tự đặc biệt ngoại trừ dấu phẩy và cho phép tiếng Việt có dấu
-        value = value.replace(/[^a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝàáâãèéêìíòóôõùúýĂăĐđĨĩŨũƠơƯưẠạẢảẤấẦầẨẩẪẫẬậẮắẰằẲẳẴẵẶặẸẹẺẻẼẽẾếỀềỂểỄễỆệỈỉỊịỌọỎỏỐốỒồỔổỖỗỘộỚớỜờỞởỠỡỢợỤụỦủỨứỪừỬửỮữỰựỲỳỴỵỶỷỸỹ ,]/g, "");
-        e.target.value = value;
+// Cho trường 'soDienThoaiNhan'
+    var inputSoDienThoai = document.getElementById('soDienThoaiNhan');
+    var errorMessagePhone = document.getElementById('error-message-phone'); // Sử dụng một ID khác cho thông báo lỗi của trường này
+
+    inputSoDienThoai.addEventListener('input', function(e) {
+        var value = e.target.value;
+        e.target.value = value.replace(/[^0-9]/g, '');
+        var regex = /^(03|05|07|08|09)[1-9]{8}$/;
+        if (value == '') {
+            errorMessagePhone.textContent = 'Trường này không được để trống.';
+            e.target.classList.add('invalid');
+        } else if (!regex.test(value)) {
+            errorMessagePhone.textContent = 'Số điện thoại phải có 10 chữ số và bắt đầu bằng 03, 05, 07, 08, 09.';
+            e.target.classList.add('invalid');
+        } else {
+            errorMessagePhone.textContent = '';
+            e.target.classList.remove('invalid');
+        }
     });
+
+    inputSoDienThoai.addEventListener('blur', function(e) {
+        if (e.target.classList.contains('invalid')) {
+            e.target.focus();
+        }
+    });
+
+
+
+    var inputChiTiet = document.getElementById('addDress');
+    var errorMessageChiTiet = document.getElementById('error-message-addDress');
+
+    inputChiTiet.addEventListener('input', function(e) {
+        var value = e.target.value;
+
+        if (!isValid(value)) {
+            errorMessageChiTiet.textContent = 'Sai định dạng chi tiết.';
+            e.target.classList.add('invalid'); // Đánh dấu trường là không hợp lệ
+        } else {
+            errorMessageChiTiet.textContent = '';
+            e.target.classList.remove('invalid'); // Xóa đánh dấu không hợp lệ
+        }
+    });
+
+    inputChiTiet.addEventListener('blur', function(e) {
+        // Nếu trường không hợp lệ, trả lại focus
+        if (e.target.classList.contains('invalid')) {
+            e.target.focus();
+        }
+    });
+
+
+
 
 });
 

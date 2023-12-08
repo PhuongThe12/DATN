@@ -27,6 +27,96 @@
         transform: rotate(180deg); /* Xoay 180 độ */
         transition: 0.3s ease-in-out;
     }
+
+    #buttons-container {
+        display: flex;
+    }
+
+    .insideDiv {
+        padding: 10px;
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+        margin: 4px;
+        border-radius: 7px;
+    }
+
+    .button_checked {
+        transition: 0.3s all;
+        border: 1px solid rgb(0, 0, 0) !important;
+        border-radius: 7px;
+    }
+
+    #image-container img {
+        margin-bottom: 10px;
+    }
+
+    .text-limit {
+        max-height: 0px;
+        overflow: hidden;
+        transition: 0.3s ease-in-out;
+    }
+
+    .toggle-button {
+        background: transparent;
+        border: none;
+        color: blue;
+    }
+
+    .labelTabDelete {
+        cursor: pointer;
+    }
+
+    .labelTabDelete:hover {
+        color: red;
+    }
+
+    .nav-tabs .nav-link.active {
+        color: #495057;
+        font-weight: bolder;
+        background-color: #fff;
+        border-color: #1d1e1e #dee2e6 #fff;
+        border-top: 1.5px solid #1d1e1e;
+    }
+    .item{
+        margin-top:13px;
+        border-bottom: 1px solid #dbdbdb;
+    }
+    .item div{
+        justify-content: space-between;
+        position: relative;
+        align-items: center;
+    }
+
+    .item h5 {
+        font-weight: bold;
+    }
+
+    .item p {
+        color: black;
+        font-size: 14px;
+    }
+    .btn-size{
+        padding: 10px 20px;
+    }
+    .show-text p{
+        max-height: 100px !important;
+        transition: 0.3s ease-in-out;
+    }
+    .show-text i{
+        transition: 0.3s ease-in-out;
+        transform: rotate(180deg);
+    }
+    .i-button{
+        position: absolute;
+        opacity: 0;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        padding: 10px;
+        cursor: pointer;
+    }
 </style>
 
 <div ng-show="isLoading" class="loading-spinner">
@@ -65,14 +155,12 @@
                             <p ng-class="{ 'out-of-stock': hoaDonChiTiet.bienTheGiay.soLuong === 0 }"
                                class="font-size-14-ncl fw-bold text-dark mb-2 text-wrap-none">
                                 {{hoaDonChiTiet.bienTheGiay.giayResponse.ten}}</p>
-                            <p ng-if="bienTheGiay.soLuong === 0"
-                               class="ps-2 font-size-14-ncl fw-bold text-dark mb-2 text-wrap-none">( Hết hàng )</p>
                         </div>
                         <div class="d-flex align-items-center justify-content-between">
                             <p class="font-size-14-ncl text-secondary">Kích cỡ :
                                 {{hoaDonChiTiet.bienTheGiay.kichThuoc.ten}} / Màu Sắc :
                                 {{hoaDonChiTiet.bienTheGiay.mauSac.ten}}</p>
-                            <p class="font-size-16-ncl fw-bold text-dark">{{hoaDonChiTiet.donGia | number}}</p>
+                            <p class="font-size-16-ncl fw-bold text-dark">{{hoaDonChiTiet.donGia -(hoaDonChiTiet.donGia*(hoaDon.phanTramGiam/100)) | number}}</p>
                         </div>
                         <div class="d-flex mb-3">
                             <button class="btn btn-light" ng-click="subtraction(hoaDonChiTiet)"><i
@@ -98,9 +186,9 @@
                 </div>
             </div>
 
-            <div ng-repeat="yeuCauChiTiet in listYeuCauChiTiet">
+            <div ng-repeat=" yeuCauChiTiet in listYeuCauChiTiet">
 
-                <div class="formTra pt-3" ng-show="!yeuCauChiTiet.bienTheGiayDoi.id" style="border-bottom: 1px solid grey">
+                <div class="formTra pt-3" ng-show="!yeuCauChiTiet.value.bienTheGiayDoi.id" style="border-bottom: 1px solid grey">
                     <div class="col-md-12">
                         <div class="d-flex mb-3">
                             <div>
@@ -115,9 +203,6 @@
                                     <p ng-class="{ 'out-of-stock': yeuCauChiTiet.value.hoaDonChiTiet.bienTheGiay.soLuong === 0 }"
                                        class="font-size-14-ncl fw-bold text-dark mb-2 text-wrap-none">
                                         {{yeuCauChiTiet.value.hoaDonChiTiet.bienTheGiay.giayResponse.ten}}</p>
-                                    <p ng-if="yeuCauChiTiet.value.hoaDonChiTiet.bienTheGiay.soLuong === 0"
-                                       class="ps-2 font-size-14-ncl fw-bold text-dark mb-2 text-wrap-none">( Hết hàng
-                                        )</p>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between">
                                     <p class="font-size-14-ncl text-secondary">Kích cỡ :
@@ -135,14 +220,14 @@
                                 </div>
                                 <div class="d-flex">
                                     <p class="font-size-16-ncl fw-bold text-dark">Giá:
-                                        {{yeuCauChiTiet.value.hoaDonChiTiet.donGia | number}}</p>
+                                        {{yeuCauChiTiet.value.hoaDonChiTiet.donGia - (yeuCauChiTiet.value.hoaDonChiTiet.donGia*(hoaDon.phanTramGiam/100)) | number}}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="formDoi row" ng-show="yeuCauChiTiet.bienTheGiayDoi.id">
+                <div class="formDoi row pt-3" ng-show="yeuCauChiTiet.value.bienTheGiayDoi.id">
                     <div class="col-md-6">
                         <div class="sanPhamTra">
                             <div class="d-flex mb-3">
@@ -158,14 +243,15 @@
                                         <p ng-class="{ 'out-of-stock': yeuCauChiTiet.value.bienTheGiayDoi.soLuong === 0 }"
                                            class="font-size-14-ncl fw-bold text-dark mb-2 text-wrap-none">
                                             {{yeuCauChiTiet.value.hoaDonChiTiet.bienTheGiay.giayResponse.ten}}</p>
-                                        <p ng-if="bienTheGiay.soLuong === 0"
-                                           class="ps-2 font-size-14-ncl fw-bold text-dark mb-2 text-wrap-none">( Hết
-                                            hàng )</p>
                                     </div>
                                     <div class="d-flex align-items-center justify-content-between">
                                         <p class="font-size-14-ncl text-secondary">Kích cỡ :
                                             {{yeuCauChiTiet.value.hoaDonChiTiet.bienTheGiay.kichThuoc.ten}} / Màu Sắc :
                                             {{yeuCauChiTiet.value.hoaDonChiTiet.bienTheGiay.mauSac.ten}}</p>
+                                        <!-- Spacer Element -->
+                                        <div style="flex-grow: 1;"></div>
+                                        <!-- Nút Trả Hàng -->
+                                        <button type="button" class="btn btn-dark" ng-click="deleteGiayTra(yeuCauChiTiet)"><i class="fas fa-trash-alt"></i></i></button>
                                     </div>
                                     <div class="d-flex">
                                         <p class="font-size-14-ncl text-secondary">Số lượng trả :
@@ -173,9 +259,8 @@
                                         <!-- Spacer Element -->
                                         <div style="flex-grow: 1;"></div>
                                         <!-- Nút Trả Hàng -->
-                                        <button type="button" class="btn btn-dark"
-                                                ng-click="traHang(index+1,hoaDonChiTiet)"><i class="fas fa-undo"></i>
-                                        </button>
+                                        <button type="button" class="btn btn-dark" data-bs-toggle="modal"
+                                                data-bs-target="#exampleModal" ng-click="addLyDoView(yeuCauChiTiet)"><i class="fas fa-undo"></i></button>
                                     </div>
                                     <div class="d-flex">
                                         <p class="font-size-16-ncl fw-bold text-dark">Giá:
@@ -211,14 +296,10 @@
                                             {{yeuCauChiTiet.value.bienTheGiayDoi.mauSac.ten}}</p>
                                         <div style="flex-grow: 1;"></div>
                                         <!-- Nút Trả Hàng -->
-                                        <button type="button" class="btn btn-warning"><i class="fas fa-info"></i>
-                                        </button>
+                                        <button type="button" class="btn btn-dark" ng-click="deleteGiayDoi(yeuCauChiTiet)"><i class="fas fa-trash-alt"></i></button>
                                     </div>
                                     <div class="d-flex">
                                         <p class="font-size-14-ncl text-secondary">Số lượng đổi : 1</p>
-                                        <div style="flex-grow: 1;"></div>
-                                        <!-- Nút Trả Hàng -->
-                                        <button type="button" class="btn btn-dark"><i class="fas fa-undo"></i></button>
                                     </div>
                                     <div class="d-flex">
                                         <p class="font-size-16-ncl fw-bold text-dark"
@@ -261,20 +342,20 @@
                     </div>
 
                     <div class="d-flex justify-content-between border-bottom-1" ng-show="tongTienHangDoi > 0">
-                        <p class=" text-dark">Khuyến Mại : </p>
+                        <p class=" text-dark">COD : </p>
                         <p class=" text-dark"> {{phiVanChuyen | formatToVND}}</p>
                     </div>
 
                     <div class="d-flex justify-content-between pt-3"
                          style="border-top: 1px solid grey ; border-bottom:1px solid grey"
-                         ng-show="tongTienHangTra - (tongTienDoiHang + phiVanChuyen) > 0">
+                         ng-show="tongTienHangTra - (tongTienDoiHang + phiVanChuyen + tongTienGiamGia) > 0">
                         <p class="fw-bold text-dark">Tổng tiền hoàn : </p>
                         <p class="fw-bold text-dark">{{tongTienThanhToan | formatToVND}}</p>
                     </div>
 
                     <div class="d-flex justify-content-between pt-3"
                          style="border-top: 1px solid grey ; border-bottom:1px solid grey"
-                         ng-show="tongTienHangTra - (tongTienDoiHang + phiVanChuyen) <= 0">
+                         ng-show="tongTienHangTra - (tongTienDoiHang + phiVanChuyen + tongTienGiamGia) <= 0">
                         <p class="fw-bold text-dark">Tổng thanh toán : </p>
                         <p class="fw-bold text-dark">{{tongTienThanhToan | formatToVND}}</p>
                     </div>
@@ -305,25 +386,22 @@
                     <div class="collapse" id="collapseExample1" style="border: none; border-left: 1px solid grey">
                         <div class=" card card-body" style="border: none">
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="tenNguoiNhan" ng-model="thongTinNhanHang.tenNguoiNhan"
-                                       ng-pattern="/^[a-zA-ZÀ-ỹ- ']+$/">
+                                <input type="text" class="form-control" id="tenNguoiNhan" ng-model="thongTinNhanHang.tenNguoiNhan">
                                 <label for="tenNguoiNhan">Tên người nhận</label>
-                                <span ng-show="myForm.tenNguoiNhan.$error.pattern">Tên không hợp lệ</span>
+                                <small id="error-message-ten" style="color: red;"></small>
                             </div>
 
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="soDienThoaiNhan" ng-model="thongTinNhanHang.soDienThoaiNhan"
-                                       ng-pattern="/^[0-9]{10,11}$/">
+                                <input type="text" class="form-control" id="soDienThoaiNhan" ng-model="thongTinNhanHang.soDienThoaiNhan">
                                 <label for="soDienThoaiNhan">Số điện thoại nhận</label>
-                                <span ng-show="myForm.soDienThoaiNhan.$error.pattern">Số điện thoại không hợp lệ</span>
+                                <small id="error-message-phone" style="color: red;"></small>
                             </div>
-
 
                             <div class="input-group mb-3">
                                 <input type="text" class="form-control" value="{{thongTinNhanHang.diaChiNhan}}"
                                        aria-describedby="basic-addon2" disabled ng-model="thongTinNhanHang.diaChiNhan">
                                 <span class="input-group-text" id="basic-addon2" data-bs-target="#staticBackdrop1"
-                                      data-bs-toggle="modal" type="button"><i class="fas fa-undo-alt"></i></span>
+                                      data-bs-toggle="modal" type="button" ng-click="changeProvince()"><i class="fas fa-undo-alt"></i></span>
                             </div>
                         </div>
                     </div>
@@ -431,7 +509,7 @@
                                     <!-- Các phần tử trong dropdown -->
                                     <div class="form-check p-0" ng-repeat="value in dropdown.listValue">
                                         <input ng-class="{ 'd-none': dropdown.ten === 'Kích Cỡ' || dropdown.ten === 'Màu Sắc' }"
-                                               ng-change="changeSearch()" class="form-check-input"
+                                                class="form-check-input"
                                                style="margin-left: 10px;" type="checkbox" ng-model="value.selected"
                                                id="{{ 'checkbox_' + $parent.$index + '_' + $index }}">
                                         <label ng-class="{ 'checkbox-label': dropdown.ten === 'Kích Cỡ' ,
@@ -633,15 +711,16 @@
                             <input type="text" class="form-control" id="addDress" name="addDress"
                                    ng-model="diaChiNhanHangMoi.addDress">
                             <label for="addDress">Chi Tiết<span class="required">(*)</span>:</label>
+                            <small id="error-message-addDress" style="color: red;"></small>
                         </div>
                     </div>
                 </div>
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Trở về</button>
-                <button type="button" class="btn btn-success" data-bs-dismiss="modal" ng-disabled="checkAddDress()"
-                        ng-click="saveDiaChi()">Lưu
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal"><i class="fas fa-chevron-left"></i> Trở về</button>
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal" ng-disabled="checkAddDress()"
+                        ng-click="saveDiaChi()"><i class="fas fa-check"></i> Lưu
                 </button>
             </div>
         </div>
