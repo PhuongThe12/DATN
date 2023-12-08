@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 public class BaseBienTheResponse {
 
     private Long idKhuyenMaiChiTiet;
-    private Integer phanTramGiam = 0;
+    private Integer phanTramGiam;
 
     public BaseBienTheResponse(Integer phanTramGiam) {
         this.phanTramGiam = phanTramGiam;

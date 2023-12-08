@@ -21,6 +21,10 @@ app.controller("addDayGiayController", function ($scope, $http, $location) {
         input.$dirty = true;
     }
 
+    $scope.backToList = function () {
+        $location.path("/list");
+    }
+
     $scope.comfirmAdd = function () {
         Swal.fire({
             text: "Xác nhận thêm?",
@@ -142,6 +146,11 @@ app.controller("updateDayGiayController", function ($scope, $http, $routeParams,
     $scope.change = function (input) {
         input.$dirty = true;
     }
+
+    $scope.backToList = function () {
+        $location.path("/list");
+    }
+
     $http.get(host + '/rest/admin/day-giay/' + id)
         .then(function (response) {
             $scope.dayGiay = response.data;

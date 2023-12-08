@@ -4,6 +4,7 @@ import luckystore.datn.model.request.GiayExcelRequest;
 import luckystore.datn.model.request.GiayRequest;
 import luckystore.datn.model.request.GiaySearch;
 import luckystore.datn.model.request.IdListRequest;
+import luckystore.datn.model.request.KhuyenMaiSearch;
 import luckystore.datn.service.GiayService;
 import luckystore.datn.service.ImageHubService;
 import luckystore.datn.util.JsonString;
@@ -77,8 +78,8 @@ public class RestGiayController {
     }
 
     @PostMapping("/get-all-without-discount")
-    public ResponseEntity<?> getAllGiayWithoutDiscount(@RequestBody GiaySearch giaySearch) {
-        return new ResponseEntity<>(giayService.getAllGiayWithoutDiscount(giaySearch), HttpStatus.OK);
+    public ResponseEntity<?> getAllGiayWithoutDiscount(@RequestBody KhuyenMaiSearch kmSearch) {
+        return new ResponseEntity<>(giayService.getAllGiayWithoutDiscount(kmSearch), HttpStatus.OK);
     }
 
     @PostMapping("/get-simple-by-search")

@@ -22,13 +22,25 @@
             <div class="custom-radio">
                 <input type="radio" id="active" name="status" ng-model="status" value="1" ng-checked="status == 1"
                        ng-change="changeRadio(1)">
-                <label class="radio-label" for="active">Kích hoạt</label>
+                <label class="radio-label" for="active">Đang diễn ra</label>
             </div>
 
             <div class="custom-radio">
-                <input type="radio" id="disable" name="status" ng-model="status" value="0" ng-checked="status == 0"
+                <input type="radio" id="sapDienRa" name="status" ng-model="status" value="0" ng-checked="status == 0"
+                       ng-change="changeRadio(2)">
+                <label class="radio-label" for="sapDienRa">Sắp diễn ra</label>
+            </div>
+
+            <div class="custom-radio">
+                <input type="radio" id="ketThuc" name="status" ng-model="status" value="0" ng-checked="status == 0"
+                       ng-change="changeRadio(3)">
+                <label class="radio-label" for="ketThuc">Đã kết thúc</label>
+            </div>
+
+            <div class="custom-radio">
+                <input type="radio" id="an" name="status" ng-model="status" value="0" ng-checked="status == 0"
                        ng-change="changeRadio(0)">
-                <label class="radio-label" for="disable">Chưa kích hoạt</label>
+                <label class="radio-label" for="an">Đã ẩn</label>
             </div>
         </div>
 
@@ -66,7 +78,8 @@
                             <a ng-if="khuyenMai.trangThai != 1 && khuyenMai.trangThai != 0" class="btn btn-custom" ng-href="#/update/{{khuyenMai.id}}">
                                 <i class="far fa-edit"></i>
                             </a>
-                            <a class="btn btn-custom" ng-href="#/detail/{{khuyenMai.id}}"><i class="fas fa-eye"></i></a>
+                            <a class="btn btn-custom" ng-click="detailKhuyenMai(khuyenMai.id)" data-bs-toggle="modal" data-bs-target="#showKhuyenMai"><i class="fas fa-eye"></i></a>
+                            <a class="btn btn-custom" ng-href="#/detail/{{khuyenMai.id}}">Kết thúc sớm</a>
                         </div>
                     </td>
                 </tr>

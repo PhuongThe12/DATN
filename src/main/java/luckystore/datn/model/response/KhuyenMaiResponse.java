@@ -8,6 +8,8 @@ import luckystore.datn.entity.KhuyenMai;
 import luckystore.datn.entity.KhuyenMaiChiTiet;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,9 +23,9 @@ public class KhuyenMaiResponse {
 
     private String ten;
 
-    private Date ngayBatDau;
+    private String ngayBatDau;
 
-    private Date ngayKetThuc;
+    private String ngayKetThuc;
 
     private String ghiChu;
 
@@ -34,12 +36,17 @@ public class KhuyenMaiResponse {
     public KhuyenMaiResponse(KhuyenMai khuyenMai) {
         this.id = khuyenMai.getId();
         this.ten = khuyenMai.getTen();
-        this.ngayBatDau = khuyenMai.getNgayBatDau();
-        this.ngayKetThuc = khuyenMai.getNgayKetThuc();
+        this.ngayBatDau = dateFormat(khuyenMai.getNgayBatDau());
+        this.ngayKetThuc = dateFormat(khuyenMai.getNgayKetThuc());
         this.ghiChu = khuyenMai.getGhiChu();
         this.trangThai = khuyenMai.getTrangThai();
         List<KhuyenMaiChiTiet> khuyenMaiChiTiets = khuyenMai.getKhuyenMaiChiTiets();
         this.khuyenMaiChiTietResponses = khuyenMaiChiTiets.stream().map(KhuyenMaiChiTietResponse::new).collect(Collectors.toList());
+    }
+
+    private String dateFormat(LocalDateTime dateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return dateTime.format(formatter);
     }
 
 }

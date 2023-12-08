@@ -255,7 +255,11 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
             });
 
         changeSP();
-        document.getElementById('closeModalKhachHang').click();
+        if (document.getElementById('closeModalKhachHang')) {
+            setTimeout(() => {
+                document.getElementById('closeModalKhachHang').click();
+            }, 0);
+        }
     }
 
     $scope.$watch('selectedKhachHang', function () {
@@ -583,7 +587,11 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                 .then(function (response) {
                     $scope.giaySeletect = response.data;
                     detailGiayChiTiet(response.data);
-                    document.getElementById('buttonModalSanPham').click();
+                    if (document.getElementById('buttonModalSanPham')) {
+                        setTimeout(() => {
+                            document.getElementById('buttonModalSanPham').click();
+                        }, 0);
+                    }
                 }).catch(function (error) {
                 toastr["error"]("Lấy dữ liệu thất bại");
                 console.log(error);
@@ -742,11 +750,11 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                         $scope.sanPhams = data.hoaDonChiTietResponses;
                         $scope.hoaDonPrint.conLai = 0;
 
-                        $scope.hoaDonPrint.thongTinThanhToan ={};
+                        $scope.hoaDonPrint.thongTinThanhToan = {};
                         data.chiTietThanhToans.forEach(item => {
                             $scope.hoaDonPrint.conLai += item.tienThanhToan;
                             $scope.hoaDonPrint.thongTinThanhToan.show = true;
-                            if(item.hinhThucThanhToan === 1) {
+                            if (item.hinhThucThanhToan === 1) {
                                 $scope.hoaDonPrint.thongTinThanhToan.tienMat = item.tienThanhToan;
                             }
                             if (item.hinhThucThanhToan === 2) {
@@ -1013,7 +1021,11 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
         }
 
         changeSP();
-        document.getElementById('closeModalSanPham').click();
+        if (document.getElementById('modalSP')) {
+            setTimeout(() => {
+                document.getElementById('closeModalSanPham').click();
+            }, 0);
+        }
     }
 
     $scope.addNewHDCT = function (data) {
@@ -1141,7 +1153,12 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
             return;
         }
 
-        document.getElementById('staticBackDropButton').click();
+        if (document.getElementById('staticBackDropButton')) {
+            setTimeout(() => {
+                document.getElementById('staticBackDropButton').click();
+
+            }, 0);
+        }
         scanning = true;
         if (scanning) {
             navigator.mediaDevices.getUserMedia({video: true})
@@ -1355,7 +1372,12 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                                 } else {
                                     toastr["error"]('Không hợp lệ. Vui lòng thử lại');
                                 }
-                                document.getElementById('closeModalCamera').click();
+                                if (document.getElementById('closeModalCamera')) {
+                                    setTimeout(() => {
+                                        document.getElementById('closeModalCamera').click();
+
+                                    }, 0);
+                                }
                                 clearInterval(interval);
                             }
                         }
@@ -1422,7 +1444,11 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
         $scope.tenNguoiNhan = $scope.diaChi.tenNguoiNhan;
         $scope.sdtNhan = $scope.diaChi.sdtNguoiNhan;
         $scope.diaChiNhan = $scope.diaChi.detailAdress + ", " + $scope.diaChi.xa.ten + ", " + $scope.diaChi.huyen.ten + ", " + $scope.diaChi.tinh.ten;
-        document.getElementById('closeModalThongTinNhanHang').click();
+        if (document.getElementById('closeModalThongTinNhanHang')) {
+            setTimeout(() => {
+                document.getElementById('closeModalThongTinNhanHang').click();
+            }, 0);
+        }
 
         logisticInfo.to_address = $scope.diaChi.detailAdress;
         logisticInfo.to_ward_name = $scope.diaChi.xa.ten;
