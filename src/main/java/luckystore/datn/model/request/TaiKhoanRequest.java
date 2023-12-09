@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import luckystore.datn.infrastructure.Role;
+import luckystore.datn.infrastructure.constants.Role;
 
 @Data
 @AllArgsConstructor

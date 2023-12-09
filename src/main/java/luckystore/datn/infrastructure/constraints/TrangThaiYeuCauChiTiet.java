@@ -1,4 +1,4 @@
-package luckystore.datn.constraints;
+package luckystore.datn.infrastructure.constraints;
 
 public class TrangThaiYeuCauChiTiet {
     public static final int CHO_XAC_NHAN_CHO_XAC_NHAN = 1;
