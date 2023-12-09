@@ -28,8 +28,6 @@ public class GioHangChiTietResponse {
 
     private Integer soLuong;
 
-    private BigDecimal giaBan;
-
     private LocalDateTime ngayTao;
 
     private String ghiChu;
@@ -39,7 +37,6 @@ public class GioHangChiTietResponse {
 //        this.gioHang = new GioHangResponse(gioHangChiTiet.getGioHang());
         this.bienTheGiay = getBienTheGiay(new BienTheGiayResponse(), gioHangChiTiet.getBienTheGiay());
         this.soLuong = gioHangChiTiet.getSoLuong();
-        this.giaBan = gioHangChiTiet.getGiaBan();
         this.ngayTao = gioHangChiTiet.getNgayTao();
         this.ghiChu = gioHangChiTiet.getGhiChu();
     }

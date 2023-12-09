@@ -36,9 +36,6 @@ public class GioHangChiTiet {
     @Column(name = "SO_LUONG_SAN_PHAM")
     private Integer soLuong;
 
-    @Column(name = "GIA_BAN")
-    private BigDecimal giaBan;
-
     @Column(name = "NGAY_TAO")
     private LocalDateTime ngayTao;
 

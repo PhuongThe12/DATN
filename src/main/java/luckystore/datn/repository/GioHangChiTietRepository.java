@@ -1,6 +1,8 @@
 package luckystore.datn.repository;
 
+import luckystore.datn.entity.BienTheGiay;
 import luckystore.datn.entity.GioHangChiTiet;
+import luckystore.datn.model.response.BienTheGiayResponse;
 import luckystore.datn.model.response.GioHangChiTietResponse;
 import luckystore.datn.model.response.GioHangResponse;
 import luckystore.datn.service.GioHangService;
@@ -9,6 +11,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
@@ -30,4 +33,7 @@ public interface GioHangChiTietRepository extends JpaRepository<GioHangChiTiet, 
 
     @Query("select ghct.soLuong from GioHangChiTiet ghct where ghct.bienTheGiay.id = :id and ghct.gioHang.id = :idGioHang")
     Integer getSoLuong(Long id, Long idGioHang);
+
+    @Query("select new luckystore.datn.model.response.BienTheGiayResponse(ghct.bienTheGiay.id,ghct.bienTheGiay.soLuong,ghct.bienTheGiay.giaBan) from GioHangChiTiet ghct where ghct.gioHang.id = :idGioHang")
+    List<BienTheGiayResponse> getBienTheGiayByIdGioHang(Long idGioHang);
 }
