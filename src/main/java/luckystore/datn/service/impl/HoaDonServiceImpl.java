@@ -54,6 +54,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -223,7 +224,6 @@ public class HoaDonServiceImpl implements HoaDonService {
                     hoaDonChiTiet.getBienTheGiay().setKhuyenMai(kmct.getPhanTramGiam());
                 }
             }
-
         }
 
         KhachHang khachHang = khachHangRepository.findByHDId(id);
@@ -393,7 +393,14 @@ public class HoaDonServiceImpl implements HoaDonService {
             hoaDon.setDieuKien(null);
         } else {
             DieuKien dieuKien = dieuKienRepository.findById(request.getIdDieuKien())
-                    .orElseThrow(() -> new NotFoundException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Điều kiện không tồn tại"))));
+                    .orElseThrow(() -> new NotFoundException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Đợt giảm giá không tồn tại"))));
+            if (dieuKien.getDotGiamGia().getTrangThai() != 1) {
+                throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("dieuKienError", "Đợt giảm giá đã hết hạn")));
+            }
+
+            if (dieuKien.getDotGiamGia().getNgayKetThuc().before(new Date())) {
+                throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("dieuKienError", "Đợt giảm giá đã hết hạn")));
+            }
             hoaDon.setDieuKien(dieuKien);
         }
 
@@ -438,13 +445,34 @@ public class HoaDonServiceImpl implements HoaDonService {
         hoaDon.setChiTietThanhToans(chiTietThanhToans);
         hoaDon.setGhiChu(request.getGhiChu());
         List<Long> idsBienThe = hoaDon.getListHoaDonChiTiet().stream().map(hdct -> hdct.getBienTheGiay().getId()).toList();
+
         List<BienTheGiayResponse> bienTheGiayResponses = bienTheGiayRepository.bienTheGiay(idsBienThe);
-        for (BienTheGiayResponse btR : bienTheGiayResponses) {
-            for (HoaDonChiTiet hdct : hoaDon.getListHoaDonChiTiet()) {
+        BigDecimal tongTien = BigDecimal.ZERO;
+
+        for (HoaDonChiTiet hdct : hoaDon.getListHoaDonChiTiet()) {
+            boolean tonTai = false;
+            for (BienTheGiayResponse btR : bienTheGiayResponses) {
                 if (Objects.equals(btR.getId(), hdct.getBienTheGiay().getId())) {
                     hdct.setDonGia(btR.getGiaBan().subtract(btR.getGiaBan().multiply(BigDecimal.valueOf(btR.getKhuyenMai() == null ? 0 : btR.getKhuyenMai()).divide(BigDecimal.valueOf(100)))));
+                    tonTai = true;
                 }
             }
+            if (!tonTai) {
+                hdct.setDonGia(hdct.getBienTheGiay().getGiaBan());
+            }
+            tongTien = tongTien.add(hdct.getDonGia());
+        }
+
+        BigDecimal tienThanhToan = BigDecimal.ZERO;
+        if (request.getTienMat() != null) {
+            tienThanhToan = tienThanhToan.add(request.getTienMat());
+        }
+        if (request.getTienChuyenKhoan() != null) {
+            tienThanhToan = tienThanhToan.add(request.getTienChuyenKhoan());
+        }
+
+        if (tienThanhToan.toBigInteger().compareTo(tongTien.subtract(hoaDon.getTienGiam()).toBigInteger()) != 0) {
+            throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("khuyenMaiError", "Một số khuyến mại đã thay đổi vui lòng thử lại")));
         }
 
         hoaDonRepository.save(hoaDon);
@@ -928,7 +956,7 @@ public class HoaDonServiceImpl implements HoaDonService {
     @Override
     public List<HoaDonResponse> getHoaDonDoiTra(Long id) {
         List<HoaDon> hoaDons = hoaDonRepository.getHoaDonDoiTra(id);
-        if(hoaDons.isEmpty()) {
+        if (hoaDons.isEmpty()) {
             return null;
         }
         return hoaDons.stream().map(HoaDonResponse::new).toList();

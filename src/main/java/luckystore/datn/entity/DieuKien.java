@@ -1,5 +1,6 @@
 package luckystore.datn.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,6 +30,7 @@ public class DieuKien {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "DOT_GIAM_GIA_ID")
+    @JsonBackReference
     private DotGiamGia dotGiamGia;
 
 }
