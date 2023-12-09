@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import luckystore.datn.entity.Giay;
 import luckystore.datn.entity.GioHang;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,7 +38,9 @@ public class GioHangResponse {
         this.ngayTao = gioHang.getNgayTao();
         this.ghiChu = gioHang.getGhiChu();
         this.trangThai = gioHang.getTrangThai();
-        this.gioHangChiTietResponses =(gioHang.getGioHangChiTiets().stream().map(GioHangChiTietResponse::new).collect(Collectors.toList()));
+        if(gioHang.getGioHangChiTiets() != null){
+            this.gioHangChiTietResponses =(gioHang.getGioHangChiTiets().stream().map(GioHangChiTietResponse::new).collect(Collectors.toList()));
+        }
     }
 
 }

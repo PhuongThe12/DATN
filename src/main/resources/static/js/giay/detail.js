@@ -43,8 +43,6 @@ app.controller('detailGiayController', function ($scope, $http, $location, $rout
     });
 
     function detailGiayChiTiet(productData) {
-
-
         $scope.giayDetail = productData;
         const mauSacImages = productData.mauSacImages;
         for (const key in mauSacImages) {

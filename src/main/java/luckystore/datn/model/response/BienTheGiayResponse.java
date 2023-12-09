@@ -75,7 +75,7 @@ public class BienTheGiayResponse extends BaseBienTheResponse {
         this.kichThuoc = KichThuocResponse.builder().ten(tenKT).build();
     }
 
-    public BienTheGiayResponse(Long id, String tenKT, String tenMS, Integer soLuong, BigDecimal giaBan, String hinhAnh, Integer trangThai, Giay giay) {
+    public BienTheGiayResponse(Long id, String tenKT, String tenMS, Integer soLuong, BigDecimal giaBan, String hinhAnh, Integer trangThai, Giay giay, Integer phanTramGiam) {
         this.id = id;
         this.soLuong = soLuong;
         this.giaBan = giaBan;
@@ -84,6 +84,7 @@ public class BienTheGiayResponse extends BaseBienTheResponse {
         this.mauSac = MauSacResponse.builder().ten(tenMS).build();
         this.kichThuoc = KichThuocResponse.builder().ten(tenKT).build();
         this.giayResponse = GiayResponse.builder().ten(giay.getTen()).build();
+        this.khuyenMai = phanTramGiam;
     }
 
     public BienTheGiayResponse(Long id, BigDecimal giaBan, Integer phanTramGiam, Integer trangThai) {

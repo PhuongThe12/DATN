@@ -1,182 +1,267 @@
-<form name="khuyenMaiForm" ng-submit="addKhuyenMai()">
-    <button type="submit" class="btn btn-primary" ng-disabled="khuyenMaiForm.$invalid">Thêm</button>
-    <div class="form-group">
-        <label for="ten">Tên chương trình: </label>
-        <input type="text" class="form-control" id="ten" name="ten" ng-model="khuyenMai.ten" ng-maxlength="50"
-               ng-required="true" ng-change="change(khuyenMaiForm.ten)">
-    </div>
-    <div class="form-group">
-        <label for="ghiChu">Ghi chú: </label>
-        <textarea class="form-control" id="ghiChu" name="ghiChu" rows="3" ng-model="khuyenMai.ghiChu"
-                  ng-change="changeGhiChu(khuyenMaiForm.ghiChu)" ng-required="true"></textarea>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
-                <label>Ngày bắt đầu: </label>
-                <input type="date" class="form-control" id="ngayBatDau" name="ngayBatDau"
-                       ng-model="khuyenMai.ngayBatDau">
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                <label>Ngày kết thúc: </label>
-                <input type="date" class="form-control" id="ngayKetThuc" name="ngayKetThuc"
-                       ng-model="khuyenMai.ngayKetThuc">
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                <label>Trạng thái: </label>
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="khuyenMaiTrangThai" name="trangThai"
-                           ng-model="khuyenMai.trangThai" ng-true-value="1" ng-false-value="0"
-                           ng-init="khuyenMai.trangThai = 1">
-                    <label class="form-check-label" for="khuyenMaiTrangThai">Kích hoạt</label>
-                </div>
-            </div>
-        </div>
-    </div>
-</form>
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal"
-        ng-click="loadGiay()">
-    Thêm sản phẩm
-</button>
-<br>
-<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Danh sách sản phẩm</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
+<style>
+    td {
+        padding: 0.5rem !important;
+        vertical-align: middle;
+    }
+</style>
 
-                <div class="col-4">
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Tên giày"
-                               aria-label="Recipient's username" aria-describedby="button-addon2">
-                        <button class="btn btn-outline-secondary" type="button" id="button-addon2">Tìm</button>
-                    </div>
-                </div>
-
-                <div>
-                    <table class="table table-bordered table-striped">
-                        <thead>
-                        <tr>
-                            <th scope="col">
-                                <input type="checkbox" ng-model="selectAll" ng-change="selectAllGiay()">
-                            </th>
-                            <th scope="col">Sản phẩm</th>
-                            <th scope="col">Giá</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="giay in giays">
-                            <td><input type="checkbox" ng-model="giay.selected" ng-disabled="giay.disabled"
-                                       ng-click="selectAllChanged = true; checkAllSelected()"></td>
-
-                            <td style="display: none;">{{giay.id}}</td>
-                            <td>{{giay.lstAnh}} {{giay.ten}}</td>
-                            <td class="col-3">
-                                {{giay.giaTu == giay.giaDen ? giay.giaTu + 'đ' : giay.giaTu + 'đ' + ' - ' +
-                                giay.giaDen + 'đ'}}
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" ng-click="xacNhan()">Xác nhận
-                </button>
-            </div>
+<div ng-show="isLoading" class="loading-spinner">
+    <div class="text-center" style="  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Màu nền đục để làm mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1209; ">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
         </div>
     </div>
 </div>
+<a class="ms-4 mb-3 btn btn-primary" href="#list"><i class="fas fa-chevron-left"></i>Danh sách</a>
+<div class="card rounded bg-white ms-4 mx-4">
+    <div class="card-header bg-white">
+        <h5 class="card-title p-2 mt-2">
+            Thêm Khuyến Mại
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="p-3">
+            <form name="khuyenMaiForm" ng-submit="addKhuyenMai()">
+                <div class="form-group my-2">
+                    <label for="ten">Tên chương trình: </label>
+                    <input type="text" class="form-control" id="ten" name="ten" ng-model="khuyenMai.ten"
+                           ng-maxlength="50"
+                           ng-required="true" ng-change="change(khuyenMaiForm.ten)">
+                    <small class="text-danger"
+                           ng-show="(khuyenMaiForm.ten.$dirty || khuyenMaiForm.ten.$touched) && khuyenMaiForm.ten.$error.required">Không
+                        được để
+                        trống tên</small>
+                    <small class="text-danger"
+                           ng-show="(khuyenMaiForm.ten.$dirty || khuyenMaiForm.ten.$touched) && khuyenMaiForm.ten.$error.maxlength">Tên
+                        không được
+                        vượt quá 50 ký tự</small>
+                    <small class="text-danger" ng-show="errors.ten && !khuyenMaiForm.ten.$dirty">{{errors.ten}}</small>
+                </div>
+                <div class="form-group my-2">
+                    <label for="ghiChu">Ghi chú: </label>
+                    <textarea class="form-control" id="ghiChu" name="ghiChu" rows="3" ng-model="khuyenMai.ghiChu"
+                              ng-change="changeGhiChu(khuyenMaiForm.ghiChu)" ng-required="true"></textarea>
+                    <small class="text-danger"
+                           ng-show="(khuyenMaiForm.ghiChu.$dirty || khuyenMaiForm.ghiChu.$touched) && khuyenMaiForm.ghiChu.$error.required">Không
+                        được để
+                        trống chi chú</small>
+                </div>
+                <div class="row my-2">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Ngày bắt đầu: </label>
+                            <input type="date" class="form-control" id="ngayBatDau" name="ngayBatDau"
+                                   ng-model="khuyenMai.ngayBatDau" ng-required="true">
+                            <small class="text-danger"
+                                   ng-show="(khuyenMaiForm.ngayBatDau.$dirty || khuyenMaiForm.ngayBatDau.$touched) && khuyenMaiForm.ngayBatDau.$error.min">Ngày
+                                bắt đầu không được nhỏ hơn hôm nay</small>
+                            <small class="text-danger"
+                                   ng-show="errors.ngayBatDau">{{errors.ngayBatDau}}</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Ngày kết thúc: </label>
+                            <input type="date" class="form-control" id="ngayKetThuc" name="ngayKetThuc"
+                                   ng-model="khuyenMai.ngayKetThuc" ng-required="true">
+                            <small class="text-danger"
+                                   ng-show="(khuyenMaiForm.ngayKetThuc.$dirty || khuyenMaiForm.ngayKetThuc.$touched) && khuyenMaiForm.ngayKetThuc.$error.min">Ngày
+                                kết thúc phải lớn hơn ngày bắt đầu</small>
+                            <small class="text-danger"
+                                   ng-show="errors.ngayKetThuc">{{errors.ngayKetThuc}}</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Trạng thái: </label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="khuyenMaiTrangThai" name="trangThai"
+                                       ng-model="khuyenMai.trangThai" ng-true-value="1" ng-false-value="0"
+                                       ng-init="khuyenMai.trangThai = 1">
+                                <label class="form-check-label" for="khuyenMaiTrangThai">Kích hoạt</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between my-2">
+                    <button type="submit" class="btn btn-primary">Tạo khuyến mại</button>
+                    <button type="button" class="btn btn-primary"
+                            ng-click="loadGiay()">
+                        Thêm giày cho khuyến mại
+                    </button>
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#myModal" style="display: none"
+                            id="modalSP"></button>
+                </div>
+            </form>
+            <br>
 
-<br>
+            <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Danh sách sản phẩm</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
 
-<div ng-show="selectedGiayTableData.length > 0" class="mb-4">
-    <form class="row">
-        <div class="col-md-5">
-            <div class="form-check">
-                <label class="form-check-label" for="autoSizingCheck">
-                    Chọn tất cả
-                </label>
-                <input class="form-check-input" type="checkbox" id="autoSizingCheck">
+                            <div class="my-3">
+                                <div class="row">
+                                    <div class="col col-12">
+                                        <custom-input select-type="thuonghieu" id="thuongHieu" title="thương hiệu"
+                                                      items="thuongHieus"
+                                                      ng-model="selectedThuongHieu"></custom-input>
+                                    </div>
+
+                                </div>
+                                <div class="row pt-2">
+                                    <div class="input-group w-75">
+                                        <span class="input-group-text" id="basic-addon1"><i
+                                                class="fas fa-search"></i></span>
+                                        <input id="seachText" class="form-control" type="text" ng-model="searchText"
+                                               placeholder="Nhập tên">
+                                        <button class="btn btn-custom " ng-click="search()">Tìm kiếm</button>
+                                        <button class="btn btn-custom mx-2" ng-click="resetSearch()">Nhập lại</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="my-3">
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                                        ng-click="xacNhan()">
+                                    Xác nhận
+                                </button>
+                            </div>
+                        </div>
+                        <div>
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <th scope="col">
+                                        <input type="checkbox" ng-model="selectAll" ng-change="selectAllGiay()">
+                                    </th>
+                                    <th scope="col">Sản phẩm</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="giay in giays | orderBy: '-id'">
+                                    <td style="text-align: center"><input type="checkbox" ng-model="giay.selected"
+                                                                          ng-disabled="giay.disabled"
+                                                                          ng-click="selectAllChanged = true; checkAllSelected()">
+                                    </td>
+
+                                    <td><img src="{{giay.lstAnh[0]}}" alt=""
+                                             style="height: 50px; object-fit: cover; width: 50px"> {{giay.ten}}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="col-md-1">
-            <div class="input-group">
-                <input type="text" class="form-control" id="autoSizingInputGroup" ng-model="giamPhanTram">
-                <div class="input-group-text">%</div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <button type="submit" class="btn btn-primary" ng-click="thietLapHangLoat()">Thiết lập hàng loạt</button>
-        </div>
-        <div class="col-md-2">
-            <button class="btn btn-success">Xóa</button>
-        </div>
-    </form>
 
-    <table class="table table-hover table-striped" ng-repeat="giay in selectedGiayTableData">
-        <thead>
-        <tr>
-            <th scope="col">Tên giày</th>
-            <th scope="col">Giá bán</th>
-            <th scope="col">% giảm</th>
-            <th scope="col">Giá sau giảm</th>
-            <th scope="col">Bật/Tắt</th>
-            <th scope="col">Thao tác</th>
-        </tr>
-        <tr>
-            <th>
-                <input type="checkbox" ng-model="giay.selected">
-                {{giay.lstAnh}} {{giay.ten}}
-            </th>
-            <th scope="col"></th>
-            <th scope="col"></th>
-            <th scope="col"></th>
-            <th scope="col"></th>
-            <th scope="col">
-                <button class="btn btn-success" ng-click="xoaDong(giay)">Xóa</button>
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="bienTheGiay in giay.lstBienTheGiay">
-            <td class="col-3">
-                <br>
-                {{bienTheGiay.mauSac.ten}}, {{bienTheGiay.kichThuoc.ten}}
-            </td>
-            <td class="col-2">
-                {{bienTheGiay.giaBan}}
-            </td>
-            <td class="col-2">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" ng-model="bienTheGiay.phanTramGiam"
-                           aria-label="Recipient's username" aria-describedby="basic-addon2" placeholder="0">
-                    <span class="input-group-text" id="basic-addon2">%</span>
+        <br>
+
+        <div ng-show="selectedGiayTableData.length > 0">
+            <form class="row my-3" name="allForm">
+                <div class="col-4">
+                    <div class="form-check">
+                        <label class="form-check-label" for="autoSizingCheck">
+                            Chọn tất cả
+                        </label>
+                        <input class="form-check-input" type="checkbox" id="autoSizingCheck" ng-model="checkAll"
+                               ng-change="changeCheckAll()" ng-init="checkAll = true">
+                    </div>
                 </div>
-            </td>
-            <td class="col-2"
-                ng-if="bienTheGiay.phanTramGiam !== null && bienTheGiay.phanTramGiam !== undefined">
-                {{bienTheGiay.giaBan - (bienTheGiay.giaBan * bienTheGiay.phanTramGiam / 100)}}
-            </td>
-            <td class="col-2"
-                ng-if="bienTheGiay.phanTramGiam === null || bienTheGiay.phanTramGiam === undefined">
-                {{bienTheGiay.giaBan}}
-            </td>
-            <td class="col-2">
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
+                <div class="col-4">
+                    <div class="input-group">
+                        <input type="number" min="1" step="1" max="100" class="form-control" name="allPercent"
+                               id="autoSizingInputGroup" ng-model="giamPhanTramAll" ng-required="true">
+                        <div class="input-group-text">%</div>
+                    </div>
+                    <small class="text-danger"
+                           ng-show="(allForm.allPercent.$dirty || allForm.allPercent.$touched) && allForm.allPercent.$invalid">Phần
+                        trăm giảm phải là số nguyên từ 1 -100</small>
                 </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+                <div class="col-4">
+                    <button type="submit" class="btn btn-primary" ng-click="thietLapHangLoat()">Thiết lập hàng
+                        loạt
+                    </button>
+                </div>
+            </form>
+
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">Tên giày</th>
+                    <th scope="col">Giá bán</th>
+                    <th scope="col">% giảm</th>
+                    <th scope="col">Giá sau giảm</th>
+                    <th scope="col">Bật/Tắt</th>
+                    <th scope="col">Thao tác</th>
+                </tr>
+                </thead>
+                <tbody ng-repeat="giay in selectedGiayTableData | orderBy: '-id'">
+                <tr>
+                    <th colspan="5">
+                        <input type="checkbox" ng-model="giay.selected">
+                        <img src="{{giay.lstAnh[0]}}" alt="" style="height: 50px; object-fit: cover; width: 50px">
+                        {{giay.ten}}
+                    </th>
+                    <th scope="col">
+                        <button class="btn btn-success" ng-click="xoaDong(giay)">Xóa</button>
+                    </th>
+                </tr>
+                <tr ng-repeat="bienTheGiay in giay.lstBienTheGiay">
+                    <td style="text-align: center; height: 30px;">
+                        {{bienTheGiay.mauSac.ten}}, {{bienTheGiay.kichThuoc.ten}}
+                    </td>
+                    <td style="text-align: center; height: 30px;">
+                        {{bienTheGiay.giaBan| number : 0}}
+                    </td>
+                    <td style="text-align: center; height: 30px; width: 20%">
+                        <div class="input-group">
+                            <input type="number" step="1" min="1" max="100" class="form-control"
+                                   ng-model="bienTheGiay.phanTramGiam" ng-change="blurInput(bienTheGiay)"
+                                   aria-label="Recipient's username" aria-describedby="basic-addon2" >
+                            <span class="input-group-text" id="basic-addon2">%</span>
+                        </div>
+                        <small ng-show="bienTheGiay.errors" class="text-danger">{{bienTheGiay.errors}}</small>
+                    </td>
+                    <td
+                            ng-if="bienTheGiay.phanTramGiam !== null && bienTheGiay.phanTramGiam !== undefined"
+                            style="text-align: center; height: 30px;">
+                        {{(bienTheGiay.giaBan - (bienTheGiay.giaBan * bienTheGiay.phanTramGiam / 100))| number : 0}}
+                    </td>
+                    <td
+                            ng-if="bienTheGiay.phanTramGiam === null || bienTheGiay.phanTramGiam === undefined"
+                            style="text-align: center; height: 30px;">
+                        {{bienTheGiay.giaBan| number : 0}}
+                    </td>
+                    <td style="text-align: center; height: 30px;">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
+                                   ng-model="bienTheGiay.trangThai" ng-true-value="1" ng-false-value="0"
+                                   ng-init="bienTheGiay.trangThai = 1">
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>

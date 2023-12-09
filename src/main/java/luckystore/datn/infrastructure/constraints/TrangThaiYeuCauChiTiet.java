@@ -1,4 +1,4 @@
-package luckystore.datn.constraints;
+package luckystore.datn.infrastructure.constraints;
 
 public class TrangThaiYeuCauChiTiet {
 

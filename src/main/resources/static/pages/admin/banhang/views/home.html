@@ -739,7 +739,7 @@
 
                             <div class="form-group mb-3">
                                 <label for="khachHangEmail">Email: </label>
-                                <input type="text" class="form-control" id="khachHangEmail" name="email"
+                                <input type="email" class="form-control" id="khachHangEmail" name="email"
                                        ng-model="khachHang.email" ng-required="true"
                                        ng-change="change(khachHangForm.email)">
                                 <small class="error-message"
@@ -812,7 +812,7 @@
                     <div class="row g-2 mb-3">
                         <div class="form-group col-12">
                             <label for="emailNhan">Email <sup class="text-danger">(*)</sup>:</label>
-                            <input type="text" class="form-control" name="emailNhan" id="emailNhan"
+                            <input type="email" class="form-control" name="emailNhan" id="emailNhan"
                                    ng-model="diaChi.emailNhan" placeholder="Email người nhận"
                                    ng-required="true" ng-maxlength="100">
                             <small class="text-danger"
@@ -910,7 +910,7 @@
     <table class="invoice-items" style="width: 100%; table-layout: fixed">
         <thead>
         <tr>
-            <th style="width: 70%">Sản Phẩm</th>
+            <th style="width: 50%">Sản Phẩm</th>
             <th>Số Lượng</th>
             <th>Đơn Giá (Đã giảm)</th>
             <th>Thành Tiền</th>
@@ -920,8 +920,8 @@
         <tr ng-repeat="sanPham in sanPhams">
             <td>({{sanPham.bienTheGiay.kichThuoc.ten}} - {{sanPham.bienTheGiay.mauSac.ten}}) <strong>{{sanPham.bienTheGiay.giayResponse.ten}}</strong></td>
             <td>{{sanPham.soLuong}}</td>
-            <td>{{sanPham.donGia}}</td>
-            <td>{{sanPham.donGia * sanPham.soLuong}}</td>
+            <td>{{sanPham.donGia | number: 0}}</td>
+            <td>{{(sanPham.donGia * sanPham.soLuong) | number : 0}}</td>
         </tr>
         </tbody>
     </table>
