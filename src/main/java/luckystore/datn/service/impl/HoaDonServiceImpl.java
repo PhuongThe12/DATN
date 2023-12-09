@@ -460,7 +460,7 @@ public class HoaDonServiceImpl implements HoaDonService {
             if (!tonTai) {
                 hdct.setDonGia(hdct.getBienTheGiay().getGiaBan());
             }
-            tongTien = tongTien.add(hdct.getDonGia());
+            tongTien = tongTien.add(hdct.getDonGia().multiply(BigDecimal.valueOf(hdct.getSoLuong())));
         }
 
         BigDecimal tienThanhToan = BigDecimal.ZERO;
