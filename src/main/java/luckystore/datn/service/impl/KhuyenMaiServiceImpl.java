@@ -23,6 +23,7 @@ import luckystore.datn.util.JsonString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -209,6 +210,13 @@ public class KhuyenMaiServiceImpl implements KhuyenMaiService {
 
         return chiTietKhuyenMaiResponse;
     }
+
+    @Override
+    public Page<KhuyenMaiResponse> searchingKhuyenMai(KhuyenMaiSearch kmSearch) {
+        Pageable pageable = PageRequest.of(kmSearch.getCurrentPage() -1, kmSearch.getPageSize());
+        return khuyenMaiRepository.getSearchingKhuyenMai(kmSearch, pageable);
+    }
+
 
     private List<Long> getDaTonTai(KhuyenMaiSearch kmSearch) {
         return khuyenMaiRepository.getDaTonTaiKhuyenMai(kmSearch);

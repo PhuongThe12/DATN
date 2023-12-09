@@ -2,6 +2,7 @@ package luckystore.datn.rest;
 
 import jakarta.validation.Valid;
 import luckystore.datn.model.request.KhuyenMaiRequest;
+import luckystore.datn.model.request.KhuyenMaiSearch;
 import luckystore.datn.model.response.ChiTietKhuyenMaiResponse;
 import luckystore.datn.service.KhuyenMaiService;
 import luckystore.datn.util.JsonString;
@@ -60,6 +61,11 @@ public class RestKhuyenMaiController {
                                  @RequestParam(value = "search", required = false) String searchText,
                                  @RequestParam(value = "status", required = false) Integer status) {
         return new ResponseEntity(khuyenMaiService.getPage(page, searchText, status), HttpStatus.OK);
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<?> searchingKhuyenMai(@RequestBody KhuyenMaiSearch kmSearch) {
+        return ResponseEntity.ok(khuyenMaiService.searchingKhuyenMai(kmSearch));
     }
 
     @GetMapping("/{id}")

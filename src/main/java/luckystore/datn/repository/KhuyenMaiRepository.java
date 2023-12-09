@@ -43,6 +43,13 @@ public interface KhuyenMaiRepository extends JpaRepository<KhuyenMai, Long> {
 
     @Query("select new luckystore.datn.model.response.ChiTietKhuyenMaiResponse(km.id, km.ten, km.ngayBatDau, km.ngayKetThuc, km.trangThai, km.ghiChu) from KhuyenMai km where km.id = :id")
     ChiTietKhuyenMaiResponse getKhuyenMaiById(Long id);
+
+    @Query("select new luckystore.datn.model.response.KhuyenMaiResponse(km) from KhuyenMai km " +
+            "where (:#{#kmSearch.ten} is null or km.ten = :#{#kmSearch.ten}) " +
+            "and (:#{#kmSearch.ngayBatDau} is null or km.ngayBatDau <= :#{#kmSearch.ngayBatDau}) " +
+            "and (:#{#kmSearch.ngayKetThuc} is null or km.ngayKetThuc >= :#{#kmSearch.ngayKetThuc}) " +
+            "and km.trangThai = :#{#kmSearch.status} order by km.ngayBatDau desc")
+    Page<KhuyenMaiResponse> getSearchingKhuyenMai(KhuyenMaiSearch kmSearch, Pageable pageable);
 //
 //    Boolean existsByTen(String ten);
 //

@@ -9,7 +9,8 @@ import java.util.List;
 
 public interface KhuyenMaiChiTietRepository extends JpaRepository<KhuyenMaiChiTiet, Long> {
 
-    @Query("select new luckystore.datn.model.response.KhuyenMaiChiTietResponse(kmct.id, kmct.bienTheGiay.id, kmct.phanTramGiam) from KhuyenMaiChiTiet kmct " +
+    @Query("select new luckystore.datn.model.response.KhuyenMaiChiTietResponse(kmct.id, kmct.bienTheGiay.id, kmct.phanTramGiam) " +
+            "from KhuyenMaiChiTiet kmct " +
             "inner join kmct.khuyenMai km " +
             "where kmct.bienTheGiay.id in :idBienThes " +
             "and km.trangThai = 1 " +

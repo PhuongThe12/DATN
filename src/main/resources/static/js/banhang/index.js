@@ -63,7 +63,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
             toastr["error"]("Lấy thông tin địa chỉ thất bại");
         });
 
-    $scope.selecteHoaDon = function (id) { // chọn hóa đơn
+    $scope.selecteHoaDon = function (id, ...args) { // chọn hóa đơn
         if ($scope.selectedHoaDon && $scope.selectedHoaDon.id === id) {
             return;
         }
@@ -94,6 +94,10 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                     });
                     $scope.listGiaySelected.sort((a, b) => (a.id - b.id));
                     resetTien();
+                    if(args.length > 0) {
+                        $scope.tienMatTaiQuay = args[0];
+                        $scope.chuyenKhoanTaiQuay = args[1];
+                    }
                 } else {
                     toastr["error"]("Lỗi. Hóa đơn đã được xử lý");
                     const foundIndex = $scope.hoaDons.findIndex(hd => hd.id === id);
@@ -166,10 +170,13 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
         }
     }
 
-    $scope.getAllDotGiamGia = function () {
+    $scope.getAllDotGiamGia = function (...args) {
         $http.get(host + "/rest/admin/dot-giam-gia/get-all-active")
             .then(function (response) {
                 $scope.dotGiamGias = response.data;
+                if(args.length === 1) {
+                    changeSP();
+                }
             })
             .catch(function (error) {
                 toastr["error"]("Lấy thông tin đợt giảm giá thất bại");
@@ -219,6 +226,9 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
             if (max === 0) {
                 $scope.dotGiamGiaSelect = null;
             }
+            if ($scope.dotGiamGias) {
+                console.log($scope.dotGiamGiaSelect, max, $scope.dotGiamGias);
+            }
         }
         setTongTienPhaiTra();
         $scope.changePhuongThucTaiQuay();
@@ -237,7 +247,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
 
 
     $scope.selectKhachHang = function (khachHang) {
-        if (!$scope.selectedHoaDon.id) {
+        if (!$scope.selectedHoaDon || !$scope.selectedHoaDon.id) {
             toastr["error"]("Bạn chưa chọn hóa đơn");
             document.getElementById('closeModalKhachHang').click();
             return;
@@ -595,7 +605,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                 }).catch(function (error) {
                 toastr["error"]("Lấy dữ liệu thất bại");
                 console.log(error);
-                $location.path("/home");
+                $location.path("#/home");
             });
         } else {
             $scope.checkExits.soLuong++;
@@ -678,9 +688,22 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                             $scope.isLoading = false;
                         })
                         .catch(err => {
-                            if (err.status === 409) {
+                            if (err.status === 406) {
+                                if (err.data.dieuKienError) {
+                                    toastr["error"](err.data.dieuKienError);
+                                    $scope.getAllDotGiamGia(1);
+                                } else if(err.data.khuyenMaiError) {
+                                    toastr["error"](err.data.khuyenMaiError);
+                                    const  id = $scope.selectedHoaDon.id;
+                                    const tienKhachTra = $scope.tienMatTaiQuay;
+                                    const tienCK = $scope.chuyenKhoanTaiQuay;
+                                    $scope.selectedHoaDon = {};
+                                    $scope.selecteHoaDon(id, tienKhachTra, tienCK);
+                                }
+
+                            } else if (err.status === 409) {
                                 toastr["error"](err.data.data);
-                                $location.path("#home");
+                                $location.path("#/home");
                             } else {
                                 toastr["error"]("Có lỗi vui lòng thử lại");
                             }
@@ -715,9 +738,21 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                             })
                     })
                     .catch(err => {
-                        if (err.status === 409) {
+                        if (err.status === 406) {
+                            if (err.data.dieuKienError) {
+                                toastr["error"](err.data.dieuKienError);
+                                $scope.getAllDotGiamGia(1);
+                            }else if(err.data.khuyenMaiError) {
+                                toastr["error"](err.data.khuyenMaiError);
+                                const  id = $scope.selectedHoaDon.id;
+                                const tienKhachTra = $scope.tienMatTaiQuay;
+                                const tienCK = $scope.chuyenKhoanTaiQuay;
+                                $scope.selectedHoaDon = {};
+                                $scope.selecteHoaDon(id, tienKhachTra, tienCK);
+                            }
+                        } else if (err.status === 409) {
                             toastr["error"](err.data.data);
-                            $location.path("#home");
+                            $location.path("#/home");
                         } else {
                             console.log(err);
                             toastr["error"]("Có lỗi vui lòng thử lại");
@@ -778,7 +813,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                                 documentTitle: 'HD' + data.id,
                                 css: '/css/banhang/print.css',
                                 onPrintDialogClose: () => {
-                                    window.location.href = window.location.origin + window.location.pathname + "#home";
+                                    window.location.href = window.location.origin + window.location.pathname + "#/home";
                                 }
                             })
                         }, 0);
@@ -790,7 +825,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                     })
             } else {
                 if (level === 2) {
-                    window.location.href = window.location.origin + window.location.pathname + "#home";
+                    window.location.href = window.location.origin + window.location.pathname + "#/home";
                 }
             }
         });
@@ -799,9 +834,8 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
 
     function resetHoaDon() {
         $scope.listGiaySelected = [];
-        $scope.dotGiamGias = [];
 
-        $scope.selectedHoaDon = null;
+        $scope.selectedHoaDon = {};
         $scope.khachHangs = [];
         $scope.selectedKhachHang = {};
 

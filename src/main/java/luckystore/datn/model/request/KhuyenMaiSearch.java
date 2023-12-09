@@ -24,4 +24,12 @@ public class KhuyenMaiSearch {
     private LocalDateTime ngayBatDau = LocalDateTime.now();
 
     private LocalDateTime ngayKetThuc = LocalDateTime.now();
+
+    private String ten;
+
+    private int status = 1;
+
+    private int currentPage = 1;
+
+    private int pageSize = 5;
 }

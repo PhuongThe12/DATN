@@ -379,15 +379,12 @@ app.controller("khuyenMaiListController", function ($scope, $http, $window, $loc
         $scope.itemsPerPage = 5,
         $scope.maxSize = 5;
 
-    let searchText;
+    let hoaDonSearch = {};
+    $scope.searching = true;
 
     $scope.search = function () {
-        if (!$scope.searchText) {
-            toastr["error"]("Vui lòng nhập tên muốn tìm kiếm");
-            return;
-        }
-        searchText = $scope.searchText;
-        getData(1, searchText);
+        getData(1);
+        $scope.searching = true;
     };
 
     $scope.changeRadio = function (status) {
@@ -396,47 +393,64 @@ app.controller("khuyenMaiListController", function ($scope, $http, $window, $loc
     }
 
     function getData(currentPage) {
-        let apiUrl = host + '/rest/admin/khuyen-mai?page=' + currentPage;
-        if (searchText) {
-            apiUrl += '&search=' + searchText;
+        $scope.isLoading = true;
+        let apiUrl = host + '/rest/admin/khuyen-mai/search';
+
+        if ($scope.searchText > 0) {
+            hoaDonSearch.id = ($scope.searchText + "").trim();
+        } else {
+            hoaDonSearch.id = null;
         }
 
-        if ($scope.status == 0) {
-            apiUrl += '&status=' + 0;
-        } else if ($scope.status == 1) {
-            apiUrl += '&status=' + 1;
+        if ($scope.status === -1) {
+            hoaDonSearch.trangThai = -1;
+        } else if ($scope.status === 1) {
+            hoaDonSearch.trangThai = 1;
+        } else {
+            // toastr["error"]("Lấy dữ liệu thất bại. Vui lòng thử lại");
+            $scope.status = 1;
+            hoaDonSearch.trangThai = 1;
         }
 
-        $http.get(apiUrl)
+
+        hoaDonSearch.tuNgay = $scope.tu;
+
+        hoaDonSearch.denNgay = $scope.den;
+
+        hoaDonSearch.currentPage = currentPage;
+        hoaDonSearch.pageSize = $scope.itemsPerPage;
+
+        $http.post(apiUrl, hoaDonSearch)
             .then(function (response) {
-                $scope.khuyenMais = response.data.content;
-                console.log("List khuyến mại: ", $scope.khuyenMais)
+                $scope.hoaDons = response.data.content;
                 $scope.numOfPages = response.data.totalPages;
+                $scope.isLoading = false;
             })
             .catch(function (error) {
+                console.log(error);
                 toastr["error"]("Lấy dữ liệu thất bại");
-                // window.location.href = feHost + '/trang-chu';
+                $scope.isLoading = false;
             });
     }
 
-    $scope.detailKhuyenMai = function (val) {
-        var id = val;
-        $http.get(host + '/rest/admin/khuyen-mai/' + id)
-            .then(function (response) {
-                $scope.khuyenMaiDetail = response.data;
-                const button = document.querySelector('[data-bs-target="#showKhuyenMai"]');
-                if (button) {
-                    button.click();
-                }
-            })
-            .catch(function (error) {
-                toastr["error"]("Lấy dữ liệu thất bại");
-            });
+    $scope.resetSearch = function () {
+        if ($scope.searching) {
+            $scope.searchText = '';
+            $scope.tu = null;
+            $scope.den = null;
+            getData(1);
+            $scope.searching = false;
+        } else {
+            toastr["warning"]("Bạn đang không tìm kiếm");
+        }
     }
+
+    $scope.resetSearch();
 
     $scope.$watch('curPage + numPerPage', function () {
         getData($scope.curPage);
     });
+
 
 });
 
