@@ -24,7 +24,19 @@
                         </div>
                         <div class="d-flex align-items-center justify-content-between">
                             <p class="font-size-14-ncl text-secondary">Kích cỡ : {{bienTheGiay.kichThuoc.ten}} / Màu Sắc : {{bienTheGiay.mauSac.ten}}</p>
-                            <p class="font-size-16-ncl fw-bold text-dark">{{bienTheGiay.giaBan | number}} ₫</p>
+                            <p class="font-size-16-ncl fw-bold text-dark"><span ng-show="bienTheGiay.khuyenMai">
+                                            <del>{{bienTheGiay.giaBan  | number:0 }}</del>
+                                        <span class="position-relative">
+                                            {{(bienTheGiay.giaBan - (bienTheGiay.giaBan * bienTheGiay.khuyenMai / 100))| number:0 }}
+                                        <span class="position-absolute top-0 start-100 translate-middle badge bg-danger"
+                                              style="transform: translate(0,-50%)!important; padding: 5px;">
+                                            -{{bienTheGiay.khuyenMai}}%
+                                        </span>
+                                        </span>
+                                        </span>
+                                <span ng-show="!bienTheGiay.khuyenMai">
+                                            {{ bienTheGiay.giaBan | number:0}}
+                                        </span></p>
                         </div>
                         <div class=" d-flex  mb-3">
                             <button class="btn btn-light"  ng-click="subtraction(bienTheGiay)"><i class="fas fa-minus"></i></button>
@@ -44,15 +56,15 @@
                 <h4 class="fw-bold text-dark mb-3">Thông Tin Đơn Hàng</h4>
                 <div class="d-flex justify-content-between">
                     <p class=" text-dark">Tổng tiền : </p>
-                    <p class=" text-dark">{{tongTien | number}}</p>
+                    <p class=" text-dark">{{tongTien | number}}đ</p>
                 </div>
                 <div class="d-flex justify-content-between border-bottom-1">
                     <p class=" text-dark">Khuyến Mại : </p>
-                    <p class=" text-dark"> 0đ</p>
+                    <p class=" text-dark"> {{tongKhuyenMai | number}}đ</p>
                 </div>
                 <div class="d-flex justify-content-between pt-3">
                     <p class="fw-bold text-dark">Tổng thanh toán : </p>
-                    <p class="fw-bold text-dark">{{tongTien | number}} đ</p>
+                    <p class="fw-bold text-dark">{{tongThanhToan | number}} đ</p>
                 </div>
                 <div class="row">
                     <button class="btn btn-dark py-2" ng-click="thanhToanLocation()">Tiến Hành Thanh Toán</button>
@@ -91,6 +103,7 @@
                           </div>
                       </div>
                   </div>
+                  <button class="btn btn-dark" ng-click="deleteSoldOut()">Xóa hết</button>
               </div>
                 <div ng-show="productsLessQuantity.length > 0">
                     <h5>Sản phẩm vượt quá số lượng</h5>
@@ -107,6 +120,11 @@
                             <div class="d-flex align-items-center justify-content-between">
                                 <p class="font-size-14-ncl text-secondary">Kích cỡ : {{bienTheGiay.kichThuoc.ten}} / Màu Sắc : {{bienTheGiay.mauSac.ten}}</p>
                                 <p class="font-size-16-ncl fw-bold text-dark">{{bienTheGiay.giaBan | number}} ₫</p>
+                            </div>
+                            <div>
+                                <p class="font-size-14-ncl text-secondary">Số lượng còn trong kho : {{bienTheGiay.soLuong}}</p>
+                                <p class="font-size-14-ncl text-secondary">Số lượng mua: {{bienTheGiay.soLuongMua}}</p>
+
                             </div>
                         </div>
                     </div>
