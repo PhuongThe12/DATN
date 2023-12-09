@@ -437,8 +437,8 @@ public class HoaDonServiceImpl implements HoaDonService {
         }
         if (request.getPhuongThuc() == 1) {
             hoaDon.setTrangThai(TrangThaiHoaDon.DA_THANH_TOAN);
-            tangHang(hoaDon.getKhachHang(), request.getTienMat());
             setUuDai(hoaDon);
+            tangHang(hoaDon.getKhachHang(), request.getTienMat());
         }
 
         hoaDon.setKenhBan(1);
@@ -471,9 +471,11 @@ public class HoaDonServiceImpl implements HoaDonService {
             tienThanhToan = tienThanhToan.add(request.getTienChuyenKhoan());
         }
 
+        System.out.println(tienThanhToan.toBigInteger() + ", tổng tiền: " + tongTien.subtract(hoaDon.getTienGiam()).toBigInteger());
         if (tienThanhToan.toBigInteger().compareTo(tongTien.subtract(hoaDon.getTienGiam()).toBigInteger()) != 0) {
             throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("khuyenMaiError", "Một số khuyến mại đã thay đổi vui lòng thử lại")));
         }
+
 
         hoaDonRepository.save(hoaDon);
 
@@ -511,8 +513,8 @@ public class HoaDonServiceImpl implements HoaDonService {
         chiTietThanhToans.add(chiTietThanhToan);
 
         tongTien = tongTien.add(chiTietThanhToan.getTienThanhToan());
-        tangHang(hoaDon.getKhachHang(), tongTien);
         setUuDai(hoaDon);
+        tangHang(hoaDon.getKhachHang(), tongTien);
 
         hoaDon.setTrangThai(TrangThaiHoaDon.DA_THANH_TOAN);
         hoaDon.setChiTietThanhToans(chiTietThanhToans);
@@ -589,13 +591,35 @@ public class HoaDonServiceImpl implements HoaDonService {
         hoaDon.setGhiChu(request.getGhiChu());
         List<Long> idsBienThe = hoaDon.getListHoaDonChiTiet().stream().map(hdct -> hdct.getBienTheGiay().getId()).toList();
         List<BienTheGiayResponse> bienTheGiayResponses = bienTheGiayRepository.bienTheGiay(idsBienThe);
-        for (BienTheGiayResponse btR : bienTheGiayResponses) {
-            for (HoaDonChiTiet hdct : hoaDon.getListHoaDonChiTiet()) {
+        BigDecimal tongTien = BigDecimal.ZERO;
+
+        for (HoaDonChiTiet hdct : hoaDon.getListHoaDonChiTiet()) {
+            boolean tonTai = false;
+            for (BienTheGiayResponse btR : bienTheGiayResponses) {
                 if (Objects.equals(btR.getId(), hdct.getBienTheGiay().getId())) {
                     hdct.setDonGia(btR.getGiaBan().subtract(btR.getGiaBan().multiply(BigDecimal.valueOf(btR.getKhuyenMai() == null ? 0 : btR.getKhuyenMai()).divide(BigDecimal.valueOf(100)))));
+                    tonTai = true;
                 }
             }
+            if (!tonTai) {
+                hdct.setDonGia(hdct.getBienTheGiay().getGiaBan());
+            }
+            tongTien = tongTien.add(hdct.getDonGia().multiply(BigDecimal.valueOf(hdct.getSoLuong())));
         }
+
+        BigDecimal tienThanhToan = BigDecimal.ZERO;
+        if (request.getTongTien() != null) {
+            tienThanhToan = tienThanhToan.add(request.getTongTien());
+        }
+
+        if ((tienThanhToan.subtract(hoaDon.getPhiShip())).toBigInteger().compareTo(tongTien.subtract(hoaDon.getTienGiam()).toBigInteger()) != 0) {
+            throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("khuyenMaiError", "Một số khuyến mại đã thay đổi vui lòng thử lại")));
+        }
+
+        System.out.println("tiền thanh toán: " + tienThanhToan + ": tiền ship: " + hoaDon.getPhiShip());
+        System.out.println("Tổng tiền: " + tongTien + ": khuyens mại: " + hoaDon.getTienGiam());
+        System.out.println("phai tra: " + (tienThanhToan.subtract(hoaDon.getPhiShip())).toBigInteger() + ": sau : " + tongTien.subtract(hoaDon.getTienGiam()).toBigInteger() + ", soSanh: " + (tienThanhToan.subtract(hoaDon.getPhiShip())).toBigInteger().compareTo(tongTien.subtract(hoaDon.getTienGiam()).toBigInteger()));
+
         hoaDonRepository.save(hoaDon);
         return hoaDon.getId();
     }
@@ -733,6 +757,13 @@ public class HoaDonServiceImpl implements HoaDonService {
             setNhanVienToHoaDon(hd);
             if (hd.getTrangThai() == TrangThaiHoaDon.DANG_GIAO_HANG) {
                 hd.setTrangThai(TrangThaiHoaDon.DA_THANH_TOAN);
+
+                setUuDai(hd);
+                BigDecimal tongTien = BigDecimal.ZERO;
+                hd.getChiTietThanhToans().forEach(cttt -> {
+                    tongTien.add(cttt.getTienThanhToan());
+                });
+                tangHang(hd.getKhachHang(), tongTien);
                 count.getAndIncrement();
             }
         });
@@ -865,6 +896,8 @@ public class HoaDonServiceImpl implements HoaDonService {
                 .filter(hdct -> hdct.getTrangThai() == 1)
                 .map(hdct -> BigDecimal.valueOf(hdct.getSoLuong()).multiply(hdct.getDonGia()))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        tangHang(hoaDon.getKhachHang(), tienConLai);
 
         Set<ChiTietThanhToan> chiTietThanhToans = hoaDon.getChiTietThanhToans();
         if (chiTietThanhToans == null) {
