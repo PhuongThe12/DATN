@@ -114,6 +114,12 @@ public class BienTheGiayResponse extends BaseBienTheResponse {
         return Objects.equals(id, that.id);
     }
 
+    public BienTheGiayResponse(Long id, Integer soLuong, BigDecimal giaBan) {
+        this.id = id;
+        this.soLuong = soLuong;
+        this.giaBan = giaBan;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(id);

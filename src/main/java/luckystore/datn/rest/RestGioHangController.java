@@ -43,6 +43,11 @@ public class RestGioHangController {
         return ResponseEntity.ok(gioHangService.getSoLuong(id, idGioHang));
     }
 
+    @GetMapping("/{idGioHang}/tong-tien")
+    public ResponseEntity<?> getTongTienById(@PathVariable("idGioHang") Long idGioHang){
+        return ResponseEntity.ok(gioHangService.getTongTienByIdGioHang(idGioHang));
+    }
+
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteGioHangChiTiet(@RequestBody GioHangChiTietRequest gioHangChiTietRequest) {
         try {
