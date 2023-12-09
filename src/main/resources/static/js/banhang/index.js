@@ -226,9 +226,6 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
             if (max === 0) {
                 $scope.dotGiamGiaSelect = null;
             }
-            if ($scope.dotGiamGias) {
-                console.log($scope.dotGiamGiaSelect, max, $scope.dotGiamGias);
-            }
         }
         setTongTienPhaiTra();
         $scope.changePhuongThucTaiQuay();
@@ -820,7 +817,6 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
 
                     })
                     .catch((error) => {
-                        console.log(error);
                         toastr["error"]("Không tìm thấy hóa đơn vui lòng thử lại");
                     })
             } else {
@@ -1055,7 +1051,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
         }
 
         changeSP();
-        if (document.getElementById('modalSP')) {
+        if (document.getElementById('closeModalSanPham')) {
             setTimeout(() => {
                 document.getElementById('closeModalSanPham').click();
             }, 0);
@@ -1353,7 +1349,6 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
         if ($scope.khachHangForm.$invalid) {
             return;
         }
-        console.log($scope.khachHang);
         $http.post(host + '/rest/admin/khach-hang', $scope.khachHang)
             .then(function (response) {
                 if (response.status === 200) {
@@ -1394,12 +1389,10 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                             if (code) {
                                 // Thực hiện các hành động với mã QR tại đây
                                 if (typeof code.data === 'string') {
-                                    console.log(code.data.split('|'));
                                     const data = code.data.split('|');
                                     if (data.length === 7) {
                                         $scope.khachHang.hoTen = data[2];
                                         $scope.khachHang.gioiTinh = data[4] === 'Nam';
-                                        console.log($scope.khachHang.gioiTinh);
                                     } else {
                                         toastr["error"]('Không hợp lệ. Vui lòng thử lại');
                                     }

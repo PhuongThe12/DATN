@@ -457,13 +457,21 @@ public class HoaDonServiceImpl implements HoaDonService {
                     tonTai = true;
                 }
             }
-            if(!tonTai) {
+            if (!tonTai) {
                 hdct.setDonGia(hdct.getBienTheGiay().getGiaBan());
             }
             tongTien = tongTien.add(hdct.getDonGia());
         }
 
-        if(request.getTienMat().compareTo(tongTien) != 0) {
+        BigDecimal tienThanhToan = BigDecimal.ZERO;
+        if (request.getTienMat() != null) {
+            tienThanhToan = tienThanhToan.add(request.getTienMat());
+        }
+        if (request.getTienChuyenKhoan() != null) {
+            tienThanhToan = tienThanhToan.add(request.getTienChuyenKhoan());
+        }
+
+        if (tienThanhToan.toBigInteger().compareTo(tongTien.subtract(hoaDon.getTienGiam()).toBigInteger()) != 0) {
             throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("khuyenMaiError", "Một số khuyến mại đã thay đổi vui lòng thử lại")));
         }
 
