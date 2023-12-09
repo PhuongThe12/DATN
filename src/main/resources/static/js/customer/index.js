@@ -885,7 +885,48 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
         }
 
     }
+// cường làm thêm yêu thích vào đây
+    $scope.sanPhamYeuThich = function (){
+        console.log("vào trong rùi")
+        // Dữ liệu bạn muốn gửi đến API
+        var requestData = {
+            "khachHangId": 5,
+            "giayId": $scope.giayDetail.id
+        };
+        // Địa chỉ URL của API
+        var apiUrl = 'http://localhost:8080/rest/khach-hang/san-pham-yeu-thich';
 
+        // Thiết lập các tùy chọn cho cuộc gọi Fetch
+        var requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json', // Kiểu dữ liệu bạn đang gửi đi
+                // Các header khác nếu cần
+            },
+            body: JSON.stringify(requestData), // Chuyển đổi đối tượng thành chuỗi JSON
+        };
+        // Thực hiện cuộc gọi Fetch
+        fetch(apiUrl, requestOptions)
+            .then(function(response) {
+                // Kiểm tra trạng thái của phản hồi từ API
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json(); // Chuyển đổi dữ liệu JSON từ phản hồi
+            })
+            .then(function successCallback(response) {
+                // Xử lý dữ liệu từ phản hồi thành công
+                console.log('Đã thêm thành công danh sách yêu thích', response);
+                console.log(response);
+            })
+            .catch(function(error) {
+                // Xử lý lỗi nếu có
+                console.error('Error:', error);
+            });
+
+    }
+
+//
 
 })
 
@@ -1657,7 +1698,6 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
             targetElement.style.height = cartHeight + 'px';
             targetElement.style.overflow = 'visible';
             iconDropDown.classList.add("rotate-icon");
-
 
         }
 

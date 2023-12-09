@@ -138,7 +138,7 @@ public class GiayResponse {
         this.ten = ten;
     }
 
-    public GiayResponse(Long id, String ten, String tenThuongHieu, Long idBienThe, String tenMau, String tenKichThuoc, BigDecimal giaBan) {
+    public GiayResponse(Long id, String ten, String tenThuongHieu, String linkAnh, Long idBienThe, String tenMau, String tenKichThuoc, BigDecimal giaBan) {
         this.id = id;
         this.ten = ten;
         this.thuongHieu = ThuongHieuResponse.builder().ten(tenThuongHieu).build();
@@ -148,6 +148,7 @@ public class GiayResponse {
         bienTheGiayResponse.setMauSac(MauSacResponse.builder().ten(tenMau).build());
         bienTheGiayResponse.setGiaBan(giaBan);
         this.getLstBienTheGiay().add(bienTheGiayResponse);
+        lstAnh.add(ImageHubServiceImpl.getBase64FromFileStatic(linkAnh));
     }
 
 }

@@ -1,209 +1,69 @@
-<style>
-  #buttons-container {
-    display: flex;
-  }
 
-  .insideDiv {
-    padding: 10px;
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
-    margin: 4px;
-    border-radius: 7px;
-  }
-
-  .button_checked {
-    transition: 0.3s all;
-    border: 1px solid rgb(0, 0, 0) !important;
-    border-radius: 7px;
-  }
-
-  #image-container img {
-    margin-bottom: 10px;
-  }
-
-  .text-limit {
-    max-height: 0px;
-    overflow: hidden;
-    transition: 0.3s ease-in-out;
-  }
-
-  .toggle-button {
-    background: transparent;
-    border: none;
-    color: blue;
-  }
-
-  .labelTabDelete {
-    cursor: pointer;
-  }
-
-  .labelTabDelete:hover {
-    color: red;
-  }
-
-  .nav-tabs .nav-link.active {
-    color: #495057;
-    font-weight: bolder;
-    background-color: #fff;
-    border-color: #1d1e1e #dee2e6 #fff;
-    border-top: 1.5px solid #1d1e1e;
-  }
-  .item{
-    margin-top:13px;
-    border-bottom: 1px solid #dbdbdb;
-  }
-  .item div{
-    justify-content: space-between;
-    position: relative;
-    align-items: center;
-  }
-
-  .item h5 {
-    font-weight: bold;
-  }
-
-  .item p {
-    color: black;
-    font-size: 14px;
-  }
-  .btn-size{
-    padding: 10px 20px;
-  }
-  .show-text p{
-    max-height: 100px !important;
-    transition: 0.3s ease-in-out;
-  }
-  .show-text i{
-    transition: 0.3s ease-in-out;
-    transform: rotate(180deg);
-  }
-  .i-button{
-    position: absolute;
-    opacity: 0;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    padding: 10px;
-    cursor: pointer;
-  }
-
-</style>
-
-<div class="container">
-  <div class="row">
-    <div id="" class=" col-md-5">
-      <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner" id="image-container">
-        </div>
-        <button class="carousel-control-prev" type="button"
-                data-bs-target="#carouselExampleControls"
-                data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button"
-                data-bs-target="#carouselExampleControls"
-                data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
+<div class="card" style="margin: 20px">
+  <h5 class="card-header">Danh sách sản phẩm yêu thích</h5>
+  <div class="card-body">
+    <div class="d-flex add-search-custom">
+      <div class="input-group w-25">
+        <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
+        <input id="seachText" class="form-control" type="text" ng-model="searchText"
+               placeholder="Nhập từ khóa">
+        <button class="btn btn-custom " ng-click="search()">Tìm kiếm</button>
       </div>
-
+<!--      <a class="btn btn-primary" href="#/add">Back</a>-->
     </div>
-    <div class="col-md-7">
-      <div class="side-left">
-        <div class="title">
-          <h5 class="py-3 fw-bold border-bottom-1">{{giayDetail.ten}} </h5>
-          <h5 class="py-2 text-danger fw-bold">
-                        <span id="price-product" class="py-3">
-
-                                <span ng-show="!giayDetail.giaBan">
-                                    {{ '₫' + (giaySeletect.giaThapNhat | number) + (giaySeletect.giaThapNhat !== giaySeletect.giaLonNhat ? '
-                                            - ₫' + (giaySeletect.giaLonNhat | number) : '') }}
-                                </span>
-                                        <span ng-show="giayDetail.khuyenMai">
-                                            <del>{{giayDetail.giaBan  | number:0 }}</del>
-                                        <span class="position-relative">
-                                            {{(giayDetail.giaBan - (giayDetail.giaBan * giayDetail.khuyenMai / 100))| number:0 }}
-                                        <span class="position-absolute top-0 start-100 translate-middle badge bg-danger"
-                                              style="transform: translate(0,-50%)!important; padding: 5px;">
-                                            -{{giayDetail.khuyenMai}}%
-                                        </span>
-                                        </span>
-                                        </span>
-                                        <span ng-show="!giayDetail.khuyenMai">
-                                            {{ giayDetail.giaBan | number:0}}
-                                        </span>
-                                    </span>
-          </h5>
-          <h5 class="font-size-16-ncl fw-bold">Số lượng: <span id="quantity">{{giayDetail.soLuong}}</span>
-          </h5>
-        </div>
-        <h5 class="font-size-16-ncl fw-bold py-3">Màu Sắc</h5>
-        <div id="buttons-container"></div>
-        <div id="product-info"></div>
-        <div class="size-selector">
-          <h5 class="font-size-16-ncl fw-bold py-3">Kích Thước</h5>
-          <div id="sizeButtons"></div>
-        </div>
-        <div class="mt-3 d-flex" style="width: 263px;">
-          <button class="btn btn-light"><i class="fas fa-minus"></i></button>
-          <input type="number" class="form-control" value="1">
-          <button class="btn btn-light"><i class="fas fa-plus"></i></button>
-        </div>
-
+    <div class="d-flex justify-content-start radio-filter">
+      <div class="custom-radio">
+        <input type="radio" id="all" name="status" ng-model="status" value="-1" ng-checked="status != 0 && status != 1"
+               ng-change="changeRadio(-1)">
+        <label class="radio-label" for="all">Tất cả</label>
       </div>
-      <button class="btn btn-custom mt-3" style="    width: 263px;
-    padding: 13px 0px;" ng-click="themVaoGioHang()">Thêm Vào Giỏ Hàng
-      </button>
-      <br>
-      <button class="btn btn-outline-dark mt-3" style="    width: 263px;
-    padding: 13px 0px;" ng-click="themVaoGioHang()"><i class="far fa-heart" style=""></i> Yêu Thích
-      </button>
     </div>
-  </div>
-  <div class="moTa pt-3">
-    <h5 class="font-size-16-ncl">Mô tả sản phẩm</h5>
-    <div class="info"></div>
-  </div>
 
-  <div class="py-5">
-    <h5 style="text-align: center; font-weight: bold">Có thể bạn sẽ thích</h5>
-  </div>
-  <div class="row">
-    <div class="col-md-2" ng-repeat="giay in giays">
-      <a href="#/detail/{{giay.id}}" class="text-none">
-        <div class=" position-relative">
-          <div class="mb-2">
-            <img src="https://product.hstatic.net/1000361048/product/dz0482_001_a_d718733fb6d344febec840aee172ca23_master.jpg"
-                 width="100%" alt="">
-          </div>
-          <div class="product-name">
-            <h5 class="font-size-14-ncl" title="{{giay.ten}}">{{giay.ten}}</h5>
-          </div>
-          <div class="product-price">
-            <div class="d-flex align-items-center">
-              <p class="font-size-14-ncl text-danger m-0">
-                {{ '₫' + (giay.giaThapNhat | number) + (giay.giaThapNhat !== giay.giaLonNhat ? '
-                - ₫' + (giay.giaLonNhat | number) : '') }}
-              </p>
+    <div>
+      <table class="table" border="1">
+        <tr>
+          <th>ID</th>
+          <th>id khách hàng</th>
+          <th>Tên khách hàng</th>
+          <th>Id Giay</th>
+          <th>Tên giày</th>
+          <th>Số lượng</th>
+          <th>Giá bán</th>
+          <th>Hình ảnh</th>
+          <th></th>
+        </tr>
 
+        <tr ng-repeat="sanPhamYeuThich in sanPhamYeuThichs">
+          <td>{{sanPhamYeuThich.id}}</td>
+          <td>{{sanPhamYeuThich.khachHangResponse.id}}</td>
+          <td>{{sanPhamYeuThich.khachHangResponse.hoTen}}</td>
+          <td>{{sanPhamYeuThich.giayResponse.id}}</td>
+          <td>{{sanPhamYeuThich.giayResponse.ten}}</td>
+          <td>{{sanPhamYeuThich.soLuong}}</td>
+          <td>{{sanPhamYeuThich.giaBan}}</td>
+          <td>
+            <img width="60%" class="rounded-3"
+                 style="height: 85px; width: 85px; object-fit: contain"
+                 ng-src="{{giay.lstAnh && giay.lstAnh.length > 0 ? giay.lstAnh[0] : 'https://product.hstatic.net/1000361048/product/giay_co_lung_forum_trang_fy4976_02_standard_hover_1af12c21fb0a498eb38c9d41c04e4514_grande.jpg'}}"
+                 alt="Ảnh giày">
+          </td>
+
+          <td>
+            <div class="d-sm-inline-flex">
+              <a class="btn btn-custom" ng-click="deleteSanPhamYeuThich(sanPhamYeuThich.id)"><i class="fas fa-trash-alt"></i></a>
             </div>
-          </div>
-          <div class="product-variant">
-            <p class="font-size-14-ncl">{{giay.lstMauSac.length }} Màu </p>
-          </div>
-          <div class="position-absolute top-0 right-0">
-            <p class="font-size-14-ncl fw-bold"><span style="    padding: 10px;font-size: 13px;color: red;"
-                                                      class="">-36%</span></p>
-          </div>
-          <div class="position-absolute " style="color: black;right: 8px;top: 3px;">
-            <i class="far fa-heart" style="font-size: 20px;"></i>
-          </div>
-        </div>
-      </a>
+          </td>
+        </tr>
+      </table>
+
+      <!---->
+      <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages" data-current-page="curPage"
+           data-max-size="maxSize"
+           data-boundary-links="true">
+      </div>
+
+
     </div>
+
   </div>
 </div>

@@ -1,6 +1,6 @@
 package luckystore.datn.service.impl;
 
-import luckystore.datn.constraints.ErrorMessage;
+import luckystore.datn.infrastructure.constraints.ErrorMessage;
 import luckystore.datn.entity.DiaChiNhanHang;
 import luckystore.datn.entity.KhachHang;
 import luckystore.datn.exception.NotFoundException;
@@ -83,8 +83,8 @@ public class DiaChiNhanHangServiceImpl implements DiaChiNhanHangService {
 
         // Cập nhật đối tượng cần
         diaChiNhanHangToUpdate = getDiaChiNhanHang(diaChiNhanHangToUpdate, diaChiNhanHangRequest);
-
         // Lưu lại đối tượng cần
+        diaChiNhanHangToUpdate.setIdKhachHang(khachHangRepo.findIdKH(new KhachHang()));
         diaChiNhanHangRepo.save(diaChiNhanHangToUpdate);
 
         return new DiaChiNhanHangResponse(diaChiNhanHangToUpdate);

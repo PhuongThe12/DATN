@@ -24,6 +24,7 @@ import luckystore.datn.model.request.BienTheGiayRequest;
 import luckystore.datn.model.request.GiayExcelRequest;
 import luckystore.datn.model.request.GiayRequest;
 import luckystore.datn.model.request.GiaySearch;
+import luckystore.datn.model.request.KhuyenMaiSearch;
 import luckystore.datn.model.response.BienTheGiayResponse;
 import luckystore.datn.model.response.ChatLieuResponse;
 import luckystore.datn.model.response.CoGiayResponse;
@@ -69,7 +70,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -424,7 +424,7 @@ public class GiayServiceImpl implements GiayService {
     @Override
     public Page<GiayResponse> findAllBySearch(GiaySearch giaySearch) {
         Pageable pageable = PageRequest.of(giaySearch.getCurrentPage() - 1, giaySearch.getPageSize());
-        return giayRepository.findAllBySearch(giaySearch,pageable);
+        return giayRepository.findAllBySearch(giaySearch, pageable);
     }
 
     @Transactional
@@ -999,8 +999,20 @@ public class GiayServiceImpl implements GiayService {
     }
 
     @Override
-    public List<GiayResponse> getAllGiayWithoutDiscount(GiaySearch giaySearch) {
-        return giayRepository.getAllGiayWithoutDiscount(giaySearch);
+    public List<GiayResponse> getAllGiayWithoutDiscount(KhuyenMaiSearch kmSearch) {
+        List<GiayResponse> giayResponses = giayRepository.getAllGiayWithoutDiscount(kmSearch);
+        Map<Long, GiayResponse> giayResponsesMap = new HashMap<>();
+        giayResponses.forEach(giayResponse -> {
+            if (giayResponsesMap.containsKey(giayResponse.getId())) {
+                if (giayResponse.getLstBienTheGiay().size() == 1) {
+                    giayResponsesMap.get(giayResponse.getId()).getLstBienTheGiay().add(giayResponse.getLstBienTheGiay().get(0));
+                }
+            } else {
+                giayResponsesMap.put(giayResponse.getId(), giayResponse);
+            }
+        });
+
+        return new ArrayList<>(giayResponsesMap.values());
     }
 
     @Override
@@ -1010,8 +1022,8 @@ public class GiayServiceImpl implements GiayService {
             throw new NotFoundException("Không tìm thấy giày này");
         }
 
-        for(int i = 0; i < giayResponse.getLstBienTheGiay().size(); i ++) {
-            if(giayResponse.getLstBienTheGiay().get(i).getTrangThai() != 1) {
+        for (int i = 0; i < giayResponse.getLstBienTheGiay().size(); i++) {
+            if (giayResponse.getLstBienTheGiay().get(i).getTrangThai() != 1) {
                 giayResponse.getLstBienTheGiay().remove(i);
             }
         }

@@ -32,4 +32,12 @@ public class KhuyenMaiChiTietResponse {
         this.phanTramGiam = phanTramGiam;
     }
 
+    public KhuyenMaiChiTietResponse(Long id, Long idBienThe, Integer phanTramGiam, Long idGiay) {
+        this.id = id;
+        GiayResponse giayResponse = new GiayResponse();
+        giayResponse.setId(idGiay);
+        this.bienTheGiayResponsel = BienTheGiayResponse.builder().id(idBienThe).giayResponse(giayResponse).build();
+        this.phanTramGiam = phanTramGiam;
+    }
+
 }

@@ -11,14 +11,12 @@ import lombok.RequiredArgsConstructor;
 import luckystore.datn.entity.KhachHang;
 import luckystore.datn.entity.NhanVien;
 import luckystore.datn.entity.TaiKhoan;
-import luckystore.datn.infrastructure.Role;
 import luckystore.datn.infrastructure.security.session.UserDetailToken;
 import luckystore.datn.repository.KhachHangRepository;
 import luckystore.datn.repository.NhanVienRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.net.http.HttpRequest;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;

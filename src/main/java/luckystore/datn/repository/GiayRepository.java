@@ -2,6 +2,7 @@ package luckystore.datn.repository;
 
 import luckystore.datn.entity.Giay;
 import luckystore.datn.model.request.GiaySearch;
+import luckystore.datn.model.request.KhuyenMaiSearch;
 import luckystore.datn.model.response.GiayResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -113,14 +114,23 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
 
     Optional<Giay> findByTen(String ten);
 
-    @Query("select new luckystore.datn.model.response.GiayResponse(g.id, g.ten, g.thuongHieu.ten, bienThe.id, bienThe.mauSac.ten, bienThe.kichThuoc.ten, bienThe.giaBan) " +
-            " from Giay g inner join g.lstBienTheGiay bienThe" +
-            " where (:#{#giaySearch.thuongHieuIds} is null or g.thuongHieu.id in :#{#giaySearch.thuongHieuIds}) " +
+    @Query("select new luckystore.datn.model.response.GiayResponse(g.id, g.ten, g.thuongHieu.ten, anh.link, bienThe.id, bienThe.mauSac.ten, bienThe.kichThuoc.ten, bienThe.giaBan) " +
+            " from Giay g left join g.lstBienTheGiay bienThe " +
+            " left join g.lstAnh anh " +
+            " where (anh is null or anh.uuTien = 1)" +
             " and g.id not in (" +
-            " select bt.giay.id from BienTheGiay bt " +
-            " inner join bt.khuyenMaiChiTietList kmct " +
-            " inner join kmct.khuyenMai km " +
-            " where km.ngayBatDau < current_date and km.ngayKetThuc > current_date " +
-            ")")
-    List<GiayResponse> getAllGiayWithoutDiscount(GiaySearch giaySearch);
+            " select bt.giay.id from KhuyenMai km " +
+            " inner join km.khuyenMaiChiTiets kmct " +
+            " inner join kmct.bienTheGiay bt " +
+            " where (:#{#kmSearch.ngayBatDau} between km.ngayBatDau and km.ngayKetThuc " +
+            " or :#{#kmSearch.ngayKetThuc} between km.ngayBatDau and km.ngayKetThuc " +
+            " or (:#{#kmSearch.ngayBatDau} <= km.ngayBatDau and :#{#kmSearch.ngayKetThuc} >= km.ngayKetThuc)))")
+    List<GiayResponse> getAllGiayWithoutDiscount(KhuyenMaiSearch kmSearch);
+
+    @Query("select new luckystore.datn.model.response.GiayResponse(g.id, g.ten, g.thuongHieu.ten, anh.link, bienThe.id, bienThe.mauSac.ten, bienThe.kichThuoc.ten, bienThe.giaBan) " +
+            " from Giay g left join g.lstBienTheGiay bienThe " +
+            " left join g.lstAnh anh " +
+            " where (anh is null or anh.uuTien = 1)" +
+            " and g.id in :idGiays")
+    List<GiayResponse> getAllGiayById(Set<Long> idGiays);
 }

@@ -3,6 +3,7 @@ package luckystore.datn.service;
 import luckystore.datn.model.request.GiayExcelRequest;
 import luckystore.datn.model.request.GiayRequest;
 import luckystore.datn.model.request.GiaySearch;
+import luckystore.datn.model.request.KhuyenMaiSearch;
 import luckystore.datn.model.response.BienTheGiayResponse;
 import luckystore.datn.model.response.GiayResponse;
 import org.springframework.data.domain.Page;
@@ -45,5 +46,5 @@ public interface GiayService {
 
     Page<GiayResponse> findSimpleBySearch(GiaySearch giaySearch);
 
-    List<GiayResponse> getAllGiayWithoutDiscount(GiaySearch giaySearch);
+    List<GiayResponse> getAllGiayWithoutDiscount(KhuyenMaiSearch kmSearch);
 }
