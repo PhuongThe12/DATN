@@ -612,13 +612,13 @@ public class HoaDonServiceImpl implements HoaDonService {
             tienThanhToan = tienThanhToan.add(request.getTongTien());
         }
 
-        if ((tienThanhToan.subtract(hoaDon.getPhiShip())).toBigInteger().compareTo(tongTien.subtract(hoaDon.getTienGiam()).toBigInteger()) != 0) {
-            throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("khuyenMaiError", "Một số khuyến mại đã thay đổi vui lòng thử lại")));
-        }
 
         System.out.println("tiền thanh toán: " + tienThanhToan + ": tiền ship: " + hoaDon.getPhiShip());
         System.out.println("Tổng tiền: " + tongTien + ": khuyens mại: " + hoaDon.getTienGiam());
         System.out.println("phai tra: " + (tienThanhToan.subtract(hoaDon.getPhiShip())).toBigInteger() + ": sau : " + tongTien.subtract(hoaDon.getTienGiam()).toBigInteger() + ", soSanh: " + (tienThanhToan.subtract(hoaDon.getPhiShip())).toBigInteger().compareTo(tongTien.subtract(hoaDon.getTienGiam()).toBigInteger()));
+        if (tienThanhToan.toBigInteger().compareTo(tongTien.subtract(hoaDon.getTienGiam()).toBigInteger()) != 0) {
+            throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("khuyenMaiError", "Một số khuyến mại đã thay đổi vui lòng thử lại")));
+        }
 
         hoaDonRepository.save(hoaDon);
         return hoaDon.getId();
