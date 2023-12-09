@@ -21,9 +21,9 @@ public class KhuyenMaiSearch {
 
     private List<Long> bienTheIds;
 
-    private LocalDateTime ngayBatDau = LocalDateTime.now();
+    private LocalDateTime ngayBatDau;
 
-    private LocalDateTime ngayKetThuc = LocalDateTime.now();
+    private LocalDateTime ngayKetThuc;
 
     private String ten;
 

@@ -378,7 +378,6 @@ app.controller("khuyenMaiListController", function ($scope, $http, $window, $loc
         $scope.itemsPerPage = 5,
         $scope.maxSize = 5;
 
-    let hoaDonSearch = {};
     $scope.searching = true;
 
     $scope.search = function () {
@@ -396,7 +395,7 @@ app.controller("khuyenMaiListController", function ($scope, $http, $window, $loc
         let apiUrl = host + '/rest/admin/khuyen-mai/search';
         let kmSearch = {};
 
-        if ($scope.searchText > 0) {
+        if ($scope.searchText.length > 0) {
             kmSearch.ten = ($scope.searchText + "").trim();
         } else {
             kmSearch.ten = null;
@@ -416,8 +415,13 @@ app.controller("khuyenMaiListController", function ($scope, $http, $window, $loc
 
 
         kmSearch.ngayBatDau = $scope.tu;
-
+        if ($scope.tu && kmSearch.ngayBatDau.getHours() === 0) {
+            kmSearch.ngayBatDau.setHours(kmSearch.ngayBatDau.getHours() + 7);
+        }
         kmSearch.ngayKetThuc = $scope.den;
+        if ($scope.den && kmSearch.ngayKetThuc.getHours() === 0) {
+            kmSearch.ngayKetThuc.setHours(kmSearch.ngayKetThuc.getHours() + 7);
+        }
 
         kmSearch.currentPage = currentPage;
         kmSearch.pageSize = $scope.itemsPerPage;
@@ -427,12 +431,20 @@ app.controller("khuyenMaiListController", function ($scope, $http, $window, $loc
                 if (response.data) {
                     $scope.khuyenMais = response.data.content;
                     $scope.numOfPages = response.data.totalPages;
+                    if ($scope.status === 0) {
+                        $scope.khuyenMais.forEach(item => {
+                            const nbd = new Date(item.ngayBatDau);
+                            const nkt = new Date(item.ngayKetThuc);
+                            if (nbd <= new Date() <= nkt) {
+                                item.hienThi = true;
+                            }
+                        })
+                    }
                     $scope.isLoading = false;
                 } else {
                     $scope.khuyenMais = [];
                     toastr["error"]("Không có khuyến mại nào");
                 }
-                console.log(response.data);
             })
             .catch(function (error) {
                 console.log(error);
@@ -459,6 +471,74 @@ app.controller("khuyenMaiListController", function ($scope, $http, $window, $loc
     $scope.$watch('curPage + numPerPage', function () {
         getData($scope.curPage);
     });
+
+    $scope.hienThiKhuyenMai = function (khuyenMai) {
+        const nbd = new Date(khuyenMai.ngayBatDau);
+        const nkt = new Date(khuyenMai.ngayKetThuc);
+        if (nbd <= new Date() <= nkt) {
+            Swal.fire({
+                text: "Xác nhận hiển thị khuyến mại?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Đồng ý",
+                cancelButtonText: "Hủy"
+            }).then((result) => {
+                $http.put(host + '/rest/admin/khuyen-mai/hien-thi/' + khuyenMai.id)
+                    .then(function (response) {
+                        toastr["success"]("Hiển thị thành công");
+                        $scope.changeRadio(1);
+                    })
+                    .catch(function (error) {
+                        if (error.status === 406) {
+                            toastr["error"](error.data.data);
+                        } else {
+                            console.log(error);
+                            toastr["error"]("Lấy dữ liệu thất bại");
+                        }
+                        $scope.isLoading = false;
+                    });
+
+            });
+        } else {
+            toastr["error"]("Khuyến mại đã kết thúc không được phép chỉnh sửa");
+        }
+    }
+
+    $scope.anKhuyenMai = function (khuyenMai) {
+        const nbd = new Date(khuyenMai.ngayBatDau);
+        const nkt = new Date(khuyenMai.ngayKetThuc);
+        if (nbd <= new Date() <= nkt) {
+            Swal.fire({
+                text: "Xác nhận ẩn khuyến mại?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Đồng ý",
+                cancelButtonText: "Hủy"
+            }).then((result) => {
+                $http.put(host + '/rest/admin/khuyen-mai/an/' + khuyenMai.id)
+                    .then(function (response) {
+                        toastr["success"]("Ẩn thành công");
+                        $scope.changeRadio(0);
+                    })
+                    .catch(function (error) {
+                        if (error.status === 406) {
+                            toastr["error"](error.data.data);
+                        } else {
+                            console.log(error);
+                            toastr["error"]("Lấy dữ liệu thất bại");
+                        }
+                        $scope.isLoading = false;
+                    });
+
+            });
+        } else {
+            toastr["error"]("Khuyến mại đã kết thúc không được phép chỉnh sửa");
+        }
+    }
 
 });
 

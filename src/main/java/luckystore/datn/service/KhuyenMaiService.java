@@ -27,4 +27,8 @@ public interface KhuyenMaiService {
     ChiTietKhuyenMaiResponse getKhuyenMaiById(Long id);
 
     Page<KhuyenMaiResponse> searchingKhuyenMai(KhuyenMaiSearch kmSearch);
+
+    Long hienThiKhuyenMai(Long id);
+
+    Long anKhuyenMai(Long id);
 }

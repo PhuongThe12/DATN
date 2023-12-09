@@ -226,6 +226,30 @@ public class KhuyenMaiServiceImpl implements KhuyenMaiService {
         return khuyenMaiRepository.getSearchingKhuyenMaiDangDienRa(kmSearch, pageable);
     }
 
+    @Override
+    public Long hienThiKhuyenMai(Long id) {
+        KhuyenMai khuyenMai = khuyenMaiRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND));
+        if(khuyenMai.getNgayBatDau().isBefore(LocalDateTime.now()) && khuyenMai.getNgayKetThuc().isAfter(LocalDateTime.now())) {
+            khuyenMai.setTrangThai(1);
+            khuyenMaiRepository.save(khuyenMai);
+            return id;
+        } else {
+            throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Khuyến mại đã kết thúc hoặc chưa bắt đầu không thể thay đổi")));
+        }
+    }
+
+    @Override
+    public Long anKhuyenMai(Long id) {
+        KhuyenMai khuyenMai = khuyenMaiRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND));
+        if(khuyenMai.getNgayBatDau().isBefore(LocalDateTime.now()) && khuyenMai.getNgayKetThuc().isAfter(LocalDateTime.now())) {
+            khuyenMai.setTrangThai(0);
+            khuyenMaiRepository.save(khuyenMai);
+            return id;
+        } else {
+            throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Khuyến mại đã kết thúc hoặc chưa bắt đầu không thể thay đổi")));
+        }
+    }
+
 
     private List<Long> getDaTonTai(KhuyenMaiSearch kmSearch) {
         return khuyenMaiRepository.getDaTonTaiKhuyenMai(kmSearch);

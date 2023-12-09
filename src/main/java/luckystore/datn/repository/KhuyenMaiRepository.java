@@ -45,40 +45,40 @@ public interface KhuyenMaiRepository extends JpaRepository<KhuyenMai, Long> {
     ChiTietKhuyenMaiResponse getKhuyenMaiById(Long id);
 
     @Query("select new luckystore.datn.model.response.KhuyenMaiResponse(km) from KhuyenMai km " +
-            "where (:#{#kmSearch.ten} is null or km.ten = :#{#kmSearch.ten}) " +
-            "and (:#{#kmSearch.ngayBatDau} is null or km.ngayBatDau <= :#{#kmSearch.ngayBatDau}) " +
-            "and (:#{#kmSearch.ngayKetThuc} is null or km.ngayKetThuc >= :#{#kmSearch.ngayKetThuc}) " +
+            "where (:#{#kmSearch.ten} is null or km.ten like %:#{#kmSearch.ten}%) " +
+            "and (:#{#kmSearch.ngayBatDau} is null or km.ngayBatDau >= :#{#kmSearch.ngayBatDau}) " +
+            "and (:#{#kmSearch.ngayKetThuc} is null or km.ngayKetThuc <= :#{#kmSearch.ngayKetThuc}) " +
             "and km.trangThai = 1 order by km.ngayBatDau desc")
     Page<KhuyenMaiResponse> getSearchingKhuyenMai(KhuyenMaiSearch kmSearch, Pageable pageable);
 
     @Query("select new luckystore.datn.model.response.KhuyenMaiResponse(km) from KhuyenMai km " +
-            "where (:#{#kmSearch.ten} is null or km.ten = :#{#kmSearch.ten}) " +
-            "and (:#{#kmSearch.ngayBatDau} is null or km.ngayBatDau <= :#{#kmSearch.ngayBatDau}) " +
-            "and (:#{#kmSearch.ngayKetThuc} is null or km.ngayKetThuc >= :#{#kmSearch.ngayKetThuc}) " +
+            "where (:#{#kmSearch.ten} is null or km.ten like %:#{#kmSearch.ten}%) " +
+            "and (:#{#kmSearch.ngayBatDau} is null or km.ngayBatDau >= :#{#kmSearch.ngayBatDau}) " +
+            "and (:#{#kmSearch.ngayKetThuc} is null or km.ngayKetThuc <= :#{#kmSearch.ngayKetThuc}) " +
             "and km.trangThai = 0 order by km.ngayBatDau desc")
     Page<KhuyenMaiResponse> getSearchingKhuyenMaiDaAn(KhuyenMaiSearch kmSearch, Pageable pageable);
 
     @Query("select new luckystore.datn.model.response.KhuyenMaiResponse(km) from KhuyenMai km " +
-            "where (:#{#kmSearch.ten} is null or km.ten = :#{#kmSearch.ten}) " +
-            "and (:#{#kmSearch.ngayBatDau} is null or km.ngayBatDau <= :#{#kmSearch.ngayBatDau}) " +
-            "and (:#{#kmSearch.ngayKetThuc} is null or km.ngayKetThuc >= :#{#kmSearch.ngayKetThuc}) " +
+            "where (:#{#kmSearch.ten} is null or km.ten like %:#{#kmSearch.ten}%) " +
+            "and (:#{#kmSearch.ngayBatDau} is null or km.ngayBatDau >= :#{#kmSearch.ngayBatDau}) " +
+            "and (:#{#kmSearch.ngayKetThuc} is null or km.ngayKetThuc <= :#{#kmSearch.ngayKetThuc}) " +
             " and km.ngayKetThuc < current_date " +
             "and km.trangThai = 1 order by km.ngayBatDau desc")
     Page<KhuyenMaiResponse> getSearchingKhuyenMaiDaKetThuc(KhuyenMaiSearch kmSearch, Pageable pageable);
 
     @Query("select new luckystore.datn.model.response.KhuyenMaiResponse(km) from KhuyenMai km " +
-            "where (:#{#kmSearch.ten} is null or km.ten = :#{#kmSearch.ten}) " +
-            "and (:#{#kmSearch.ngayBatDau} is null or km.ngayBatDau <= :#{#kmSearch.ngayBatDau}) " +
-            "and (:#{#kmSearch.ngayKetThuc} is null or km.ngayKetThuc >= :#{#kmSearch.ngayKetThuc}) " +
+            "where (:#{#kmSearch.ten} is null or km.ten like %:#{#kmSearch.ten}%) " +
+            "and (:#{#kmSearch.ngayBatDau} is null or km.ngayBatDau >= :#{#kmSearch.ngayBatDau}) " +
+            "and (:#{#kmSearch.ngayKetThuc} is null or km.ngayKetThuc <= :#{#kmSearch.ngayKetThuc}) " +
             "and km.ngayBatDau > current_date " +
             "and km.trangThai = 1 order by km.ngayBatDau desc")
     Page<KhuyenMaiResponse> getSearchingKhuyenMaiSapDienRa(KhuyenMaiSearch kmSearch, Pageable pageable);
 
     @Query("select new luckystore.datn.model.response.KhuyenMaiResponse(km) from KhuyenMai km " +
-            "where (:#{#kmSearch.ten} is null or km.ten = :#{#kmSearch.ten}) " +
-            "and (:#{#kmSearch.ngayBatDau} is null or km.ngayBatDau <= :#{#kmSearch.ngayBatDau}) " +
-            "and (:#{#kmSearch.ngayKetThuc} is null or km.ngayKetThuc >= :#{#kmSearch.ngayKetThuc}) " +
-            "and km.ngayBatDau <= current_date " +
+            "where (:#{#kmSearch.ten} is null or km.ten like %:#{#kmSearch.ten}%) " +
+            "and (:#{#kmSearch.ngayBatDau} is null or km.ngayBatDau >= :#{#kmSearch.ngayBatDau}) " +
+            "and (:#{#kmSearch.ngayKetThuc} is null or km.ngayKetThuc <= :#{#kmSearch.ngayKetThuc}) " +
+            "and km.ngayBatDau <= current_date and km.ngayKetThuc >= current_date " +
             "and km.trangThai = 1 order by km.ngayBatDau desc")
     Page<KhuyenMaiResponse> getSearchingKhuyenMaiDangDienRa(KhuyenMaiSearch kmSearch, Pageable pageable);
 //
