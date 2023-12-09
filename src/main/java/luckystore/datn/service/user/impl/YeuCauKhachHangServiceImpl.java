@@ -46,8 +46,6 @@ public class YeuCauKhachHangServiceImpl implements YeuCauKhachHangService {
     public YeuCauResponse addYeuCau(YeuCauRequest yeuCauRequest) {
         HoaDon hoaDon = hoaDonRepository.findById(yeuCauRequest.getHoaDon()).orElse(null);
         YeuCau yeuCauSave = new YeuCau(yeuCauRequest,hoaDon,null, LocalDateTime.now(),LocalDateTime.now());
-
-
         List<YeuCauChiTiet> yeuCauChiTietList = new ArrayList<>();
         for (YeuCauChiTietRequest ycct: yeuCauRequest.getListYeuCauChiTiet()) {
             HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findById(ycct.getHoaDonChiTiet()).orElse(null);

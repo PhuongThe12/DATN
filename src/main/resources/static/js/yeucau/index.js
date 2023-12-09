@@ -97,11 +97,9 @@ app.controller("yeuCauListController", function ($scope, $http, $window, $locati
     }
 
     function getData(yeuCauSearch) {
-        console.log(yeuCauSearch)
         $http.post(host + '/rest/admin/yeu-cau', JSON.stringify(yeuCauSearch))
             .then(function (response) {
                 $scope.listYeuCau = response.data.content;
-                console.log($scope.listYeuCau)
                 $scope.typeSearch = "1";
                 $scope.numOfPages = response.data.totalPages;
             })
@@ -203,7 +201,6 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
         .then(function (response) {
             $scope.listYeuCauChiTietResponse = response.data;
             $scope.yeuCau = response.data[0].yeuCau;
-            console.log($scope.yeuCau)
             $scope.hoaDon = $scope.yeuCau.hoaDon;
             getAllLyDo();
             tinhTongTienHangTra();
@@ -220,7 +217,7 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
 
     function tinhTongTienThanhToan() {
         $scope.tongTienThanhToan = 0;
-        let tongTienThanhToan = $scope.tongTienHangTra - ($scope.tongTienHangDoi + $scope.phiVanChuyen + $scope.tongTienGiamGia);
+        let tongTienThanhToan = $scope.tongTienHangTra - (($scope.tongTienHangDoi - $scope.tongTienGiamGia) + $scope.phiVanChuyen);
         $scope.tongTienThanhToan = tongTienThanhToan > 0 ? tongTienThanhToan : Math.abs(tongTienThanhToan);
     }
 
@@ -346,14 +343,16 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
 
         if ($scope.listSanPhamDoi.length > 0) {
             $scope.checkDoi = true; // Khởi tạo giá trị mặc định
-            $scope.listSanPhamDoi.forEach((value) => {
-                if (value.bienTheGiay.soLuong < value.soLuongDoi) {
+
+            for (let item of $scope.listSanPhamDoi) {
+                let sanPhamDoi = item.value; // Truy cập trực tiếp vào value của mỗi item
+                if (sanPhamDoi.bienTheGiay.soLuong < sanPhamDoi.soLuongDoi) {
                     $scope.checkDoi = false;
-                    return; // Thoát khỏi vòng lặp nếu điều kiện không thỏa mãn
+                    break; // Thoát khỏi vòng lặp nếu điều kiện không thỏa mãn
                 }
-            });
+            }
         } else {
-            $scope.checkDoi = true;
+            $scope.checkDoi = false; // Nếu không có sản phẩm nào, checkDoi nên là false
         }
 
     };
@@ -361,39 +360,37 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
 
     $scope.xacNhanYeuCau = function () {
         let listYeuCauChiTiet = $scope.listYeuCauChiTietResponse.map(item => {
-            let yeuCauChiTietRequest = {
+            const yeuCauChiTietRequest = {
                 id: item.id,
-                hoaDonChiTiet: item.hoaDonChiTiet.id,
-                bienTheGiay: item.bienTheGiay ? item.bienTheGiay.id : null,
-                bienTheGiayTra: item.hoaDonChiTiet.bienTheGiay.id,
-                lyDo: item.lyDo.id,
+                hoaDonChiTiet: item.hoaDonChiTiet?.id, // Sử dụng optional chaining nếu có thể
+                bienTheGiay: item.bienTheGiay?.id, // Sử dụng optional chaining
+                bienTheGiayTra: item.hoaDonChiTiet?.bienTheGiay?.id, // Sử dụng optional chaining
+                lyDo: item.lyDo?.id, // Sử dụng optional chaining
                 trangThai: item.trangThai,
                 ghiChu: item.ghiChu,
                 loaiYeuCauChiTiet: item.loaiYeuCauChiTiet,
-                tinhTrangSanPham: item.tinhTrangSanPham == null ? false : item.tinhTrangSanPham,
+                tinhTrangSanPham: !!item.tinhTrangSanPham, // Chuyển đổi sang boolean
             };
             return yeuCauChiTietRequest;
         });
         $scope.yeuCau.trangThai = 2;//trạng thái đã xác nhận
         $scope.yeuCau.hoaDon = $scope.hoaDon.id;
-        $scope.yeuCau.listYeuCauChiTiet = listYeuCauChiTiet;
-
+        // $scope.yeuCau.listYeuCauChiTiet = listYeuCauChiTiet;
         // Gửi yêu cầu POST đến máy chủ Spring Boot
-        $http.put(host + '/rest/admin/yeu-cau/confirm', JSON.stringify($scope.yeuCau))
-            .then(function (response) {
-                if (response.status === 200) {
-                    toastr["success"]("Đã xác nhận yêu cầu!");
-                }
-                $location.path("/list");
-            })
-            .catch(function (error) {
-                toastr["error"]("Xác nhận yêu cầu thất bại! 2");
-                if (error.status === 400) {
-                    $scope.addYeuCauForm.hoaDon.$dirty = false;
-                    $scope.errors = error.data;
-                }
-            });
-        console.log(JSON.stringify($scope.yeuCau))
+        // $http.put(host + '/rest/admin/yeu-cau/confirm', JSON.stringify($scope.yeuCau))
+        //     .then(function (response) {
+        //         if (response.status === 200) {
+        //             toastr["success"]("Đã xác nhận yêu cầu!");
+        //         }
+        //         $location.path("/list");
+        //     })
+        //     .catch(function (error) {
+        //         toastr["error"]("Xác nhận yêu cầu thất bại! 2");
+        //         if (error.status === 400) {
+        //             $scope.addYeuCauForm.hoaDon.$dirty = false;
+        //             $scope.errors = error.data;
+        //         }
+        //     });
     }
 
 
@@ -670,11 +667,13 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
 
     //fill biến thể giày cho người dùng chọn
     $scope.chonGiayDoi = function (giay) {
+
         $scope.isLoading = true;
         $http.get(host + '/rest/admin/giay/' + giay.id)
             .then(function (response) {
                 detailGiayChiTiet(response.data); // Trả về dữ liệu khi sẵn sàng
                 $scope.isLoading = false;
+                console.log("hello")
             }).catch(function (error) {
             toastr["error"]("Lấy dữ liệu thất bại");
             throw error; // Đẩy lỗi để xử lý ở nơi gọi hàm
@@ -803,7 +802,6 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
                 $scope.yeuCau.trangThai = 1;
                 $scope.yeuCau.listYeuCauChiTiet = Array.from($scope.mapYeuCauChiTiet.values());
 
-                console.log($scope.yeuCau)
 
                 // Gửi yêu cầu POST đến máy chủ Spring Boot
                 $http.post(host + '/rest/admin/yeu-cau/add', JSON.stringify($scope.yeuCau))
@@ -935,6 +933,7 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
 
 
     function displayImages(imageList) {
+        console.log(imageList)
         const carouselInner = document.querySelector('#carouselExampleControls .carousel-inner');
         const carouselItems = document.querySelectorAll('#carouselExampleControls .carousel-item');
 
@@ -943,19 +942,32 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
             carouselInner.removeChild(item);
         });
 
-        // Tạo các carousel items mới từ danh sách ảnh mới
-        for (let i = 0; i < imageList.length; i++) {
-            const imageUrl = imageList[i];
+        if (imageList.length === 0) {
             const div = document.createElement('div');
             div.className = i === 0 ? 'carousel-item active' : 'carousel-item';
 
             const img = document.createElement('img');
-            img.src = imageUrl;
+            img.src = 'https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg';
             img.className = 'd-block w-100';
 
             div.appendChild(img);
             carouselInner.appendChild(div);
+        } else {
+            // Tạo các carousel items mới từ danh sách ảnh mới
+            for (let i = 0; i < imageList.length; i++) {
+                const imageUrl = imageList[i];
+                const div = document.createElement('div');
+                div.className = i === 0 ? 'carousel-item active' : 'carousel-item';
+
+                const img = document.createElement('img');
+                img.src = imageUrl ? imageUrl : 'https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg';
+                img.className = 'd-block w-100';
+
+                div.appendChild(img);
+                carouselInner.appendChild(div);
+            }
         }
+
     }
 
 
@@ -964,7 +976,6 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
         $http.get(host + '/rest/admin/hoa-don/yeu-cau/' + id)
             .then(function (response) {
                 $scope.hoaDon = response.data;
-                console.log($scope.hoaDon)
                 $scope.khachHang = response.data.khachHang;
                 $scope.yeuCau.hoaDon = response.data.id;
                 $scope.numOfPages = response.data.totalPages;
@@ -1255,7 +1266,6 @@ app.controller("selectedHoaDonController", function ($scope, $http, $location, $
         $http.post(host + '/rest/admin/hoa-don/yeu-cau', hoaDonSearch)
             .then(function (response) {
                 $scope.listHoaDon = response.data.content;
-                console.log($scope.listHoaDon)
                 $scope.numOfPages = response.data.totalPages;
                 $scope.isLoading = false;
             })

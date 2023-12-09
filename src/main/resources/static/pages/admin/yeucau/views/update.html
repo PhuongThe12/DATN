@@ -256,7 +256,7 @@
                                         data-bs-toggle="modal"
                                         data-bs-target="#modalCheckSoLuongTon"
                                         ng-if="yeuCau.trangThai==1"
-                                        ng-change="checkComfirm()">
+                                        ng-click="checkComfirm()">
                                     <span class="ps-2"><i class="fas fa-check"></i> Xác Nhận </span>
                                 </button>
                                 <button class="btn btn-dark" style="padding-left: 10px" type="button"
@@ -283,11 +283,9 @@
 
                                     <div class="d-flex mb-3">
                                         <div style="padding-left: 15px">
-                                            <a href="#/detail/{{yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.id}}">
-                                                <img class="rounded" width="60%"
-                                                     src="https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg"
-                                                     alt="">
-                                            </a>
+                                            <img class="rounded" width="60%"
+                                                 ng-src="{{yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.hinhAnh ? yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.hinhAnh : 'https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg'}}"
+                                                 alt="Ảnh giày">
                                         </div>
 
                                         <div class="w-75 ps-1">
@@ -314,7 +312,9 @@
 
                                             <div class="d-flex pt-2">
                                                 <p class="font-size-16-ncl fw-bold text-dark">Giá:
-                                                    {{yeuCauChiTiet.hoaDonChiTiet.donGia | formatToVND}}</p>
+                                                    {{yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.giaBan -
+                                                    (yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.giaBan*(yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.khuyenMai/100))
+                                                    | formatToVND}}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -340,11 +340,10 @@
                                     <div class="sanPhamTra">
                                         <div class="d-flex mb-3">
                                             <div style="padding-left: 15px">
-                                                <a href="#/detail/{{yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.id}}">
-                                                    <img class="rounded" width="60%"
-                                                         src="https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg"
-                                                         alt="">
-                                                </a>
+
+                                                <img class="rounded" width="60%"
+                                                     ng-src="{{yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.hinhAnh ? yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.hinhAnh : 'https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg'}}"
+                                                     alt="Ảnh giày">
                                             </div>
 
                                             <div class="w-75 ps-1">
@@ -352,6 +351,10 @@
                                                     <p ng-class="{ 'out-of-stock': yeuCauChiTiet.trangThai === 1 }"
                                                        class="font-size-16-ncl fw-bold text-dark mb-2 text-wrap-none">
                                                         {{yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.giayResponse.ten}}</p>
+                                                    <p ng-if="yeuCauChiTiet.trangThai === 1"
+                                                       class="ps-2 font-size-14-ncl fw-bold text-dark mb-2 text-wrap-none">
+                                                        (
+                                                        Đã hủy )</p>
                                                     <div style="flex-grow: 1;"></div>
                                                     <!-- Nút Trả Hàng -->
                                                     <div>
@@ -375,7 +378,9 @@
                                                 </div>
                                                 <div class="d-flex pt-2">
                                                     <p class="font-size-16-ncl fw-bold text-dark">Giá:
-                                                        {{yeuCauChiTiet.hoaDonChiTiet.donGia | formatToVND}}</p>
+                                                        {{yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.giaBan -
+                                                        (yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.giaBan*(yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.khuyenMai/100))
+                                                        | formatToVND}}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -388,11 +393,9 @@
                                     <div class="sanPhamDoi" style="padding-left: 60px;">
                                         <div class="d-flex mb-3">
                                             <div>
-                                                <a href="#/detail/{{yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.id}}">
-                                                    <img class="rounded" width="60%"
-                                                         src="https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg"
-                                                         alt="">
-                                                </a>
+                                                <img class="rounded" width="60%"
+                                                     ng-src="{{yeuCauChiTiet.bienTheGiay.hinhAnh ? yeuCauChiTiet.bienTheGiay.hinhAnh : 'https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg'}}"
+                                                     alt="Ảnh giày">
                                             </div>
                                             <div class="w-75 ps-1">
                                                 <div class="d-flex align-items-center">
@@ -402,11 +405,14 @@
                                                     <p ng-if="yeuCauChiTiet.bienTheGiay.soLuong === 0"
                                                        class="ps-2 font-size-14-ncl fw-bold text-dark mb-2 text-wrap-none">
                                                         ( Hết hàng )</p>
+                                                    <p ng-if="yeuCauChiTiet.trangThai === 1 || yeuCauChiTiet.trangThai === 2"
+                                                       class="ps-2 font-size-14-ncl fw-bold text-dark mb-2 text-wrap-none">
+                                                        ( Đã Hủy )</p>
                                                     <div style="flex-grow: 1;"></div>
                                                     <button type="button" class="btn btn-dark"
                                                             ng-show="yeuCau.trangThai == 1"><i
                                                             class="fas fa-trash-alt"
-                                                            ng-click="confirmDeleteGiayDoi"></i></button>
+                                                            ng-click="confirmDeleteGiayDoi(yeuCauChiTiet)"></i></button>
                                                 </div>
                                                 <div class="d-flex align-items-center justify-content-between">
                                                     <p class="font-size-14-ncl text-secondary">Kích cỡ :
@@ -495,42 +501,46 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                    <div class="d-flex mb-3" ng-repeat="item in listSanPhamDoi">
-                        <h5 ng-show="item.value.bienTheGiay.soLuong < item.value.soLuongDoi">Sản phẩm vượt quá số lượng
-                            tồn</h5>
-                        <div>
-                            <a href="#/detail/{{bienTheGiay.id}}">
-                                <img class="rounded" width="100%"
-                                     src="https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg"
-                                     alt="">
-                            </a>
+                <div class="d-flex mb-3" ng-repeat="item in listSanPhamDoi" ng-show="!checkDoi">
+                    <div>
+                        <img class="rounded" width="100%"
+                             ng-src="{{item.value.bienTheGiay.hinhAnh ? yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.hinhAnh : 'https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg'}}"
+                             alt="Ảnh giày">
+                    </div>
+                    <div class="w-75 ps-3">
+                        <div class="d-flex align-items-center">
+                            <p class="font-size-16-ncl fw-bold text-dark mb-2 text-wrap-none">
+                                {{item.value.bienTheGiay.giayResponse.ten}} - {{item.value.bienTheGiay.id}}</p>
                         </div>
-                        <div class="w-75 ps-3">
-                            <div class="d-flex align-items-center">
-                                <p class="font-size-14-ncl fw-bold text-dark mb-2 text-wrap-none">
-                                    {{item.value.bienTheGiay.giayResponse.ten}}</p>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-between">
-                                <p class="font-size-14-ncl text-secondary">Kích cỡ :
-                                    {{item.value.bienTheGiay.kichThuoc.ten}} / Màu
-                                    Sắc : {{item.value.bienTheGiay.mauSac.ten}}</p>
-                                <p class="font-size-16-ncl fw-bold text-dark">{{item.value.bienTheGiay.giaBan -
-                                    (item.value.bienTheGiay.giaBan*item.value.bienTheGiay.khuyenMai/100) | number}}
-                                    ₫</p>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-between">
-                                <p class="font-size-16-ncl text-dark fw-bold">Số lượng đổi : {{item.value.soLuongDoi}} /
-                                    Số lượng tồn : {{item.value.bienTheGiay.soLuong}}</p>
-                            </div>
+                        <div class="d-flex align-items-center justify-content-between pt-3">
+                            <p class="font-size-14-ncl text-secondary">Kích cỡ :
+                                {{item.value.bienTheGiay.kichThuoc.ten}} / Màu
+                                Sắc : {{item.value.bienTheGiay.mauSac.ten}}</p>
                         </div>
+                        <div class="d-flex align-items-center justify-content-between pt-3">
+                            <p class="font-size-16-ncl text-dark fw-bold">Số lượng(đổi/tồn) : <span
+                                    class="badge rounded-pill text-bg-warning fw-bold" style="background-color: #FF9900; color: black">{{item.value.soLuongDoi}} / {{item.value.bienTheGiay.soLuong}}</span>
+                            </p>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between pt-3">
+                            <p class="font-size-16-ncl fw-bold text-dark">Giá: {{item.value.bienTheGiay.giaBan -
+                                (item.value.bienTheGiay.giaBan*item.value.bienTheGiay.khuyenMai/100) | number}}
+                                ₫</p>
+                        </div>
+                    </div>
                 </div>
-                <div ng-show="checkDoi">
-                    <label><p>Hoàn tất kiểm tra, đủ điều kiện trả hàng! </p></label>
+                <div>
+                    <label ng-show="checkDoi">Hoàn tất kiểm tra, đủ điều kiện đổi/trả!</label>
+                    <label ng-show="!checkDoi">Hoàn tất kiểm tra, số lượng sản phẩm đổi nhiều hơn số lượng tồn!</label>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-dark" data-bs-dismiss="modal"><i class="fas fa-chevron-left"></i> Quay Về</button>
-                <button type="button" class="btn btn-dark" ng-click="xacNhanYeuCau()" ng-disabled="checkDoi"><i class="fas fa-check"></i> Xác Nhận</button>
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal"><i class="fas fa-chevron-left"></i>
+                    Quay Về
+                </button>
+                <button type="button" class="btn btn-dark" ng-click="xacNhanYeuCau()" ng-disabled="!checkDoi"><i
+                        class="fas fa-check"></i> Xác Nhận
+                </button>
             </div>
         </div>
     </div>

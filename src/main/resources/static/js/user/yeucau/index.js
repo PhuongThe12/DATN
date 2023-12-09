@@ -41,7 +41,6 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
     });
 
 
-
     $scope.$watch('feeShippingPerOne', function (value) {
         tinhTienShip();
     });
@@ -49,8 +48,8 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
 
     function tinhTongTienThanhToan() {
         $scope.tongTienThanhToan = 0;
-        let tongTienThanhToan = $scope.tongTienHangTra - ($scope.tongTienDoiHang + $scope.phiVanChuyen) ;
-        $scope.tongTienThanhToan = tongTienThanhToan > 0 ?  tongTienThanhToan : Math.abs(tongTienThanhToan);
+        let tongTienThanhToan = $scope.tongTienHangTra - (($scope.tongTienDoiHang - $scope.tongTienGiamGia) + $scope.phiVanChuyen);
+        $scope.tongTienThanhToan = tongTienThanhToan > 0 ? tongTienThanhToan : Math.abs(tongTienThanhToan);
     }
 
     function tinhTienShip() {
@@ -74,9 +73,9 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
         $scope.tongTienGiamGia = 0;
 
         $scope.mapYeuCauChiTiet.forEach((item) => {
-            if(item.bienTheGiayDoi.id) {
+            if (item.bienTheGiayDoi.id) {
                 let giaBan = item.bienTheGiayDoi.giaBan;
-                let khuyenMai =  item.bienTheGiayDoi.khuyenMai ? item.bienTheGiayDoi.khuyenMai / 100 : 0;
+                let khuyenMai = item.bienTheGiayDoi.khuyenMai ? item.bienTheGiayDoi.khuyenMai / 100 : 0;
                 let tienGiam = giaBan * khuyenMai;
                 $scope.tongTienGiamGia += tienGiam;
             }
@@ -89,7 +88,7 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
         $scope.tongTienHangDoi = 0;
         $scope.soLuongDoi = 0;
         $scope.mapYeuCauChiTiet.forEach((item) => {
-            if(item.bienTheGiayDoi.id) {
+            if (item.bienTheGiayDoi.id) {
                 let giaBan = item.bienTheGiayDoi.giaBan;
                 $scope.tongTienHangDoi += giaBan;
                 $scope.soLuongDoi += 1;
@@ -140,7 +139,6 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
     }
 
 
-
     $scope.subtraction = function (hoaDonChiTiet) {
         if (hoaDonChiTiet.soLuongTra > 0) {
             hoaDonChiTiet.soLuongTra = hoaDonChiTiet.soLuongTra - 1;
@@ -182,7 +180,7 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
 
     $scope.addLyDoView = function (yeuCauChiTiet) {
         $scope.yeuCauChiTiet = yeuCauChiTiet;
-        if($scope.mapYeuCauChiTiet.get(yeuCauChiTiet.key)){
+        if ($scope.mapYeuCauChiTiet.get(yeuCauChiTiet.key)) {
             $scope.yeuCauChiTiet.lyDo = $scope.mapYeuCauChiTiet.get(yeuCauChiTiet.key).lyDo;
             $scope.yeuCauChiTiet.ghiChu = $scope.mapYeuCauChiTiet.get(yeuCauChiTiet.key).ghiChu;
         }
@@ -208,7 +206,7 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
 
     $scope.selectedGiayDoi = function () {
         console.log($scope.giayChoosed)
-        if($scope.mapYeuCauChiTiet.has($scope.yeuCauChiTiet.key)){
+        if ($scope.mapYeuCauChiTiet.has($scope.yeuCauChiTiet.key)) {
             let value = $scope.mapYeuCauChiTiet.get($scope.yeuCauChiTiet.key);
             $scope.mapYeuCauChiTiet.set($scope.yeuCauChiTiet.key, {
                 hoaDonChiTiet: value.hoaDonChiTiet, // value1
@@ -217,9 +215,10 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
                 ghiChu: value.ghiChu               // value3
             });
             $scope.listYeuCauChiTiet = Array.from($scope.mapYeuCauChiTiet, ([key, value]) => ({key, value}));
+            console.log($scope.listYeuCauChiTiet)
             $scope.giayChoosed = null;
             tinhTongTienHangDoi();
-        }else{
+        } else {
             toastr["error"]("Không tồn tại yêu cầu chi tiết có key: " + $scope.yeuCauChiTiet.key);
         }
     }
@@ -289,7 +288,7 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
                             // Tạo nút kích thước và xử lý sự kiện click
                             const sizeButton = document.createElement("button");
                             sizeButton.textContent = variant.kichThuoc.ten;
-                            sizeButton.className = "btn border";
+                            sizeButton.className = "btn border btn-dark";
 
                             $scope.$watch('giayDetail', function (newGiayDetail, oldGiayDetail) {
                                 $scope.giayDetail = newGiayDetail;
@@ -330,6 +329,7 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
     }
 
     function displayImages(imageList) {
+        console.log(imageList)
         const carouselInner = document.querySelector('#carouselExampleControls .carousel-inner');
         const carouselItems = document.querySelectorAll('#carouselExampleControls .carousel-item');
 
@@ -338,18 +338,30 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
             carouselInner.removeChild(item);
         });
 
-        // Tạo các carousel items mới từ danh sách ảnh mới
-        for (let i = 0; i < imageList.length; i++) {
-            const imageUrl = imageList[i];
+        if (imageList.length === 0) {
             const div = document.createElement('div');
-            div.className = i === 0 ? 'carousel-item active' : 'carousel-item';
+            div.className = 'carousel-item active';
 
             const img = document.createElement('img');
-            img.src = imageUrl;
+            img.src = 'https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg';
             img.className = 'd-block w-100';
 
             div.appendChild(img);
             carouselInner.appendChild(div);
+        } else {
+            // Tạo các carousel items mới từ danh sách ảnh mới
+            for (let i = 0; i < imageList.length; i++) {
+                const imageUrl = imageList[i];
+                const div = document.createElement('div');
+                div.className = i === 0 ? 'carousel-item active' : 'carousel-item';
+
+                const img = document.createElement('img');
+                img.src = imageUrl ? imageUrl : 'https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg';
+                img.className = 'd-block w-100';
+
+                div.appendChild(img);
+                carouselInner.appendChild(div);
+            }
         }
     }
 
@@ -390,11 +402,11 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
 
                 $scope.mapYeuCauChiTietSaved.set(key, {
                     hoaDonChiTiet: yeuCauChiTiet.hoaDonChiTiet.id,
-                    bienTheGiay: yeuCauChiTiet.bienTheGiay ? yeuCauChiTiet.bienTheGiay.id : null,
+                    bienTheGiay: sanPhamDoi ? sanPhamDoi.id : null,
                     lyDo: yeuCauChiTiet.lyDo,
-                    trangThai: 1,
+                    trangThai: 0,
                     ghiChu: yeuCauChiTiet.ghiChu,
-                    loaiYeuCauChiTiet: yeuCauChiTiet.bienTheGiay ? 1 : 2,
+                    loaiYeuCauChiTiet: sanPhamDoi ? 1 : 2,
                     tinhTrangSanPham: false,
                     tienGiam: yeuCauChiTiet.bienTheGiay ? tienGiamSanPhamDoi : 0,
                     thanhTien: tienHoanKhach ? tienHoanKhach : 0,
@@ -418,20 +430,20 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
 
             console.log($scope.yeuCau)
 
-            // $http.post(host + '/user/rest/yeu-cau-khach-hang/add', JSON.stringify($scope.yeuCau))
-            //     .then(function (response) {
-            //         if (response.status === 200) {
-            //             toastr["success"]("Thêm thành công");
-            //         }
-            //         $location.path("/home");
-            //     })
-            //     .catch(function (error) {
-            //         toastr["error"]("Thêm thất bại");
-            //         if (error.status === 400) {
-            //             $scope.addYeuCauForm.hoaDon.$dirty = false;
-            //             $scope.errors = error.data;
-            //         }
-            //     });
+            $http.post(host + '/user/rest/yeu-cau-khach-hang/add', JSON.stringify($scope.yeuCau))
+                .then(function (response) {
+                    if (response.status === 200) {
+                        toastr["success"]("Thêm thành công");
+                    }
+                    $location.path("/home");
+                })
+                .catch(function (error) {
+                    toastr["error"]("Thêm thất bại");
+                    if (error.status === 400) {
+                        $scope.addYeuCauForm.hoaDon.$dirty = false;
+                        $scope.errors = error.data;
+                    }
+                });
         }
     };
 
@@ -498,6 +510,7 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
                     let lstBienTheGiay = bienTheGiayObject.lstBienTheGiay;
                     let giaThapNhat = lstBienTheGiay[0].giaBan;
                     let giaLonNhat = lstBienTheGiay[0].giaBan;
+                    let phanTramGiamLonNhat = lstBienTheGiay[0].khuyenMai;
 
                     let uniqueMauSacSet = new Set();
 
@@ -511,6 +524,11 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
                         if (bienTheGiay.giaBan > giaLonNhat) {
                             giaLonNhat = bienTheGiay.giaBan;
                         }
+
+                        if (bienTheGiay.khuyenMai > phanTramGiamLonNhat) {
+                            phanTramGiamLonNhat = bienTheGiay.khuyenMai;
+                        }
+
                         if (bienTheGiay.mauSac && bienTheGiay.mauSac.maMau) {
                             let maMau = bienTheGiay.mauSac.maMau;
 
@@ -523,6 +541,7 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
                     bienTheGiayObject.giaThapNhat = giaThapNhat;
                     bienTheGiayObject.giaLonNhat = giaLonNhat;
                     bienTheGiayObject.lstMauSac = lstMauSac;
+                    bienTheGiayObject.giamGiaLonNhat = phanTramGiamLonNhat;
                 }
             })
             .catch(function (error) {
@@ -537,7 +556,6 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
         $http.get(host + '/user/rest/yeu-cau-khach-hang/' + id)
             .then(function (response) {
                 $scope.hoaDon = response.data;
-                console.log($scope.hoaDon)
                 $scope.listHoaDonChiTiet = response.data.listHoaDonChiTiet;
                 $scope.thongTinNhanHang.soDienThoaiNhan = $scope.hoaDon.khachHang.soDienThoai;
                 $scope.thongTinNhanHang.diaChiNhan = $scope.hoaDon.diaChiNhan;
@@ -573,7 +591,7 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
 
     function layPhiShip(diaChiNhan) {
         $scope.feeShippingPerOne = 0;
-        if(diaChiNhan){
+        if (diaChiNhan) {
             let addressParts = diaChiNhan.split(", ").map(part => part.trim());
 
             let province = addressParts[addressParts.length - 1]; // Hà Nội
@@ -583,22 +601,22 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
 
             logisticInfo.to_address = detailAddress;
             logisticInfo.to_ward_name = ward;
-            logisticInfo.to_district_name =district;
-            logisticInfo.to_province_name =province;
+            logisticInfo.to_district_name = district;
+            logisticInfo.to_province_name = province;
         }
 
 
-        if ($scope.tongTienHangDoi >= 0 && $scope.tongTienHangDoi< 80000000) {
+        if ($scope.tongTienHangDoi >= 0 && $scope.tongTienHangDoi < 80000000) {
             logisticInfo.insurance_value = $scope.tongTienHangDoi;
         }
 
         $http.post('https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/preview', logisticInfo)
             .then(response => {
-               $scope.feeShippingPerOne = response.data.data.total_fee;
+                $scope.feeShippingPerOne = response.data.data.total_fee;
                 $scope.isLoading = false;
             })
             .catch(error => {
-                $scope.feeShippingPerOne =  50000;
+                $scope.feeShippingPerOne = 50000;
                 $scope.isLoading = false;
             })
     }
@@ -701,7 +719,7 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
     var inputTenNguoiNhan = document.getElementById('tenNguoiNhan');
     var errorMessageTen = document.getElementById('error-message-ten'); // Sử dụng một ID khác cho thông báo lỗi của trường này
 
-    inputTenNguoiNhan.addEventListener('input', function(e) {
+    inputTenNguoiNhan.addEventListener('input', function (e) {
         var value = e.target.value;
         if (!isValid(value)) {
             errorMessageTen.textContent = 'Sai định dạng tên người nhận.';
@@ -712,7 +730,7 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
         }
     });
 
-    inputTenNguoiNhan.addEventListener('blur', function(e) {
+    inputTenNguoiNhan.addEventListener('blur', function (e) {
         if (e.target.classList.contains('invalid')) {
             e.target.focus();
         }
@@ -722,7 +740,7 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
     var inputSoDienThoai = document.getElementById('soDienThoaiNhan');
     var errorMessagePhone = document.getElementById('error-message-phone'); // Sử dụng một ID khác cho thông báo lỗi của trường này
 
-    inputSoDienThoai.addEventListener('input', function(e) {
+    inputSoDienThoai.addEventListener('input', function (e) {
         var value = e.target.value;
         e.target.value = value.replace(/[^0-9]/g, '');
         var regex = /^(03|05|07|08|09)[1-9]{8}$/;
@@ -738,18 +756,17 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
         }
     });
 
-    inputSoDienThoai.addEventListener('blur', function(e) {
+    inputSoDienThoai.addEventListener('blur', function (e) {
         if (e.target.classList.contains('invalid')) {
             e.target.focus();
         }
     });
 
 
-
     var inputChiTiet = document.getElementById('addDress');
     var errorMessageChiTiet = document.getElementById('error-message-addDress');
 
-    inputChiTiet.addEventListener('input', function(e) {
+    inputChiTiet.addEventListener('input', function (e) {
         var value = e.target.value;
 
         if (!isValid(value)) {
@@ -761,14 +778,12 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
         }
     });
 
-    inputChiTiet.addEventListener('blur', function(e) {
+    inputChiTiet.addEventListener('blur', function (e) {
         // Nếu trường không hợp lệ, trả lại focus
         if (e.target.classList.contains('invalid')) {
             e.target.focus();
         }
     });
-
-
 
 
 });

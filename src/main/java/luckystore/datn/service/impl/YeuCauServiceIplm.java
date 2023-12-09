@@ -204,7 +204,7 @@ public class YeuCauServiceIplm implements YeuCauService {
         }
 
         if (listHoaDonChiTietTra.size() > 0) { //tạo hóa đơn trả
-            NhanVien nhanVien  = nhanVienRepository.findById(nguoiTao).orElse(null);
+            NhanVien nhanVien  = nguoiTao != null ? nhanVienRepository.findById(nguoiTao).orElse(null) : null;
             HoaDon hoaDonTra = HoaDon.builder().hoaDonGoc(hoaDon.getId()).khachHang(khachHang).nhanVien(nhanVien).email(khachHang.getEmail()).ngayTao(LocalDateTime.now()).kenhBan(KenhBan.ONLINE).trangThai(TrangThaiHoaDon.CHUA_THANH_TOAN).ghiChu("Hóa Đơn Trả: HD" + hoaDon.getId()).loaiHoaDon(3).build();
             for (HoaDonChiTiet hoaDonChiTietTra : listHoaDonChiTietTra) {
                 hoaDonChiTietTra.setHoaDon(hoaDonTra);
@@ -215,10 +215,13 @@ public class YeuCauServiceIplm implements YeuCauService {
         }
 
         if (listHoaDonChiTietDoi.size() > 0) { //tạo hóa đơn đổi
-            String[] phanTach = yeuCauSaved.getThongTinNhanHang().split("-", 3);
+
+            String[] phanTach = yeuCauSaved.getThongTinNhanHang().split("-");
+
             String tenNguoiNhan = phanTach[0]; // Phần 1 (tên)
             String sdtNhan = phanTach[1]; // Phần 2 (số điện thoại)
             String diaChiNhan = phanTach[2]; // Phần 3 (địa chỉ)
+
 
             for (HoaDonChiTiet hoaDonChiTietTra : listHoaDonChiTietTra) {
                 if (hoaDonChiTietTra != null) {
@@ -226,7 +229,7 @@ public class YeuCauServiceIplm implements YeuCauService {
                 }
             }
 
-            NhanVien nhanVien  = nhanVienRepository.findById(nguoiTao).orElse(null);
+            NhanVien nhanVien  = nguoiTao != null ? nhanVienRepository.findById(nguoiTao).orElse(null) : null;
             HoaDon hoaDonDoi = HoaDon.builder().hoaDonGoc(hoaDon.getId()).khachHang(khachHang).nhanVien(nhanVien).email(khachHang.getEmail()).ngayTao(LocalDateTime.now()).phiShip(yeuCauSaved.getPhiShip()).soDienThoaiNhan(sdtNhan).diaChiNhan(diaChiNhan).kenhBan(KenhBan.ONLINE).trangThai(TrangThaiHoaDon.CHUA_THANH_TOAN).ghiChu("Hóa Đơn Đổi: HD" + hoaDon.getId()).loaiHoaDon(2).tienGiam(tienGiam).build();
 
             for (HoaDonChiTiet hoaDonChiTietDoi : listHoaDonChiTietDoi) {
