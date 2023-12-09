@@ -1,5 +1,6 @@
 package luckystore.datn.rest.user;
 
+import jakarta.mail.MessagingException;
 import luckystore.datn.model.request.GiayRequest;
 import luckystore.datn.model.request.GioHangThanhToanRequest;
 import luckystore.datn.model.request.HoaDonRequest;
@@ -24,7 +25,7 @@ public class RestHoaDonKhachHangController {
 
 
     @PostMapping
-    ResponseEntity<?> addHoaDon(@RequestBody GioHangThanhToanRequest gioHangThanhToanRequest) {
+    ResponseEntity<?> addHoaDon(@RequestBody GioHangThanhToanRequest gioHangThanhToanRequest) throws MessagingException {
         return new ResponseEntity(hoaDonKhachHangService.addHoaDon(gioHangThanhToanRequest), HttpStatus.OK);
     }
 

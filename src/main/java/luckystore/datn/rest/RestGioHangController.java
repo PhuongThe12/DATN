@@ -70,4 +70,8 @@ public class RestGioHangController {
         }
     }
 
+    @PostMapping("/add")
+    public ResponseEntity<?> addNew(@RequestBody GioHangRequest gioHangRequest) {
+        return new ResponseEntity<>(gioHangService.addGioHang(gioHangRequest), HttpStatus.OK);
+    }
 }

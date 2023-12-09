@@ -1,5 +1,6 @@
 package luckystore.datn.service.user.impl;
 
+import jakarta.mail.MessagingException;
 import luckystore.datn.constraints.ErrorMessage;
 import luckystore.datn.entity.*;
 import luckystore.datn.exception.ConflictException;
@@ -10,6 +11,7 @@ import luckystore.datn.model.response.GioHangChiTietResponse;
 import luckystore.datn.model.response.GioHangResponse;
 import luckystore.datn.model.response.HoaDonResponse;
 import luckystore.datn.repository.*;
+import luckystore.datn.service.impl.EmailSenderService;
 import luckystore.datn.service.user.HoaDonKhachHangService;
 import luckystore.datn.util.JsonString;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,9 +52,12 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
     @Autowired
     GioHangChiTietRepository gioHangChiTietRepository;
 
+    @Autowired
+    EmailSenderService emailSenderService;
+
     @Transactional
     @Override
-    public HoaDonResponse addHoaDon(GioHangThanhToanRequest gioHangThanhToanRequest) {
+    public HoaDonResponse addHoaDon(GioHangThanhToanRequest gioHangThanhToanRequest) throws MessagingException {
 
         List<GioHangChiTietResponse> gioHangChiTietResponseList = gioHangChiTietRepository.findGioHangChiTietByIdGioHang(gioHangThanhToanRequest.getId());
 
@@ -60,12 +65,14 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
             HoaDon hoaDonSaved = hoaDonRepository.save(getHoaDon(new HoaDon(), gioHangThanhToanRequest));
             Set<HoaDonChiTiet> hoaDonChiTiets = getBienTheGiay(gioHangThanhToanRequest.getBienTheGiayRequests(), hoaDonSaved);
             hoaDonChiTietRepository.saveAll(hoaDonChiTiets);
+            emailSenderService.sendEmailOrder("quanchun11022@gmail.com","abc",generateHtmlTable(hoaDonChiTiets),null);
             return new HoaDonResponse(hoaDonSaved);
         } else if (gioHangChiTietResponseList.size() != 0) {
 //            checkSoLuong(gioHangThanhToanRequest.getBienTheGiayRequests());
             HoaDon hoaDonSaved = hoaDonRepository.save(getHoaDon(new HoaDon(), gioHangThanhToanRequest));
             Set<HoaDonChiTiet> hoaDonChiTiets = getBienTheGiay(gioHangThanhToanRequest.getBienTheGiayRequests(), hoaDonSaved);
             hoaDonChiTietRepository.saveAll(hoaDonChiTiets);
+            emailSenderService.sendEmailOrder("quanchun11022@gmail.com","abc",generateHtmlTable(hoaDonChiTiets),null);
 
             gioHangChiTietRepository.deleteAllGioHangChiTietByIdGioHang(gioHangThanhToanRequest.getId());
 
@@ -141,5 +148,31 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
             throw new ConflictException(errors);
         }
     }
+
+    public String generateHtmlTable(Set<HoaDonChiTiet> hoaDonChiTiets) {
+        StringBuilder htmlTable = new StringBuilder();
+
+        htmlTable.append("<table border='1'>");
+
+        htmlTable.append("<tr>");
+        htmlTable.append("<th>Tên giày</th>");
+        htmlTable.append("<th>Đơn giá</th>");
+        htmlTable.append("<th>Số lượng</th>");
+        htmlTable.append("</tr>");
+
+        for (HoaDonChiTiet hoaDonChiTiet : hoaDonChiTiets) {
+            htmlTable.append("<tr>");
+            htmlTable.append("<td>").append(hoaDonChiTiet.getBienTheGiay().getGiay().getTen()
+                    + "( "+hoaDonChiTiet.getBienTheGiay().getKichThuoc().getTen() +" - "
+                    + hoaDonChiTiet.getBienTheGiay().getMauSac().getTen()+" )").append("</td>");
+            htmlTable.append("<td>").append(hoaDonChiTiet.getDonGia()).append("</td>");
+            htmlTable.append("<td>").append(hoaDonChiTiet.getSoLuong()).append("</td>");
+            htmlTable.append("</tr>");
+        }
+
+        htmlTable.append("</table>");
+        return htmlTable.toString();
+    }
+
 }
 

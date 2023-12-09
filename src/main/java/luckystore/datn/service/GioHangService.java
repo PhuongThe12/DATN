@@ -2,6 +2,7 @@ package luckystore.datn.service;
 
 import luckystore.datn.model.request.BienTheGiayGioHangRequest;
 import luckystore.datn.model.request.GioHangChiTietRequest;
+import luckystore.datn.model.request.GioHangRequest;
 import luckystore.datn.model.response.GioHangChiTietResponse;
 import luckystore.datn.model.response.GioHangResponse;
 import org.springframework.stereotype.Service;
@@ -25,5 +26,7 @@ public interface GioHangService {
     Integer getSoLuong(Long id, Long idGioHang);
 
     public void deleteAllGioHangChiTiet(List<GioHangChiTietRequest> gioHangChiTietRequestList);
+
+    GioHangResponse addGioHang(GioHangRequest gioHangRequest);
 
 }
