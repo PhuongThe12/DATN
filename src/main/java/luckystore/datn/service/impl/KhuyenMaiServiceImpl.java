@@ -214,7 +214,16 @@ public class KhuyenMaiServiceImpl implements KhuyenMaiService {
     @Override
     public Page<KhuyenMaiResponse> searchingKhuyenMai(KhuyenMaiSearch kmSearch) {
         Pageable pageable = PageRequest.of(kmSearch.getCurrentPage() -1, kmSearch.getPageSize());
-        return khuyenMaiRepository.getSearchingKhuyenMai(kmSearch, pageable);
+        if(kmSearch.getStatus() == 0) {
+            return khuyenMaiRepository.getSearchingKhuyenMaiDaAn(kmSearch, pageable);
+        } else if(kmSearch.getStatus() == 1) {
+            return khuyenMaiRepository.getSearchingKhuyenMaiDangDienRa(kmSearch, pageable);
+        } else if(kmSearch.getStatus() == 2) {
+            return khuyenMaiRepository.getSearchingKhuyenMaiSapDienRa(kmSearch, pageable);
+        } else if(kmSearch.getStatus() == 3) {
+            return khuyenMaiRepository.getSearchingKhuyenMaiDaKetThuc(kmSearch, pageable);
+        }
+        return khuyenMaiRepository.getSearchingKhuyenMaiDangDienRa(kmSearch, pageable);
     }
 
 

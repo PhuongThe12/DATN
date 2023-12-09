@@ -5,16 +5,15 @@ app.config(function ($routeProvider, $locationProvider) {
         .when("/list", {
             templateUrl: '/pages/admin/khuyenmai/views/list.html',
             controller: 'khuyenMaiListController'
-        }).when("/detail/:id", {
-        templateUrl: '/pages/admin/khuyenmai/views/detail.html',
-        controller: 'detailKhuyenMaiController'
-    }).when("/update/:id", {
-        templateUrl: '/pages/admin/khuyenmai/views/update.html',
-        controller: 'updateKhuyenMaiController'
-    }).when("/add", {
-        templateUrl: '/pages/admin/khuyenmai/views/add.html',
-        controller: 'addKhuyenMaiController'
-    })
+        })
+        .when("/update/:id", {
+            templateUrl: '/pages/admin/khuyenmai/views/update.html',
+            controller: 'updateKhuyenMaiController'
+        })
+        .when("/add", {
+            templateUrl: '/pages/admin/khuyenmai/views/add.html',
+            controller: 'addKhuyenMaiController'
+        })
         .otherwise({redirectTo: '/list'});
 });
 
@@ -202,7 +201,7 @@ app.controller("addKhuyenMaiController", function ($scope, $http, $location) {
         if (bienTheGiay.phanTramGiam) {
             bienTheGiay.errors = null;
         } else {
-            bienTheGiay.errors = 'Phần trăm giảm phải là số nguyên từ 1 - 100';
+            bienTheGiay.errors = 'Phần trăm giảm phải là số nguyên từ 1 - 50';
         }
     }
 
@@ -263,7 +262,7 @@ app.controller("addKhuyenMaiController", function ($scope, $http, $location) {
         $scope.khuyenMai.ngayBatDau.setHours($scope.khuyenMai.ngayBatDau.getHours() + 7);
         $scope.khuyenMai.ngayKetThuc.setHours($scope.khuyenMai.ngayKetThuc.getHours() + 7);
 
-        if(invalidCount !== 0) {
+        if (invalidCount !== 0) {
             toastr["warning"]("Vui lòng kiểm tra lại các trường không hợp lệ");
             return;
         }
@@ -395,36 +394,45 @@ app.controller("khuyenMaiListController", function ($scope, $http, $window, $loc
     function getData(currentPage) {
         $scope.isLoading = true;
         let apiUrl = host + '/rest/admin/khuyen-mai/search';
+        let kmSearch = {};
 
         if ($scope.searchText > 0) {
-            hoaDonSearch.id = ($scope.searchText + "").trim();
+            kmSearch.ten = ($scope.searchText + "").trim();
         } else {
-            hoaDonSearch.id = null;
+            kmSearch.ten = null;
         }
 
-        if ($scope.status === -1) {
-            hoaDonSearch.trangThai = -1;
-        } else if ($scope.status === 1) {
-            hoaDonSearch.trangThai = 1;
+        if ($scope.status === 1) {
+            kmSearch.status = 1;
+        } else if ($scope.status === 2) {
+            kmSearch.status = 2;
+        } else if ($scope.status === 3) {
+            kmSearch.status = 3;
+        } else if ($scope.status === 0) {
+            kmSearch.status = 0;
         } else {
-            // toastr["error"]("Lấy dữ liệu thất bại. Vui lòng thử lại");
-            $scope.status = 1;
-            hoaDonSearch.trangThai = 1;
+            kmSearch.status = 1;
         }
 
 
-        hoaDonSearch.tuNgay = $scope.tu;
+        kmSearch.ngayBatDau = $scope.tu;
 
-        hoaDonSearch.denNgay = $scope.den;
+        kmSearch.ngayKetThuc = $scope.den;
 
-        hoaDonSearch.currentPage = currentPage;
-        hoaDonSearch.pageSize = $scope.itemsPerPage;
+        kmSearch.currentPage = currentPage;
+        kmSearch.pageSize = $scope.itemsPerPage;
 
-        $http.post(apiUrl, hoaDonSearch)
+        $http.post(apiUrl, kmSearch)
             .then(function (response) {
-                $scope.hoaDons = response.data.content;
-                $scope.numOfPages = response.data.totalPages;
-                $scope.isLoading = false;
+                if (response.data) {
+                    $scope.khuyenMais = response.data.content;
+                    $scope.numOfPages = response.data.totalPages;
+                    $scope.isLoading = false;
+                } else {
+                    $scope.khuyenMais = [];
+                    toastr["error"]("Không có khuyến mại nào");
+                }
+                console.log(response.data);
             })
             .catch(function (error) {
                 console.log(error);
@@ -440,6 +448,7 @@ app.controller("khuyenMaiListController", function ($scope, $http, $window, $loc
             $scope.den = null;
             getData(1);
             $scope.searching = false;
+            $scope.status = 1;
         } else {
             toastr["warning"]("Bạn đang không tìm kiếm");
         }
@@ -450,7 +459,6 @@ app.controller("khuyenMaiListController", function ($scope, $http, $window, $loc
     $scope.$watch('curPage + numPerPage', function () {
         getData($scope.curPage);
     });
-
 
 });
 

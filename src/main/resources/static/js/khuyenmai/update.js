@@ -260,7 +260,7 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
         if (bienTheGiay.phanTramGiam) {
             bienTheGiay.errors = null;
         } else {
-            bienTheGiay.errors = 'Phần trăm giảm phải là số nguyên từ 1 - 100';
+            bienTheGiay.errors = 'Phần trăm giảm phải là số nguyên từ 1 - 50';
         }
     }
 

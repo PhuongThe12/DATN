@@ -13,26 +13,19 @@
 
         <div class="d-flex justify-content-start radio-filter">
             <div class="custom-radio">
-                <input type="radio" id="all" name="status" ng-model="status" value="-1"
-                       ng-checked="status != 0 && status != 1"
-                       ng-change="changeRadio(-1)">
-                <label class="radio-label" for="all">Tất cả</label>
-            </div>
-
-            <div class="custom-radio">
                 <input type="radio" id="active" name="status" ng-model="status" value="1" ng-checked="status == 1"
                        ng-change="changeRadio(1)">
                 <label class="radio-label" for="active">Đang diễn ra</label>
             </div>
 
             <div class="custom-radio">
-                <input type="radio" id="sapDienRa" name="status" ng-model="status" value="0" ng-checked="status == 0"
+                <input type="radio" id="sapDienRa" name="status" ng-model="status" value="0" ng-checked="status == 2"
                        ng-change="changeRadio(2)">
                 <label class="radio-label" for="sapDienRa">Sắp diễn ra</label>
             </div>
 
             <div class="custom-radio">
-                <input type="radio" id="ketThuc" name="status" ng-model="status" value="0" ng-checked="status == 0"
+                <input type="radio" id="ketThuc" name="status" ng-model="status" value="0" ng-checked="status == 3"
                        ng-change="changeRadio(3)">
                 <label class="radio-label" for="ketThuc">Đã kết thúc</label>
             </div>
@@ -64,22 +57,24 @@
                     <td>
                         <h5>
                             <span ng-class="{
-                                'badge bd-success-custom': khuyenMai.trangThai == 1,
-                                'badge bd-danger-custom': khuyenMai.trangThai == 0,
-                                'badge bd-warning-custom': khuyenMai.trangThai == 2
+                                'badge bd-success-custom': status == 1,
+                                'badge bd-danger-custom': status == 0,
+                                'badge bd-warning-custom': status == 2 || status == 3
                             }">
-                                {{khuyenMai.trangThai == 1 ? 'Đang diễn ra' :
-                                (khuyenMai.trangThai == 0 ? 'Đã kết thúc' : 'Sắp diễn ra')}}
+                                {{status == 1 ? 'Đang diễn ra' :
+                                (status == 0 ? 'Đã kết thúc' :
+                                status == 2 ? 'Sắp diễn ra' :
+                                'Đã kết thúc')}}
                             </span>
 
                         </h5>
                     <td>
                         <div class="d-sm-inline-flex">
-                            <a ng-if="khuyenMai.trangThai != 1 && khuyenMai.trangThai != 0" class="btn btn-custom" ng-href="#/update/{{khuyenMai.id}}">
+                            <a ng-if="status == 2" class="btn btn-custom" ng-href="#/update/{{khuyenMai.id}}">
                                 <i class="far fa-edit"></i>
                             </a>
                             <a class="btn btn-custom" ng-click="detailKhuyenMai(khuyenMai.id)" data-bs-toggle="modal" data-bs-target="#showKhuyenMai"><i class="fas fa-eye"></i></a>
-                            <a class="btn btn-custom" ng-href="#/detail/{{khuyenMai.id}}">Kết thúc sớm</a>
+                            <button class="btn btn-custom" type="button" ng-click="anKhuyenMai(khuyenMai.id)" ng-show="status == 1">Ẩn</button>
                         </div>
                     </td>
                 </tr>
