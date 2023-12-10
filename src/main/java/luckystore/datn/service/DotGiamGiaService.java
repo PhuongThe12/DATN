@@ -19,7 +19,6 @@ public interface DotGiamGiaService {
 
     DotGiamGiaResponse updateDotGiamGia(Long id, DotGiamGiaRequest dotGiamGiaRequest);
 
-    void deleteDieuKien(Long id);
     DotGiamGiaResponse findById(Long id);
 
     List<DotGiamGiaResponse> getAllActive();

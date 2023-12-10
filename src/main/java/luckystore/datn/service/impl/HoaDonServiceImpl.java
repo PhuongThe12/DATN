@@ -381,6 +381,7 @@ public class HoaDonServiceImpl implements HoaDonService {
         return new KhachHangResponse(khachHang);
     }
 
+    @Transactional
     @Override
     public Long thanhToanHoaDonTaiQuay(HoaDonThanhToanTaiQuayRequest request) {
         HoaDon hoaDon = checkHoaDonChuaThanhToan(Long.valueOf(request.getIdHoaDon()));
@@ -398,9 +399,14 @@ public class HoaDonServiceImpl implements HoaDonService {
                 throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("dieuKienError", "Đợt giảm giá đã hết hạn")));
             }
 
-            if (dieuKien.getDotGiamGia().getNgayKetThuc().before(new Date())) {
+            if (dieuKien.getDotGiamGia().getNgayKetThuc().isBefore(LocalDateTime.now())) {
                 throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("dieuKienError", "Đợt giảm giá đã hết hạn")));
             }
+
+            if(dieuKien.getDotGiamGia().getNgayBatDau().isAfter(LocalDateTime.now())) {
+                throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("dieuKienError", "Đợt giảm giá chưa diễn ra")));
+            }
+
             hoaDon.setDieuKien(dieuKien);
         }
 
@@ -471,8 +477,7 @@ public class HoaDonServiceImpl implements HoaDonService {
             tienThanhToan = tienThanhToan.add(request.getTienChuyenKhoan());
         }
 
-        System.out.println(tienThanhToan.toBigInteger() + ", tổng tiền: " + tongTien.subtract(hoaDon.getTienGiam()).toBigInteger());
-        if (tienThanhToan.toBigInteger().compareTo(tongTien.subtract(hoaDon.getTienGiam()).toBigInteger()) != 0) {
+        if (tienThanhToan.toBigInteger().compareTo(tongTien.subtract(hoaDon.getTienGiam()).toBigInteger()) != 0 && tongTien.subtract(hoaDon.getTienGiam()).compareTo(BigDecimal.ZERO) >  0) {
             throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("khuyenMaiError", "Một số khuyến mại đã thay đổi vui lòng thử lại")));
         }
 
@@ -544,6 +549,7 @@ public class HoaDonServiceImpl implements HoaDonService {
         }
     }
 
+    @Transactional
     @Override
     public Long datHangTaiQuay(DatHangTaiQuayRequest request) {
         HoaDon hoaDon = checkHoaDonChuaThanhToan(Long.valueOf(request.getId()));
@@ -616,7 +622,7 @@ public class HoaDonServiceImpl implements HoaDonService {
         System.out.println("tiền thanh toán: " + tienThanhToan + ": tiền ship: " + hoaDon.getPhiShip());
         System.out.println("Tổng tiền: " + tongTien + ": khuyens mại: " + hoaDon.getTienGiam());
         System.out.println("phai tra: " + (tienThanhToan.subtract(hoaDon.getPhiShip())).toBigInteger() + ": sau : " + tongTien.subtract(hoaDon.getTienGiam()).toBigInteger() + ", soSanh: " + (tienThanhToan.subtract(hoaDon.getPhiShip())).toBigInteger().compareTo(tongTien.subtract(hoaDon.getTienGiam()).toBigInteger()));
-        if (tienThanhToan.toBigInteger().compareTo(tongTien.subtract(hoaDon.getTienGiam()).toBigInteger()) != 0) {
+        if (tienThanhToan.toBigInteger().compareTo(tongTien.subtract(hoaDon.getTienGiam()).toBigInteger()) != 0 && tongTien.subtract(hoaDon.getTienGiam()).compareTo(BigDecimal.ZERO) >  0) {
             throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("khuyenMaiError", "Một số khuyến mại đã thay đổi vui lòng thử lại")));
         }
 
@@ -716,6 +722,7 @@ public class HoaDonServiceImpl implements HoaDonService {
         return count.get();
     }
 
+    @Transactional
     @Override
     public int xacNhanGiaoHang(List<Long> ids) {
         if (ids.isEmpty()) {
@@ -741,6 +748,7 @@ public class HoaDonServiceImpl implements HoaDonService {
         return count.get();
     }
 
+    @Transactional
     @Override
     public int hoanThanhDonHang(List<Long> ids) {
         if (ids.isEmpty()) {

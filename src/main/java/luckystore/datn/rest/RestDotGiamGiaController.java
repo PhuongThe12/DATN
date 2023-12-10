@@ -24,7 +24,6 @@ public class RestDotGiamGiaController {
 
     @PostMapping
     public ResponseEntity addDotGiamGia(@Valid @RequestBody DotGiamGiaRequest dotGiamGiaRequest, BindingResult result) {
-        System.out.println(dotGiamGiaRequest.toString());
         ResponseEntity errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
@@ -65,15 +64,6 @@ public class RestDotGiamGiaController {
         if (errorJson != null) return errorJson;
 
         return new ResponseEntity<>(dotGiamGiaService.updateDotGiamGia(id, dotGiamGiaRequest), HttpStatus.OK);
-    }
-
-    @DeleteMapping("/delete-dieu-kien/{id}")
-    public void deleteDieuKien(@PathVariable("id") Long id) {
-        dotGiamGiaService.deleteDieuKien(id);
-    }
-    @GetMapping("/get-all-active")
-    public ResponseEntity<?> getAllActive() {
-        return new ResponseEntity<>(dotGiamGiaService.getAllActive(), HttpStatus.OK);
     }
 
 }
