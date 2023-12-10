@@ -42,7 +42,7 @@ app.controller("addDotGiamGiaController", function ($scope, $http, $location) {
         for (var i = 0; i < $scope.dotGiamGia.dieuKienRequests.length; i++) {
             if (i !== index) {
                 // So sánh các thuộc tính của điều kiện hiện tại với các điều kiện đã có
-                if (currentCondition.tongHoaDon === $scope.dotGiamGia.dieuKienRequests[i].tongHoaDon &&
+                if (currentCondition.tongHoaDon === $scope.dotGiamGia.dieuKienRequests[i].tongHoaDon ||
                     currentCondition.phanTramGiam === $scope.dotGiamGia.dieuKienRequests[i].phanTramGiam) {
                     return true; // Điều kiện trùng lặp
                 }

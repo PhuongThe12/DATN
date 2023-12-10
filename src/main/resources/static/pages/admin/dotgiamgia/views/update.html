@@ -70,22 +70,22 @@
     <div class="row" ng-repeat="dieuKien in dotGiamGia.dieuKienResponses">
         <div class="col-md-2">
             <div class="form-group">
-                <input type="text" class="form-control" id="tongHoaDon" name="tongHoaDon{{$index}}"
+                <input type="number" class="form-control" id="tongHoaDon" name="tongHoaDon{{$index}}"
                        ng-model="dieuKien.tongHoaDon" ng-change="change(dotGiamGiaForm['tongHoaDon' + $index])"
-                       ng-required="true" placeholder="Tổng hóa đơn" ng-pattern="/^[0-9][0-9]*$"/>
+                       ng-required="true" placeholder="Tổng hóa đơn" step="1" min="0"/>
                 <small class="error-message"
-                       ng-show="(dotGiamGiaForm['tongHoaDon' + $index].$dirty || dotGiamGiaForm['tongHoaDon' + $index].$touched) && (dotGiamGiaForm['tongHoaDon' + $index].$error.required || dotGiamGiaForm['tongHoaDon' + $index].$error.pattern)">Tổng
+                       ng-show="(dotGiamGiaForm['tongHoaDon' + $index].$dirty || dotGiamGiaForm['tongHoaDon' + $index].$touched) && (dotGiamGiaForm['tongHoaDon' + $index].$error.required || dotGiamGiaForm['tongHoaDon' + $index].$error.pattern || dotGiamGiaForm['tongHoaDon' + $index].$error.min || dotGiamGiaForm['tongHoaDon' + $index].$error.max)">Tổng
                     hóa đơn phải >=0</small>
             </div>
         </div>
         <div class="col-md-2">
             <div class="form-group">
-                <input type="text" class="form-control" id="phanTramGiam" name="phanTramGiam{{$index}}"
+                <input type="number" class="form-control" id="phanTramGiam" name="phanTramGiam{{$index}}"
                        ng-model="dieuKien.phanTramGiam" ng-change="change(dotGiamGiaForm['phanTramGiam' + $index])"
-                       ng-required="true" placeholder="% giảm" ng-pattern="/^([1-9][0-9]?|100)$/"/>
+                       ng-required="true" placeholder="% giảm" step="1" max="50" min="1"/>
                 <small class="error-message"
                        ng-show="(dotGiamGiaForm['phanTramGiam' + $index].$dirty || dotGiamGiaForm['phanTramGiam' + $index].$touched) && (dotGiamGiaForm['phanTramGiam' + $index].$error.required || dotGiamGiaForm['phanTramGiam' + $index].$error.pattern)">Vui
-                    lòng nhập một số từ 1 đến 100</small>
+                    lòng nhập một số nguyên từ 1 đến 50</small>
             </div>
         </div>
         <div class="col-md-2">

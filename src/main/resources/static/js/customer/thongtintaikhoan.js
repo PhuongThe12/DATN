@@ -87,7 +87,6 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
             console.error('Lỗi xóa điều kiện giảm giá', response);
         });
         console.log("Điều kiện: ", dieuKien)
-        $location.path("/thong-tin-tai-khoan");
     };
 
 
