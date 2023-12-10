@@ -68,6 +68,8 @@ public class GiayResponse {
 
     private BigDecimal giaDen;
 
+    private Long soLuongThongKe;
+
     public GiayResponse(Long id) {
         this.id = id;
     }
@@ -151,4 +153,11 @@ public class GiayResponse {
         lstAnh.add(ImageHubServiceImpl.getBase64FromFileStatic(linkAnh));
     }
 
+    public GiayResponse(Giay giay, Long soLuongThongKe) {
+        this.id = giay.getId();
+        this.ten = giay.getTen();
+        this.lstAnh = giay.getLstAnh().stream().sorted(Comparator.comparingInt(HinhAnh::getUuTien))
+                .map(anh -> ImageHubServiceImpl.getBase64FromFileStatic(anh.getLink())).collect(Collectors.toList());
+        this.soLuongThongKe = soLuongThongKe;
+    }
 }

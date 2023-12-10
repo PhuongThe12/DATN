@@ -5,16 +5,15 @@ app.config(function ($routeProvider, $locationProvider) {
         .when("/list", {
             templateUrl: '/pages/admin/khuyenmai/views/list.html',
             controller: 'khuyenMaiListController'
-        }).when("/detail/:id", {
-        templateUrl: '/pages/admin/khuyenmai/views/detail.html',
-        controller: 'detailKhuyenMaiController'
-    }).when("/update/:id", {
-        templateUrl: '/pages/admin/khuyenmai/views/update.html',
-        controller: 'updateKhuyenMaiController'
-    }).when("/add", {
-        templateUrl: '/pages/admin/khuyenmai/views/add.html',
-        controller: 'addKhuyenMaiController'
-    })
+        })
+        .when("/update/:id", {
+            templateUrl: '/pages/admin/khuyenmai/views/update.html',
+            controller: 'updateKhuyenMaiController'
+        })
+        .when("/add", {
+            templateUrl: '/pages/admin/khuyenmai/views/add.html',
+            controller: 'addKhuyenMaiController'
+        })
         .otherwise({redirectTo: '/list'});
 });
 
@@ -202,7 +201,7 @@ app.controller("addKhuyenMaiController", function ($scope, $http, $location) {
         if (bienTheGiay.phanTramGiam) {
             bienTheGiay.errors = null;
         } else {
-            bienTheGiay.errors = 'Phần trăm giảm phải là số nguyên từ 1 - 100';
+            bienTheGiay.errors = 'Phần trăm giảm phải là số nguyên từ 1 - 50';
         }
     }
 
@@ -263,7 +262,7 @@ app.controller("addKhuyenMaiController", function ($scope, $http, $location) {
         $scope.khuyenMai.ngayBatDau.setHours($scope.khuyenMai.ngayBatDau.getHours() + 7);
         $scope.khuyenMai.ngayKetThuc.setHours($scope.khuyenMai.ngayKetThuc.getHours() + 7);
 
-        if(invalidCount !== 0) {
+        if (invalidCount !== 0) {
             toastr["warning"]("Vui lòng kiểm tra lại các trường không hợp lệ");
             return;
         }
@@ -379,7 +378,6 @@ app.controller("khuyenMaiListController", function ($scope, $http, $window, $loc
         $scope.itemsPerPage = 5,
         $scope.maxSize = 5;
 
-    let hoaDonSearch = {};
     $scope.searching = true;
 
     $scope.search = function () {
@@ -395,36 +393,58 @@ app.controller("khuyenMaiListController", function ($scope, $http, $window, $loc
     function getData(currentPage) {
         $scope.isLoading = true;
         let apiUrl = host + '/rest/admin/khuyen-mai/search';
+        let kmSearch = {};
 
-        if ($scope.searchText > 0) {
-            hoaDonSearch.id = ($scope.searchText + "").trim();
+        if ($scope.searchText.length > 0) {
+            kmSearch.ten = ($scope.searchText + "").trim();
         } else {
-            hoaDonSearch.id = null;
+            kmSearch.ten = null;
         }
 
-        if ($scope.status === -1) {
-            hoaDonSearch.trangThai = -1;
-        } else if ($scope.status === 1) {
-            hoaDonSearch.trangThai = 1;
+        if ($scope.status === 1) {
+            kmSearch.status = 1;
+        } else if ($scope.status === 2) {
+            kmSearch.status = 2;
+        } else if ($scope.status === 3) {
+            kmSearch.status = 3;
+        } else if ($scope.status === 0) {
+            kmSearch.status = 0;
         } else {
-            // toastr["error"]("Lấy dữ liệu thất bại. Vui lòng thử lại");
-            $scope.status = 1;
-            hoaDonSearch.trangThai = 1;
+            kmSearch.status = 1;
         }
 
 
-        hoaDonSearch.tuNgay = $scope.tu;
+        kmSearch.ngayBatDau = $scope.tu;
+        if ($scope.tu && kmSearch.ngayBatDau.getHours() === 0) {
+            kmSearch.ngayBatDau.setHours(kmSearch.ngayBatDau.getHours() + 7);
+        }
+        kmSearch.ngayKetThuc = $scope.den;
+        if ($scope.den && kmSearch.ngayKetThuc.getHours() === 0) {
+            kmSearch.ngayKetThuc.setHours(kmSearch.ngayKetThuc.getHours() + 7);
+        }
 
-        hoaDonSearch.denNgay = $scope.den;
+        kmSearch.currentPage = currentPage;
+        kmSearch.pageSize = $scope.itemsPerPage;
 
-        hoaDonSearch.currentPage = currentPage;
-        hoaDonSearch.pageSize = $scope.itemsPerPage;
-
-        $http.post(apiUrl, hoaDonSearch)
+        $http.post(apiUrl, kmSearch)
             .then(function (response) {
-                $scope.hoaDons = response.data.content;
-                $scope.numOfPages = response.data.totalPages;
-                $scope.isLoading = false;
+                if (response.data) {
+                    $scope.khuyenMais = response.data.content;
+                    $scope.numOfPages = response.data.totalPages;
+                    if ($scope.status === 0) {
+                        $scope.khuyenMais.forEach(item => {
+                            const nbd = new Date(item.ngayBatDau);
+                            const nkt = new Date(item.ngayKetThuc);
+                            if (nbd <= new Date() <= nkt) {
+                                item.hienThi = true;
+                            }
+                        })
+                    }
+                    $scope.isLoading = false;
+                } else {
+                    $scope.khuyenMais = [];
+                    toastr["error"]("Không có khuyến mại nào");
+                }
             })
             .catch(function (error) {
                 console.log(error);
@@ -440,6 +460,7 @@ app.controller("khuyenMaiListController", function ($scope, $http, $window, $loc
             $scope.den = null;
             getData(1);
             $scope.searching = false;
+            $scope.status = 1;
         } else {
             toastr["warning"]("Bạn đang không tìm kiếm");
         }
@@ -451,6 +472,73 @@ app.controller("khuyenMaiListController", function ($scope, $http, $window, $loc
         getData($scope.curPage);
     });
 
+    $scope.hienThiKhuyenMai = function (khuyenMai) {
+        const nbd = new Date(khuyenMai.ngayBatDau);
+        const nkt = new Date(khuyenMai.ngayKetThuc);
+        if (nbd <= new Date() <= nkt) {
+            Swal.fire({
+                text: "Xác nhận hiển thị khuyến mại?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Đồng ý",
+                cancelButtonText: "Hủy"
+            }).then((result) => {
+                $http.put(host + '/rest/admin/khuyen-mai/hien-thi/' + khuyenMai.id)
+                    .then(function (response) {
+                        toastr["success"]("Hiển thị thành công");
+                        $scope.changeRadio(1);
+                    })
+                    .catch(function (error) {
+                        if (error.status === 406) {
+                            toastr["error"](error.data.data);
+                        } else {
+                            console.log(error);
+                            toastr["error"]("Lấy dữ liệu thất bại");
+                        }
+                        $scope.isLoading = false;
+                    });
+
+            });
+        } else {
+            toastr["error"]("Khuyến mại đã kết thúc không được phép chỉnh sửa");
+        }
+    }
+
+    $scope.anKhuyenMai = function (khuyenMai) {
+        const nbd = new Date(khuyenMai.ngayBatDau);
+        const nkt = new Date(khuyenMai.ngayKetThuc);
+        if (nbd <= new Date() <= nkt) {
+            Swal.fire({
+                text: "Xác nhận ẩn khuyến mại?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Đồng ý",
+                cancelButtonText: "Hủy"
+            }).then((result) => {
+                $http.put(host + '/rest/admin/khuyen-mai/an/' + khuyenMai.id)
+                    .then(function (response) {
+                        toastr["success"]("Ẩn thành công");
+                        $scope.changeRadio(0);
+                    })
+                    .catch(function (error) {
+                        if (error.status === 406) {
+                            toastr["error"](error.data.data);
+                        } else {
+                            console.log(error);
+                            toastr["error"]("Lấy dữ liệu thất bại");
+                        }
+                        $scope.isLoading = false;
+                    });
+
+            });
+        } else {
+            toastr["error"]("Khuyến mại đã kết thúc không được phép chỉnh sửa");
+        }
+    }
 
 });
 

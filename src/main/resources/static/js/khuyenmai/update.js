@@ -48,12 +48,12 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
                     $scope.khuyenMaiDetail.ngayKetThuc = ngayKetThucDate;
 
 
-                    if($scope.khuyenMaiDetail.ngayBatDau <= getCurrentDay() && $scope.khuyenMaiDetail.ngayKetThuc >= getCurrentDay()) {
+                    if ($scope.khuyenMaiDetail.ngayBatDau <= getCurrentDay() && $scope.khuyenMaiDetail.ngayKetThuc >= getCurrentDay()) {
                         toastr["warning"]("Khuyến mại đang diễn ra không được cập nhật");
                         $location.path("/list");
                     }
 
-                    if($scope.khuyenMaiDetail.ngayKetThuc <= getCurrentDay()) {
+                    if ($scope.khuyenMaiDetail.ngayKetThuc <= getCurrentDay()) {
                         toastr["warning"]("Khuyến mại đã kết thúc không được cập nhật");
                         $location.path("/list");
                     }
@@ -245,7 +245,7 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
 
         newTableData.forEach(item => {
             $scope.selectedGiay.push(item.id);
-            if(Array.isArray(item.lstBienTheGiay)) {
+            if (Array.isArray(item.lstBienTheGiay)) {
                 item.lstBienTheGiay.forEach(bt => {
                     bt.phanTramGiam = 0;
                 })
@@ -260,7 +260,7 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
         if (bienTheGiay.phanTramGiam) {
             bienTheGiay.errors = null;
         } else {
-            bienTheGiay.errors = 'Phần trăm giảm phải là số nguyên từ 1 - 100';
+            bienTheGiay.errors = 'Phần trăm giảm phải là số nguyên từ 1 - 50';
         }
     }
 
@@ -304,7 +304,7 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
             });
         });
 
-        if(invalidCount !== 0) {
+        if (invalidCount !== 0) {
             toastr["warning"]("Vui lòng kiểm tra lại các trường không hợp lệ");
             return;
         }
@@ -330,24 +330,25 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
             cancelButtonText: "Hủy"
         }).then((result) => {
             if (result.isConfirmed) {
+                $scope.isLoading = true;
                 $http.put(host + '/rest/admin/khuyen-mai/' + $scope.khuyenMai.id, $scope.khuyenMai)
                     .then(function (response) {
                         if (response.status === 200) {
                             toastr["success"]("Thêm thành công");
                         }
                         $location.path("/list");
+                        $scope.isLoading = false;
                     })
                     .catch(function (error) {
-                        if(error.status === 406) {
+                        if (error.status === 406) {
                             toastr["error"](error.data.error);
-                        }
-                        if (error.status === 400) {
+                            $location.path("/list");
+                        } else if (error.status === 400) {
                             toastr["error"]("Thêm thất bại. Vui lòng kiểm tra lại");
                             $scope.khuyenMaiForm.ten.$dirty = false;
                             $scope.khuyenMaiForm.ghiChu.$dirty = false;
                             $scope.errors = error.data;
-                        }
-                        if (error.status === 409) {
+                        } else if (error.status === 409) {
 
                             Swal.fire({
                                 text: error.data.length + " sản phẩm đang tham gia khuyến mãi khác trong thời gian bạn đã chọn. Bạn phải loại bỏ các sản phẩm này?",
@@ -364,6 +365,7 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
 
                             })
                         }
+                        $scope.isLoading = false;
                     });
             }
         });

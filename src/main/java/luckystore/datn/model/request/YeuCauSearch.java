@@ -1,31 +1,36 @@
 package luckystore.datn.model.request;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DotGiamGiaRequest {
+public class YeuCauSearch {
 
-    private String ten;
+    private Long idYeuCau;
+
+    private String idNhanVien;
+
+    private String tenKhachHang;
+
+    private String soDienThoaiKhachHang;
+
+    private Integer trangThai;
 
     private LocalDateTime ngayBatDau;
 
     private LocalDateTime ngayKetThuc;
 
-    private String ghiChu;
+    private String email;
 
-    private Integer trangThai;
+    private Integer currentPage = 1;
 
-    private List<DieuKienRequest> dieuKienRequests;
+    private Integer pageSize = 5;
 
 }
-

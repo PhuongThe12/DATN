@@ -68,6 +68,16 @@ public class RestKhuyenMaiController {
         return ResponseEntity.ok(khuyenMaiService.searchingKhuyenMai(kmSearch));
     }
 
+    @PutMapping("/hien-thi/{id}")
+    public ResponseEntity<?> hienThiKhuyenMai(@PathVariable("id")Long id) {
+        return ResponseEntity.ok(khuyenMaiService.hienThiKhuyenMai(id));
+    }
+
+ @PutMapping("/an/{id}")
+    public ResponseEntity<?> anKhuyenMai(@PathVariable("id")Long id) {
+        return ResponseEntity.ok(khuyenMaiService.anKhuyenMai(id));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity getKhuyenMai(@PathVariable("id") Long id) {
         return new ResponseEntity(khuyenMaiService.findById(id), HttpStatus.OK);

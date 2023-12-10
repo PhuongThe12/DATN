@@ -33,16 +33,16 @@ public class KhuyenMai {
     @Column(name = "TEN", columnDefinition = "NVARCHAR(255)", nullable = false)
     private String ten;
 
-    @Column(name = "NGAY_BAT_DAU", columnDefinition = "DATETIME", nullable = false)
+    @Column(name = "NGAY_BAT_DAU")
     private LocalDateTime ngayBatDau;
 
-    @Column(name = "NGAY_KET_THUC", columnDefinition = "DATETIME", nullable = false)
+    @Column(name = "NGAY_KET_THUC")
     private LocalDateTime ngayKetThuc;
 
-    @Column(name = "TRANG_THAI", columnDefinition = "INT", nullable = false)
+    @Column(name = "TRANG_THAI", nullable = false)
     private Integer trangThai;
 
-    @Column(name = "GHI_CHU", columnDefinition = "NVARCHAR(255)", nullable = false)
+    @Column(name = "GHI_CHU", nullable = false)
     private String ghiChu;
 
     @OneToMany(mappedBy = "khuyenMai", cascade = CascadeType.ALL, orphanRemoval = true)

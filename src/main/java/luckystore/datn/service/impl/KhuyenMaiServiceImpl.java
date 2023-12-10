@@ -214,7 +214,40 @@ public class KhuyenMaiServiceImpl implements KhuyenMaiService {
     @Override
     public Page<KhuyenMaiResponse> searchingKhuyenMai(KhuyenMaiSearch kmSearch) {
         Pageable pageable = PageRequest.of(kmSearch.getCurrentPage() -1, kmSearch.getPageSize());
-        return khuyenMaiRepository.getSearchingKhuyenMai(kmSearch, pageable);
+        if(kmSearch.getStatus() == 0) {
+            return khuyenMaiRepository.getSearchingKhuyenMaiDaAn(kmSearch, pageable);
+        } else if(kmSearch.getStatus() == 1) {
+            return khuyenMaiRepository.getSearchingKhuyenMaiDangDienRa(kmSearch, pageable);
+        } else if(kmSearch.getStatus() == 2) {
+            return khuyenMaiRepository.getSearchingKhuyenMaiSapDienRa(kmSearch, pageable);
+        } else if(kmSearch.getStatus() == 3) {
+            return khuyenMaiRepository.getSearchingKhuyenMaiDaKetThuc(kmSearch, pageable);
+        }
+        return khuyenMaiRepository.getSearchingKhuyenMaiDangDienRa(kmSearch, pageable);
+    }
+
+    @Override
+    public Long hienThiKhuyenMai(Long id) {
+        KhuyenMai khuyenMai = khuyenMaiRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND));
+        if(khuyenMai.getNgayBatDau().isBefore(LocalDateTime.now()) && khuyenMai.getNgayKetThuc().isAfter(LocalDateTime.now())) {
+            khuyenMai.setTrangThai(1);
+            khuyenMaiRepository.save(khuyenMai);
+            return id;
+        } else {
+            throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Khuyến mại đã kết thúc hoặc chưa bắt đầu không thể thay đổi")));
+        }
+    }
+
+    @Override
+    public Long anKhuyenMai(Long id) {
+        KhuyenMai khuyenMai = khuyenMaiRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND));
+        if(khuyenMai.getNgayBatDau().isBefore(LocalDateTime.now()) && khuyenMai.getNgayKetThuc().isAfter(LocalDateTime.now())) {
+            khuyenMai.setTrangThai(0);
+            khuyenMaiRepository.save(khuyenMai);
+            return id;
+        } else {
+            throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Khuyến mại đã kết thúc hoặc chưa bắt đầu không thể thay đổi")));
+        }
     }
 
 

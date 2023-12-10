@@ -18,7 +18,7 @@ public class KhuyenMaiChiTietRequest {
 
     @NotNull(message = "Không được null")
     @Min(value = 1, message = "Không được < 1")
-    @Max(value = 100, message = "Không được > 100")
+    @Max(value = 50, message = "Không được > 50")
     private Integer phanTramGiam;
 
 }
