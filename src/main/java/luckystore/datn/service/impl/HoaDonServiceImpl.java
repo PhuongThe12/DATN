@@ -399,7 +399,7 @@ public class HoaDonServiceImpl implements HoaDonService {
                 throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("dieuKienError", "Đợt giảm giá đã hết hạn")));
             }
 
-            if (dieuKien.getDotGiamGia().getNgayKetThuc().before(new Date())) {
+            if (dieuKien.getDotGiamGia().getNgayKetThuc().isBefore(LocalDateTime.now())) {
                 throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("dieuKienError", "Đợt giảm giá đã hết hạn")));
             }
             hoaDon.setDieuKien(dieuKien);
