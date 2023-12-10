@@ -1013,6 +1013,8 @@ public class GiayServiceImpl implements GiayService {
         return new ArrayList<>(giayResponsesMap.values());
     }
 
+
+
     @Override
     public GiayResponse getResponseById(Long id) {
         GiayResponse giayResponse = giayRepository.findResponseById(id);
@@ -1047,6 +1049,12 @@ public class GiayServiceImpl implements GiayService {
         }
 
         return giayResponse;
+    }
+
+    @Override
+    public Page<GiayResponse> findTopSellingShoes(ThongKeRequest thongKeRequest) {
+        Pageable pageable = PageRequest.of(thongKeRequest.getCurrentPage() - 1, thongKeRequest.getPageSize());
+        return giayRepository.findTopSellingShoes(pageable);
     }
 
     @Override

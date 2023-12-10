@@ -46,6 +46,7 @@ public interface GiayService {
 
     List<GiayResponse> getAllGiayWithoutDiscount(KhuyenMaiSearch kmSearch);
 
+    Page<GiayResponse> findTopSellingShoes(ThongKeRequest thongKeRequest);
     Page<GiayResponse> findTopSellingShoesInLastDays(ThongKeRequest thongKeRequest);
     Page<BienTheGiayResponse> findTopSellingShoeVariantInLastDays(ThongKeRequest thongKeRequest);
     Page<GiayResponse> findTopFavoritedShoes(ThongKeRequest thongKeRequest);

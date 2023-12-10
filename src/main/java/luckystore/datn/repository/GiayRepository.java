@@ -147,6 +147,17 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
             "order by count(hdc) desc")
     Page<GiayResponse> findTopSellingShoesInLastDays(LocalDateTime targetDateTime, Pageable pageable);
 
+    //giày bán chạy nhất
+    @Query("select new luckystore.datn.model.response.GiayResponse(g, count(hdc)) " +
+            "from HoaDonChiTiet hdc " +
+            "join hdc.bienTheGiay btg " +
+            "join btg.giay g " +
+            "join hdc.hoaDon hd " +
+            "where hd.trangThai = 5 " +
+            "group by g " +
+            "order by count(hdc) desc")
+    Page<GiayResponse> findTopSellingShoes(Pageable pageable);
+
     //top x giày xuất hiện trong sản phẩm yêu thích
     @Query("select new luckystore.datn.model.response.GiayResponse(g, count(spyt)) " +
             "from SanPhamYeuThich spyt " +

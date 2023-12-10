@@ -25,6 +25,13 @@ public class RestThongKeConTroller {
         this.lyDoService = lyDoService;
     }
 
+
+    // Danh sách giày bán chạy
+    @PostMapping("/giay-ban-chay")
+    public ResponseEntity<?> findTopSellingShoes(@RequestBody ThongKeRequest thongKeRequest){
+        return new ResponseEntity<>(giayService.findTopSellingShoes(thongKeRequest), HttpStatus.OK);
+    }
+
     //Top x giày bán chạy trong y ngày
     @PostMapping("/top-giay-ban-chay")
     public ResponseEntity<?> findTopSellingShoesInLastDays(@RequestBody ThongKeRequest thongKeRequest){
