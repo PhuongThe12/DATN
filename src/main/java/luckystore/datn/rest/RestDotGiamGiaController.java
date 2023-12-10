@@ -2,6 +2,7 @@ package luckystore.datn.rest;
 
 import jakarta.validation.Valid;
 import luckystore.datn.model.request.DotGiamGiaRequest;
+import luckystore.datn.model.request.KhuyenMaiSearch;
 import luckystore.datn.model.request.MauSacRequest;
 import luckystore.datn.service.DotGiamGiaService;
 import luckystore.datn.util.JsonString;
@@ -58,6 +59,22 @@ public class RestDotGiamGiaController {
         }
         return null;
     }
+
+    @PostMapping("/search")
+    public ResponseEntity<?> searchingDotGiamGia(@RequestBody KhuyenMaiSearch kmSearch) {
+        return ResponseEntity.ok(dotGiamGiaService.searchingDotGiamGia(kmSearch));
+    }
+
+    @PutMapping("/hien-thi/{id}")
+    public ResponseEntity<?> hienThiDotGiamGia(@PathVariable("id")Long id) {
+        return ResponseEntity.ok(dotGiamGiaService.hienThiDotGiamGia(id));
+    }
+
+    @PutMapping("/an/{id}")
+    public ResponseEntity<?> anDotGiamGia(@PathVariable("id")Long id) {
+        return ResponseEntity.ok(dotGiamGiaService.anDotGiamGia(id));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<?> updateDotGiamGia(@PathVariable("id") Long id, @Valid @RequestBody DotGiamGiaRequest dotGiamGiaRequest, BindingResult result) {
         ResponseEntity<?> errorJson = getErrorJson(result);

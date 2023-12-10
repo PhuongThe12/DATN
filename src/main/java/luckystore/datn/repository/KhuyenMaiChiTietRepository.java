@@ -31,6 +31,10 @@ public interface KhuyenMaiChiTietRepository extends JpaRepository<KhuyenMaiChiTi
             "where km.id = :idKhuyenMai ")
     List<KhuyenMaiChiTietResponse> getAllByIdKhuyenMai(Long idKhuyenMai);
 
-
+    @Query("select new luckystore.datn.model.response.KhuyenMaiChiTietResponse(km.id, kmct.id, kmct.bienTheGiay.id, kmct.bienTheGiay.giaBan,kmct.bienTheGiay.mauSac.ten, kmct.bienTheGiay.kichThuoc.ten, kmct.phanTramGiam, kmct.bienTheGiay.giay.id, kmct.bienTheGiay.giay.ten) " +
+            " from KhuyenMaiChiTiet kmct " +
+            "inner join kmct.khuyenMai km " +
+            "where km.id in :ids ")
+    List<KhuyenMaiChiTietResponse> getAllByKhuyenMaiIds(List<Long> ids);
 
 }

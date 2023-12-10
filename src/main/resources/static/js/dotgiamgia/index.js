@@ -187,15 +187,11 @@ app.controller("dotGiamGiaListController", function ($scope, $http, $window, $lo
         $scope.itemsPerPage = 5,
         $scope.maxSize = 5;
 
-    let searchText;
+    $scope.searching = true;
 
     $scope.search = function () {
-        if (!$scope.searchText) {
-            toastr["error"]("Vui lòng nhập tên muốn tìm kiếm");
-            return;
-        }
-        searchText = $scope.searchText;
-        getData(1, searchText);
+        getData(1);
+        $scope.searching = true;
     };
 
     $scope.changeRadio = function (status) {
@@ -204,47 +200,158 @@ app.controller("dotGiamGiaListController", function ($scope, $http, $window, $lo
     }
 
     function getData(currentPage) {
-        let apiUrl = host + '/rest/admin/dot-giam-gia?page=' + currentPage;
-        if (searchText) {
-            apiUrl += '&search=' + searchText;
+        $scope.isLoading = true;
+        let apiUrl = host + '/rest/admin/dot-giam-gia/search';
+        let kmSearch = {};
+
+        if ($scope.searchText.length > 0) {
+            kmSearch.ten = ($scope.searchText + "").trim();
+        } else {
+            kmSearch.ten = null;
         }
 
-        if ($scope.status == 0) {
-            apiUrl += '&status=' + 0;
-        } else if ($scope.status == 1) {
-            apiUrl += '&status=' + 1;
+        if ($scope.status === 1) {
+            kmSearch.status = 1;
+        } else if ($scope.status === 2) {
+            kmSearch.status = 2;
+        } else if ($scope.status === 3) {
+            kmSearch.status = 3;
+        } else if ($scope.status === 0) {
+            kmSearch.status = 0;
+        } else {
+            kmSearch.status = 1;
         }
 
-        $http.get(apiUrl)
-            .then(function (response) {
-                $scope.dotGiamGias = response.data.content;
-                $scope.numOfPages = response.data.totalPages;
-            })
-            .catch(function (error) {
-                toastr["error"]("Lấy dữ liệu thất bại");
-                // window.location.href = feHost + '/trang-chu';
-            });
-    }
 
-    $scope.detailDotGiamGia = function (val) {
-        var id = val;
-        $http.get(host + '/rest/admin/dot-giam-gia/' + id)
+        kmSearch.ngayBatDau = $scope.tu;
+        if ($scope.tu && kmSearch.ngayBatDau.getHours() === 0) {
+            kmSearch.ngayBatDau.setHours(kmSearch.ngayBatDau.getHours() + 7);
+        }
+        kmSearch.ngayKetThuc = $scope.den;
+        if ($scope.den && kmSearch.ngayKetThuc.getHours() === 0) {
+            kmSearch.ngayKetThuc.setHours(kmSearch.ngayKetThuc.getHours() + 7);
+        }
+
+        kmSearch.currentPage = currentPage;
+        kmSearch.pageSize = $scope.itemsPerPage;
+
+        $http.post(apiUrl, kmSearch)
             .then(function (response) {
-                $scope.dotGiamGiaDetail = response.data;
-                const button = document.querySelector('[data-bs-target="#showDotGiamGia"]');
-                if (button) {
-                    button.click();
+                if (response.data) {
+                    $scope.dotGiamGias = response.data.content;
+                    $scope.numOfPages = response.data.totalPages;
+                    if ($scope.status === 0) {
+                        $scope.dotGiamGias.forEach(item => {
+                            const nbd = new Date(item.ngayBatDau);
+                            const nkt = new Date(item.ngayKetThuc);
+                            if (nbd <= new Date() <= nkt) {
+                                item.hienThi = true;
+                            }
+                        })
+                    }
+                    $scope.isLoading = false;
+                } else {
+                    $scope.dotGiamGias = [];
+                    toastr["error"]("Không có đợt giảm giá nào");
                 }
             })
             .catch(function (error) {
+                console.log(error);
                 toastr["error"]("Lấy dữ liệu thất bại");
+                $scope.isLoading = false;
             });
     }
+
+    $scope.resetSearch = function () {
+        if ($scope.searching) {
+            $scope.searchText = '';
+            $scope.tu = null;
+            $scope.den = null;
+            getData(1);
+            $scope.searching = false;
+            $scope.status = 1;
+        } else {
+            toastr["warning"]("Bạn đang không tìm kiếm");
+        }
+    }
+
+    $scope.resetSearch();
 
     $scope.$watch('curPage + numPerPage', function () {
         getData($scope.curPage);
     });
 
+    $scope.hienThiDotGiamGia = function (dotGiamGia) {
+        const nbd = new Date(dotGiamGia.ngayBatDau);
+        const nkt = new Date(dotGiamGia.ngayKetThuc);
+        if (nbd <= new Date() <= nkt) {
+            Swal.fire({
+                text: "Xác nhận hiển thị đợt giảm giá?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Đồng ý",
+                cancelButtonText: "Hủy"
+            }).then((result) => {
+                $http.put(host + '/rest/admin/dot-giam-gia/hien-thi/' + dotGiamGia.id)
+                    .then(function (response) {
+                        toastr["success"]("Hiển thị thành công");
+                        $scope.changeRadio(1);
+                    })
+                    .catch(function (error) {
+                        if (error.status === 406) {
+                            toastr["error"](error.data.data);
+                        } else {
+                            console.log(error);
+                            toastr["error"]("Lấy dữ liệu thất bại");
+                        }
+                        $scope.isLoading = false;
+                    });
+
+            });
+        } else {
+            toastr["error"]("Đợt giảm giá đã kết thúc không được phép chỉnh sửa");
+        }
+    }
+
+    $scope.anDotGiamGia = function (dotGiamGia) {
+        const nbd = new Date(dotGiamGia.ngayBatDau);
+        const nkt = new Date(dotGiamGia.ngayKetThuc);
+        if (nbd <= new Date() <= nkt) {
+            Swal.fire({
+                text: "Xác nhận ẩn đợt giảm giá?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Đồng ý",
+                cancelButtonText: "Hủy"
+            }).then((result) => {
+                $http.put(host + '/rest/admin/dot-giam-gia/an/' + dotGiamGia.id)
+                    .then(function (response) {
+                        toastr["success"]("Ẩn thành công");
+                        $scope.changeRadio(0);
+                    })
+                    .catch(function (error) {
+                        if (error.status === 406) {
+                            toastr["error"](error.data.data);
+                        } else {
+                            console.log(error);
+                            toastr["error"]("Lấy dữ liệu thất bại");
+                        }
+                        $scope.isLoading = false;
+                    });
+
+            });
+        } else {
+            toastr["error"]("Đợt giảm giá đã kết thúc không được phép chỉnh sửa");
+        }
+    }
+
+    $scope.detailDotGiamGia = function (val) {
+        $scope.dotGiamGiaDetail = val;
+    }
 
 });
 
@@ -253,11 +360,19 @@ app.controller("updateDotGiamGiaController", function ($scope, $http, $location,
     $scope.dotGiamGia.id = $routeParams.id;
     $scope.dotGiamGia.dieuKienRequests = [];
 
+    let getCurrentDay = function () {
+        const current = new Date();
+        current.setHours(0);
+        current.setMinutes(0);
+        current.setMilliseconds(0);
+        current.setSeconds(0);
+        return current;
+    }
+
     $http.get(host + '/rest/admin/dot-giam-gia/' + $scope.dotGiamGia.id)
         .then(function (response) {
             if (response.status === 200) {
                 $scope.dotGiamGia = response.data;
-                console.log($scope.dotGiamGia)
 
                 var ngayBatDau = $scope.dotGiamGia.ngayBatDau;
                 var object = new Date(ngayBatDau);
@@ -266,6 +381,16 @@ app.controller("updateDotGiamGiaController", function ($scope, $http, $location,
                 var ngayKetThuc = $scope.dotGiamGia.ngayKetThuc;
                 var object = new Date(ngayKetThuc);
                 $scope.dotGiamGia.ngayKetThuc = object;
+
+                if ($scope.dotGiamGia.ngayBatDau <= getCurrentDay() && $scope.dotGiamGia.ngayKetThuc >= getCurrentDay()) {
+                    toastr["warning"]("Đợt giảm giá đang diễn ra không được cập nhật");
+                    $location.path("/list");
+                }
+
+                if ($scope.dotGiamGia.ngayKetThuc <= getCurrentDay()) {
+                    toastr["warning"]("Đợt giảm giá đã kết thúc không được cập nhật");
+                    $location.path("/list");
+                }
 
                 $scope.dotGiamGia.dieuKienRequests = $scope.dotGiamGia.dieuKienResponses;
                 $scope.dotGiamGia.dieuKienRequests.forEach(item => {
