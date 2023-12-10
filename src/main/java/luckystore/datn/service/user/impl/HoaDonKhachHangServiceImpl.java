@@ -5,7 +5,9 @@ import luckystore.datn.entity.*;
 import luckystore.datn.exception.ConflictException;
 import luckystore.datn.exception.InvalidIdException;
 import luckystore.datn.model.request.BienTheGiayGioHangRequest;
+import luckystore.datn.model.request.BienTheGiayRequest;
 import luckystore.datn.model.request.GioHangThanhToanRequest;
+import luckystore.datn.model.response.BienTheGiayResponse;
 import luckystore.datn.model.response.GioHangChiTietResponse;
 import luckystore.datn.model.response.GioHangResponse;
 import luckystore.datn.model.response.HoaDonResponse;
@@ -17,10 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
@@ -62,21 +61,36 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
             HoaDon hoaDonSaved = hoaDonRepository.save(getHoaDon(new HoaDon(), gioHangThanhToanRequest));
             Set<HoaDonChiTiet> hoaDonChiTiets = getBienTheGiay(gioHangThanhToanRequest.getBienTheGiayRequests(), hoaDonSaved);
             hoaDonChiTietRepository.saveAll(hoaDonChiTiets);
-            emailSenderService.sendEmailOrder("quanchun11022@gmail.com","abc",generateHtmlTable(hoaDonChiTiets),null);
+//            emailSenderService.sendEmailOrder("quanchun11022@gmail.com","abc",generateHtmlTable(hoaDonChiTiets),null);
             return new HoaDonResponse(hoaDonSaved);
-        } else if (gioHangChiTietResponseList.size() != 0) {
+        } else {
 //            checkSoLuong(gioHangThanhToanRequest.getBienTheGiayRequests());
             HoaDon hoaDonSaved = hoaDonRepository.save(getHoaDon(new HoaDon(), gioHangThanhToanRequest));
             Set<HoaDonChiTiet> hoaDonChiTiets = getBienTheGiay(gioHangThanhToanRequest.getBienTheGiayRequests(), hoaDonSaved);
             hoaDonChiTietRepository.saveAll(hoaDonChiTiets);
-            emailSenderService.sendEmailOrder("quanchun11022@gmail.com","abc",generateHtmlTable(hoaDonChiTiets),null);
+//            emailSenderService.sendEmailOrder("quanchun11022@gmail.com","abc",generateHtmlTable(hoaDonChiTiets),null);
 
-            gioHangChiTietRepository.deleteAllGioHangChiTietByIdGioHang(gioHangThanhToanRequest.getId());
+            List<GioHangChiTietResponse> bienTheGiayResponseList = gioHangChiTietRepository.findGioHangChiTietByIdGioHang(gioHangThanhToanRequest.getId());
+            for (BienTheGiayGioHangRequest bienTheGiayRequest : gioHangThanhToanRequest.getBienTheGiayRequests()) {
+                GioHangChiTietResponse gioHangChiTietResponse = getObjectWithId(bienTheGiayResponseList, bienTheGiayRequest.getId());
+                if (gioHangChiTietResponse != null) {
+                    gioHangChiTietRepository.deleteById(gioHangChiTietResponse.getId());
+                }
 
+            }
             return new HoaDonResponse(hoaDonSaved);
         }
-        throw new InvalidIdException("Giỏ hàng đã được thanh toán !");
     }
+
+    private static GioHangChiTietResponse getObjectWithId(List<GioHangChiTietResponse> list, Long id) {
+        for (GioHangChiTietResponse obj : list) {
+            if (Objects.equals(obj.getBienTheGiay().getId(), id)) {
+                return obj;
+            }
+        }
+        return null;
+    }
+
 
     private HoaDon getHoaDon(HoaDon hoaDon, GioHangThanhToanRequest gioHangThanhToanRequest) {
         KhachHang khachHang;
@@ -86,7 +100,6 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
             khachHang = khachHangRepository.findById(gioHangThanhToanRequest.getKhachHang().getId()).get();
 
         }
-
         hoaDon.setKhachHang(khachHang);
 //        hoaDon.setId(gioHangThanhToanRequest.getId());
         hoaDon.setNgayTao(LocalDateTime.now());
@@ -160,8 +173,8 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         for (HoaDonChiTiet hoaDonChiTiet : hoaDonChiTiets) {
             htmlTable.append("<tr>");
             htmlTable.append("<td>").append(hoaDonChiTiet.getBienTheGiay().getGiay().getTen()
-                    + "( "+hoaDonChiTiet.getBienTheGiay().getKichThuoc().getTen() +" - "
-                    + hoaDonChiTiet.getBienTheGiay().getMauSac().getTen()+" )").append("</td>");
+                    + "( " + hoaDonChiTiet.getBienTheGiay().getKichThuoc().getTen() + " - "
+                    + hoaDonChiTiet.getBienTheGiay().getMauSac().getTen() + " )").append("</td>");
             htmlTable.append("<td>").append(hoaDonChiTiet.getDonGia()).append("</td>");
             htmlTable.append("<td>").append(hoaDonChiTiet.getSoLuong()).append("</td>");
             htmlTable.append("</tr>");
