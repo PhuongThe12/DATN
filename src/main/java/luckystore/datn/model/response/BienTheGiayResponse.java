@@ -52,7 +52,9 @@ public class BienTheGiayResponse extends BaseBienTheResponse {
             this.id = bienTheGiay.getId();
             this.soLuong = bienTheGiay.getSoLuong();
             this.soLuongLoi = bienTheGiay.getSoLuongLoi();
-            this.hinhAnh = bienTheGiay.getHinhAnh();
+            if (bienTheGiay.getHinhAnh() != null) {
+                this.hinhAnh = ImageHubServiceImpl.getBase64FromFileStatic(bienTheGiay.getHinhAnh());
+            }
             this.giaBan = bienTheGiay.getGiaBan();
             this.barCode = bienTheGiay.getBarCode();
             this.trangThai = bienTheGiay.getTrangThai();
@@ -61,7 +63,7 @@ public class BienTheGiayResponse extends BaseBienTheResponse {
             if (bienTheGiay.getGiay() != null && level != null) {
                 giayResponse = new GiayResponse();
                 giayResponse.setId(bienTheGiay.getGiay().getId());
-                giayResponse.setLstAnh(bienTheGiay.getGiay().getLstAnh().stream().map(HinhAnh::getLink).toList());
+                giayResponse.setLstAnh(bienTheGiay.getGiay().getLstAnh().stream().filter(anh -> anh.getUuTien() == 1).map(anh -> ImageHubServiceImpl.getBase64FromFileStatic(anh.getLink())).toList());
                 giayResponse.setTen(bienTheGiay.getGiay().getTen());
 //                giayResponse.getLstAnh().add(bienTheGiay.getGiay().getLstAnh().isEmpty() ? null :
 //                        ImageHubServiceImpl.getBase64FromFileStatic(bienTheGiay.getGiay().getLstAnh().get(0).getLink()));

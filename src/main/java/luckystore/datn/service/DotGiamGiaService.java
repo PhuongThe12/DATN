@@ -1,6 +1,7 @@
 package luckystore.datn.service;
 
 import luckystore.datn.model.request.DotGiamGiaRequest;
+import luckystore.datn.model.request.KhuyenMaiSearch;
 import luckystore.datn.model.response.DotGiamGiaResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatusCode;
@@ -22,4 +23,10 @@ public interface DotGiamGiaService {
     DotGiamGiaResponse findById(Long id);
 
     List<DotGiamGiaResponse> getAllActive();
+
+    Page<DotGiamGiaResponse> searchingDotGiamGia(KhuyenMaiSearch kmSearch);
+
+    Long hienThiDotGiamGia(Long id);
+
+    Long anDotGiamGia(Long id);
 }

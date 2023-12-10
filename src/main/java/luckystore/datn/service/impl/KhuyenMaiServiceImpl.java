@@ -1,12 +1,12 @@
 package luckystore.datn.service.impl;
 
-import luckystore.datn.infrastructure.constraints.ErrorMessage;
 import luckystore.datn.entity.BienTheGiay;
 import luckystore.datn.entity.KhuyenMai;
 import luckystore.datn.entity.KhuyenMaiChiTiet;
 import luckystore.datn.exception.ConflictException;
 import luckystore.datn.exception.InvalidIdException;
 import luckystore.datn.exception.NotFoundException;
+import luckystore.datn.infrastructure.constraints.ErrorMessage;
 import luckystore.datn.model.request.KhuyenMaiChiTietRequest;
 import luckystore.datn.model.request.KhuyenMaiRequest;
 import luckystore.datn.model.request.KhuyenMaiSearch;
@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 
@@ -72,11 +73,12 @@ public class KhuyenMaiServiceImpl implements KhuyenMaiService {
         khuyenMai.setGhiChu(khuyenMaiRequest.getGhiChu());
         List<KhuyenMaiChiTiet> chiTietList = new ArrayList<>();
 
-        if(khuyenMai.getNgayBatDau().isBefore(LocalDateTime.now())) {
+        if (khuyenMai.getNgayBatDau().isBefore(LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0))) {
+            System.out.println(khuyenMai.getNgayBatDau() + ": ngày bắt đầu :  " + LocalDateTime.now());
             throw new InvalidIdException("Ngày không được là ngày trong quá khứ");
         }
 
-        if(!khuyenMai.getNgayBatDau().isBefore(khuyenMai.getNgayKetThuc())) {
+        if (!khuyenMai.getNgayBatDau().isBefore(khuyenMai.getNgayKetThuc())) {
             throw new InvalidIdException("Ngày kết thúc phải lớn hơn ngày bắt đầu");
         }
 
@@ -113,19 +115,19 @@ public class KhuyenMaiServiceImpl implements KhuyenMaiService {
     public KhuyenMaiResponse updateKhuyenMai(Long id, KhuyenMaiRequest khuyenMaiRequest) {
         KhuyenMai khuyenMai = khuyenMaiRepository.findById(id).orElseThrow(RuntimeException::new);
 
-        if(khuyenMai.getNgayBatDau().isBefore(LocalDateTime.now()) && khuyenMai.getNgayKetThuc().isAfter(LocalDateTime.now())) {
+        if (khuyenMai.getNgayBatDau().isBefore(LocalDateTime.now()) && khuyenMai.getNgayKetThuc().isAfter(LocalDateTime.now())) {
             throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("error", "Khuyến mại đang diễn ra không thể cập nhật")));
         }
 
-        if(khuyenMai.getNgayKetThuc().isBefore(LocalDateTime.now())) {
+        if (khuyenMai.getNgayKetThuc().isBefore(LocalDateTime.now())) {
             throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("error", "Khuyến mại đã kết thúc không thể cập nhật")));
         }
 
-        if(khuyenMaiRequest.getNgayBatDau().isBefore(LocalDateTime.now())) {
-            throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("error", "Ngày không được là ngày trong quá khứ")));
+        if (khuyenMai.getNgayBatDau().isBefore(LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0))) {
+            throw new InvalidIdException("Ngày không được là ngày trong quá khứ");
         }
 
-        if(!khuyenMaiRequest.getNgayBatDau().isBefore(khuyenMai.getNgayKetThuc())) {
+        if (!khuyenMaiRequest.getNgayBatDau().isBefore(khuyenMai.getNgayKetThuc())) {
             throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("error", "Ngày kết thúc phải lớn hơn ngày bắt đầu")));
         }
 
@@ -192,7 +194,7 @@ public class KhuyenMaiServiceImpl implements KhuyenMaiService {
         Map<Long, GiayResponse> giayResponsesMap = new HashMap<>();
         giayResponses.forEach(giayResponse -> {
             khuyenMaiChiTietResponses.forEach(kmct -> {
-                if(Objects.equals(kmct.getBienTheGiayResponsel().getId(), giayResponse.getLstBienTheGiay().get(0).getId())) {
+                if (Objects.equals(kmct.getBienTheGiayResponsel().getId(), giayResponse.getLstBienTheGiay().get(0).getId())) {
                     giayResponse.getLstBienTheGiay().get(0).setPhanTramGiam(kmct.getPhanTramGiam());
                 }
             });
@@ -213,23 +215,42 @@ public class KhuyenMaiServiceImpl implements KhuyenMaiService {
 
     @Override
     public Page<KhuyenMaiResponse> searchingKhuyenMai(KhuyenMaiSearch kmSearch) {
-        Pageable pageable = PageRequest.of(kmSearch.getCurrentPage() -1, kmSearch.getPageSize());
-        if(kmSearch.getStatus() == 0) {
-            return khuyenMaiRepository.getSearchingKhuyenMaiDaAn(kmSearch, pageable);
-        } else if(kmSearch.getStatus() == 1) {
-            return khuyenMaiRepository.getSearchingKhuyenMaiDangDienRa(kmSearch, pageable);
-        } else if(kmSearch.getStatus() == 2) {
-            return khuyenMaiRepository.getSearchingKhuyenMaiSapDienRa(kmSearch, pageable);
-        } else if(kmSearch.getStatus() == 3) {
-            return khuyenMaiRepository.getSearchingKhuyenMaiDaKetThuc(kmSearch, pageable);
+        Pageable pageable = PageRequest.of(kmSearch.getCurrentPage() - 1, kmSearch.getPageSize());
+        if (kmSearch.getStatus() == 0) {
+            Page<KhuyenMaiResponse> khuyenMaiResponses = khuyenMaiRepository.getSearchingKhuyenMaiDaAn(kmSearch, pageable);
+            return getKhuyenMaiResponsePage(khuyenMaiResponses);
+        } else if (kmSearch.getStatus() == 1) {
+            Page<KhuyenMaiResponse> khuyenMaiResponses = khuyenMaiRepository.getSearchingKhuyenMaiDangDienRa(kmSearch, pageable);
+            return getKhuyenMaiResponsePage(khuyenMaiResponses);
+        } else if (kmSearch.getStatus() == 2) {
+            Page<KhuyenMaiResponse> khuyenMaiResponses = khuyenMaiRepository.getSearchingKhuyenMaiSapDienRa(kmSearch, pageable);
+            return getKhuyenMaiResponsePage(khuyenMaiResponses);
+        } else if (kmSearch.getStatus() == 3) {
+            Page<KhuyenMaiResponse> khuyenMaiResponses = khuyenMaiRepository.getSearchingKhuyenMaiDaKetThuc(kmSearch, pageable);
+            return getKhuyenMaiResponsePage(khuyenMaiResponses);
         }
-        return khuyenMaiRepository.getSearchingKhuyenMaiDangDienRa(kmSearch, pageable);
+        return getKhuyenMaiResponsePage(khuyenMaiRepository.getSearchingKhuyenMaiDangDienRa(kmSearch, pageable));
+    }
+
+    private Page<KhuyenMaiResponse> getKhuyenMaiResponsePage(Page<KhuyenMaiResponse> khuyenMaiResponses) {
+        List<Long> ids = khuyenMaiResponses.getContent().stream().map(KhuyenMaiResponse::getId).toList();
+        List<KhuyenMaiChiTietResponse> khuyenMaiChiTietResponses = khuyenMaiChiTietRepository.getAllByKhuyenMaiIds(ids);
+
+        for(KhuyenMaiResponse khuyenMaiResponse : khuyenMaiResponses.getContent()) {
+            for (KhuyenMaiChiTietResponse khuyenMaiChiTietResponse : khuyenMaiChiTietResponses) {
+                if(Objects.equals(khuyenMaiResponse.getId(), khuyenMaiChiTietResponse.getIdKhuyenMai())) {
+                    khuyenMaiResponse.getKhuyenMaiChiTietResponses().add(khuyenMaiChiTietResponse);
+                }
+            }
+        }
+
+        return khuyenMaiResponses;
     }
 
     @Override
     public Long hienThiKhuyenMai(Long id) {
         KhuyenMai khuyenMai = khuyenMaiRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND));
-        if(khuyenMai.getNgayBatDau().isBefore(LocalDateTime.now()) && khuyenMai.getNgayKetThuc().isAfter(LocalDateTime.now())) {
+        if (khuyenMai.getNgayBatDau().isBefore(LocalDateTime.now()) && khuyenMai.getNgayKetThuc().isAfter(LocalDateTime.now())) {
             khuyenMai.setTrangThai(1);
             khuyenMaiRepository.save(khuyenMai);
             return id;
@@ -241,7 +262,7 @@ public class KhuyenMaiServiceImpl implements KhuyenMaiService {
     @Override
     public Long anKhuyenMai(Long id) {
         KhuyenMai khuyenMai = khuyenMaiRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND));
-        if(khuyenMai.getNgayBatDau().isBefore(LocalDateTime.now()) && khuyenMai.getNgayKetThuc().isAfter(LocalDateTime.now())) {
+        if (khuyenMai.getNgayBatDau().isBefore(LocalDateTime.now()) && khuyenMai.getNgayKetThuc().isAfter(LocalDateTime.now())) {
             khuyenMai.setTrangThai(0);
             khuyenMaiRepository.save(khuyenMai);
             return id;
@@ -252,11 +273,41 @@ public class KhuyenMaiServiceImpl implements KhuyenMaiService {
 
 
     private List<Long> getDaTonTai(KhuyenMaiSearch kmSearch) {
-        return khuyenMaiRepository.getDaTonTaiKhuyenMai(kmSearch);
+        List<Long> lstTrung = new ArrayList<>();
+        if (kmSearch.getBienTheIds().size() > 50) {
+            List<Long> bienTheIds = new ArrayList<>();
+            for (int i = 0; i < kmSearch.getBienTheIds().size(); i++) {
+                bienTheIds.add(kmSearch.getBienTheIds().get(i));
+                if (i % 50 == 0) {
+                    kmSearch.setBienTheIds(bienTheIds);
+                    lstTrung.addAll(khuyenMaiRepository.getDaTonTaiKhuyenMai(kmSearch));
+                    bienTheIds = new ArrayList<>();
+                }
+            }
+            lstTrung.addAll(khuyenMaiRepository.getDaTonTaiKhuyenMai(kmSearch));
+            return lstTrung;
+        } else {
+            return khuyenMaiRepository.getDaTonTaiKhuyenMai(kmSearch);
+        }
     }
 
     private List<Long> getDaTonTaiAndIdNot(KhuyenMaiSearch kmSearch) {
-        return khuyenMaiRepository.getDaTonTaiKhuyenMaiAndIdNot(kmSearch);
+        List<Long> lstTrung = new ArrayList<>();
+        if (kmSearch.getBienTheIds().size() > 50) {
+            List<Long> bienTheIds = new ArrayList<>();
+            for (int i = 0; i < kmSearch.getBienTheIds().size(); i++) {
+                bienTheIds.add(kmSearch.getBienTheIds().get(i));
+                if (i % 50 == 0) {
+                    kmSearch.setBienTheIds(bienTheIds);
+                    lstTrung.addAll(khuyenMaiRepository.getDaTonTaiKhuyenMaiAndIdNot(kmSearch));
+                    bienTheIds = new ArrayList<>();
+                }
+            }
+            lstTrung.addAll(khuyenMaiRepository.getDaTonTaiKhuyenMaiAndIdNot(kmSearch));
+            return lstTrung;
+        } else {
+            return khuyenMaiRepository.getDaTonTaiKhuyenMaiAndIdNot(kmSearch);
+        }
     }
 
 }
