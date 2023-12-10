@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -133,4 +134,28 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
             " where (anh is null or anh.uuTien = 1)" +
             " and g.id in :idGiays")
     List<GiayResponse> getAllGiayById(Set<Long> idGiays);
+
+
+    //top x giày bán chạy trong y ngày
+    @Query("select new luckystore.datn.model.response.GiayResponse(g, count(hdc)) " +
+            "from HoaDonChiTiet hdc " +
+            "join hdc.bienTheGiay btg " +
+            "join btg.giay g " +
+            "join hdc.hoaDon hd " +
+            "where hd.trangThai = 5 and hd.ngayTao >= :targetDateTime " +
+            "group by g " +
+            "order by count(hdc) desc")
+    Page<GiayResponse> findTopSellingShoesInLastDays(LocalDateTime targetDateTime, Pageable pageable);
+
+    //top x giày xuất hiện trong sản phẩm yêu thích
+    @Query("select new luckystore.datn.model.response.GiayResponse(g, count(spyt)) " +
+            "from SanPhamYeuThich spyt " +
+            "join spyt.giay g " +
+            "group by g " +
+            "order by count(spyt) desc")
+    Page<GiayResponse> findTopFavoritedShoes(Pageable pageable);
+
+
+
+
 }

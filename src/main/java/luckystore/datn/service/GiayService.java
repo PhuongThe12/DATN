@@ -1,12 +1,10 @@
 package luckystore.datn.service;
 
-import luckystore.datn.model.request.GiayExcelRequest;
-import luckystore.datn.model.request.GiayRequest;
-import luckystore.datn.model.request.GiaySearch;
-import luckystore.datn.model.request.KhuyenMaiSearch;
+import luckystore.datn.model.request.*;
 import luckystore.datn.model.response.BienTheGiayResponse;
 import luckystore.datn.model.response.GiayResponse;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,4 +45,12 @@ public interface GiayService {
     Page<GiayResponse> findSimpleBySearch(GiaySearch giaySearch);
 
     List<GiayResponse> getAllGiayWithoutDiscount(KhuyenMaiSearch kmSearch);
+
+    Page<GiayResponse> findTopSellingShoesInLastDays(ThongKeRequest thongKeRequest);
+    Page<BienTheGiayResponse> findTopSellingShoeVariantInLastDays(ThongKeRequest thongKeRequest);
+    Page<GiayResponse> findTopFavoritedShoes(ThongKeRequest thongKeRequest);
+    Page<BienTheGiayResponse> findTopCartVariants(ThongKeRequest thongKeRequest);
+    Page<BienTheGiayResponse> findVariantReturnRates(ThongKeRequest thongKeRequest);
+
+
 }

@@ -1,12 +1,17 @@
 package luckystore.datn.repository;
 
+import com.jayway.jsonpath.internal.function.numeric.Sum;
 import luckystore.datn.entity.BienTheGiay;
 import luckystore.datn.model.response.BienTheGiayResponse;
+import luckystore.datn.model.response.GiayResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,6 +55,48 @@ public interface BienTheGiayRepository extends JpaRepository<BienTheGiay, Long> 
 
     @Query("select bt from BienTheGiay bt where bt.id in :ids")
     List<BienTheGiay> getAllByIds(List<Long> ids);
+
+    //top x biến thể giày bán chạy trong y ngày
+    @Query("select new luckystore.datn.model.response.BienTheGiayResponse(btg, g, ms, kt, count(hdc)) " +
+            "from HoaDonChiTiet hdc " +
+            "join hdc.bienTheGiay btg " +
+            "join btg.giay g " +
+            "join btg.mauSac ms " +
+            "join btg.kichThuoc kt " +
+            "join hdc.hoaDon hd " +
+            "where hd.trangThai = 5 and hd.ngayTao >= :targetDateTime " +
+            "group by btg, g, ms, kt " +
+            "order by count(hdc) desc")
+    Page<BienTheGiayResponse> findTopSellingShoeVariantInLastDays(LocalDateTime targetDateTime, Pageable pageable);
+
+    //Top x Biến Thể Giày Xuất Hiện Trong Giỏ Hàng
+    @Query("select new luckystore.datn.model.response.BienTheGiayResponse(btg, g, ms, kt, count(ghct)) " +
+            "from GioHangChiTiet ghct " +
+            "join ghct.bienTheGiay btg " +
+            "join btg.giay g " +
+            "join btg.mauSac ms " +
+            "join btg.kichThuoc kt " +
+            "group by btg, g, ms, kt " +
+            "order by count(ghct) desc")
+    Page<BienTheGiayResponse> findTopCartVariants(Pageable pageable);
+
+    //Top x Biến Thể Giày có tỷ lệ đổi trả cao
+    @Query("select new luckystore.datn.model.response.BienTheGiayResponse(" +
+            "btg, g,ms,kt, sum(hdct.soLuong), sum(hdct.soLuongTra)) " +
+            "from HoaDonChiTiet hdct " +
+            "join hdct.bienTheGiay btg " +
+            "join btg.giay g " +
+            "join btg.mauSac ms " +
+            "join btg.kichThuoc kt " +
+            "join hdct.hoaDon hd " +
+            "where hd.trangThai = 5 " +
+            "group by btg, g, ms, kt " +
+            "order by (sum(hdct.soLuongTra) * 1.0 / case when sum(hdct.soLuong) > 0 then sum(hdct.soLuong) else 1 end) desc")
+    Page<BienTheGiayResponse> findVariantReturnRates(Pageable pageable);
+
+
+
+
 }
 
 
