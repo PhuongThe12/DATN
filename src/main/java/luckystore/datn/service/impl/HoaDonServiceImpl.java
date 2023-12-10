@@ -402,6 +402,11 @@ public class HoaDonServiceImpl implements HoaDonService {
             if (dieuKien.getDotGiamGia().getNgayKetThuc().isBefore(LocalDateTime.now())) {
                 throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("dieuKienError", "Đợt giảm giá đã hết hạn")));
             }
+
+            if(dieuKien.getDotGiamGia().getNgayBatDau().isAfter(LocalDateTime.now())) {
+                throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("dieuKienError", "Đợt giảm giá chưa diễn ra")));
+            }
+
             hoaDon.setDieuKien(dieuKien);
         }
 
