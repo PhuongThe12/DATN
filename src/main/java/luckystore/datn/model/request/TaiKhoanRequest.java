@@ -21,7 +21,7 @@ public class TaiKhoanRequest {
 
     @NotNull(message = "Không được để trống mật khẩu")
     @Length(message = "Độ dài mật khẩu nằm trong khoảng 5- 20 ký tự", min = 5)
-    @Length(message = "Độ dài mật khẩu nằm trong khoảng 5- 20 ký tự", min = 5)
+    @Length(message = "Độ dài mật khẩu nằm trong khoảng 5- 20 ký tự", max = 20)
     private String matKhau;
 
     private Integer trangThai;

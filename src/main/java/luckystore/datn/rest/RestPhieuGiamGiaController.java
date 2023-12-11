@@ -52,8 +52,8 @@ public class RestPhieuGiamGiaController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addPhieuGiamGia(@RequestBody PhieuGiamGiaRequest request, BindingResult result) {
-        ResponseEntity<?>errorJson = getErrorJson(result);
+    public ResponseEntity<?> addPhieuGiamGia(@Valid @RequestBody PhieuGiamGiaRequest request, BindingResult result) {
+        ResponseEntity<?> errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
         return new ResponseEntity<>(phieuGiamGiaService.addPhieuGiamGia(request), HttpStatus.OK);
@@ -66,9 +66,9 @@ public class RestPhieuGiamGiaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateDayGiay(@PathVariable("id") Long id,
-                                           @Valid @RequestBody PhieuGiamGiaRequest request, BindingResult result) {
-        ResponseEntity<?>errorJson = getErrorJson(result);
+    public ResponseEntity<?> updatePhieuGiamGia(@PathVariable("id") Long id,
+                                                @Valid @RequestBody PhieuGiamGiaRequest request, BindingResult result) {
+        ResponseEntity<?> errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
         return new ResponseEntity<>(phieuGiamGiaService.updatePhieuGiamGia(id, request), HttpStatus.OK);

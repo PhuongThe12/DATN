@@ -92,6 +92,7 @@ app.controller("addPhieuGiamGiaController", function ($scope, $http, $location) 
                 $location.path("/list");
             })
             .catch(function (error) {
+                console.log(error)
                 toastr["error"]("Thêm thất bại");
                 $scope.isLoading = false;
                 if (error.status === 400) {
