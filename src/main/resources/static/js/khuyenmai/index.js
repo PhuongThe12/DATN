@@ -222,23 +222,28 @@ app.controller("addKhuyenMaiController", function ($scope, $http, $location) {
 
     $scope.addKhuyenMai = function () {
 
+        $scope.isLoading = true;
         if ($scope.khuyenMaiForm.$invalid) {
+            $scope.isLoading = false;
             return;
         }
 
         const valid = $scope.validateNgay();
         if (!valid) {
             toastr["error"]("Vui lòng kiểm tra lại ngày bắt đầu, ngày kết thúc");
+            $scope.isLoading = false;
             return;
         }
 
         if (!Array.isArray($scope.selectedGiayTableData)) {
             toastr["error"]("Có lỗi xảy ra. Vui lòng thử lại");
+            $scope.isLoading = false;
             return;
         }
 
         if ($scope.selectedGiayTableData.length === 0) {
             toastr["error"]("Bạn chưa chọn giày. Vui lòng thử lại");
+            $scope.isLoading = false;
             return;
         }
 
@@ -264,14 +269,17 @@ app.controller("addKhuyenMaiController", function ($scope, $http, $location) {
 
         if (invalidCount !== 0) {
             toastr["warning"]("Vui lòng kiểm tra lại các trường không hợp lệ");
+            $scope.isLoading = false;
             return;
         }
 
         if ($scope.khuyenMai.khuyenMaiChiTietRequests.length === 0) {
             toastr["error"]("Bạn chưa set khuyến mại cho sản phẩm nào. Vui lòng thử lại");
+            $scope.isLoading = false;
             return;
         }
 
+        $scope.isLoading = false;
         Swal.fire({
             text: "Xác nhận thêm?",
             icon: "info",
@@ -282,6 +290,7 @@ app.controller("addKhuyenMaiController", function ($scope, $http, $location) {
             cancelButtonText: "Hủy"
         }).then((result) => {
             if (result.isConfirmed) {
+                $scope.isLoading = true;
                 $http.post(host + '/rest/admin/khuyen-mai', $scope.khuyenMai)
                     .then(function (response) {
                         if (response.status === 200) {
@@ -313,6 +322,8 @@ app.controller("addKhuyenMaiController", function ($scope, $http, $location) {
 
                             })
                         }
+                        console.log(error);
+                        $scope.isLoading = false;
                     });
             }
         });
@@ -538,6 +549,36 @@ app.controller("khuyenMaiListController", function ($scope, $http, $window, $loc
         } else {
             toastr["error"]("Khuyến mại đã kết thúc không được phép chỉnh sửa");
         }
+    }
+
+    $scope.detailKhuyenMai = function (val) {
+        $scope.khuyenMaiDetail = val;
+        const giayMap = {};
+        val.khuyenMaiChiTietResponses.forEach(item => {
+            if (giayMap.hasOwnProperty(item.bienTheGiayResponsel.giayResponse.id)) {
+                giayMap[item.bienTheGiayResponsel.giayResponse.id].lstBienTheGiay.push({
+                    kichThuoc: item.bienTheGiayResponsel.kichThuoc,
+                    mauSac: item.bienTheGiayResponsel.mauSac,
+                    giaBan: item.bienTheGiayResponsel.giaBan,
+                    phanTramGiam: item.phanTramGiam
+                });
+            } else {
+                giayMap[item.bienTheGiayResponsel.giayResponse.id] = {
+                    id: item.bienTheGiayResponsel.giayResponse.id,
+                    ten: item.bienTheGiayResponsel.giayResponse.ten,
+                    lstBienTheGiay: [
+                        {
+                            kichThuoc: item.bienTheGiayResponsel.kichThuoc,
+                            mauSac: item.bienTheGiayResponsel.mauSac,
+                            giaBan: item.bienTheGiayResponsel.giaBan,
+                            phanTramGiam: item.phanTramGiam
+                        }
+                    ]
+                }
+            }
+        })
+
+        $scope.khuyenMaiDetail.giays = Object.values(giayMap);
     }
 
 });

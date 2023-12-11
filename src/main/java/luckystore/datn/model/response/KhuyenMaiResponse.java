@@ -10,6 +10,7 @@ import luckystore.datn.entity.KhuyenMaiChiTiet;
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,7 @@ public class KhuyenMaiResponse {
 
     private Integer trangThai;
 
-    private List<KhuyenMaiChiTietResponse> khuyenMaiChiTietResponses;
+    private List<KhuyenMaiChiTietResponse> khuyenMaiChiTietResponses = new ArrayList<>();
 
     public KhuyenMaiResponse(KhuyenMai khuyenMai) {
         this.id = khuyenMai.getId();
@@ -42,6 +43,15 @@ public class KhuyenMaiResponse {
         this.trangThai = khuyenMai.getTrangThai();
         List<KhuyenMaiChiTiet> khuyenMaiChiTiets = khuyenMai.getKhuyenMaiChiTiets();
         this.khuyenMaiChiTietResponses = khuyenMaiChiTiets.stream().map(KhuyenMaiChiTietResponse::new).collect(Collectors.toList());
+    }
+
+    public KhuyenMaiResponse(Long id, String ten, LocalDateTime ngayBatDau, LocalDateTime ngayKetThuc, String ghiChu, Integer trangThai) {
+        this.id = id;
+        this.ten = ten;
+        this.ngayBatDau = dateFormat(ngayBatDau);
+        this.ngayKetThuc = dateFormat(ngayKetThuc);
+        this.ghiChu = ghiChu;
+        this.trangThai = trangThai;
     }
 
     private String dateFormat(LocalDateTime dateTime) {

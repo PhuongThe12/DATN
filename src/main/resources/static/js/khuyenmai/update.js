@@ -374,7 +374,6 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
 
     $scope.changeCheckAll = function () {
         $scope.selectAll = !$scope.selectAll;
-        console.log("All: ", $scope.selectAll);
         if ($scope.selectedGiayTableData) {
             $scope.selectedGiayTableData.forEach(item => {
                 item.selected = $scope.selectAll;
