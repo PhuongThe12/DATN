@@ -126,7 +126,9 @@ public class GiayResponse {
     public GiayResponse(Long id, String ten, String thumbnail, BigDecimal giaTu, BigDecimal giaDen) {
         this.id = id;
         this.ten = ten;
-        lstAnh.add(ImageHubServiceImpl.getBase64FromFileStatic(thumbnail));
+        if (thumbnail != null) {
+            lstAnh.add(ImageHubServiceImpl.getBase64FromFileStatic(thumbnail));
+        }
         this.giaTu = giaTu;
         this.giaDen = giaDen;
     }
