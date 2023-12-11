@@ -189,7 +189,14 @@ button.toast-close-button {
 }
 
 .toast-info {
-    background-color: #2F96B4
+    display: block;
+    padding-top: 18px;
+    /* padding: 29px; */
+    background: white;
+    color: black !important;
+    padding-bottom: 18px;
+    border-top: 4px solid black;
+    font-weight: bold;
 }
 
 .toast-warning {

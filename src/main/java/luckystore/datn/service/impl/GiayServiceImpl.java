@@ -20,11 +20,7 @@ import luckystore.datn.exception.ConflictException;
 import luckystore.datn.exception.ExcelException;
 import luckystore.datn.exception.InvalidIdException;
 import luckystore.datn.exception.NotFoundException;
-import luckystore.datn.model.request.BienTheGiayRequest;
-import luckystore.datn.model.request.GiayExcelRequest;
-import luckystore.datn.model.request.GiayRequest;
-import luckystore.datn.model.request.GiaySearch;
-import luckystore.datn.model.request.KhuyenMaiSearch;
+import luckystore.datn.model.request.*;
 import luckystore.datn.model.response.BienTheGiayResponse;
 import luckystore.datn.model.response.ChatLieuResponse;
 import luckystore.datn.model.response.CoGiayResponse;
@@ -62,6 +58,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1031,6 +1029,8 @@ public class GiayServiceImpl implements GiayService {
         return new ArrayList<>(giayResponsesMap.values());
     }
 
+
+
     @Override
     public GiayResponse getResponseById(Long id) {
         GiayResponse giayResponse = giayRepository.findResponseById(id);
@@ -1066,6 +1066,46 @@ public class GiayServiceImpl implements GiayService {
 
         return giayResponse;
     }
+
+    @Override
+    public Page<GiayResponse> findTopSellingShoes(ThongKeRequest thongKeRequest) {
+        Pageable pageable = PageRequest.of(thongKeRequest.getCurrentPage() - 1, thongKeRequest.getPageSize());
+        return giayRepository.findTopSellingShoes(pageable);
+    }
+
+    @Override
+    public Page<GiayResponse> findTopSellingShoesInLastDays(ThongKeRequest thongKeRequest) {
+        Pageable pageable = PageRequest.of(thongKeRequest.getCurrentPage() - 1, thongKeRequest.getPageSize());
+        LocalDateTime targetDateTime = LocalDateTime.now().minusDays(thongKeRequest.getLastDate());
+        return giayRepository.findTopSellingShoesInLastDays(targetDateTime, pageable);
+    }
+
+    @Override
+    public Page<BienTheGiayResponse> findTopSellingShoeVariantInLastDays(ThongKeRequest thongKeRequest) {
+        Pageable pageable = PageRequest.of(thongKeRequest.getCurrentPage() - 1, thongKeRequest.getPageSize());
+        LocalDateTime targetDateTime = LocalDateTime.now().minusDays(thongKeRequest.getLastDate());
+        return bienTheGiayRepository.findTopSellingShoeVariantInLastDays(targetDateTime, pageable);
+    }
+
+    @Override
+    public Page<GiayResponse> findTopFavoritedShoes(ThongKeRequest thongKeRequest) {
+        Pageable pageable = PageRequest.of(thongKeRequest.getCurrentPage() - 1, thongKeRequest.getPageSize());
+        return giayRepository.findTopFavoritedShoes(pageable);
+    }
+
+    @Override
+    public Page<BienTheGiayResponse> findTopCartVariants(ThongKeRequest thongKeRequest) {
+        Pageable pageable = PageRequest.of(thongKeRequest.getCurrentPage() - 1, thongKeRequest.getPageSize());
+        return bienTheGiayRepository.findTopCartVariants(pageable);
+    }
+
+
+    @Override
+    public Page<BienTheGiayResponse> findVariantReturnRates(ThongKeRequest thongKeRequest) {
+        Pageable pageable = PageRequest.of(thongKeRequest.getCurrentPage() - 1, thongKeRequest.getPageSize());
+        return bienTheGiayRepository.findVariantReturnRates(pageable);
+    }
+
 
     private void getGiay(Giay giay, GiayRequest giayRequest) {
 

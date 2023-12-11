@@ -2,6 +2,7 @@ package luckystore.datn.rest.admin;
 
 import jakarta.validation.Valid;
 import luckystore.datn.model.request.YeuCauRequest;
+import luckystore.datn.model.request.YeuCauSearch;
 import luckystore.datn.service.YeuCauService;
 import luckystore.datn.util.JsonString;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,7 @@ public class RestYeuCauController {
         return new ResponseEntity(yeuCauService.confirmYeuCau(yeuCauRequest), HttpStatus.OK);
     }
 
-    @PutMapping("/change")
+    @PutMapping("/update")
     public ResponseEntity updateYeuCau(@Valid @RequestBody YeuCauRequest yeuCauRequest, BindingResult result) {
         return new ResponseEntity(yeuCauService.updateYeuCau(yeuCauRequest), HttpStatus.OK);
     }
@@ -65,42 +66,9 @@ public class RestYeuCauController {
         return new ResponseEntity(yeuCauService.findById(id), HttpStatus.OK);
     }
 
-    @GetMapping()
-    public ResponseEntity getYeuCauPage(
-            @RequestParam(value = "page", defaultValue = "1") Integer page,
-            @RequestParam(value = "ngayBatDau", required = false) String ngayBatDauStr,
-            @RequestParam(value = "ngayKetThuc", required = false) String ngayKetThucStr,
-            @RequestParam(value = "searchText", required = false) Long searchText,
-            @RequestParam(value = "trangThai", required = false) Integer trangThai) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        java.sql.Date ngayBatDau = null;
-        java.sql.Date ngayKetThuc = null;
-        try {
-            if (ngayBatDauStr != null) {
-                java.util.Date ngayBatDauUtil = sdf.parse(ngayBatDauStr);
-                ngayBatDau = new java.sql.Date(ngayBatDauUtil.getTime());
-            }
-
-
-            if (ngayKetThucStr != null) {
-                java.util.Date ngayKetThucUtil = sdf.parse(ngayKetThucStr);
-
-                // Chuyển ngày kết thúc thành cuối ngày
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(ngayKetThucUtil);
-                calendar.set(Calendar.HOUR_OF_DAY, 23);
-                calendar.set(Calendar.MINUTE, 59);
-                calendar.set(Calendar.SECOND, 59);
-                ngayKetThuc = new java.sql.Date(calendar.getTime().getTime());
-            }
-            System.out.println(ngayBatDau);
-            System.out.println(ngayKetThuc);
-            return new ResponseEntity(yeuCauService.getPage(page,searchText,null,null,trangThai), HttpStatus.OK);
-        } catch (ParseException e) {
-            // Xử lý lỗi nếu ngày không đúng định dạng
-            return new ResponseEntity("Ngày không đúng định dạng (yyyy-MM-dd)", HttpStatus.BAD_REQUEST);
-        }
-
+    @PostMapping()
+    public ResponseEntity getYeuCauPage(@RequestBody YeuCauSearch yeuCauSearch){
+        return new ResponseEntity(yeuCauService.getPage(yeuCauSearch), HttpStatus.OK);
     }
 
     private ResponseEntity getErrorJson(BindingResult result) {

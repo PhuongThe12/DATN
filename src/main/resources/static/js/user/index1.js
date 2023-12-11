@@ -31,6 +31,13 @@ app.controller("loginController", function ($rootScope, $scope, $http, $location
                 }
             }).catch(function (error) {
             console.log(error)
+                toastr["error"]("Đăng nhập thất bại!");
+                if (error.status === 400) {
+                    $scope.loginForm.tenDangNhap.$dirty = false;
+                    $scope.loginForm.matKhau.$dirty = false;
+                    $scope.errors = error.data;
+                    $scope.isLoading = false;
+                }
         });
     }
 

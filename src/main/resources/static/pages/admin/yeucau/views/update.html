@@ -29,7 +29,42 @@
         border: 1px solid black;
     }
 
+    .deleted-row::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        border-top: 1px solid #000; /* Độ dày và màu sắc của đường gạch ngang */
+        z-index: 1;
+    }
 
+    .deleted-row {
+        position: relative;
+    }
+
+    .sanPhamDoi:last-child {
+        border-left: 1px solid #ccc;
+        position: relative;
+    }
+
+    .sanPhamDoi:last-child::after {
+        content: "Đổi";
+        position: absolute;
+        left: -16px;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: #212529; /* Màu nền tối của Bootstrap 'text-bg-dark' */
+        color: white; /* Màu chữ trắng */
+        padding: 0.25em 0.4em; /* Padding tương tự như Bootstrap 'badge' */
+        font-size: 0.75em; /* Kích thước chữ tương tự như Bootstrap 'badge' */
+        border-radius: 0.25rem; /* Bo tròn góc tương tự như Bootstrap 'badge' */
+    }
+
+    .rotate-icon {
+        transform: rotate(180deg); /* Xoay 180 độ */
+        transition: 0.3s ease-in-out;
+    }
 </style>
 <div ng-show="isLoading" class="loading-spinner">
     <div class="text-center" style="  position: fixed;
@@ -51,7 +86,8 @@
 <div class="box-shadow-page" style="border-radius: 10px 10px 0px 0px">
     <div class="row" style="height: 760px; margin-left: 1px; margin-right: 10px">
         <div class="col-md-12 position-relative" style="height: 100%">
-            <div style="position: sticky;top: 0; height: 100%">
+
+            <div>
                 <div class="card" style="height: 50%; border-radius: 10px 10px 0px 0px">
                     <div class="card-header" style="border-radius: 10px 10px 0px 0px; background-color: #222222">
                         <label class="fw-medium" style="color: white">Thông tin chi Tiết</label>
@@ -59,400 +95,457 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-3" style="border-right: 1px solid black">
+
                                 <div class="row" style="padding-left: 10px">
                                     <div class="mb-3">
-                                        <label>Hóa Đơn:<strong class="fw-medium"><span class="badge text-bg-dark" style="background-color: black">{{hoaDon.loaiHoaDon == 1?"HD":"HD_HDD"}}{{ hoaDon.id }}</span></strong></label>
+                                        <label>Hóa Đơn:<strong class="fw-medium"><span class="badge text-bg-dark"
+                                                                                       style="background-color: black">{{hoaDon.loaiHoaDon == 1?"HD":"HD_HDD"}}{{ hoaDon.id }}</span></strong></label>
                                     </div>
                                 </div>
 
                                 <div class="row" style="padding-left: 10px">
                                     <div class="mb-3">
                                         <label class="form-label">Loại hóa đơn:</label>
-                                        <strong class="fw-medium"><span class="badge text-bg-dark" style="background-color: black">{{hoaDon.loaiHoaDon == 1 ? "Hóa Đơn Mua":"Hóa Đơn Đổi"}}</span>
+                                        <strong class="fw-medium"><span class="badge text-bg-dark"
+                                                                        style="background-color: black">{{hoaDon.loaiHoaDon == 1 ? "Hóa Đơn Mua":"Hóa Đơn Đổi"}}</span>
                                         </strong>
                                     </div>
                                 </div>
 
                                 <div class="row" style="padding-left: 10px">
-                                    <div class="mb-3">
+                                    <div class="mb-3 ">
                                         <label class="form-label">Ngày Tạo:</label>
-                                        <strong class="fw-medium">{{hoaDon.ngayTao | formatDate}}</span>
-                                        </strong>
+                                        <strong class="fw-medium">{{hoaDon.ngayTao | formatDate}}</strong>
                                     </div>
                                 </div>
-
-                                <div class="row" style="padding-left: 10px">
-                                    <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="floatingInput2"
-                                               ng-model="hoaDon.khachHang.hoTen" disabled>
-                                        <label for="floatingInput2">Khách Hàng: </label>
+                                <div style="border: 1px solid grey; border-radius: 5px">
+                                    <div class="row" style="padding-left: 10px">
+                                        <div class="mt-2 ">
+                                            <label class="form-label">Khách Hàng:</label>
+                                            <strong class="fw-medium fw-bold">{{hoaDon.khachHang.hoTen}}</strong>
+                                        </div>
                                     </div>
-                                </div>
 
-                            </div>
-                            <div class="col-md-3" style="border-right: 1px solid black">
-                                <div class="row" style="padding-left: 10px">
-                                    <div class="mb-3">
-                                        <label>Yêu Cầu: <span class="badge text-bg-dark" style="background-color: black">YC{{ yeuCau.id }}</span></label>
+                                    <div class="row" style="padding-left: 10px">
+                                        <div class="mt-2 ">
+                                            <label class="form-label">Số điện thoại:</label>
+                                            <strong class="fw-medium fw-bold">{{hoaDon.khachHang.soDienThoai}}</strong>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="row" style="padding-left: 10px">
-                                    <div class="mb-3">
-                                        <label class="form-label">Trạng Thái:</label>
-                                        <strong class="fw-medium">
-                                            <span class="badge rounded-pill text-bg-warning" style="background-color: black" ng-show="yeuCau.trangThai == 1">Chờ Xác Nhận</span>
-                                            <span class="badge rounded-pill text-bg-success" style="background-color: #fcad03" ng-show="yeuCau.trangThai == 2">Đã Xác Nhận</span>
-                                            <span class="badge rounded-pill text-bg-success" style="background-color: #03a106" ng-show="yeuCau.trangThai == 3">Hoàn Thành</span>
-                                            <span class="badge rounded-pill text-bg-danger" style="background-color: #bf0606" ng-show="yeuCau.trangThai == 0">Bị Hủy</span>
-                                        </strong>
-                                    </div>
-                                </div>
-
-                                <div class="row" style="padding-left: 10px">
-                                    <div class="mb-3">
-                                        <label class="form-label">Ngày Tạo:</label>
-                                        <strong class="fw-medium">{{yeuCau.ngayTao | formatDate}}</span>
-                                        </strong>
-                                    </div>
-                                </div>
-
-                                <div class="row" style="padding-left: 10px">
-                                    <div class="form-floating mb-3">
-                                        <div class="mb-3">
-                                            <label class="form-label">Ngày Sửa: </label>
-                                            <strong class="fw-medium">{{yeuCau.ngaySua | formatDate}}</span>
+                                    <div class="row" style="padding-left: 10px">
+                                        <div class="mt-2 mb-2 ">
+                                            <label class="form-label">Email:</label>
+                                            <strong class="fw-medium fw-bold">{{hoaDon.khachHang.email}}</span>
                                             </strong>
                                         </div>
                                     </div>
                                 </div>
 
+
+                            </div>
+                            <div class="col-md-3" style="border-right: 1px solid black">
                                 <div class="row" style="padding-left: 10px">
-                                    <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="floatingInput3" value="{{yeuCau.nguoiTao}}" disabled>
-                                        <label for="floatingInput3">Người Tạo: </label>
+                                    <div class="mb-3">
+                                        <label>Yêu Cầu: <span class="badge text-bg-dark"
+                                                              style="background-color: black">YC{{ yeuCau.id }}</span></label>
+                                    </div>
+                                </div>
+
+                                <div class="row" style="padding-left: 10px">
+                                    <div class="mb-3">
+                                        <label class="form-label">Trạng thái:</label>
+                                        <strong class="fw-medium">
+                                            <span class="badge rounded-pill text-bg-warning"
+                                                  style="background-color: black" ng-show="yeuCau.trangThai == 1">Chờ Xác Nhận</span>
+                                            <span class="badge rounded-pill text-bg-success"
+                                                  style="background-color: black" ng-show="yeuCau.trangThai == 2">Đã Xác Nhận</span>
+                                            <span class="badge rounded-pill text-bg-success"
+                                                  style="background-color: black" ng-show="yeuCau.trangThai == 3">Hoàn Thành</span>
+                                            <span class="badge rounded-pill text-bg-danger"
+                                                  style="background-color: #bf0606"
+                                                  ng-show="yeuCau.trangThai == 0">Bị Hủy</span>
+                                        </strong>
+                                    </div>
+                                </div>
+
+                                <div class="row" style="padding-left: 10px">
+                                    <div class="mb-3 ">
+                                        <label class="form-label">Người tạo:</label>
+                                        <strong class="fw-medium fw-bold">{{hoaDon.khachHang.hoTen}}</strong>
+                                    </div>
+                                </div>
+
+                                <div class="row" style="padding-left: 10px" ng-show="nguoiSua">
+                                    <div class="mb-3 ">
+                                        <label class="form-label">Người sửa:</label>
+                                        <strong class="fw-medium fw-bold">{{nguoiSua.hoTen}}</strong>
+                                    </div>
+                                </div>
+
+                                <div class="row" style="padding-left: 10px">
+                                    <div class="mb-3">
+                                        <label class="form-label">Ngày tạo:</label>
+                                        <strong class="fw-medium">{{yeuCau.ngayTao | formatDate}}</strong>
+                                    </div>
+                                </div>
+
+                                <div class="row" style="padding-left: 10px">
+                                    <div class="mb-3">
+                                        <label class="form-label">Ngày Sửa: </label>
+                                        <strong class="fw-medium">{{yeuCau.ngaySua | formatDate}}</strong>
+                                    </div>
+                                </div>
+
+                                <div class="row" style="padding-left: 10px" ng-show="nguoiThucHien">
+                                    <div class="mb-3 ">
+                                        <label class="form-label">Người thực hiện:</label>
+                                        <strong class="fw-medium fw-bold">{{yeuCau.nguoiThucHien.hoTen}}</strong>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-md-3" style="border-right: 1px solid black">
 
-                                <div class="row" style="padding-left: 10px">
-                                    <div class="mb-3">
-                                        <label class="form-label">Tổng tiền hóa đơn gốc:</label>
-                                        <strong class="fw-medium">{{hoaDon.tongTienKhachThanhToan | formatToVND}} </strong>
-                                    </div>
+                                <div class="d-flex justify-content-between pb-3">
+                                    <p class=" text-dark">Tổng tiền gốc : </p>
+                                    <p class=" text-dark">{{hoaDon.tongTienKhachThanhToan | formatToVND}}</p>
+                                </div>
+                                <div class="d-flex justify-content-between pb-3">
+                                    <p class=" text-dark">Tiền trả hàng : </p>
+                                    <p class=" text-dark">{{tongTienHangTra | formatToVND}}</p>
+                                </div>
+                                <div class="d-flex justify-content-between pb-3" ng-show="tongTienHangDoi > 0">
+                                    <p class=" text-dark">Tiền đổi hàng : </p>
+                                    <p class=" text-dark">{{tongTienHangDoi | formatToVND}}</p>
                                 </div>
 
-                                <div class="row" style="padding-left: 10px">
-                                    <div class="mb-3">
-                                        <label class="form-label">Tổng tiền hàng trả</label>
-                                        <strong class="fw-medium">{{ tongTienHangTra | formatToVND}} </strong>
-                                    </div>
+                                <div class="d-flex justify-content-between pb-3" ng-show="tongTienHangDoi > 0">
+                                    <p class=" text-dark">Khuyến Mại : </p>
+                                    <p class=" text-dark"> {{tongTienGiamGia | formatToVND}}</p>
                                 </div>
 
-                                <div class="row" style="padding-left: 10px">
-                                    <div class="mb-3">
-                                        <label class="form-label">Tổng tiền hàng đổi:</label>
-                                        <strong class="fw-medium">{{ tongTienHangDoi | formatToVND}} </strong>
-                                    </div>
+                                <div class="d-flex justify-content-between pb-3" ng-show="tongTienHangDoi > 0">
+                                    <p class=" text-dark">COD : </p>
+                                    <p class=" text-dark"> {{phiVanChuyen | formatToVND}}</p>
                                 </div>
 
-                                <div class="row" style="padding-left: 10px">
-                                    <div class="mb-3">
-                                        <label class="form-label">Tổng tiền giảm giá:</label>
-                                        <strong class="fw-medium">{{tongTienGiamGia > 0 ? "-":""}}{{ tongTienGiamGia | formatToVND}} </strong>
-                                    </div>
+                                <div class="d-flex justify-content-between pt-3"
+                                     style="border-top: 1px solid grey"
+                                     ng-show="tongTienHangTra - (tongTienDoiHang + phiVanChuyen + tongTienGiamGia) > 0">
+                                    <p class="fw-bold text-dark">Tổng tiền hoàn : </p>
+                                    <p class="fw-bold text-dark">{{tongTienThanhToan | formatToVND}}</p>
                                 </div>
 
-                                <div class="row" style="padding-left: 10px">
-                                    <div class="mb-3">
-                                        <label class="form-label">Phí Ship:</label>
-                                        <strong class="fw-medium">{{phiVanChuyen | formatToVND}} </strong>
-                                    </div>
+                                <div class="d-flex justify-content-between pt-3"
+                                     style="border-top: 1px solid grey"
+                                     ng-show="tongTienHangTra - (tongTienDoiHang + phiVanChuyen + tongTienGiamGia) <= 0">
+                                    <p class="fw-bold text-dark">Tổng thanh toán : </p>
+                                    <p class="fw-bold text-dark">{{tongTienThanhToan | formatToVND}}</p>
                                 </div>
 
-                                <div class="row" ng-show="(tongTienHangTra - tongTienHangDoi) > 0" style="padding-left: 10px">
-                                    <div class="mb-3">
-                                        <label class="form-label">Tổng tiền hoàn:</label>
-                                        <strong class="fw-medium">{{ tongTienThanhToan | formatToVND }} </strong>
-                                    </div>
-                                </div>
-
-                                <div class="row" ng-show="(tongTienHangTra - tongTienHangDoi) < 0" style="padding-left: 10px">
-                                    <div class="mb-3">
-                                        <label class="form-label">Tổng tiền thanh toán:</label>
-                                        <strong class="fw-medium">{{tongTienThanhToan | formatToVND}} </strong>
-                                    </div>
-                                </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-floating mb-3" style="padding-left: 10px">
-                                    <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 230px; border: none" ng-model="yeuCau.ghiChu"></textarea>
+                                    <textarea class="form-control" placeholder="Leave a comment here"
+                                              id="floatingTextarea2" style="height: 230px; border: none"
+                                              ng-model="yeuCau.ghiChu"></textarea>
                                     <label for="floatingTextarea2">Ghi Chú:</label>
                                 </div>
-                                <button class="btn btn-success" style="padding-left: 10px" type="button" ng-if="yeuCau.trangThai==1"
+                                <button class="btn btn-dark" style="padding-left: 10px"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalCheckSoLuongTon"
+                                        ng-if="yeuCau.trangThai==1"
                                         ng-click="checkComfirm()">
-                                    <span class="ps-2">Xác Nhận <i class="fas fa-check"></i></span>
+                                    <span class="ps-2"><i class="fas fa-check"></i> Xác Nhận </span>
                                 </button>
-                                <button class="btn btn-danger" style="padding-left: 10px" type="button" ng-if="yeuCau.trangThai==1"
+                                <button class="btn btn-dark" style="padding-left: 10px" type="button"
+                                        ng-if="yeuCau.trangThai==1"
                                         ng-click="tuChoiNhanYeuCau()">
-                                    <span class="ps-2">Từ Chối <i class="fas fa-ban"></i></span>
+                                    <span class="ps-2"><i class="fas fa-ban"> Từ Chối </i></span>
                                 </button>
-                                <a class="btn btn-secondary" href="#/list">Quay Về <i class="fas fa-chevron-left"></i></a>
-                                <button type="button" class="btn btn-success" ng-if="yeuCau.trangThai != 1" ng-click="luuYeuCau()">Lưu <i class="fas fa-save"></i></button>
-<!--                                &lt;!&ndash; Button trigger modal &ndash;&gt;-->
-<!--                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalHoaDon">-->
-<!--                                    Hóa đơn-->
-<!--                                </button>-->
+                                <a class="btn btn-dark" href="#/list">Quay Về <i
+                                        class="fas fa-chevron-left"></i></a>
+                                <button type="button" class="btn btn-dark" ng-if="yeuCau.trangThai != 1"
+                                        ng-click="luuYeuCau()"><i class="fas fa-save"> Lưu</i></button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="card" style="height: 50%;border-radius: 0px 0px 10px 10px">
-                    <div class="card-header" style="background-color: #222222">
-                        <label class="fw-medium" style="color: white">Chi Tiết Đổi Trả</label>
-                    </div>
-                    <div class="card-body" style="overflow-y: auto">
-                        <div class="change-product-table table-responsive">
-                            <table class="table table-hover align-middle table-borderless text-center mw-100 fixed-header"
-                                   border="1">
-                                <thead>
-                                <tr>
-                                    <th>Loại</th>
-                                    <th>Mã Giày</th>
-                                    <th>Tên Sản Phẩm</th>
-                                    <th>Số Lượng Trả/Đổi</th>
-                                    <th>Kích Cỡ</th>
-                                    <th>Màu Sắc</th>
-                                    <th>Ảnh Sản Phẩm</th>
-                                    <th>Thành Tiền</th>
-                                    <th>Trạng Thái</th>
-                                    <th>Thao Tác</th>
-                                </tr>
-                                </thead>
-                                <tbody ng-repeat="item in listYeuCauChiTietResponse track by item.id">
-                                <!-- Điều chỉnh điều kiện ng-if cho Giày Trả -->
-                                <tr>
-                                    <td><span class="badge rounded-pill text-bg-dark" style="background-color: black">Giày Trả</span></td>
-                                    <td>SP{{item.hoaDonChiTiet.bienTheGiay.id}}</td>
-                                    <td>{{ item.hoaDonChiTiet.bienTheGiay.giayResponse.ten }}</td>
-                                    <td>x1</td>
-                                    <td>{{ item.hoaDonChiTiet.bienTheGiay.kichThuoc.ten }}</td>
-                                    <td>
-                                        <div style="background-color: {{item.hoaDonChiTiet.bienTheGiay.mauSac.maMau}};
-                                                width: 20px; height: 20px; border-radius: 50%;
-                                                display: inline-block; margin-right: 5px;"></div>
-                                        {{ item.hoaDonChiTiet.bienTheGiay.mauSac.ten }}
-                                    </td>
-                                    <td>
-                                        <img ng-src="{{'https://product.hstatic.net/1000361048/product/giay_co_lung_forum_trang_fy4976_02_standard_hover_1af12c21fb0a498eb38c9d41c04e4514_grande.jpg'}}"
-                                             alt="Ảnh sản phẩm" height="50" width="50" style="border-radius: 5px;">
-                                    </td>
-                                    <td>{{ item.thanhTien |formatToVND }}</td>
-                                    <td>
-                                        <span class="badge rounded-pill text-bg-warning" style="background-color: #fcad03" ng-show="item.trangThai == 1  || item.trangThai == 2">Chờ Xác Nhận</span>
-                                        <span class="badge rounded-pill text-bg-success" style="background-color: #03a106" ng-show="item.trangThai == 3  || item.trangThai == 4">Đã Xác Nhận</span>
-                                        <span class="badge rounded-pill text-bg-danger" style="background-color: #bf0606" ng-show="item.trangThai == 5">Bị Hủy</span>
-                                    </td>
-                                    <td>
-                                        <button type="button" class="btn btn-warning" data-bs-toggle="modal"
-                                                data-bs-target="#exampleModal" data-bs-whatever="@mdo" ng-click="lyDoChiTiet(item)">Lý Do
-                                        </button>
-                                        <button type="button" class="btn btn-light" ng-if="yeuCau.trangThai == 1"
-                                                ng-click="confirmDeleteGiayTra(item)"><i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </td>
-                                </tr>
 
-                                <!-- Điều chỉnh điều kiện ng-if cho Giày Đổi -->
-                                <tr ng-if="item.bienTheGiay.id" ng-class="{'deleted-row': item.isDeleted}">
-                                    <td><span class="badge rounded-pill text-bg-dark" style="background-color: black">Giày Đổi</span></td>
-                                    <td>SP{{ item.bienTheGiay.id }}</td>
-                                    <td>{{ item.bienTheGiay.giayResponse.ten }}</td>
-                                    <td>x1</td>
-                                    <td>{{ item.bienTheGiay.kichThuoc.ten }}</td>
-                                    <td>
-                                        <div style="background-color: {{item.bienTheGiay.mauSac.maMau}};
-                                                width: 20px; height: 20px; border-radius: 50%;
-                                                display: inline-block; margin-right: 5px;"></div>
-                                        {{ item.bienTheGiay.mauSac.ten }}
-                                    </td>
-                                    <td>
-                                        <img ng-src="{{'https://product.hstatic.net/1000361048/product/giay_co_lung_forum_trang_fy4976_02_standard_hover_1af12c21fb0a498eb38c9d41c04e4514_grande.jpg'}}"
-                                             alt="Ảnh sản phẩm" height="50" width="50" style="border-radius: 5px;">
-                                    </td>
-                                    <td>{{item.bienTheGiay.giaBan - item.tienGiam | formatToVND}}</td>
-                                    <td>
-                                        <span class="badge rounded-pill text-bg-warning" style="background-color: #fcad03" ng-show="item.trangThai == 1">Chờ Xác Nhận</span>
-                                        <span class="badge rounded-pill text-bg-success" style="background-color: #03a106" ng-show="item.trangThai == 4">Đã Xác Nhận</span>
-                                        <span class="badge rounded-pill text-bg-danger" style="background-color: #bf0606" ng-show="item.trangThai == 2  || item.trangThai == 3|| item.trangThai == 5 ">Bị Hủy</span>
-                                    </td>
-                                    <td>
-                                        <button type="button" class="btn btn-light" ng-if="yeuCau.trangThai == 1"
-                                                ng-click="confirmDeleteGiayDoi(item)"><i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                <div class="row pt-3" style="margin: 10px">
+                    <div style="border-top: 1px solid grey">
+                        <div ng-repeat="(index,yeuCauChiTiet) in listYeuCauChiTietResponse">
 
+                            <div class="formTra pt-3 row" ng-show="!yeuCauChiTiet.bienTheGiay.id"
+                                 style="border-bottom: 1px solid grey">
+                                <div class="col-md-4">
 
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Lý Do Chi Tiết</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="mb-3">
-                                <label for="floatingSelect">Lý Do:</label>
-                                <select class="form-select" id="floatingSelect"
-                                        placeholder="Chọn Lý Do Đổi/Trả"
-                                        aria-label="Floating label select example" ng-model="lyDo">
-                                    <option ng-repeat="lyDo in listLyDo" value="{{lyDo.id}}">{{lyDo.ten}}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="message-text" class="col-form-label">Mô tả:</label>
-                                <textarea class="form-control" id="message-text" ng-model="ghiChu"></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <div class="form-check form-switch">
-                                    <label class="form-check-label" for="flexSwitchCheckDefault">Sản Phẩm Lỗi</label>
-                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
-                                           ng-model="tinhTrangSanPham">
+                                    <div class="d-flex mb-3">
+                                        <div style="padding-left: 15px">
+                                            <img class="rounded" width="60%"
+                                                 ng-src="{{yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.hinhAnh ? yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.hinhAnh : 'https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg'}}"
+                                                 alt="Ảnh giày">
+                                        </div>
+
+                                        <div class="w-75 ps-1">
+
+                                            <div class="d-flex align-items-center pt-1">
+                                                <p ng-class="{ 'out-of-stock': yeuCauChiTiet.trangThai === 1 }"
+                                                   class="font-size-16-ncl fw-bold text-dark mb-2 text-wrap-none">
+                                                    {{yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.giayResponse.ten}}</p>
+                                                <p ng-if="yeuCauChiTiet.trangThai === 5"
+                                                   class="ps-2 font-size-14-ncl fw-bold text-dark mb-2 text-wrap-none">(
+                                                    Đã hủy )</p>
+                                            </div>
+
+                                            <div class="d-flex align-items-center justify-content-between pt-2">
+                                                <p class="font-size-14-ncl text-secondary">Kích cỡ :
+                                                    {{yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.kichThuoc.ten}} / Màu Sắc
+                                                    :
+                                                    {{yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.mauSac.ten}}</p>
+                                            </div>
+
+                                            <div class="d-flex pt-1">
+                                                <p class="font-size-14-ncl text-secondary">Số lượng Trả : 1</p>
+                                            </div>
+
+                                            <div class="d-flex pt-2">
+                                                <p class="font-size-16-ncl fw-bold text-dark">Giá:
+                                                    {{yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.giaBan -
+                                                    (yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.giaBan*(yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.khuyenMai/100))
+                                                    | formatToVND}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quay Về</button>
-                        <button type="button" class="btn btn-success" data-bs-dismiss="modal" ng-click="updateLyDo()">
-                            Lưu
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- Modal xác nhận -->
-        <div class="modal fade" id="modalCheckSoLuongTon" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="staticBackdropLabel1">Số lượng tồn kho không đủ</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                       <p>
-                           Số lượng tồn kho không đủ! Vui lòng liên hệ với khách hàng: <span class="badge text-bg-dark" style="background-color: black">{{hoaDon.khachHang.soDienThoai}}</span></p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quay Về</button>
-                        <button type="button" class="btn btn-danger">Xóa</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- Modal -->
-        <div class="modal fade" id="modalHoaDon" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="invoice-header">
-                            <div class="d-flex justify-content-evenly align-content-center" style="padding-bottom: 10px ;border-bottom: 2px slategray dashed;">
-                                <img src="/img/logo_datn.png"
-                                     alt="" style="width: 50px; height: 50px;">
-                                <h2 class="d-flex align-items-center">Cửa hàng giày sneaker Lucky Store</h2>
-                            </div>
-                            <h2>Hóa Đơn Thanh Toán</h2>
-                        </div>
-
-                        <div class="invoice-details">
-                            <p class="py-2"><strong>Mã Hóa Đơn :</strong> HD{{hoaDonPrint.ma}}</p>
-                            <p class="py-2"><strong>Khách Hàng :</strong> {{hoaDonPrint.tenKhachHang}}</p>
-                            <p class="py-2"><strong>Nhân viên  :</strong> {{hoaDonPrint.tenNhanVien}}</p>
-                            <p class="py-2"><strong>Ngày thanh toán:</strong> {{hoaDonPrint.ngayThanhToan}}</p>
-                        </div>
-
-                        <table class="invoice-items" style="width: 100%; table-layout: fixed">
-                            <thead>
-                            <tr>
-                                <th style="width: 70%">Sản Phẩm</th>
-                                <th>Số Lượng</th>
-                                <th>Đơn Giá (Đã giảm)</th>
-                                <th>Thành Tiền</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr ng-repeat="sanPham in sanPhams">
-                                <td>({{sanPham.bienTheGiay.kichThuoc.ten}} - {{sanPham.bienTheGiay.mauSac.ten}}) <strong>{{sanPham.bienTheGiay.giayResponse.ten}}</strong></td>
-                                <td>{{sanPham.soLuong}}</td>
-                                <td>{{sanPham.donGia}}</td>
-                                <td>{{sanPham.donGia * sanPham.soLuong}}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-
-                        <div class="row">
-                            <div class="col-6" ng-show="hoaDonPrint.thongTinThanhToan.show">
-                                <div class="py-2"><strong>Thông tin thanh toán:</strong></div>
-                                <div class="py-2" ng-show="hoaDonPrint.thongTinThanhToan.show && hoaDonPrint.thongTinThanhToan.tienMat">Tiền mặt(tại quầy):
-                                    <strong>{{hoaDonPrint.thongTinThanhToan.tienMat? hoaDonPrint.thongTinThanhToan.tienMat : 0 | number : 0}} VND</strong>
-                                    <div ng-show="hoaDonPrint.thongTinThanhToan.show && hoaDonPrint.thongTinThanhToan.chuyenKhoan" style="border-bottom: 2px slategray dashed;"></div>
-                                </div>
-                                <div class="py-2" ng-show="hoaDonPrint.thongTinThanhToan.show && hoaDonPrint.thongTinThanhToan.chuyenKhoan">Chuyển khoản:
-                                    <strong>{{hoaDonPrint.thongTinThanhToan.chuyenKhoan? hoaDonPrint.thongTinThanhToan.chuyenKhoan : 0 | number : 0}} VND</strong>
-                                    <div>Mã giao dịch: <strong>{{hoaDonPrint.thongTinThanhToan.maGiaoDich}}</strong></div>
+                                <div class="col-md-8 row">
+                                    <div class="pt-4" style="padding-left: 120px;">
+                                        <button type="button" class="btn btn-dark" data-bs-toggle="modal"
+                                                data-bs-target="#exampleModal"
+                                                ng-click="addLyDoView(index,yeuCauChiTiet)">Lý Do
+                                        </button>
+                                        <button type="button" class="btn btn-dark"
+                                                ng-click="confirmDeleteGiayTra(yeuCauChiTiet)"
+                                                ng-show="yeuCau.trangThai == 1"><i
+                                                class="fas fa-trash-alt"></i></button>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="invoice-total col-6">
-                                <p class="py-2"><strong>Tổng Cộng : </strong> {{hoaDonPrint.tongCong | number : 0}} VND</p>
-                                <p class="py-2"><strong>Tiền ship : </strong>- {{hoaDonPrint.tienShip? hoaDonPrint.tienShip : 0 | number :
-                                    0}} VND</p>
-                                <p class="py-2"><strong>Giảm giá : </strong>- {{hoaDonPrint.tongTru | number : 0}} VND</p>
-                                <p class="py-2"><strong>Phải trả : </strong>{{hoaDonPrint.conLai | number : 0}} VND</p>
+                            <div class="formDoi row pt-3" ng-show="yeuCauChiTiet.bienTheGiay.id"
+                                 style="border-bottom: 1px solid grey">
+                                <div class="col-md-6">
+
+                                    <div class="sanPhamTra">
+                                        <div class="d-flex mb-3">
+                                            <div style="padding-left: 15px">
+
+                                                <img class="rounded" width="60%"
+                                                     ng-src="{{yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.hinhAnh ? yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.hinhAnh : 'https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg'}}"
+                                                     alt="Ảnh giày">
+                                            </div>
+
+                                            <div class="w-75 ps-1">
+                                                <div class="d-flex align-items-center">
+                                                    <p ng-class="{ 'out-of-stock': yeuCauChiTiet.trangThai === 1 }"
+                                                       class="font-size-16-ncl fw-bold text-dark mb-2 text-wrap-none">
+                                                        {{yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.giayResponse.ten}}</p>
+                                                    <p ng-if="yeuCauChiTiet.trangThai === 1"
+                                                       class="ps-2 font-size-14-ncl fw-bold text-dark mb-2 text-wrap-none">
+                                                        (
+                                                        Đã hủy )</p>
+                                                    <div style="flex-grow: 1;"></div>
+                                                    <!-- Nút Trả Hàng -->
+                                                    <div>
+                                                        <button type="button" class="btn btn-dark"
+                                                                ng-click="addLyDoView(index,yeuCauChiTiet)">Lý
+                                                            Do</i></button>
+                                                        <button type="button" class="btn btn-dark"
+                                                                ng-click="confirmDeleteGiayTra(yeuCauChiTiet)"
+                                                                ng-show="yeuCau.trangThai == 1"><i
+                                                                class="fas fa-trash-alt"></i></button>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <p class="font-size-14-ncl text-secondary">Kích cỡ :
+                                                        {{yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.kichThuoc.ten}} /
+                                                        Màu Sắc :
+                                                        {{yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.mauSac.ten}}</p>
+                                                </div>
+                                                <div class="d-flex pt-1">
+                                                    <p class="font-size-14-ncl text-secondary">Số lượng đổi : 1</p>
+                                                </div>
+                                                <div class="d-flex pt-2">
+                                                    <p class="font-size-16-ncl fw-bold text-dark">Giá:
+                                                        {{yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.giaBan -
+                                                        (yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.giaBan*(yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.khuyenMai/100))
+                                                        | formatToVND}}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-6">
+
+                                    <div class="sanPhamDoi" style="padding-left: 60px;">
+                                        <div class="d-flex mb-3">
+                                            <div>
+                                                <img class="rounded" width="60%"
+                                                     ng-src="{{yeuCauChiTiet.bienTheGiay.hinhAnh ? yeuCauChiTiet.bienTheGiay.hinhAnh : 'https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg'}}"
+                                                     alt="Ảnh giày">
+                                            </div>
+                                            <div class="w-75 ps-1">
+                                                <div class="d-flex align-items-center">
+                                                    <p ng-class="{ 'out-of-stock': yeuCauChiTiet.trangThai === 1 || yeuCauChiTiet.trangThai === 2 }"
+                                                       class="font-size-16-ncl fw-bold text-dark mb-2 text-wrap-none">
+                                                        {{yeuCauChiTiet.bienTheGiay.giayResponse.ten}}</p>
+                                                    <p ng-if="yeuCauChiTiet.bienTheGiay.soLuong === 0"
+                                                       class="ps-2 font-size-14-ncl fw-bold text-dark mb-2 text-wrap-none">
+                                                        ( Hết hàng )</p>
+                                                    <p ng-if="yeuCauChiTiet.trangThai === 1 || yeuCauChiTiet.trangThai === 2"
+                                                       class="ps-2 font-size-14-ncl fw-bold text-dark mb-2 text-wrap-none">
+                                                        ( Đã Hủy )</p>
+                                                    <div style="flex-grow: 1;"></div>
+                                                    <button type="button" class="btn btn-dark"
+                                                            ng-show="yeuCau.trangThai == 1"><i
+                                                            class="fas fa-trash-alt"
+                                                            ng-click="confirmDeleteGiayDoi(yeuCauChiTiet)"></i></button>
+                                                </div>
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <p class="font-size-14-ncl text-secondary">Kích cỡ :
+                                                        {{yeuCauChiTiet.bienTheGiay.kichThuoc.ten}} / Màu Sắc :
+                                                        {{yeuCauChiTiet.bienTheGiay.mauSac.ten}}</p>
+                                                </div>
+
+                                                <div class="d-flex pt-1">
+                                                    <p class="font-size-14-ncl text-secondary">Số lượng đổi : 1</p>
+                                                    <div style="flex-grow: 1;"></div>
+                                                </div>
+
+                                                <div class="d-flex pt-2">
+                                                    <p class="font-size-16-ncl fw-bold text-dark">Giá:
+                                                        <strong class="text-decoration-line-through"
+                                                                ng-show="yeuCauChiTiet.tienGiam > 0">{{yeuCauChiTiet.bienTheGiay.giaBan
+                                                            | formatToVND}}</strong>
+                                                        <strong>{{yeuCauChiTiet.bienTheGiay.giaBan -
+                                                            yeuCauChiTiet.tienGiam | formatToVND}}</strong>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="py-2 display-none" ng-class="hoaDonPrint.trangThai==1?'display-block' : ''">
-                            <span class="da-thanh-toan px-2">Đã thanh toán</span>
-                        </div>
-                        <div class="py-2 display-none" ng-class="hoaDonPrint.trangThai==0?'display-block' : ''">
-                            <span class="chua-thanh-toan">Chưa thanh toán</span>
-                        </div>
-                        <div class="py-2 display-none"  ng-class="hoaDonPrint.trangThai!=1&&hoaDonPrint.trangThai!=0?'display-block' : ''">
-                            <span>Trạng thái: {{hoaDonPrint.trangThai}}</span>
-                        </div>
-                        <div class="d-flex justify-content-center" style="padding-top: 10px ;border-top: 2px slategray dashed;">
-                            <div style="text-align: center">Cảm ơn và hẹn gặp lại!</div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Understood</button>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 
+
+<div class="modal fade" id="exampleModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: black">
+                <h5 class="modal-title" id="exampleModalLabel" style="color: white">Lý Do Chi Tiết</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="floatingSelect">Lý Do:</label>
+                        <select class="form-select" id="floatingSelect" ng-model="yeuCauChiTiet.lyDo"
+                                ng-options="lyDo as lyDo.ten for lyDo in listLyDo track by lyDo.id">
+                            <!-- các options ở đây -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Mô tả:</label>
+                        <textarea class="form-control" id="message-text" ng-model="yeuCauChiTiet.ghiChu"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <label class="form-check-label" for="flexSwitchCheckDefault">Sản Phẩm Lỗi</label>
+                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
+                                   ng-model="yeuCauChiTiet.tinhTrangSanPham">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal"><i class="fas fa-chevron-left"></i>
+                    Quay Về
+                </button>
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal" ng-click="updateLyDo()"><i
+                        class="fas fa-save"></i> Lưu
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal xác nhận -->
+<div class="modal fade" id="modalCheckSoLuongTon" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: black">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel1" style="color: white">Kiểm Tra Số Lượng Tồn</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex mb-3" ng-repeat="item in listSanPhamDoi" ng-show="!checkDoi">
+                    <div>
+                        <img class="rounded" width="100%"
+                             ng-src="{{item.value.bienTheGiay.hinhAnh ? yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.hinhAnh : 'https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg'}}"
+                             alt="Ảnh giày">
+                    </div>
+                    <div class="w-75 ps-3">
+                        <div class="d-flex align-items-center">
+                            <p class="font-size-16-ncl fw-bold text-dark mb-2 text-wrap-none">
+                                {{item.value.bienTheGiay.giayResponse.ten}} - {{item.value.bienTheGiay.id}}</p>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between pt-3">
+                            <p class="font-size-14-ncl text-secondary">Kích cỡ :
+                                {{item.value.bienTheGiay.kichThuoc.ten}} / Màu
+                                Sắc : {{item.value.bienTheGiay.mauSac.ten}}</p>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between pt-3">
+                            <p class="font-size-16-ncl text-dark fw-bold">Số lượng(đổi/tồn) : <span
+                                    class="badge rounded-pill text-bg-warning fw-bold" style="background-color: #FF9900; color: black">{{item.value.soLuongDoi}} / {{item.value.bienTheGiay.soLuong}}</span>
+                            </p>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between pt-3">
+                            <p class="font-size-16-ncl fw-bold text-dark">Giá: {{item.value.bienTheGiay.giaBan -
+                                (item.value.bienTheGiay.giaBan*item.value.bienTheGiay.khuyenMai/100) | number}}
+                                ₫</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label ng-show="checkDoi">Hoàn tất kiểm tra, đủ điều kiện đổi/trả!</label>
+                    <label ng-show="!checkDoi">Hoàn tất kiểm tra, số lượng sản phẩm đổi nhiều hơn số lượng tồn!</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal"><i class="fas fa-chevron-left"></i>
+                    Quay Về
+                </button>
+                <button type="button" class="btn btn-dark" ng-click="xacNhanYeuCau()" ng-disabled="!checkDoi"><i
+                        class="fas fa-check"></i> Xác Nhận
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</div>
+</div>

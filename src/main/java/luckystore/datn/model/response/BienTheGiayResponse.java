@@ -5,9 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import luckystore.datn.entity.BienTheGiay;
-import luckystore.datn.entity.Giay;
-import luckystore.datn.entity.HinhAnh;
+import luckystore.datn.entity.*;
 import luckystore.datn.service.impl.ImageHubServiceImpl;
 
 import java.math.BigDecimal;
@@ -41,6 +39,14 @@ public class BienTheGiayResponse extends BaseBienTheResponse {
     private KichThuocResponse kichThuoc;
 
     private GiayResponse giayResponse;
+
+    private Long soLuongThongke;
+
+    private Long soLuongMua;
+
+    private Long soLuongTra;
+
+    private Long tyLeTra;
 
     public BienTheGiayResponse(BienTheGiay bienTheGiay, int... level) {
         if (bienTheGiay != null) {
@@ -107,12 +113,39 @@ public class BienTheGiayResponse extends BaseBienTheResponse {
         this.soLuong = soLuong;
     }
 
+    public BienTheGiayResponse(BienTheGiay bienTheGiay, Giay giay, MauSac mauSac, KichThuoc kichThuoc, Long soLuongThongke) {
+        this.id = bienTheGiay.getId();
+        this.giayResponse = new GiayResponse(giay.getId(), giay.getTen());
+        this.mauSac = new MauSacResponse(mauSac.getId(), mauSac.getTen());
+        this.kichThuoc = new KichThuocResponse(kichThuoc.getId(), kichThuoc.getTen());
+        this.hinhAnh = bienTheGiay.getHinhAnh();
+        this.soLuongThongke = soLuongThongke;
+    }
+    public BienTheGiayResponse(BienTheGiay bienTheGiay, Giay giay, MauSac mauSac, KichThuoc kichThuoc, Long soLuongMua, Long soLuongTra) {
+        this.id = bienTheGiay.getId();
+        this.giayResponse = new GiayResponse(giay.getId(), giay.getTen());
+        this.mauSac = new MauSacResponse(mauSac.getId(), mauSac.getTen());
+        this.kichThuoc = new KichThuocResponse(kichThuoc.getId(), kichThuoc.getTen());
+        this.hinhAnh = bienTheGiay.getHinhAnh();
+        this.soLuongMua = soLuongMua;
+        this.soLuongTra = soLuongTra;
+        this.tyLeTra = soLuongMua > 0 ?  ( soLuongTra / soLuongMua) * 100 : 0;
+    }
+
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BienTheGiayResponse that = (BienTheGiayResponse) o;
         return Objects.equals(id, that.id);
+    }
+
+    public BienTheGiayResponse(Long id, Integer soLuong, BigDecimal giaBan) {
+        this.id = id;
+        this.soLuong = soLuong;
+        this.giaBan = giaBan;
     }
 
     @Override

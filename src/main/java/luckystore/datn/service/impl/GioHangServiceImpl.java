@@ -8,6 +8,7 @@ import luckystore.datn.model.request.BienTheGiayGioHangRequest;
 import luckystore.datn.model.request.BienTheGiayRequest;
 import luckystore.datn.model.request.GioHangChiTietRequest;
 import luckystore.datn.model.request.GioHangRequest;
+import luckystore.datn.model.response.BienTheGiayResponse;
 import luckystore.datn.model.response.GioHangChiTietResponse;
 import luckystore.datn.model.response.GioHangResponse;
 import luckystore.datn.repository.BienTheGiayRepository;
@@ -19,9 +20,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -89,12 +93,42 @@ public class GioHangServiceImpl implements GioHangService {
         gioHang.setGhiChu("NaN");
         gioHang.setTrangThai(1);
         GioHang gioHangSaved = gioHangRepository.save(gioHang);
-        if(gioHangRequest.getGioHangChiTietRequestList() != null){
-            List<GioHangChiTiet> gioHangChiTietList = getListGioHangChiTiet(gioHangRequest.getGioHangChiTietRequestList(),gioHangSaved);
+        if (gioHangRequest.getGioHangChiTietRequestList() != null) {
+            List<GioHangChiTiet> gioHangChiTietList = getListGioHangChiTiet(gioHangRequest.getGioHangChiTietRequestList(), gioHangSaved);
             gioHangChiTietRepository.saveAll(gioHangChiTietList);
         }
 
         return new GioHangResponse(gioHangRepository.save(gioHang));
+    }
+
+    @Override
+    public BigDecimal getTongTienByIdGioHang(Long idGioHang) {
+        List<GioHangChiTietResponse> gioHangChiTietResponseList = gioHangChiTietRepository.findGioHangChiTietByIdGioHang(idGioHang);
+        List<Long> ids = new ArrayList<>();
+        for (GioHangChiTietResponse b : gioHangChiTietResponseList) {
+            ids.add(b.getBienTheGiay().getId());
+        }
+        BigDecimal tongTien = BigDecimal.ZERO;
+        List<BienTheGiayResponse> bienTheGiayResponsesKhuyenMai = bienTheGiayRepository.bienTheGiay(ids);
+        for (GioHangChiTietResponse gioHangChiTietResponse : gioHangChiTietResponseList) {
+            boolean tonTai = false;
+            for (BienTheGiayResponse bienTheGiayResponseKhuyenmai : bienTheGiayResponsesKhuyenMai) {
+                if (Objects.equals(gioHangChiTietResponse.getBienTheGiay().getId(), bienTheGiayResponseKhuyenmai.getId())) {
+                    tonTai = true;
+
+                    BigDecimal discountAmount = bienTheGiayResponseKhuyenmai.getGiaBan()
+                            .multiply(new BigDecimal(bienTheGiayResponseKhuyenmai.getKhuyenMai()))
+                            .divide(new BigDecimal(100));
+                    tongTien = tongTien.add((bienTheGiayResponseKhuyenmai.getGiaBan().subtract(discountAmount)).multiply(BigDecimal.valueOf(gioHangChiTietResponse.getSoLuong())));
+
+                }
+            }
+            if (tonTai == false) {
+                tongTien = tongTien.add((gioHangChiTietResponse.getBienTheGiay().getGiaBan().multiply(BigDecimal.valueOf(gioHangChiTietResponse.getSoLuong()))));
+            }
+        }
+
+        return tongTien;
     }
 
     public GioHangChiTiet getGioHangChiTiet(GioHangChiTiet gioHangChiTiet, GioHangChiTietRequest gioHangChiTietRequest) {
@@ -104,7 +138,6 @@ public class GioHangServiceImpl implements GioHangService {
             gioHangChiTiet.setGioHang(gioHangRepository.findById(gioHangChiTietRequest.getGioHang()).get());
             gioHangChiTiet.setBienTheGiay(bienTheGiay);
             gioHangChiTiet.setSoLuong(gioHangChiTietRequest.getSoLuong());
-            gioHangChiTiet.setGiaBan(bienTheGiay.getGiaBan());
             gioHangChiTiet.setNgayTao(LocalDateTime.now());
             gioHangChiTiet.setGhiChu(gioHangChiTiet.getGhiChu());
         } else {
@@ -113,7 +146,6 @@ public class GioHangServiceImpl implements GioHangService {
             gioHangChiTiet.setGioHang(gioHangRepository.findById(gioHangChiTietRequest.getGioHang()).get());
             gioHangChiTiet.setBienTheGiay(bienTheGiay);
             gioHangChiTiet.setSoLuong(gioHangChiTietResponse.getSoLuong() + gioHangChiTietRequest.getSoLuong());
-            gioHangChiTiet.setGiaBan(bienTheGiay.getGiaBan());
             gioHangChiTiet.setNgayTao(LocalDateTime.now());
             gioHangChiTiet.setGhiChu(gioHangChiTiet.getGhiChu());
         }
@@ -147,7 +179,6 @@ public class GioHangServiceImpl implements GioHangService {
             gioHangChiTiet.setGioHang(gioHang);
             gioHangChiTiet.setBienTheGiay(bienTheGiayRepository.findById(ghct.getBienTheGiay()).get());
             gioHangChiTiet.setSoLuong(ghct.getSoLuong());
-            gioHangChiTiet.setGiaBan(ghct.getGiaBan());
             gioHangChiTiet.setNgayTao(LocalDateTime.now());
             gioHangChiTiet.setGhiChu("");
             list.add(gioHangChiTiet);

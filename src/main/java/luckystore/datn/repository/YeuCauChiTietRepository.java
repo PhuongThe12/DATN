@@ -15,6 +15,6 @@ import java.util.List;
 @Repository
 public interface YeuCauChiTietRepository extends JpaRepository<YeuCauChiTiet,Long> {
 
-    @Query("SELECT new luckystore.datn.model.response.YeuCauChiTietResponse(ycct) FROM YeuCauChiTiet ycct WHERE (ycct.yeuCau.id = :id) ")
+    @Query("SELECT new luckystore.datn.model.response.YeuCauChiTietResponse(ycct) FROM YeuCauChiTiet ycct WHERE (ycct.yeuCau.id = :id)")
     List<YeuCauChiTietResponse> getPageResponse(Long id);
 }

@@ -19,8 +19,6 @@ public class GioHangChiTietRequest {
 
     private Integer soLuong;
 
-    private BigDecimal giaBan;
-
     private LocalDateTime ngayTao;
 
     private String ghiChu;

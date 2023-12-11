@@ -39,4 +39,6 @@ public class GiaySearch {
 
     private Integer trangThai;
 
+    private Integer lastDate;
+
 }
