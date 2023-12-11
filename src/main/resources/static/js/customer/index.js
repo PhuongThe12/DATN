@@ -1259,7 +1259,7 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
 
                     $scope.tongTien += item.soLuongMua * giaSauKhuyenMai;
                 });
-                $http.get(host + '/rest/admin/dot-giam-gia/get-all-active')
+                $http.get(host + '/rest/admin/dot-giam-gia/get-all')
                     .then(function (response) {
                         $scope.khuyenMaiDot = 0;
                         angular.forEach(response.data, function (item) {
