@@ -59,7 +59,7 @@ public class SecurityConfig {
 //                                .requestMatchers(HttpMethod.PUT, "/admin/**").hasAnyRole("ADMIN")
 //                                .requestMatchers(HttpMethod.DELETE, "/admin/**").hasAnyRole("ADMIN")
 //                                .requestMatchers(HttpMethod.GET,"/admin/rest/giay/**").hasAuthority("ROLE_USER")
-//                                .requestMatchers("/admin/ban-hang").hasAuthority("ROLE_USER")
+                                .requestMatchers("/rest/user/**").hasAuthority("ROLE_USER")
 //                                .requestMatchers("/admin/rest/de-giay/**", "/admin/ban-hang").hasAuthority("ROLE_STAFF")
                                 .anyRequest().permitAll())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
