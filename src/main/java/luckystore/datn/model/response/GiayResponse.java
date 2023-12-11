@@ -6,14 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import luckystore.datn.entity.BienTheGiay;
-import luckystore.datn.entity.ChatLieu;
-import luckystore.datn.entity.CoGiay;
-import luckystore.datn.entity.DayGiay;
-import luckystore.datn.entity.DeGiay;
 import luckystore.datn.entity.Giay;
-import luckystore.datn.entity.HashTagChiTiet;
 import luckystore.datn.entity.HinhAnh;
-import luckystore.datn.entity.KhuyenMaiChiTiet;
 import luckystore.datn.service.impl.ImageHubServiceImpl;
 
 import java.math.BigDecimal;
@@ -162,7 +156,8 @@ public class GiayResponse {
                 .map(anh -> ImageHubServiceImpl.getBase64FromFileStatic(anh.getLink())).collect(Collectors.toList());
         this.soLuongThongKe = soLuongThongKe;
     }
-    public GiayResponse (Long id, Integer phanTramGiam) {
+
+    public GiayResponse(Long id, Integer phanTramGiam) {
         this.id = id;
         this.phanTramGiam = phanTramGiam;
     }
