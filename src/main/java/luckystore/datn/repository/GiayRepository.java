@@ -99,12 +99,16 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
 
     @Query("select distinct new luckystore.datn.model.response.GiayResponse(g.id, g.ten, anh.link, min(bienThe.giaBan), max(bienThe.giaBan)) from Giay g " +
             "left join g.lstAnh anh " +
+            "left join g.hashTagChiTiets hashTag " +
             "inner join g.lstBienTheGiay bienThe " +
-            "where (anh.link = null or anh.uuTien = 1) and g.trangThai = 1 " +
+            "where (anh is null or anh.uuTien = 1) and g.trangThai = 1 " +
             "and (:#{#giaySearch.ten} is null or g.ten like %:#{#giaySearch.ten}%) " +
             "and (:#{#giaySearch.giaTu} is null or bienThe.giaBan >= :#{#giaySearch.giaTu}) " +
             "and (:#{#giaySearch.giaDen} is null or bienThe.giaBan <= :#{#giaySearch.giaDen}) " +
             "and (:#{#giaySearch.thuongHieuIds} is null or g.thuongHieu.id in :#{#giaySearch.thuongHieuIds}) " +
+            "and (:#{#giaySearch.kichThuocIds} is null or bienThe.kichThuoc.id in :#{#giaySearch.kichThuocIds}) " +
+            "and (:#{#giaySearch.mauSacIds} is null or bienThe.mauSac.id in :#{#giaySearch.mauSacIds}) " +
+            "and (:#{#giaySearch.hashTagIds} is null or hashTag.id in :#{#giaySearch.hashTagIds}) " +
             "group by g.id, g.ten, anh.link"
     )
     Page<GiayResponse> findAllBySearch(GiaySearch giaySearch, Pageable pageable);

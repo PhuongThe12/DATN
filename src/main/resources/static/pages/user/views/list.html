@@ -71,34 +71,37 @@
 
 </style>
 <div class="container-fluid  pt-5">
-    <div class="d-flex align-items-center justify-content-between">
-        <div class="mb-3">
-            <p class="font-size-13-ncl">Trang Chủ / Sản Phẩm</p>
+    <div class="d-flex align-items-center">
+        <div class="mb-3 col-3">
+            <label class="radio-label">Tìm kiếm</label>
         </div>
-        <div>
-            <select class="form-select" aria-label="Default select example">
-                <option selected>Tất Cả</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-            </select>
+        <div class="mx-2">
+            <div class="d-flex justify-content-start radio-filter">
+                <div class="custom-radio">
+                    <input type="radio" id="all" name="status" ng-model="status" value="-1"
+                           ng-checked="status != 0 && status != 1"
+                           ng-change="changeRadio(0)">
+                    <label class="radio-label" for="all">Tất cả</label>
+                </div>
+
+                <div class="custom-radio">
+                    <input type="radio" id="active" name="status" ng-model="status" value="1" ng-checked="status == 1"
+                           ng-change="changeRadio(1)">
+                    <label class="radio-label" for="active">Sản phẩm bán chạy</label>
+                </div>
+
+                <div class="custom-radio">
+                    <input type="radio" id="disable" name="status" ng-model="status" value="0" ng-checked="status == 0"
+                           ng-change="changeRadio(2)">
+                    <label class="radio-label" for="disable">Sản phẩm yêu thích</label>
+                </div>
+            </div>
         </div>
 
     </div>
     <div class="row">
         <div class="col-md-3 sticky-top" style="align-self: flex-start;height: auto;">
-            <!--            <button ng-click="submitForm()">a</button>-->
-            <div class="d-flex" style="flex-wrap: wrap-reverse;">
-                <div class="" ng-repeat="searchChooes in lstSearchChoosed">
-                    <div class="label-search">{{searchChooes.selectedValue}} <i class="fas ps-1 fa-times"></i></div>
-                </div>
-            </div>
 
-            <div class="search-price">
-            </div>
-            <div class="search-price">
-
-            </div>
             <div class="row">
                 <div ng-repeat="dropdown in dropdowns" class="custom-dropdown" style="    padding-top: 3px;">
                     <button style="border-top: 1px solid #ebe9e9;"

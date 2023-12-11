@@ -6,14 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import luckystore.datn.entity.BienTheGiay;
-import luckystore.datn.entity.ChatLieu;
-import luckystore.datn.entity.CoGiay;
-import luckystore.datn.entity.DayGiay;
-import luckystore.datn.entity.DeGiay;
 import luckystore.datn.entity.Giay;
-import luckystore.datn.entity.HashTagChiTiet;
 import luckystore.datn.entity.HinhAnh;
-import luckystore.datn.entity.KhuyenMaiChiTiet;
 import luckystore.datn.service.impl.ImageHubServiceImpl;
 
 import java.math.BigDecimal;
@@ -67,6 +61,8 @@ public class GiayResponse {
     private BigDecimal giaTu;
 
     private BigDecimal giaDen;
+
+    private Integer phanTramGiam = 0;
 
     public GiayResponse(Long id) {
         this.id = id;
@@ -128,9 +124,24 @@ public class GiayResponse {
     public GiayResponse(Long id, String ten, String thumbnail, BigDecimal giaTu, BigDecimal giaDen) {
         this.id = id;
         this.ten = ten;
-        lstAnh.add(ImageHubServiceImpl.getBase64FromFileStatic(thumbnail));
+        if (thumbnail != null) {
+            lstAnh.add(ImageHubServiceImpl.getBase64FromFileStatic(thumbnail));
+        }
         this.giaTu = giaTu;
         this.giaDen = giaDen;
+    }
+
+    public GiayResponse(Long id, String ten, String thumbnail, BigDecimal giaTu, BigDecimal giaDen, Integer phanTramGiam) {
+        this.id = id;
+        this.ten = ten;
+        if (thumbnail != null) {
+            lstAnh.add(ImageHubServiceImpl.getBase64FromFileStatic(thumbnail));
+        }
+        this.giaTu = giaTu;
+        this.giaDen = giaDen;
+        if(phanTramGiam != null) {
+            this.phanTramGiam = phanTramGiam;
+        }
     }
 
     public GiayResponse(Long id, String ten) {
@@ -149,6 +160,11 @@ public class GiayResponse {
         bienTheGiayResponse.setGiaBan(giaBan);
         this.getLstBienTheGiay().add(bienTheGiayResponse);
         lstAnh.add(ImageHubServiceImpl.getBase64FromFileStatic(linkAnh));
+    }
+
+    public GiayResponse (Long id, Integer phanTramGiam) {
+        this.id = id;
+        this.phanTramGiam = phanTramGiam;
     }
 
 }
