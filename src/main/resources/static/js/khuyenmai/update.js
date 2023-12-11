@@ -34,6 +34,7 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
     $scope.giayCu = [];
 
     $scope.init = function () {
+        $scope.loading = true;
         $http.get(host + '/rest/admin/khuyen-mai/giay/' + id)
             .then(function (response) {
                 if (response.status === 200) {
@@ -73,10 +74,12 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
                         $scope.selectedGiayTableData.push(giay);
                         $scope.giayCu.push(giay);
                     });
+                    $scope.loading = false;
                 }
             })
             .catch(function (error) {
                 toastr["error"]("Lấy dữ liệu thất bại");
+                $scope.loading = false;
             });
     };
 

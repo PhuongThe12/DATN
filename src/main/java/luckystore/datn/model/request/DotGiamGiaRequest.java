@@ -1,6 +1,7 @@
 package luckystore.datn.model.request;
 
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +26,7 @@ public class DotGiamGiaRequest {
 
     private Integer trangThai;
 
+    @Valid
     private List<DieuKienRequest> dieuKienRequests;
 
 }
