@@ -1221,6 +1221,7 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
     $scope.tongTienChuongTrinhGiamGia = 0;
     $scope.idGioHang;
     $scope.tongSoLuongMua = 0;
+    $scope.phuongThucThanhToan = 2;
 
     $scope.feeShippingPerOne = 0;
 
@@ -1704,12 +1705,12 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
                     $scope.hoaDonThanhToan.tongTienThanhToan = $scope.tongThanhToan;
                     $scope.hoaDonThanhToan.phuongThuc = $scope.phuongThucThanhToan;
                     console.log($scope.hoaDonThanhToan);
-                    if (request.tienChuyenKhoan < 10001) {
+                    if ($scope.hoaDonThanhToan.tongTienThanhToan < 10001) {
                         toastr["error"]('Tiền thanh toán không được nhỏ hơn 10.000vnđ');
                         return;
                     }
 
-                    if (request.tienChuyenKhoan > 999999999) {
+                    if ($scope.hoaDonThanhToan.tongTienThanhToan > 999999999) {
                         toastr["error"]('Tiền thanh toán không được lớn hơn 999.999.999vnđ');
                         return;
                     }
