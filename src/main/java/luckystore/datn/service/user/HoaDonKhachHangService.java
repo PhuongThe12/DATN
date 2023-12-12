@@ -11,4 +11,6 @@ import org.springframework.stereotype.Service;
 public interface HoaDonKhachHangService {
 
     HoaDonResponse addHoaDon(GioHangThanhToanRequest gioHangThanhToanRequest) throws MessagingException;
+
+    void cancelBankingOrder(Long id);
 }
