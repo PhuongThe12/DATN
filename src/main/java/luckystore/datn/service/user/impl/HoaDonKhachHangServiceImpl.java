@@ -1,18 +1,36 @@
 package luckystore.datn.service.user.impl;
 
 import jakarta.mail.MessagingException;
-import luckystore.datn.entity.*;
+import luckystore.datn.entity.BienTheGiay;
+import luckystore.datn.entity.ChiTietThanhToan;
+import luckystore.datn.entity.DieuKien;
+import luckystore.datn.entity.GioHang;
+import luckystore.datn.entity.HangKhachHang;
+import luckystore.datn.entity.HoaDon;
+import luckystore.datn.entity.HoaDonChiTiet;
+import luckystore.datn.entity.KhachHang;
+import luckystore.datn.entity.PhieuGiamGia;
 import luckystore.datn.exception.ConflictException;
 import luckystore.datn.exception.InvalidIdException;
 import luckystore.datn.exception.NotFoundException;
+import luckystore.datn.infrastructure.constraints.TrangThaiHoaDon;
 import luckystore.datn.model.request.BienTheGiayGioHangRequest;
-import luckystore.datn.model.request.BienTheGiayRequest;
 import luckystore.datn.model.request.GioHangThanhToanRequest;
 import luckystore.datn.model.response.BienTheGiayResponse;
 import luckystore.datn.model.response.GioHangChiTietResponse;
 import luckystore.datn.model.response.GioHangResponse;
 import luckystore.datn.model.response.HoaDonResponse;
-import luckystore.datn.repository.*;
+import luckystore.datn.repository.BienTheGiayRepository;
+import luckystore.datn.repository.DieuKienRepository;
+import luckystore.datn.repository.GioHangChiTietRepository;
+import luckystore.datn.repository.GioHangRepository;
+import luckystore.datn.repository.HangKhachHangRepository;
+import luckystore.datn.repository.HoaDonChiTietRepository;
+import luckystore.datn.repository.HoaDonRepository;
+import luckystore.datn.repository.KhachHangRepository;
+import luckystore.datn.repository.KichThuocRepository;
+import luckystore.datn.repository.MauSacRepository;
+import luckystore.datn.repository.PhieuGiamGiaRepository;
 import luckystore.datn.service.impl.EmailSenderService;
 import luckystore.datn.service.user.HoaDonKhachHangService;
 import luckystore.datn.util.JsonString;
@@ -22,7 +40,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
@@ -63,6 +86,14 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
     @Autowired
     PhieuGiamGiaRepository phieuGiamGiaRepository;
 
+    private static GioHangChiTietResponse getObjectWithId(List<GioHangChiTietResponse> list, Long id) {
+        for (GioHangChiTietResponse obj : list) {
+            if (Objects.equals(obj.getBienTheGiay().getId(), id)) {
+                return obj;
+            }
+        }
+        return null;
+    }
 
     @Transactional
     @Override
@@ -79,7 +110,7 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         } else {
             checkKhuyenMaiSanPham(gioHangThanhToanRequest);
             checkKhuyenMaiKhachHang(gioHangThanhToanRequest);
-            if(gioHangThanhToanRequest.getPhieuGiamGia() != null){
+            if (gioHangThanhToanRequest.getPhieuGiamGia() != null) {
                 checkKhuyenMaiPhieuGiamGia(gioHangThanhToanRequest);
             }
 //            checkSoLuong(gioHangThanhToanRequest.getBienTheGiayRequests());
@@ -89,13 +120,25 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
 
             Set<ChiTietThanhToan> chiTietThanhToans = new HashSet<>();
 
-            ChiTietThanhToan chiTietThanhToan = new ChiTietThanhToan();
-            chiTietThanhToan.setHoaDon(hoaDonSaved);
-            chiTietThanhToan.setHinhThucThanhToan(1);
-            chiTietThanhToan.setTienThanhToan(gioHangThanhToanRequest.getTongTienThanhToan());
-            chiTietThanhToan.setTrangThai(0);
-            chiTietThanhToans.add(chiTietThanhToan);
-            hoaDonSaved.setChiTietThanhToans(chiTietThanhToans);
+            if (gioHangThanhToanRequest.getPhuongThuc() == 2) {
+                ChiTietThanhToan chiTietThanhToan = new ChiTietThanhToan();
+                chiTietThanhToan.setHoaDon(hoaDonSaved);
+                chiTietThanhToan.setHinhThucThanhToan(2);
+                chiTietThanhToan.setTienThanhToan(gioHangThanhToanRequest.getTongTienThanhToan());
+                chiTietThanhToan.setTrangThai(0);
+                chiTietThanhToans.add(chiTietThanhToan);
+                hoaDonSaved.setChiTietThanhToans(chiTietThanhToans);
+
+                hoaDonSaved.setNgayThanhToan(LocalDateTime.now().plusMinutes(10));
+            } else {
+                ChiTietThanhToan chiTietThanhToan = new ChiTietThanhToan();
+                chiTietThanhToan.setHoaDon(hoaDonSaved);
+                chiTietThanhToan.setHinhThucThanhToan(1);
+                chiTietThanhToan.setTienThanhToan(gioHangThanhToanRequest.getTongTienThanhToan());
+                chiTietThanhToan.setTrangThai(0);
+                chiTietThanhToans.add(chiTietThanhToan);
+                hoaDonSaved.setChiTietThanhToans(chiTietThanhToans);
+            }
             hoaDonRepository.save(hoaDonSaved);
 
 //            emailSenderService.sendEmailOrder("quanchun11022@gmail.com","abc",generateHtmlTable(hoaDonChiTiets),null);
@@ -108,20 +151,44 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
                 }
             }
 
-
             return new HoaDonResponse(hoaDonSaved);
         }
     }
 
-    private static GioHangChiTietResponse getObjectWithId(List<GioHangChiTietResponse> list, Long id) {
-        for (GioHangChiTietResponse obj : list) {
-            if (Objects.equals(obj.getBienTheGiay().getId(), id)) {
-                return obj;
-            }
-        }
-        return null;
-    }
+    @Override
+    public void cancelBankingOrder(Long id) {
+        HoaDon hoaDon = hoaDonRepository.findById(id).orElseThrow(()
+                -> new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không tìm thấy hóa đơn nào"))));
 
+        if(hoaDon.getTrangThai() == TrangThaiHoaDon.CHUA_THANH_TOAN) {
+            hoaDon.setTrangThai(TrangThaiHoaDon.DA_HUY);
+            hoaDon.setGhiChu("Hóa đơn bị huỷ do khách hàng chưa hoàn tất thanh toán");
+        } else {
+            throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Hóa đơn đã được xử lý")));
+        }
+
+        List<BienTheGiay> lstBienThe = new ArrayList<>();
+        hoaDon.getListHoaDonChiTiet().forEach(hdct -> {
+            BienTheGiay bienThe = new BienTheGiay();
+            bienThe.setId(hdct.getBienTheGiay().getId());
+            bienThe.setSoLuong(hdct.getSoLuong());
+            lstBienThe.add(bienThe);
+        });
+
+        List<Long> idsBienThe = lstBienThe.stream().map(BienTheGiay::getId).toList();
+        List<BienTheGiay> bienTheGiays = bienTheGiayRepository.getAllByIds(idsBienThe);
+        lstBienThe.forEach(bienTheHuy -> {
+            bienTheGiays.forEach(bienThe -> {
+                if (Objects.equals(bienTheHuy.getId(), bienThe.getId())) {
+                    bienThe.setSoLuong(bienThe.getSoLuong() + bienTheHuy.getSoLuong());
+                }
+            });
+        });
+
+        bienTheGiayRepository.saveAll(bienTheGiays);
+        hoaDonRepository.save(hoaDon);
+
+    }
 
     private HoaDon getHoaDon(HoaDon hoaDon, GioHangThanhToanRequest gioHangThanhToanRequest) {
 
@@ -142,7 +209,7 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
                 throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("dieuKienError", "Đợt giảm giá chưa diễn ra")));
             }
 
-            if(dieuKien.getTongHoaDon().toBigInteger().compareTo(gioHangThanhToanRequest.getDieuKien().getTongHoaDon().toBigInteger()) != 0){
+            if (dieuKien.getTongHoaDon().toBigInteger().compareTo(gioHangThanhToanRequest.getDieuKien().getTongHoaDon().toBigInteger()) != 0) {
                 throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("dieuKienError", "Đợt giảm giá vừa được cập nhật , Vui lòng kiểm tra lại !")));
             }
 
@@ -217,11 +284,11 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         KhachHang khachHang = khachHangRepository.findById(gioHangThanhToanRequest.getKhachHang().getId()).orElseThrow(() -> new NotFoundException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Khách Hàng không tồn tại"))));
         hangKhachHangRepository.findById(khachHang.getHangKhachHang().getId()).orElseThrow(() -> new NotFoundException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Hạng khách hàng không tồn tại !"))));
         BigDecimal tongTienHangKhachHang = gioHangThanhToanRequest.getTongTien().subtract((gioHangThanhToanRequest.getTongTien().multiply(BigDecimal.valueOf(khachHang.getHangKhachHang().getUuDai()))).divide(BigDecimal.valueOf(100)));
-        if (tongTienHangKhachHang.toBigInteger().compareTo(gioHangThanhToanRequest.getTongTienHangKhachHang().toBigInteger()) != 0 ) {
+        if (tongTienHangKhachHang.toBigInteger().compareTo(gioHangThanhToanRequest.getTongTienHangKhachHang().toBigInteger()) != 0) {
             throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("khuyenMaiHangKhachHangError", "Hạng khách hàng vừa được cập nhật, hãy kiểm tra lại !")));
         }
 
-        if(!gioHangThanhToanRequest.getKhachHang().getHangKhachHang().getUuDai().equals(khachHang.getHangKhachHang().getUuDai())){
+        if (!gioHangThanhToanRequest.getKhachHang().getHangKhachHang().getUuDai().equals(khachHang.getHangKhachHang().getUuDai())) {
             throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("khuyenMaiHangKhachHangError", "Hạng khách hàng vừa được cập nhật lại, hãy kiểm tra lại !")));
         }
     }
@@ -247,7 +314,7 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         HangKhachHang hangKhachHang = hangKhachHangRepository.findById(gioHangThanhToanRequest.getKhachHang()
                         .getHangKhachHang().getId())
                 .orElseThrow(() -> new NotFoundException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Hạng khách hàng không tồn tại !"))));
-        System.out.println(hangKhachHang.getId()+" - "+gioHangThanhToanRequest.getKhachHang().getHangKhachHang().getId());
+        System.out.println(hangKhachHang.getId() + " - " + gioHangThanhToanRequest.getKhachHang().getHangKhachHang().getId());
         if (!gioHangThanhToanRequest.getKhachHang().getId().equals(phieuGiamGia.getDoiTuongApDung().getId())) {
             throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("phieuGiamGiaError", "Hạng khách hàng không phù hợp , vui lòng kiểm tra lại !")));
         }
