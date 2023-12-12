@@ -87,9 +87,9 @@ public class RestDotGiamGiaController {
         return new ResponseEntity<>(dotGiamGiaService.updateDotGiamGia(id, dotGiamGiaRequest), HttpStatus.OK);
     }
 
-    @GetMapping("/get-all-active")
-    public ResponseEntity getAllActive() {
-        return new ResponseEntity(dotGiamGiaService.getAllActive(), HttpStatus.OK);
-    }
+//    @GetMapping("/get-all-active")
+//    public ResponseEntity getAllActive() {
+//        return new ResponseEntity(dotGiamGiaService.getAllActive(), HttpStatus.OK);
+//    }
 
 }
