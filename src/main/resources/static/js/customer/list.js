@@ -1,4 +1,12 @@
 app.controller('listProductController', function ($scope, $http, $location, $window) {
+
+    $http.get(host + "/session/get-customer")
+        .then(response => {
+            $scope.currentKhachHang = response.data;
+            console.log($scope.currentKhachHang);
+        })
+    
+    
     $scope.giays = [];
 
     $scope.curPage = 1,
@@ -21,6 +29,7 @@ app.controller('listProductController', function ($scope, $http, $location, $win
                 // $scope.status = 0;
                 console.log($scope.status);
                 toastr["error"]("Bạn chưa đăng nhập");
+                $scope.isLoading = false;
                 return;
             }
             // giaySearch.idKhachHang = ;
