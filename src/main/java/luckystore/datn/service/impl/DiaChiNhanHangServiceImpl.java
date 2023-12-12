@@ -98,6 +98,11 @@ public class DiaChiNhanHangServiceImpl implements DiaChiNhanHangService {
     }
 
     @Override
+    public DiaChiNhanHangResponse findByIdKhachHang(Long id) {
+        return diaChiNhanHangRepo.findByIdKhachHang(id);
+    }
+
+    @Override
     public void deleteDieuKien(Long id) {
         DiaChiNhanHang diaChiNhanHang = diaChiNhanHangRepo.findById(id).orElseThrow(() -> new RuntimeException());
         diaChiNhanHangRepo.delete(diaChiNhanHang);
