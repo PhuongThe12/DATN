@@ -15,10 +15,12 @@
     </div>
 </div>
 <div class="container-fluid">
-    <div class="d-flex align-items-center justify-content-center">
-        <img src="/img/logo_datn.png" width="30px" class="rounded" alt="">
-        <h5 class="fw-bold">LUCKYSTORE</h5>
-    </div>
+    <a href="#/list" style="color: black; text-decoration: none">
+        <div class="d-flex align-items-center justify-content-center">
+            <img src="/img/logo_datn.png" width="30px" class="rounded" alt="">
+            <h5 class="fw-bold mb-0">LUCKYSTORE</h5>
+        </div>
+    </a>
 </div>
 <nav class="navbar navbar-expand-lg p-3">
     <div class="container-fluid">
@@ -39,17 +41,22 @@
                      <span ng-if="currentUser.username">
                       <span ng-click="logoutUser()" class="pointer">LogOut</span>  {{ currentUser.hoTen }}
                     </span>
-                    <span class="pointer" data-bs-toggle="modal" data-bs-target="#exampleModal"  ng-if="!currentUser.username">
+                    <span class="pointer" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                          ng-if="!currentUser.username">
                         Login
                     </span>
-                    <a href="#/thong-tin-tai-khoan"><i class="far fa-user" style="color: black;font-size: 23px;"></i></a>
+                    <a href="#/thong-tin-tai-khoan"><i class="far fa-user"
+                                                       style="color: black;font-size: 23px;"></i></a>
                 </div>
                 <div class="ps-3">
-                    <a href=""><i class="far fa-heart" style="color: black;font-size: 23px;"></i></a>
+                    <a href="#/tra-cuu-don-hang" data-bs-toggle="tooltip" data-bs-placement="top"
+                       title="Tra cứu thông tin hóa đơn"><i class="fas fa-file-invoice"
+                                                            style="color: black;font-size: 23px;"></i></a>
                 </div>
                 <div class="btn-group ps-3" style="cursor: pointer;">
                     <div>
-                        <a href="#/cart"> <i class="fas fa-shopping-cart" style="color: black;font-size: 23px;"></i></a>
+                        <a href="#/cart"> <i class="fas fa-shopping-cart" style="color: black;font-size: 23px;"
+                                             data-bs-toggle="tooltip" data-bs-placement="top" title="Giỏ hàng"></i></a>
                         <span style="position: absolute;
     top: -17px;
     padding: 4px 7px;
@@ -106,8 +113,6 @@
 </nav>
 
 
-
-
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -117,20 +122,24 @@
                 <h5>Đăng nhập </h5>
                 <form name="user" ng-submit="loginUser()">
                     <div class="form-floating mb-3">
-                        <input type="text" ng-model="userLogin.tenDangNhap" class="form-control" id="email" placeholder="name@example.com">
+                        <input type="text" ng-model="userLogin.tenDangNhap" class="form-control" id="email"
+                               placeholder="name@example.com">
                         <label for="email">Địa chỉ Email</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" ng-model="userLogin.matKhau" class="form-control" id="password" placeholder="name@example.com">
+                        <input type="text" ng-model="userLogin.matKhau" class="form-control" id="password"
+                               placeholder="name@example.com">
                         <label for="password">Mật khẩu</label>
                     </div>
                     <div class="mb-3 form-check">
                         <input type="checkbox" class="form-check-input" id="exampleCheck1">
                         <label class="form-check-label" for="exampleCheck1">Check me out</label>
                     </div>
-                    <button type="submit" class="btn btn-custom" >Đăng nhập</button>
-                    <button type="submit" class="btn btn-outline-dark" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal" data-bs-dismiss="modal">Đăng ký</button>
-<!--                    <a class="btn btn-outline-dark" href="#/signup">Signup</a>-->
+                    <button type="submit" class="btn btn-custom">Đăng nhập</button>
+                    <button type="submit" class="btn btn-outline-dark" data-bs-target="#exampleModalToggle2"
+                            data-bs-toggle="modal" data-bs-dismiss="modal">Đăng ký
+                    </button>
+                    <!--                    <a class="btn btn-outline-dark" href="#/signup">Signup</a>-->
                 </form>
             </div>
 
@@ -138,7 +147,8 @@
     </div>
 </div>
 
-<div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+<div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2"
+     tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body py-5">
@@ -164,7 +174,8 @@
                         <div class="form-group mb-3">
                             <label>Giới Tính: </label>
                             <div class="form-check form-check-inline">
-                                <input type="radio" class="form-check-input" style="width: 16px; height: 16px; margin-right: 0"
+                                <input type="radio" class="form-check-input"
+                                       style="width: 16px; height: 16px; margin-right: 0"
                                        id="khachHangGioiTinh1" value="true"
                                        name="gioiTinh"
                                        ng-model="khachHang.gioiTinh" ng-required="true"
@@ -174,7 +185,8 @@
                                 </label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input type="radio" class="form-check-input" style="width: 16px; height: 16px; margin-right: 0"
+                                <input type="radio" class="form-check-input"
+                                       style="width: 16px; height: 16px; margin-right: 0"
                                        id="khachHangGioiTinh2" value="false"
                                        name="gioiTinh"
                                        ng-model="khachHang.gioiTinh" ng-required="true"
