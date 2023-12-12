@@ -49,11 +49,11 @@ app.controller('thanhToanStatusController', function ($scope, $http, $location, 
                     if (storedUserData) {
                         $location.path("/don-hang");
                     } else {
-                        $location.path("/");
+                        $location.path("/list");
                     }
                 })
                 .catch(err => {
-                    $location.path("/");
+                    $location.path("/list");
                 })
 
         } else {
@@ -63,17 +63,18 @@ app.controller('thanhToanStatusController', function ($scope, $http, $location, 
                     if (storedUserData) {
                         $location.path("/don-hang");
                     } else {
-                        $location.path("/");
+                        $location.path("/cart");
                     }
                 })
                 .catch(err => {
-                    $location.path("/");
+                    $location.path("/list");
                 })
         }
     }
 });
 
 app.controller('navbarController', function ($rootScope, $scope, $http, $location, $cookies, $window) {
+
     var storedUserData = $window.localStorage.getItem('currentUser');
     if (!storedUserData) {
         $scope.currentUser = {
