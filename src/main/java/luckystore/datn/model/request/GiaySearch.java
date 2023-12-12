@@ -33,10 +33,14 @@ public class GiaySearch {
 
     private Set<Long> kichThuocIds;
 
+    private Set<Long> hashTagIds;
+
     private Set<Long> mauSacIds;
 
     private Integer trangThai;
 
     private Integer lastDate;
+
+    private Long idKhachHang;
 
 }

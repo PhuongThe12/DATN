@@ -42,7 +42,7 @@
                     <span class="pointer" data-bs-toggle="modal" data-bs-target="#exampleModal"  ng-if="!currentUser.username">
                         Login
                     </span>
-                    <a href=""><i class="far fa-user" style="color: black;font-size: 23px;"></i></a>
+                    <a href="#/thong-tin-tai-khoan"><i class="far fa-user" style="color: black;font-size: 23px;"></i></a>
                 </div>
                 <div class="ps-3">
                     <a href=""><i class="far fa-heart" style="color: black;font-size: 23px;"></i></a>
@@ -50,8 +50,12 @@
                 <div class="btn-group ps-3" style="cursor: pointer;">
                     <div>
                         <a href="#/cart"> <i class="fas fa-shopping-cart" style="color: black;font-size: 23px;"></i></a>
-                        <span style="position: absolute;top: -7px;padding: 4px 7px; background: #e50000;left: 20px;"
-                              class="badge badge-light">{{ gioHang.length }}</span>
+                        <span style="position: absolute;
+    top: -17px;
+    padding: 4px 7px;
+    background: #e50000;
+    left: 27px;"
+                              class="badge badge-light">{{ listBienTheGiayLocalStorage.length }}</span>
                     </div>
 
 

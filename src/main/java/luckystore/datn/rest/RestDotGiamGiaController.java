@@ -47,6 +47,7 @@ public class RestDotGiamGiaController {
     public ResponseEntity getAll() {
         return new ResponseEntity(dotGiamGiaService.getAll(), HttpStatus.OK);
     }
+
     private ResponseEntity getErrorJson(BindingResult result) {
         if (result.hasErrors()) {
             List<String> fieldErrors = new ArrayList<>();
@@ -81,6 +82,11 @@ public class RestDotGiamGiaController {
         if (errorJson != null) return errorJson;
 
         return new ResponseEntity<>(dotGiamGiaService.updateDotGiamGia(id, dotGiamGiaRequest), HttpStatus.OK);
+    }
+
+    @GetMapping("/get-all-active")
+    public ResponseEntity getAllActive() {
+        return new ResponseEntity(dotGiamGiaService.getAllActive(), HttpStatus.OK);
     }
 
 }

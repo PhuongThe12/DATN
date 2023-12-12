@@ -18,6 +18,8 @@ public interface DiaChiNhanHangService {
 
     DiaChiNhanHangResponse findById(Long id);
 
+    DiaChiNhanHangResponse findByIdKhachHang(Long id);
+
     DiaChiNhanHangResponse updateTrangThaiDiaChiNhan(Long id, DiaChiNhanHangRequest diaChiNhanHangRequest);
 
     void deleteDieuKien(Long id);

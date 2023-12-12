@@ -92,8 +92,6 @@ app.controller('giayListController', function ($scope, $http, $location) {
         getData(1);
     }
 
-    getData(1);
-
     $scope.$watch('curPage + numPerPage', function () {
         getData($scope.curPage);
     });

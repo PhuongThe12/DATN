@@ -5,9 +5,9 @@ app.config(function ($routeProvider, $locationProvider) {
     $routeProvider
         .when("/home", {
             templateUrl: '/pages/admin/banhang/views/home.html', controller: 'homeController'
-        }).otherwise({redirectTo: '/home'});
+        })
+        .otherwise({redirectTo: '/home'});
 });
-
 
 app.controller("homeController", function ($scope, $http, $location, $cookies, $rootScope) {
 
@@ -1690,6 +1690,8 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
     }
 
 });
+
+
 
 app.directive('customSelect', function ($injector) {
     return {
