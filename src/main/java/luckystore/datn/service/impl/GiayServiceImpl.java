@@ -431,7 +431,7 @@ public class GiayServiceImpl implements GiayService {
 
         Page<GiayResponse> giayResponses = null;
         if (giaySearch.getTrangThai() == 1) {
-            Page<GiayResponseI> giayResponsesX = giayRepository.findTop(pageable);
+            Page<GiayResponseI> giayResponsesX = giayRepository.findTop(pageable, giaySearch);
 
             Set<Long> ids = giayResponsesX.getContent().stream().map(GiayResponseI::getId).collect(Collectors.toSet());
             Set<GiayResponse> giayResponseList = giayRepository.findAllBySearchIds(ids);
@@ -444,7 +444,9 @@ public class GiayServiceImpl implements GiayService {
                     }
                 });
             });
-        } else {
+        } else if(giaySearch.getTrangThai() == 2) {
+            giayResponses = giayRepository.findAllByKhachHang(giaySearch, pageable);
+        }else {
             giayResponses = giayRepository.findAllBySearch(giaySearch, pageable);
         }
         Set<Long> ids = new HashSet<>();
