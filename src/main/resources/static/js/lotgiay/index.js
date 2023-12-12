@@ -58,6 +58,7 @@ app.controller("addLotGiayController", function ($scope, $http, $location) {
                     $scope.lotGiayForm.ten.$dirty = false;
                     $scope.lotGiayForm.moTa.$dirty = false;
                     $scope.errors = error.data;
+                    alert("aaaaa")
                 }
             });
     }

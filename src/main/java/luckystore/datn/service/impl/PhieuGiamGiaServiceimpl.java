@@ -78,6 +78,7 @@ public class PhieuGiamGiaServiceimpl implements PhieuGiamGiaService {
             phieuGiamGia = phieuGiamGiaRepository.findById(id).orElseThrow(() ->
                     new NotFoundException(ErrorMessage.NOT_FOUND));
         }
+        checkWhenUpdate(request);
         phieuGiamGia = getPhieuGiamGia(phieuGiamGia, request);
         return phieuGiamGiaRepository.save(phieuGiamGia);
     }
@@ -130,7 +131,15 @@ public class PhieuGiamGiaServiceimpl implements PhieuGiamGiaService {
     private void checkWhenAdd(PhieuGiamGiaRequest request) {
         Boolean phieuGiamGiacheck = phieuGiamGiaRepository.existsByMaGiamGia(request.getMaGiamGia());
         if (phieuGiamGiacheck) {
-            String errorObject = JsonString.errorToJsonObject("maGiamGia", "Mã phiếu không được trùng");
+            String errorObject = JsonString.errorToJsonObject("maGiamGia", "Phiếu giảm giá đã tồn tại");
+            throw new DuplicateException(JsonString.stringToJson(errorObject));
+        }
+    }
+
+    private void checkWhenUpdate(PhieuGiamGiaRequest request) {
+        Boolean phieuGiamGiacheck = phieuGiamGiaRepository.existsByMaGiamGiaAndIdNot(request.getMaGiamGia(), request.getId());
+        if (phieuGiamGiacheck) {
+            String errorObject = JsonString.errorToJsonObject("maGiamGia", "Phiếu giảm giá đã tồn tại");
             throw new DuplicateException(JsonString.stringToJson(errorObject));
         }
     }
