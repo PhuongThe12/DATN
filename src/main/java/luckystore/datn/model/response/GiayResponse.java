@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -68,6 +69,12 @@ public class GiayResponse {
 
     public GiayResponse(Long id) {
         this.id = id;
+    }
+
+    public GiayResponse(Long id, Long soLuongThongKe) {
+        this.id = id;
+//        System.out.println("soLuong: " + soLuongThongKe);
+//        this.soLuongThongKe = soLuongThongKe;
     }
 
     public GiayResponse(Giay giay) {
@@ -164,4 +171,16 @@ public class GiayResponse {
         this.phanTramGiam = phanTramGiam;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GiayResponse that = (GiayResponse) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

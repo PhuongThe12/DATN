@@ -6,45 +6,28 @@ app.controller('listProductController', function ($scope, $http, $location) {
         $scope.maxSize = 12;
 
 
-    function getData(currentPage) {
+    function getData(currentPage, giaySearch) {
         $scope.isLoading = true;
-        $scope.isLoading = true;
-        let giaySearch = {};
-
-        // if ($scope.tenSearch.length > 0) {
-        //     giaySearch.ten = ($scope.tenSearch + "").trim();
-        // } else {
-        //     giaySearch.ten = null;
-        // }
-
         let apiUrl;
 
-        if ($scope.tenSearch) {
-            giaySearch.ten = ($scope.tenSearch + "").trim();
-        }
-
-        if ($scope.status === 1) { // giày bán chạy
-            apiUrl = host + '/rest/admin/giay/get-simple-by-search';
+        if ($scope.status === 1) {
+            apiUrl = host + '/rest/admin/giay/find-all-by-search';
+            giaySearch.trangThai = 1;
         } else if ($scope.status === 2) { // giày yêu thích
             apiUrl = host + '/rest/admin/giay/get-simple-by-search';
+            giaySearch.trangThai = 2;
         } else {
             apiUrl = host + '/rest/admin/giay/find-all-by-search';
             $scope.status = 0;
+            giaySearch.trangThai = 0;
         }
 
-        giaySearch.currentPage = currentPage;
-        giaySearch.pageSize = $scope.itemsPerPage;
-
-        if ($scope.tenSearch) {
-            giaySearch.ten = ($scope.tenSearch + "").trim();
-        }
         giaySearch.currentPage = currentPage;
         giaySearch.pageSize = $scope.itemsPerPage;
 
         $http.post(apiUrl, giaySearch)
             .then(function (response) {
                 $scope.giays = response.data.content;
-                console.log($scope.giays);
                 $scope.numOfPages = response.data.totalPages;
                 $scope.isLoading = false;
             })
@@ -56,17 +39,62 @@ app.controller('listProductController', function ($scope, $http, $location) {
     }
 
     $scope.$watch('curPage + numPerPage', function () {
-        getData($scope.curPage);
+        getData($scope.curPage, {});
     });
 
+    $scope.changeRadio = function (status) {
+        $scope.status = status;
+        $scope.resetSearchGiay();
+        if (!$scope.searching) {
+            getData(1, {});
+        }
+    }
+
+    $scope.errorsSearch = {};
 
     $scope.searchGiay = function () {
-        getData(1);
-        $scope.searching = true;
-        console.log(!!$scope.tenSearch)
-        if($scope.tenSearch) {
-        console.log($scope.tenSearch.length);
+        let giaySearch = {};
+
+        if ($scope.tenSearch) {
+            giaySearch.ten = ($scope.tenSearch + "").trim();
         }
+
+        giaySearch.thuongHieuIds = $scope.thuongHieus.filter(item => item.selected).map(item => item.id);
+        if (giaySearch.thuongHieuIds.length === 0) {
+            giaySearch.thuongHieuIds = null;
+        }
+        giaySearch.mauSacIds = $scope.mauSacs.filter(item => item.selected).map(item => item.id);
+        if (giaySearch.mauSacIds.length === 0) {
+            giaySearch.mauSacIds = null;
+        }
+        giaySearch.kichThuocIds = $scope.kichThuocs.filter(item => item.selected).map(item => item.id);
+        if (giaySearch.kichThuocIds.length === 0) {
+            giaySearch.kichThuocIds = null;
+        }
+        giaySearch.hashTagIds = $scope.hashtags.filter(item => item.selected).map(item => item.id);
+        if (giaySearch.hashTagIds.length === 0) {
+            giaySearch.hashTagIds = null;
+        }
+
+        if ($scope.giaTu) {
+            giaySearch.giaTu = $scope.giaTu;
+        }
+
+        if ($scope.giaDen) {
+            giaySearch.giaDen = $scope.giaDen;
+        }
+
+        if ($scope.giaTu && $scope.giaDen && $scope.giaTu < $scope.giaDen) {
+            $scope.errorsSearch = 'Giá đến phải lớn hơn giá từ'
+        }
+
+        if (!giaySearch.ten && !giaySearch.giaTu && !giaySearch.giaDen && !giaySearch.thuongHieuIds && !giaySearch.hashTagIds && !giaySearch.kichThuocIds && !giaySearch.mauSacIds) {
+            toastr["error"]("Không có đủ dữ liệu để tìm kiếm");
+            return;
+        }
+
+        getData(1, giaySearch);
+        $scope.searching = true;
     }
 
     $scope.resetSearchGiay = function () {
@@ -86,7 +114,7 @@ app.controller('listProductController', function ($scope, $http, $location) {
             item.selected = false;
         });
         if ($scope.searching) {
-            getData(1);
+            getData(1, {});
             $scope.searching = false;
         }
     }

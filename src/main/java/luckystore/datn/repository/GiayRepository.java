@@ -4,6 +4,7 @@ import luckystore.datn.entity.Giay;
 import luckystore.datn.model.request.GiaySearch;
 import luckystore.datn.model.request.KhuyenMaiSearch;
 import luckystore.datn.model.response.GiayResponse;
+import luckystore.datn.model.response.GiayResponseI;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -114,6 +115,14 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
     )
     Page<GiayResponse> findAllBySearch(GiaySearch giaySearch, Pageable pageable);
 
+    @Query("select distinct new luckystore.datn.model.response.GiayResponse(g.id, g.ten, anh.link, min(bienThe.giaBan), max(bienThe.giaBan)) from Giay g " +
+            "left join g.lstAnh anh " +
+            "inner join g.lstBienTheGiay bienThe " +
+            "where g.id in :ids " +
+            "group by g.id, g.ten, anh.link"
+    )
+    Set<GiayResponse> findAllBySearchIds(Set<Long> ids);
+
     @Query("select new luckystore.datn.model.response.GiayResponse(g.id, g.ten) from Giay g where g.ten in :names")
     List<GiayResponse> getIdsByName(Set<String> names);
 
@@ -138,6 +147,15 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
             " where (anh is null or anh.uuTien = 1)" +
             " and g.id in :idGiays")
     List<GiayResponse> getAllGiayById(Set<Long> idGiays);
+
+    @Query(value = "select  b1_0.ID_GIAY id, sum(h1_0.SO_LUONG) soLuongThongKe " +
+            "from HoaDonChiTiet h1_0 " +
+            "inner join BienTheGiay b1_0 on b1_0.ID=h1_0.ID_BIEN_THE_GIAY " +
+            "inner join HoaDon h2_0 on h2_0.ID=h1_0.ID_HOA_DON " +
+            "where h2_0.TRANG_THAI=1 " +
+            "group by b1_0.ID_GIAY " +
+            "order by sum(h1_0.SO_LUONG) desc", nativeQuery = true)
+    Page<GiayResponseI> findTop(Pageable pageable);
 
 
     //top x giày bán chạy trong y ngày
@@ -169,8 +187,5 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
             "group by g " +
             "order by count(spyt) desc")
     Page<GiayResponse> findTopFavoritedShoes(Pageable pageable);
-
-
-
 
 }
