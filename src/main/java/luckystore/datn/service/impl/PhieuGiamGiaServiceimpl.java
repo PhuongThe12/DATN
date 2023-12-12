@@ -3,8 +3,10 @@ package luckystore.datn.service.impl;
 import lombok.RequiredArgsConstructor;
 import luckystore.datn.entity.HangKhachHang;
 import luckystore.datn.entity.PhieuGiamGia;
+import luckystore.datn.exception.DuplicateException;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.exception.NullException;
+import luckystore.datn.exception.RestApiException;
 import luckystore.datn.infrastructure.constraints.ErrorMessage;
 import luckystore.datn.infrastructure.security.session.SessionService;
 import luckystore.datn.model.request.FindPhieuGiamGiaRequest;
@@ -15,11 +17,14 @@ import luckystore.datn.repository.NhanVienRepository;
 import luckystore.datn.repository.PhieuGiamGiaRepository;
 import luckystore.datn.service.PhieuGiamGiaService;
 import luckystore.datn.util.ConvertDateToLong;
+import luckystore.datn.util.JsonString;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,6 +63,7 @@ public class PhieuGiamGiaServiceimpl implements PhieuGiamGiaService {
     @Override
     public PhieuGiamGia addPhieuGiamGia(PhieuGiamGiaRequest request) {
 
+        checkWhenAdd(request);
         PhieuGiamGia phieuGiamGia = getPhieuGiamGia(new PhieuGiamGia(), request);
         return phieuGiamGiaRepository.save(phieuGiamGia);
     }
@@ -103,8 +109,15 @@ public class PhieuGiamGiaServiceimpl implements PhieuGiamGiaService {
             phieuGiamGia.setDoiTuongApDung(hangKhachHangCheck.get());
         }
 
-        if (request.getNgayBatDau() <= (System.currentTimeMillis() / 1000) * 1000 &&
-                (System.currentTimeMillis() / 1000) * 1000 <= request.getNgayKetThuc()) {
+        Instant currentInstant = Instant.ofEpochMilli(System.currentTimeMillis());
+        Instant ngayBdInstant = Instant.ofEpochMilli(request.getNgayBatDau());
+        Instant ngayKtInstant = Instant.ofEpochMilli(request.getNgayKetThuc());
+
+        LocalDateTime localDateTimeCurr = LocalDateTime.ofInstant(currentInstant, ZoneId.of("UTC"));
+        LocalDateTime localDateTimeNgayBatDau = LocalDateTime.ofInstant(ngayBdInstant, ZoneId.of("UTC"));
+        LocalDateTime localDateTimeNgayKetThuc = LocalDateTime.ofInstant(ngayKtInstant, ZoneId.of("UTC"));
+
+        if (localDateTimeCurr.isBefore(localDateTimeNgayKetThuc)) {
             phieuGiamGia.setTrangThai(0);
         } else {
             phieuGiamGia.setTrangThai(1);
@@ -112,6 +125,14 @@ public class PhieuGiamGiaServiceimpl implements PhieuGiamGiaService {
         phieuGiamGia.setNgayTao(currentTimes);
         phieuGiamGia.setNguoiTao(sessionService.getAdmintrator());
         return phieuGiamGia;
+    }
+
+    private void checkWhenAdd(PhieuGiamGiaRequest request) {
+        Boolean phieuGiamGiacheck = phieuGiamGiaRepository.existsByMaGiamGia(request.getMaGiamGia());
+        if (phieuGiamGiacheck) {
+            String errorObject = JsonString.errorToJsonObject("maGiamGia", "Mã phiếu không được trùng");
+            throw new DuplicateException(JsonString.stringToJson(errorObject));
+        }
     }
 
 }

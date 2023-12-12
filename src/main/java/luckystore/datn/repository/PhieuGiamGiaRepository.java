@@ -91,4 +91,6 @@ public interface PhieuGiamGiaRepository extends JpaRepository<PhieuGiamGia, Long
                         WHERE pgg.ID = :id
             """, nativeQuery = true)
     Optional<PhieuGiamGiaResponse> getPhieuResponse(Long id);
+
+    Boolean existsByMaGiamGia(String ma);
 }

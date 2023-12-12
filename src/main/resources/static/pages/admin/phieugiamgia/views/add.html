@@ -24,15 +24,25 @@
                     <label class="form-label" for="maGiamGia">Mã phiếu <sup class="text-danger">(*)</sup></label>
                     <input type="text" class="form-control" id="maGiamGia" name="maGiamGia"
                            ng-model="phieuGiamGia.maGiamGia"
-                           ng-maxlength="10"
+                           ng-maxlength="10" ng-required="true"
                            ng-change="change(phieuGiamGiaForm.maGiamGia)">
+<!--                    <small class="text-danger"-->
+<!--                           ng-show="(phieuGiamGiaForm.maGiamGia.$dirty || phieuGiamGiaForm.maGiamGia.$touched) &&-->
+<!--               phieuGiamGiaForm.maGiamGia.$error.required">Không-->
+<!--                        được để-->
+<!--                        trống mã</small>-->
+<!--                    <small class="text-danger"-->
+<!--                           ng-show="(phieuGiamGiaForm.maGiamGia.$dirty || phieuGiamGiaForm.maGiamGia.$touched) &&-->
+<!--               phieuGiamGiaForm.maGiamGia.$error.maxlength">Mã-->
+<!--                        không được-->
+<!--                        vượt quá 10 ký tự</small>-->
                     <small class="text-danger"
                            ng-show="errors.maGiamGia && ! phieuGiamGiaForm.maGiamGia.$dirty">{{errors.maGiamGia}}</small>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label" for="maGiamGia">Hạng khách hàng <sup class="text-danger">(*)</sup></label>
                     <select class="form-select" ng-model="phieuGiamGia.hangKhachHang"
-                            aria-label="Default select example" name="hangKhachHang">
+                            aria-label="Default select example">
                         <option value="" disabled selected>Chọn hạng khách hàng</option>
                         <option ng-repeat="item in options" value="{{item.tenHang}}">{{item.tenHang}}</option>
                     </select>
@@ -41,7 +51,13 @@
                     <label class="form-label" for="phanTramGiam">Giá trị giảm <sup class="text-danger">(*)</sup></label>
                     <input type="number" class="form-control" id="phanTramGiam" name="phanTramGiam"
                            ng-model="phieuGiamGia.phanTramGiam"
+                           ng-required="true"
                            ng-change="change(phieuGiamGiaForm.phanTramGiam)">
+                    <small class="text-danger"
+                           ng-show="(phieuGiamGiaForm.phanTramGiam.$dirty || phieuGiamGiaForm.phanTramGiam.$touched) &&
+                       phieuGiamGiaForm.phanTramGiam.$error.required">Không
+                        được để
+                        trống giá trị giảm</small>
                     <small class="text-danger"
                            ng-show="errors.phanTramGiam && ! phieuGiamGiaForm.phanTramGiam.$dirty">{{errors.phanTramGiam}}</small>
                 </div>
@@ -53,18 +69,20 @@
                 <div class="col-md-4">
                     <label class="form-label">Ngày bắt đầu <sup class="text-danger">(*)</sup></label>
                     <input type="date" class="form-control" name="ngayBatDau" id="ngayBatDau"
-                           ng-model="phieuGiamGia.ngayBatDau">
-                    <small class="text-danger"
-                           ng-show="errors.ngayBatDau && ! phieuGiamGiaForm.ngayBatDau.$dirty">{{errors.ngayBatDau}}</small>
+                           ng-model="phieuGiamGia.ngayBatDau" ng-required="true">
+                    <small class="error-message"
+                           ng-show="(phieuGiamGiaForm.ngayBatDau.$dirty || phieuGiamGiaForm.ngayBatDau.$touched) && phieuGiamGiaForm.ngayBatDau.$error.required">Không
+                        được để trống ngày bắt đầu</small>
                 </div>
 
                 <!--    Ngày kết thúc-->
                 <div class="col-md-4">
                     <label class="form-label">Ngày kết thúc <sup class="text-danger">(*)</sup></label>
                     <input type="date" class="form-control" name="ngayKetThuc" id="ngayKetThuc"
-                           ng-model="phieuGiamGia.ngayKetThuc">
-                    <small class="text-danger"
-                           ng-show="errors.ngayKetThuc && ! phieuGiamGiaForm.ngayKetThuc.$dirty">{{errors.ngayBatDau}}</small>
+                           ng-model="phieuGiamGia.ngayKetThuc" ng-required="true">
+                    <small class="error-message"
+                           ng-show="(phieuGiamGiaForm.ngayKetThuc.$dirty || phieuGiamGiaForm.ngayKetThuc.$touched) && phieuGiamGiaForm.ngayKetThuc.$error.required">Không
+                        được để trống ngày kết thúc</small>
                 </div>
 
                 <div class="col-md-4"></div>
@@ -75,12 +93,13 @@
                     <label class="form-label" for="soLuongPhieu">Số lượng phiếu <sup class="text-danger">(*)</sup></label>
                     <input type="number" class="form-control" id="soLuongPhieu" name="soLuongPhieu"
                            ng-model="phieuGiamGia.soLuongPhieu"
+                           ng-required="true"
                            ng-change="change(phieuGiamGiaForm.soLuongPhieu)">
-<!--                    <small class="text-danger"-->
-<!--                           ng-show="(phieuGiamGiaForm.soLuongPhieu.$dirty || phieuGiamGiaForm.soLuongPhieu.$touched) &&-->
-<!--               phieuGiamGiaForm.soLuongPhieu.$error.required">Không-->
-<!--                        được để-->
-<!--                        trống số lượng phiếu</small>-->
+                    <small class="text-danger"
+                           ng-show="(phieuGiamGiaForm.soLuongPhieu.$dirty || phieuGiamGiaForm.soLuongPhieu.$touched) &&
+               phieuGiamGiaForm.soLuongPhieu.$error.required">Không
+                        được để
+                        trống số lượng phiếu</small>
                     <small class="text-danger"
                            ng-show="errors.soLuongPhieu && ! phieuGiamGiaForm.soLuongPhieu.$dirty">{{errors.soLuongPhieu}}</small>
                 </div>
@@ -88,12 +107,13 @@
                     <label class="form-label" for="giaTriDonToiThieu">Giá trị đơn tối thiểu <sup class="text-danger">(*)</sup></label>
                     <input type="number" class="form-control" id="giaTriDonToiThieu" name="giaTriDonToiThieu"
                            ng-model="phieuGiamGia.giaTriDonToiThieu"
+                           ng-required="true"
                            ng-change="change(phieuGiamGiaForm.giaTriDonToiThieu)">
-<!--                    <small class="text-danger"-->
-<!--                           ng-show="(phieuGiamGiaForm.giaTriDonToiThieu.$dirty || phieuGiamGiaForm.giaTriDonToiThieu.$touched) &&-->
-<!--                                phieuGiamGiaForm.giaTriDonToiThieu.$error.required">Không-->
-<!--                        được để-->
-<!--                        trống giá trị đơn tối thiểu</small>-->
+                    <small class="text-danger"
+                           ng-show="(phieuGiamGiaForm.giaTriDonToiThieu.$dirty || phieuGiamGiaForm.giaTriDonToiThieu.$touched) &&
+                                phieuGiamGiaForm.giaTriDonToiThieu.$error.required">Không
+                        được để
+                        trống giá trị đơn tối thiểu</small>
                     <small class="text-danger"
                            ng-show="errors.giaTriDonToiThieu && ! phieuGiamGiaForm.giaTriDonToiThieu.$dirty">{{errors.giaTriDonToiThieu}}</small>
                 </div>
@@ -101,12 +121,13 @@
                     <label class="form-label" for="giaTriGiamToiDa">Giá trị giảm tối đa <sup class="text-danger">(*)</sup></label>
                     <input type="number" class="form-control" id="giaTriGiamToiDa" name="giaTriGiamToiDa"
                            ng-model="phieuGiamGia.giaTriGiamToiDa"
+                           ng-required="true"
                            ng-change="change(phieuGiamGiaForm.giaTriGiamToiDa)">
-<!--                    <small class="text-danger"-->
-<!--                           ng-show="(phieuGiamGiaForm.giaTriGiamToiDa.$dirty || phieuGiamGiaForm.giaTriGiamToiDa.$touched) &&-->
-<!--                                phieuGiamGiaForm.giaTriGiamToiDa.$error.required">Không-->
-<!--                        được để-->
-<!--                        trống giá trị giảm tối đa</small>-->
+                    <small class="text-danger"
+                           ng-show="(phieuGiamGiaForm.giaTriGiamToiDa.$dirty || phieuGiamGiaForm.giaTriGiamToiDa.$touched) &&
+                                phieuGiamGiaForm.giaTriGiamToiDa.$error.required">Không
+                        được để
+                        trống giá trị giảm tối đa</small>
                     <small class="text-danger"
                            ng-show="errors.giaTriGiamToiDa && ! phieuGiamGiaForm.giaTriGiamToiDa.$dirty">{{errors.giaTriGiamToiDa}}</small>
                 </div>

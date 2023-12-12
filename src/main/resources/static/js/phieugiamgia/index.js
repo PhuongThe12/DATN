@@ -92,12 +92,18 @@ app.controller("addPhieuGiamGiaController", function ($scope, $http, $location) 
                 $location.path("/list");
             })
             .catch(function (error) {
+                toastr["error"]("Cập nhật thất bại");
                 console.log(error)
-                toastr["error"]("Thêm thất bại");
                 $scope.isLoading = false;
                 if (error.status === 400) {
-                    $scope.phieuGiamGiaForm.ten.$dirty = false;
-                    $scope.phieuGiamGiaForm.moTa.$dirty = false;
+                    $scope.phieuGiamGiaForm.maGiamGia.$dirty = false;
+                    $scope.phieuGiamGiaForm.hangKhachHang.$dirty = false;
+                    $scope.phieuGiamGiaForm.phanTramGiam.$dirty = false;
+                    $scope.phieuGiamGiaForm.ngayBatDau.$dirty = false;
+                    $scope.phieuGiamGiaForm.ngayKetThuc.$dirty = false;
+                    $scope.phieuGiamGiaForm.soLuongPhieu.$dirty = false;
+                    $scope.phieuGiamGiaForm.giaTriDonToiThieu.$dirty = false;
+                    $scope.phieuGiamGiaForm.giaTriGiamToiDa.$dirty = false;
                     $scope.errors = error.data;
                 }
             });

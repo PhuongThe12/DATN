@@ -1,5 +1,7 @@
 package luckystore.datn.model.request;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -19,9 +21,11 @@ public class PhieuGiamGiaRequest {
     private String maGiamGia;
 
     @NotNull(message = "Nhập phần trăm giảm")
+    @Min(value = 0, message = "Không được âm")
     private Integer phanTramGiam;
 
     @NotNull(message = "Nhập số lượng phiếu")
+    @Min(value = 0, message = "Không được âm")
     private Integer soLuongPhieu;
 
     @NotNull(message = "Nhập ngày bắt đầu")
@@ -31,9 +35,11 @@ public class PhieuGiamGiaRequest {
     private Long ngayKetThuc;
 
     @NotNull(message = "Nhập giá trị đơn hàng tối thiểu")
+    @Min(value = 0, message = "Không được âm")
     private BigDecimal giaTriDonToiThieu;
 
     @NotNull(message = "Nhập giá trị giảm tối đa")
+    @Min(value = 0, message = "Không được âm")
     private BigDecimal giaTriGiamToiDa;
 
     @NotNull(message = "Chọn hạng khách hàng ")
