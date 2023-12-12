@@ -1,16 +1,23 @@
-var app = angular.module("app", ["ngRoute", "ui.bootstrap"]);
-app.config(function ($routeProvider, $locationProvider) {
-    $locationProvider.hashPrefix('');
-    $routeProvider
-        .when("/thong-tin-tai-khoan", {
-            templateUrl: '/pages/user/views/thong-tin-tai-khoan.html',
-            controller: 'thongTinTaiKhoanController'
-        })
-        .otherwise({redirectTo: '/thong-tin-tai-khoan'});
-});
+// var app = angular.module("app", ["ngRoute", "ui.bootstrap"]);
+// app.config(function ($routeProvider, $locationProvider) {
+//     $locationProvider.hashPrefix('');
+//     $routeProvider
+//         .when("/thong-tin-tai-khoan", {
+//             templateUrl: '/pages/user/views/thong-tin-tai-khoan.html',
+//             controller: 'thongTinTaiKhoanController'
+//         })
+//         .otherwise({redirectTo: '/thong-tin-tai-khoan'});
+// });
 
 app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $location) {
-    console.log("aaaaaaa")
+
+    var storedUserData = $window.localStorage.getItem('currentUser');
+    if (!storedUserData) {
+        $window.location.href = '/home';
+    } else {
+        $scope.currentUser = JSON.parse(storedUserData);
+    }
+
     $scope.curPage = 1,
         $scope.itemsPerPage = 4,
         $scope.maxSize = 4;
@@ -56,9 +63,9 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
 
         $http({
             method: 'PUT',
-            url: 'http://localhost:8080/rest/khach-hang/dia-chi-nhan-hang/update-trang-thai/' + dieuKien ,
+            url: 'http://localhost:8080/rest/khach-hang/dia-chi-nhan-hang/update-trang-thai/' + dieuKien,
 
-            data:$scope.trangThai
+            data: $scope.trangThai
         }).then(function successCallback(response) {
             // Xử lý khi API UPDATE thành công
             console.log('UPDATE điều kiện giảm giá thành công', response);
@@ -70,7 +77,6 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
         console.log("Điều kiện: ", dieuKien)
         $location.path("/thong-tin-tai-khoan");
     };
-
 
 
     $scope.removeDieuKien = function (dieuKien) {
@@ -96,7 +102,7 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
         input.$dirty = true;
     }
     console.log("thông tin phương đây")
-    $http.get(host + '/rest/admin/khach-hang/' + id)
+    $http.get(host + '/rest/admin/khach-hang/' + $scope.currentUser.idKhachHang)
         .then(function (response) {
             $scope.khachHang = response.data;
             var ngaySinh = $scope.khachHang.ngaySinh;
@@ -111,15 +117,15 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
     //hiển thị thông tin khách hàng lên modal
     $scope.detailKhachHang = function (val) {
         var id = val;
-        console.log("vào detail khách hàng"+"id khách hàng" +val)
-        $http.get(host + '/rest/admin/khach-hang/' + id)
+        console.log("vào detail khách hàng" + "id khách hàng" + val)
+        $http.get(host + '/rest/admin/khach-hang/' + $scope.currentUser.idKhachHang)
             .then(function (response) {
                 $scope.khachHang = response.data;
                 var ngaySinh = $scope.khachHang.ngaySinh;
                 var object = new Date(ngaySinh);
                 $scope.khachHang.ngaySinh = object;
                 console.log("$scope.khachHangDetail ")
-                console.log($scope.khachHang )
+                console.log($scope.khachHang)
                 const button = document.querySelector('[data-bs-target="#modalUpdateKhachHang"]');
             })
             .catch(function (error) {
@@ -133,7 +139,7 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
             return;
         }
         const khachHangUpdate = {
-            id: $scope.khachHang.id,
+            id: $scope.currentUser.idKhachHang,
             hoTen: $scope.khachHang.hoTen,
             gioiTinh: $scope.khachHang.gioiTinh,
             ngaySinh: $scope.khachHang.ngaySinh,
@@ -144,7 +150,7 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
 
         };
         console.log($scope.khachHang);
-        $http.put(host + '/rest/admin/khach-hang/' + id, khachHangUpdate)
+        $http.put(host + '/rest/admin/khach-hang/' + $scope.currentUser.idKhachHang, khachHangUpdate)
             .then(function (response) {
                 if (response.status == 200) {
                     toastr["success"]("Cập nhật thành công")
@@ -211,7 +217,7 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
         console.log("vào update")
         console.log(id)
 
-        $http.get(host + '/rest/khach-hang/dia-chi-nhan-hang/' + id)
+        $http.get(host + '/rest/khach-hang/dia-chi-nhan-hang/' + $scope.currentUser.idKhachHang)
 
             .then(function (response) {
                 $scope.diaChiNhanHang = response.data;
@@ -243,7 +249,7 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
             // $scope.diaChiNhanHang.provinces = $scope.diaChiNhanHang.provinces.ten;
             // $scope.diaChiNhanHang.wards = $scope.diaChiNhanHang.wards.ten;
 
-            $http.put(host + '/rest/khach-hang/dia-chi-nhan-hang/' + id,diaChiNhanHangUpdate)
+            $http.put(host + '/rest/khach-hang/dia-chi-nhan-hang/' + $scope.currentUser.idKhachHang, diaChiNhanHangUpdate)
 
                 .then(function (response) {
                     if (response.status == 200) {
@@ -348,9 +354,9 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
     }
 
     //
-    function setData ()  {
-        for(let i = 0; i < $scope.provinces.length; i++) {
-            if($scope.provinces[i].ten === $scope.diaChiNhanHang.provinces) {
+    function setData() {
+        for (let i = 0; i < $scope.provinces.length; i++) {
+            if ($scope.provinces[i].ten === $scope.diaChiNhanHang.provinces) {
                 $scope.diaChiNhanHang.provinces = $scope.provinces[i];
                 break;
             }
@@ -359,14 +365,14 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
         $http.get(host + "/rest/districts/" + $scope.diaChiNhanHang.provinces.id)
             .then(function (response) {
                 $scope.districts = response.data;
-                for(let j = 0; j < $scope.districts.length; j++) {
-                    if($scope.districts[j].ten === $scope.diaChiNhanHang.districts) {
+                for (let j = 0; j < $scope.districts.length; j++) {
+                    if ($scope.districts[j].ten === $scope.diaChiNhanHang.districts) {
                         $scope.diaChiNhanHang.districts = $scope.districts[j];
                         $http.get(host + "/rest/wards/" + $scope.diaChiNhanHang.districts.id)
                             .then(function (response) {
                                 $scope.wards = response.data;
-                                for(let k = 0; k < $scope.wards.length; k++) {
-                                    if($scope.wards[k].ten === $scope.diaChiNhanHang.wards) {
+                                for (let k = 0; k < $scope.wards.length; k++) {
+                                    if ($scope.wards[k].ten === $scope.diaChiNhanHang.wards) {
                                         $scope.diaChiNhanHang.wards = $scope.wards[k];
                                         break;
                                     }

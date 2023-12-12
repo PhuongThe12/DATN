@@ -71,7 +71,7 @@
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="nhanVienTen" class="form-label">Số điện thoại</label>
-                                <input type="text" class="form-control" ng-model="diaChiNhanHang.soDienThoai">
+                                <input type="text" class="form-control" ng-model="diaChiNhanHang.soDienThoaiNhan">
 
                             </div>
                         </div>
@@ -170,7 +170,7 @@
                                             ng-show="bienTheGiay.khuyenMai">
                                             <del>{{bienTheGiay.giaBan  | number:0 }}</del>
                                         <span class="position-relative">
-                                            {{(bienTheGiay.giaBan - (bienTheGiay.giaBan * bienTheGiay.khuyenMai / 100))| number:0 }}
+                                            {{bienTheGiay.giaSauKhuyenMai| number:0 }}
                                         <span class="position-absolute top-0 start-100 translate-middle badge bg-danger"
                                               style="transform: translate(0,-50%)!important; padding: 5px;">
                                             -{{bienTheGiay.khuyenMai}}%
@@ -189,14 +189,12 @@
                 </div>
                 <div>
                     <p class="font-size-14-ncl border-bottom-1 py-2 fw-bold">Thông Tin Thanh Toán</p>
-                    <div class="d-flex align-items-center justify-content-between">
-                        <p class=" font-size-14-ncl py-1">Tổng tiền sản phẩm</p>
+
+                    <div class="d-flex align-items-center justify-content-between  border-bottom-1">
+                        <p class=" font-size-14-ncl py-1">Tổng tiền</p>
                         <p class="fw-bold font-size-14-ncl">{{tongTien | number}} ₫</p>
                     </div>
-                    <div class="d-flex align-items-center justify-content-between border-bottom-1">
-                        <p class=" font-size-14-ncl py-1">Phí ship</p>
-                        <p class="fw-bold font-size-14-ncl">0 ₫</p>
-                    </div>
+
                     <div class="d-flex align-items-center justify-content-between">
                         <p class=" font-size-14-ncl py-1">Hạng Khách Hàng</p>
                         <p class="fw-bold font-size-14-ncl">
@@ -225,7 +223,10 @@
                                     class="fas fa-exchange-alt"></i></button>
                         </p>
                     </div>
-
+                    <div class="d-flex align-items-center justify-content-between">
+                        <p class=" font-size-14-ncl py-1">Phí ship</p>
+                        <p class="fw-bold font-size-14-ncl">{{feeShippingPerOne | number : 0}} ₫</p>
+                    </div>
                     <div class="d-flex align-items-center justify-content-between">
                         <p class=" font-size-14-ncl py-1">Tổng thanh toán</p>
                         <p class="fw-bold font-size-14-ncl">{{tongThanhToan | number}} ₫</p>
