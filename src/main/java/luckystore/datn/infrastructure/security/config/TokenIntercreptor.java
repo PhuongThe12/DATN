@@ -22,7 +22,6 @@ public class TokenIntercreptor implements HandlerInterceptor {
             throws Exception {
 
         String token = extractTokenFromCookies(request);
-        String requestedPath = request.getRequestURI();
         if (token == null || token.isEmpty()) {
             response.sendRedirect("/login");
             return false;
@@ -31,14 +30,15 @@ public class TokenIntercreptor implements HandlerInterceptor {
         String requestUri = request.getRequestURI();
         String userRoles = provider.decodeTheToken(token).getRole();
         Map<String, Integer> permissionStaff = new HashMap<>();
+        Map<String, Integer> permissionCustomer = new HashMap<>();
         permissionStaff.put("/admin/ban-hang", 1);
-        permissionStaff.put("/admin/hoa-don", 1);
+        permissionCustomer.put("/home", 1);
 
         if (userRoles.contains("ROLE_STAFF") && permissionStaff.containsKey(requestUri)) {
             return true;
         } else if (userRoles.contains("ROLE_ADMIN") && requestUri.startsWith("/admin")) {
             return true;
-        } else if (userRoles.contains("ROLE_USER") && requestUri.startsWith("/user")) {
+        } else if (userRoles.contains("ROLE_USER") && requestUri.startsWith("/user") ) {
             return true;
         }
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);

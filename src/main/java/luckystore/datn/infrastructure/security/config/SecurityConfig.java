@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
 
                         request -> request.requestMatchers("/api/authentication/**","/admin/**","/user/**",
-                                        "/login", "/signup").permitAll()
+                                        "/login", "/signup", "/**").permitAll()
 //                                .requestMatchers(" admin/rest/hoa-don/**").hasAuthority("ROLE_USER")
 //                                .requestMatchers(" admin/rest/khach-hang/**").hasAuthority("ROLE_USER")
 //                                .requestMatchers(" admin/rest/yeu-cau/**").hasAuthority("ROLE_USER")
@@ -59,7 +59,7 @@ public class SecurityConfig {
 //                                .requestMatchers(HttpMethod.PUT, "/admin/**").hasAnyRole("ADMIN")
 //                                .requestMatchers(HttpMethod.DELETE, "/admin/**").hasAnyRole("ADMIN")
 //                                .requestMatchers(HttpMethod.GET,"/admin/rest/giay/**").hasAuthority("ROLE_USER")
-//                                .requestMatchers("/admin/ban-hang").hasAuthority("ROLE_USER")
+                                .requestMatchers("/rest/user/**").hasAuthority("ROLE_USER")
 //                                .requestMatchers("/admin/rest/de-giay/**", "/admin/ban-hang").hasAuthority("ROLE_STAFF")
                                 .anyRequest().permitAll())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

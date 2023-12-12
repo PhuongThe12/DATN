@@ -422,7 +422,23 @@ public class GiayServiceImpl implements GiayService {
     @Override
     public Page<GiayResponse> findAllBySearch(GiaySearch giaySearch) {
         Pageable pageable = PageRequest.of(giaySearch.getCurrentPage() - 1, giaySearch.getPageSize());
-        return giayRepository.findAllBySearch(giaySearch, pageable);
+
+        Page<GiayResponse> giayResponses = giayRepository.findAllBySearch(giaySearch, pageable);
+        Set<Long> ids = new HashSet<>();
+        giayResponses.getContent().forEach(response -> {
+            ids.add(response.getId());
+        });
+
+        List<GiayResponse> giayKhuyenMai = khuyenMaiChiTietRepository.getAllByKhuyenMaiGiayIds(ids);
+        giayResponses.getContent().forEach(response -> {
+            giayKhuyenMai.forEach(giayKm -> {
+                if(Objects.equals(response.getId(), giayKm.getId())) {
+                    response.setPhanTramGiam(giayKm.getPhanTramGiam());
+                }
+            });
+        });
+
+        return giayResponses;
     }
 
     @Transactional
