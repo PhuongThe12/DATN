@@ -100,7 +100,7 @@
         <div class="mx-2">
             <div class="d-flex justify-content-start radio-filter">
                 <div class="custom-radio">
-                    <input type="radio" id="all" name="status" ng-model="status" value="-1"
+                    <input type="radio" id="all" name="status" ng-model="status" value="0"
                            ng-checked="status == 0"
                            ng-change="changeRadio(0)">
                     <label class="radio-label" for="all">Tất cả</label>
@@ -113,7 +113,7 @@
                 </div>
 
                 <div class="custom-radio">
-                    <input type="radio" id="disable" name="status" ng-model="status" value="0" ng-checked="status == 2"
+                    <input type="radio" id="disable" name="status" ng-model="status" value="2" ng-checked="status == 2"
                            ng-change="changeRadio(2)">
                     <label class="radio-label" for="disable">Sản phẩm yêu thích</label>
                 </div>
@@ -242,7 +242,7 @@
         <div class="col-md-9">
             <div class="row mb-3">
                 <div ng-show="giays.length == 0">Không tìm thấy giày nào</div>
-                <div class="col-md-3 mb-3 giayHover" ng-repeat="giay in giays">
+                <div class="col-md-3 mb-3 giayHover" ng-repeat="giay in giays | orderBy : '-soLuongThongKe'">
                     <a href="#/detail/{{giay.id}}" class="text-none">
                         <div class=" position-relative">
                             <div class="mb-2">
@@ -269,6 +269,12 @@
 <!--                            <div class="position-absolute " style="color: black;right: 8px;top: 3px;">-->
 <!--                                <i class="far fa-heart" style="font-size: 20px;"></i>-->
 <!--                            </div>-->
+
+                            <div class="position-absolute " style="color: black;right: 0px;top: 3px;" ng-show="status === 1">
+                                <p class="font-size-14-ncl fw-bold"><span
+                                        style="padding: 10px;font-size: 13px;color: red; background-color: rgba(255, 255, 0, 0.5)"
+                                        class="">đã bán: {{giay.soLuongThongKe}} sản phẩm</span></p>
+                            </div>
                         </div>
                     </a>
                 </div>
