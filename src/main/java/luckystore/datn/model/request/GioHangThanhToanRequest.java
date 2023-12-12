@@ -61,4 +61,6 @@ public class GioHangThanhToanRequest {
 
     private Set<BienTheGiayGioHangRequest> bienTheGiayRequests;
 
+    private Integer phuongThuc;
+
 }

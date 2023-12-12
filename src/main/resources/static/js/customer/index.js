@@ -23,8 +23,54 @@ app.config(function ($routeProvider, $locationProvider) {
     }).when("/thong-tin-tai-khoan", {
         templateUrl: '/pages/user/views/thong-tin-tai-khoan.html',
         controller: 'thongTinTaiKhoanController'
+    }).when("/thanh-toan-status", {
+        templateUrl: '',
+        controller: 'thanhToanStatusController'
     })
         .otherwise({redirectTo: '/list'});
+});
+
+app.controller('thanhToanStatusController', function ($scope, $http, $location, $cookies, $rootScope) {
+    let container = {};
+    location.search.split('&').toString().substr(1).split(",").forEach(item => {
+        container[item.split("=")[0]] = decodeURIComponent(item.split("=")[1]) ? item.split("=")[1] : "No query strings available";
+    });
+
+    if (Object.keys(container).length > 2) {
+        console.log(container, container["vnp_OrderInfo"], container["vnp_OrderInfo"]);
+        const info = container["vnp_OrderInfo"];
+        if (container["vnp_TransactionStatus"] === "00") {
+            let request = {
+                idHoaDon: info[0]
+            }
+            $http.post(host + "/rest/user/hoa-don/hoan-tat-banking", request)
+                .then(response => {
+                    toastr["success"]("Thanh toán thành công");
+                    if (storedUserData) {
+                        $location.path("/don-hang");
+                    } else {
+                        $location.path("/");
+                    }
+                })
+                .catch(err => {
+                    $location.path("/");
+                })
+
+        } else {
+            $http.get(host + "/vnpay/cancel-banking-order/" + info[0])
+                .then(response => {
+                    toastr["warning"]("Bạn chưa hoàn tất thanh toán");
+                    if (storedUserData) {
+                        $location.path("/don-hang");
+                    } else {
+                        $location.path("/");
+                    }
+                })
+                .catch(err => {
+                    $location.path("/");
+                })
+        }
+    }
 });
 
 app.controller('navbarController', function ($rootScope, $scope, $http, $location, $cookies, $window) {
@@ -1379,7 +1425,7 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
         //     // $location.path("/list");
         // });
         $scope.currentUser = JSON.parse(storedUserData);
-        $http.get(host + '/rest/khach-hang/dia-chi-nhan-hang/' + $scope.currentUser.idKhachHang+"/khach-hang")
+        $http.get(host + '/rest/khach-hang/dia-chi-nhan-hang/' + $scope.currentUser.idKhachHang + "/khach-hang")
             .then(function (response) {
                 console.log(response);
                 $scope.diaChiNhanHang = response.data;
@@ -1656,14 +1702,39 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
                     $scope.hoaDonThanhToan.tongTienHangKhachHang = $scope.tongTienHangKhachHang;
                     $scope.hoaDonThanhToan.tongTienChuongTrinhGiamGia = $scope.tongTienChuongTrinhGiamGia;
                     $scope.hoaDonThanhToan.tongTienThanhToan = $scope.tongThanhToan;
+                    $scope.hoaDonThanhToan.phuongThuc = $scope.phuongThucThanhToan;
                     console.log($scope.hoaDonThanhToan);
+                    if (request.tienChuyenKhoan < 10001) {
+                        toastr["error"]('Tiền thanh toán không được nhỏ hơn 10.000vnđ');
+                        return;
+                    }
+
+                    if (request.tienChuyenKhoan > 999999999) {
+                        toastr["error"]('Tiền thanh toán không được lớn hơn 999.999.999vnđ');
+                        return;
+                    }
                     $http.post("http://localhost:8080/rest/user/hoa-don", $scope.hoaDonThanhToan)
                         .then(function (response) {
-                            if (storedUserData) {
-                                $location.path("/don-hang");
+                            if ($scope.hoaDonThanhToan.phuongThuc === 2) {
+                                let request = {};
+                                request.idHoaDon = response.data.id;
+                                request.tienChuyenKhoan = $scope.hoaDonThanhToan.tongTienThanhToan;
+                                $http.post(host + "/vnpay/create-vnpay-order", request)
+                                    .then(response => {
+                                        $scope.loading = true;
+                                        window.location.href = response.data;
+                                    })
+                                    .catch(err => {
+                                        console.log(err);
+                                    })
                             } else {
-                                $window.localStorage.removeItem('gioHang');
-                                $location.path("/home");
+                                toastr["success"]('Đặt hàng thành công');
+                                if (storedUserData) {
+                                    $location.path("/don-hang");
+                                } else {
+                                    $window.localStorage.removeItem('gioHang');
+                                    $location.path("/home");
+                                }
                             }
                         }).catch(function (error) {
                         console.log(error);

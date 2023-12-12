@@ -46,6 +46,7 @@ public class DotGiamGiaServiceImpl implements DotGiamGiaService {
     @Override
     public DotGiamGiaResponse addDotGiamGia(DotGiamGiaRequest dotGiamGiaRequest) {
         checkWhenInsert(dotGiamGiaRequest);
+
         DotGiamGia dotGiamGia = new DotGiamGia();
         dotGiamGia.setTen(dotGiamGiaRequest.getTen());
         dotGiamGia.setGhiChu(dotGiamGiaRequest.getGhiChu());

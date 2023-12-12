@@ -20,7 +20,12 @@ import luckystore.datn.exception.ConflictException;
 import luckystore.datn.exception.ExcelException;
 import luckystore.datn.exception.InvalidIdException;
 import luckystore.datn.exception.NotFoundException;
-import luckystore.datn.model.request.*;
+import luckystore.datn.model.request.BienTheGiayRequest;
+import luckystore.datn.model.request.GiayExcelRequest;
+import luckystore.datn.model.request.GiayRequest;
+import luckystore.datn.model.request.GiaySearch;
+import luckystore.datn.model.request.KhuyenMaiSearch;
+import luckystore.datn.model.request.ThongKeRequest;
 import luckystore.datn.model.response.BienTheGiayResponse;
 import luckystore.datn.model.response.ChatLieuResponse;
 import luckystore.datn.model.response.CoGiayResponse;
@@ -35,6 +40,7 @@ import luckystore.datn.model.response.LotGiayResponse;
 import luckystore.datn.model.response.MauSacResponse;
 import luckystore.datn.model.response.MuiGiayResponse;
 import luckystore.datn.model.response.ThuongHieuResponse;
+import luckystore.datn.model.response.GiayResponseI;
 import luckystore.datn.repository.BienTheGiayRepository;
 import luckystore.datn.repository.ChatLieuRepository;
 import luckystore.datn.repository.CoGiayRepository;
@@ -53,12 +59,12 @@ import luckystore.datn.service.GiayService;
 import luckystore.datn.service.ImageHubService;
 import luckystore.datn.util.JsonString;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -423,20 +429,41 @@ public class GiayServiceImpl implements GiayService {
     public Page<GiayResponse> findAllBySearch(GiaySearch giaySearch) {
         Pageable pageable = PageRequest.of(giaySearch.getCurrentPage() - 1, giaySearch.getPageSize());
 
-        Page<GiayResponse> giayResponses = giayRepository.findAllBySearch(giaySearch, pageable);
-        Set<Long> ids = new HashSet<>();
-        giayResponses.getContent().forEach(response -> {
-            ids.add(response.getId());
-        });
+        Page<GiayResponse> giayResponses = null;
+        if (giaySearch.getTrangThai() == 1) {
+            Page<GiayResponseI> giayResponsesX = giayRepository.findTop(pageable, giaySearch);
 
-        List<GiayResponse> giayKhuyenMai = khuyenMaiChiTietRepository.getAllByKhuyenMaiGiayIds(ids);
-        giayResponses.getContent().forEach(response -> {
-            giayKhuyenMai.forEach(giayKm -> {
-                if(Objects.equals(response.getId(), giayKm.getId())) {
-                    response.setPhanTramGiam(giayKm.getPhanTramGiam());
-                }
+            Set<Long> ids = giayResponsesX.getContent().stream().map(GiayResponseI::getId).collect(Collectors.toSet());
+            Set<GiayResponse> giayResponseList = giayRepository.findAllBySearchIds(ids);
+
+            giayResponses = new PageImpl<>(new ArrayList<>(giayResponseList), giayResponsesX.getPageable(), giayResponseList.size());
+            giayResponses.getContent().forEach(response -> {
+                giayResponsesX.getContent().forEach(response2 -> {
+                    if(Objects.equals(response.getId(), response2.getId())) {
+                       response.setSoLuongThongKe(response2.getSoLuongThongKe());
+                    }
+                });
             });
-        });
+        } else if(giaySearch.getTrangThai() == 2) {
+            giayResponses = giayRepository.findAllByKhachHang(giaySearch, pageable);
+        }else {
+            giayResponses = giayRepository.findAllBySearch(giaySearch, pageable);
+        }
+        Set<Long> ids = new HashSet<>();
+        if (giayResponses != null) {
+            giayResponses.getContent().forEach(response -> {
+                ids.add(response.getId());
+            });
+
+            List<GiayResponse> giayKhuyenMai = khuyenMaiChiTietRepository.getAllByKhuyenMaiGiayIds(ids);
+            giayResponses.getContent().forEach(response -> {
+                giayKhuyenMai.forEach(giayKm -> {
+                    if (Objects.equals(response.getId(), giayKm.getId())) {
+                        response.setPhanTramGiam(giayKm.getPhanTramGiam());
+                    }
+                });
+            });
+        }
 
         return giayResponses;
     }
@@ -1028,7 +1055,6 @@ public class GiayServiceImpl implements GiayService {
 
         return new ArrayList<>(giayResponsesMap.values());
     }
-
 
 
     @Override
