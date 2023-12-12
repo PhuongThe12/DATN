@@ -1,4 +1,4 @@
-app.controller('listProductController', function ($scope, $http, $location) {
+app.controller('listProductController', function ($scope, $http, $location, $window) {
     $scope.giays = [];
 
     $scope.curPage = 1,
@@ -11,16 +11,24 @@ app.controller('listProductController', function ($scope, $http, $location) {
         let apiUrl;
 
         if ($scope.status === 1) {
-            apiUrl = host + '/rest/admin/giay/find-all-by-search';
             giaySearch.trangThai = 1;
         } else if ($scope.status === 2) { // giày yêu thích
-            apiUrl = host + '/rest/admin/giay/get-simple-by-search';
-            giaySearch.trangThai = 2;
+            const currentUser = JSON.parse($window.localStorage.getItem('currentUser'));
+            if (currentUser) {
+                giaySearch.trangThai = 2;
+                giaySearch.idKhachHang = currentUser.idKhachHang;
+            } else {
+                // $scope.status = 0;
+                console.log($scope.status);
+                toastr["error"]("Bạn chưa đăng nhập");
+                return;
+            }
+            // giaySearch.idKhachHang = ;
         } else {
-            apiUrl = host + '/rest/admin/giay/find-all-by-search';
             $scope.status = 0;
             giaySearch.trangThai = 0;
         }
+        apiUrl = host + '/rest/admin/giay/find-all-by-search';
 
         giaySearch.currentPage = currentPage;
         giaySearch.pageSize = $scope.itemsPerPage;

@@ -41,4 +41,6 @@ public class GiaySearch {
 
     private Integer lastDate;
 
+    private Long idKhachHang;
+
 }
