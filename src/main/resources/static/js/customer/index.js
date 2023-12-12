@@ -1490,10 +1490,9 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
                         });
                         $scope.tongKhuyenMaiTheoDot = ($scope.tongTien * $scope.khuyenMaiDot) / 100;
                         $scope.tongTienChuongTrinhGiamGia = $scope.tongTien - ($scope.tongTien * $scope.khuyenMaiDot) / 100;
-                        if ($scope.khachHang.hangKhachHang) {
-                            $scope.tongTienHangKhachHang = $scope.tongTien - ($scope.tongTien * $scope.khachHang.hangKhachHang.uuDai) / 100;
-                            $scope.tongKhuyenMaiHoaDon = ($scope.tongTien * $scope.khachHang.hangKhachHang.uuDai) / 100;
-                        }
+                        console.log($scope.khachHang);
+                        $scope.tongTienHangKhachHang = $scope.tongTien - ($scope.tongTien * $scope.khachHang.hangKhachHang.uuDai) / 100;
+                        $scope.tongKhuyenMaiHoaDon = ($scope.tongTien * $scope.khachHang.hangKhachHang.uuDai) / 100;
 
                         $scope.tongThanhToan = $scope.tongTien - $scope.tongKhuyenMaiHoaDon - $scope.tongKhuyenMaiTheoDot;
 
@@ -1704,15 +1703,15 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
                     $scope.hoaDonThanhToan.tongTienThanhToan = $scope.tongThanhToan;
                     $scope.hoaDonThanhToan.phuongThuc = $scope.phuongThucThanhToan;
                     console.log($scope.hoaDonThanhToan);
-                    if (request.tienChuyenKhoan < 10001) {
-                        toastr["error"]('Tiền thanh toán không được nhỏ hơn 10.000vnđ');
-                        return;
-                    }
-
-                    if (request.tienChuyenKhoan > 999999999) {
-                        toastr["error"]('Tiền thanh toán không được lớn hơn 999.999.999vnđ');
-                        return;
-                    }
+                    // if (request.tienChuyenKhoan < 10001) {
+                    //     toastr["error"]('Tiền thanh toán không được nhỏ hơn 10.000vnđ');
+                    //     return;
+                    // }
+                    //
+                    // if (request.tienChuyenKhoan > 999999999) {
+                    //     toastr["error"]('Tiền thanh toán không được lớn hơn 999.999.999vnđ');
+                    //     return;
+                    // }
                     $http.post("http://localhost:8080/rest/user/hoa-don", $scope.hoaDonThanhToan)
                         .then(function (response) {
                             if ($scope.hoaDonThanhToan.phuongThuc === 2) {
