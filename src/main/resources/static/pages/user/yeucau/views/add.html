@@ -193,7 +193,7 @@
                                 {{hoaDonChiTiet.bienTheGiay.kichThuoc.ten}} / Màu Sắc :
                                 {{hoaDonChiTiet.bienTheGiay.mauSac.ten}}</p>
                             <p class="font-size-16-ncl fw-bold text-dark">{{hoaDonChiTiet.donGia
-                                -(hoaDonChiTiet.donGia*(hoaDon.phanTramGiam/100)) | number}}</p>
+                                -(hoaDonChiTiet.donGia*(hoaDon.phanTramGiam/100)) | formatToVND}}</p>
                         </div>
                         <div class="d-flex mb-3">
                             <button class="btn btn-light" ng-click="subtraction(hoaDonChiTiet)"><i
@@ -248,6 +248,9 @@
                                     <button type="button" class="btn btn-dark" data-bs-toggle="modal"
                                             data-bs-target="#exampleModal" ng-click="addLyDoView(yeuCauChiTiet)">Lý Do
                                     </button>
+                                    <button type="button" class="btn btn-dark"
+                                            ng-click="deleteGiayTra(yeuCauChiTiet)"><i
+                                            class="fas fa-trash-alt"></i></i></button>
                                 </div>
                                 <div class="d-flex">
                                     <p class="font-size-14-ncl fw-bold text-secondary">Số lượng Trả : 1</p>
@@ -256,14 +259,14 @@
                                     <p class="font-size-16-ncl fw-bold text-dark">Giá:
                                         {{yeuCauChiTiet.value.hoaDonChiTiet.donGia -
                                         (yeuCauChiTiet.value.hoaDonChiTiet.donGia*(hoaDon.phanTramGiam/100)) |
-                                        number}}</p>
+                                        formatToVND}}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="formDoi row pt-3" ng-show="yeuCauChiTiet.value.bienTheGiayDoi.id">
+                <div class="formDoi row pt-3" ng-show="yeuCauChiTiet.value.bienTheGiayDoi.id" style="border-bottom: 1px solid grey">
                     <div class="col-md-6">
                         <div class="sanPhamTra">
                             <div class="d-flex mb-3">
@@ -302,7 +305,7 @@
                                     <div class="d-flex">
                                         <p class="font-size-16-ncl fw-bold text-dark">Giá:
                                             {{yeuCauChiTiet.value.hoaDonChiTiet.donGia -
-                                            (yeuCauChiTiet.value.hoaDonChiTiet.donGia*(yeuCauChiTiet.value.hoaDonChiTiet.bienTheGiay.khuyenMai/100))
+                                            (yeuCauChiTiet.value.hoaDonChiTiet.donGia*(hoaDon.phanTramGiam/100))
                                             | formatToVND}}</p>
                                     </div>
                                 </div>
@@ -346,10 +349,10 @@
                                             {{yeuCauChiTiet.value.bienTheGiayDoi.giaBan | formatToVND}}</p>
                                         <p class="font-size-16-ncl fw-bold text-dark"
                                            ng-show="yeuCauChiTiet.value.bienTheGiayDoi.khuyenMai > 0">Giá: <span
-                                                class="badge text-bg-dark" style="text-decoration-line: line-through">{{yeuCauChiTiet.value.bienTheGiayDoi.giaBan | number}}</span>{{yeuCauChiTiet.value.bienTheGiayDoi.giaBan
+                                                class="badge text-bg-dark" style="text-decoration-line: line-through">{{yeuCauChiTiet.value.bienTheGiayDoi.giaBan | formatToVND}}</span>{{yeuCauChiTiet.value.bienTheGiayDoi.giaBan
                                             -
                                             (yeuCauChiTiet.value.bienTheGiayDoi.giaBan*yeuCauChiTiet.value.bienTheGiayDoi.khuyenMai
-                                            / 100) | number}}</p>
+                                            / 100) | formatToVND}}</p>
                                     </div>
                                 </div>
                             </div>
@@ -366,7 +369,7 @@
                         <p class=" text-dark">Tổng tiền gốc : </p>
                         <p class=" text-dark">{{hoaDon.tongTienKhachThanhToan | formatToVND}}</p>
                     </div>
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between pt-3">
                         <p class=" text-dark">Tiền trả hàng : </p>
                         <p class=" text-dark">{{tongTienHangTra | formatToVND}}</p>
                     </div>
@@ -410,7 +413,7 @@
                     <div class="collapse" id="collapseExample" style="border: none; border-left: 1px solid grey">
                         <div class="form-floating card card-body" style="border: none">
                             <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"
-                                      style="height: 100px; border: 1px solid grey; padding-left: 0"></textarea>
+                                      style="height: 100px; border: 1px solid grey; padding-left: 0" ng-model="yeuCau.ghiChu"></textarea>
                         </div>
                     </div>
 
@@ -584,9 +587,9 @@
                                     <div class="product-price">
                                         <div class="d-flex align-items-center">
                                             <p class="font-size-14-ncl text-danger m-0">
-                                                {{ '₫' + (giay.giaThapNhat | number) + (giay.giaThapNhat !==
+                                                {{ '₫' + (giay.giaThapNhat | formatToVND) + (giay.giaThapNhat !==
                                                 giay.giaLonNhat ? '
-                                                - ₫' + (giay.giaLonNhat | number) : '') }}
+                                                - ₫' + (giay.giaLonNhat | formatToVND) : '') }}
                                             </p>
 
                                         </div>
@@ -656,15 +659,15 @@
                                 <span id="price-product" class="py-3">
 
                                     <span ng-show="!giayDetail.giaBan">
-                                        {{ '₫' + (giaySeletect.giaThapNhat | number) + (giaySeletect.giaThapNhat !== giaySeletect.giaLonNhat ? '- ₫' + (giaySeletect.giaLonNhat | number) : '') }}
+                                        {{ '₫' + (giaySeletect.giaThapNhat | formatToVND) + (giaySeletect.giaThapNhat !== giaySeletect.giaLonNhat ? '- ₫' + (giaySeletect.giaLonNhat | formatToVND) : '') }}
                                     </span>
-                                        <span ng-show="giayDetail.khuyenMai"><del>{{giayDetail.giaBan  | number:0 }}</del>
-                                        <span class="position-relative">{{(giayDetail.giaBan - (giayDetail.giaBan * giayDetail.khuyenMai / 100))| number:0 }}
+                                        <span ng-show="giayDetail.khuyenMai"><del>{{giayDetail.giaBan  | formatToVND}}</del>
+                                        <span class="position-relative">{{(giayDetail.giaBan - (giayDetail.giaBan * giayDetail.khuyenMai / 100))| formatToVND }}
                                         <span class="position-absolute top-0 start-100 translate-middle badge bg-danger"
                                               style="transform: translate(0,-50%)!important; padding: 5px;">-{{giayDetail.khuyenMai}}%</span>
                                         </span>
                                         </span>
-                                        <span ng-show="!giayDetail.khuyenMai">{{ giayDetail.giaBan | number:0}}₫</span>
+                                        <span ng-show="!giayDetail.khuyenMai">{{ giayDetail.giaBan | formatToVND}}</span>
                                     </span>
                                 </h5>
                                 <h5 class="font-size-16-ncl fw-bold">Số lượng: <span id="quantity">{{giayDetail.soLuong}}</span>
@@ -794,7 +797,7 @@
                             <div class="d-flex align-items-center justify-content-between">
                                 <p class="font-size-14-ncl text-secondary">Kích cỡ : {{bienTheGiay.kichThuoc.ten}} / Màu
                                     Sắc : {{bienTheGiay.mauSac.ten}}</p>
-                                <p class="font-size-16-ncl fw-bold text-dark">{{bienTheGiay.giaBan | number}} ₫</p>
+                                <p class="font-size-16-ncl fw-bold text-dark">{{bienTheGiay.giaBan | formatToVND}}</p>
                             </div>
                         </div>
                     </div>
@@ -817,7 +820,7 @@
                             <div class="d-flex align-items-center justify-content-between">
                                 <p class="font-size-14-ncl text-secondary">Kích cỡ : {{bienTheGiay.kichThuoc.ten}} / Màu
                                     Sắc : {{bienTheGiay.mauSac.ten}}</p>
-                                <p class="font-size-16-ncl fw-bold text-dark">{{bienTheGiay.giaBan | number}} ₫</p>
+                                <p class="font-size-16-ncl fw-bold text-dark">{{bienTheGiay.giaBan | formatToVND}}</p>
                             </div>
                         </div>
                     </div>
@@ -826,7 +829,3 @@
         </div>
     </div>
 </div>
-<button type="button" class="btn btn-dark" data-bs-dismiss="modal"
-        data-bs-target="#exampleModalToggle" data-bs-toggle="modal"
-        ng-click="chonGiayDoi()">Đổi
-    <i class="fas fa-undo-alt"></i></button>

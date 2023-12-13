@@ -32,6 +32,11 @@ public class DiaChiNhanHangServiceImpl implements DiaChiNhanHangService {
     }
 
     @Override
+    public List<DiaChiNhanHangResponse> getPageByKhachHang(Long idKhachHang) {
+        return diaChiNhanHangRepo.getPageResponseByKhachHang(idKhachHang);
+    }
+
+    @Override
     public DiaChiNhanHangResponse addDiaChiNhanHang(DiaChiNhanHangRequest diaChiNhanHangRequest) {
         List<DiaChiNhanHang> diaChiNhanHangList = diaChiNhanHangRepo.findByTrangThaiNot(0);
         for (DiaChiNhanHang diaChi : diaChiNhanHangList) {
@@ -41,8 +46,12 @@ public class DiaChiNhanHangServiceImpl implements DiaChiNhanHangService {
         if (diaChiNhanHangRequest == null) {
             throw new NullException();
         }
+
         DiaChiNhanHang diaChiNhanHang = getDiaChiNhanHang(new DiaChiNhanHang(), diaChiNhanHangRequest);
-        diaChiNhanHang.setIdKhachHang(khachHangRepo.findIdKH(new KhachHang()));
+        if(diaChiNhanHangRequest.getIdKhachHang() != null){
+            KhachHang khachHang = khachHangRepo.findById(diaChiNhanHangRequest.getIdKhachHang()).get();
+            diaChiNhanHang.setIdKhachHang(khachHang);
+        }
         diaChiNhanHang.setTrangThai(1);
         return new DiaChiNhanHangResponse(diaChiNhanHangRepo.save(diaChiNhanHang));
     }

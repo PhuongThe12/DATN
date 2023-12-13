@@ -51,18 +51,19 @@ public class RestThongKeConTroller {
     //Top x Biến Thể Giày Xuất Hiện Trong Giỏ Hàng
     @PostMapping("/top-giay-gio-hang")
     public ResponseEntity<?> findTopCartVariants(@RequestBody ThongKeRequest thongKeRequest){
+        System.out.println("Giỏ hàng: "+thongKeRequest);
         return new ResponseEntity<>(giayService.findTopCartVariants(thongKeRequest), HttpStatus.OK);
     }
 
     //Top x Lý Do có tỷ lệ Xuất Hiện cao Trong Yêu Cầu Chi Tiết
     @PostMapping("/top-ly-do")
-    public ResponseEntity<?> TopReasonsResponse(@RequestBody ThongKeRequest thongKeRequest){
+    public ResponseEntity<?> findTopReasons(@RequestBody ThongKeRequest thongKeRequest){
         return new ResponseEntity<>(lyDoService.findReasonsForReturn(thongKeRequest), HttpStatus.OK);
     }
 
     //Top x Biến Thể Giày có tỷ lệ đổi trả cao
     @PostMapping("/top-bien-the-ty-le-tra")
-    public ResponseEntity<?> findVariantReturnRates(@RequestBody ThongKeRequest thongKeRequest){
+    public ResponseEntity<?> findTopVariantReturnRates(@RequestBody ThongKeRequest thongKeRequest){
         return new ResponseEntity<>(giayService.findVariantReturnRates(thongKeRequest), HttpStatus.OK);
     }
 

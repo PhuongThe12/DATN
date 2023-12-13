@@ -161,10 +161,17 @@ public class GiayResponse {
     public GiayResponse(Giay giay, Long soLuongThongKe) {
         this.id = giay.getId();
         this.ten = giay.getTen();
+        this.thuongHieu = new ThuongHieuResponse(giay.getThuongHieu().getId(),giay.getThuongHieu().getTen());
         this.lstAnh = giay.getLstAnh().stream().sorted(Comparator.comparingInt(HinhAnh::getUuTien))
                 .map(anh -> ImageHubServiceImpl.getBase64FromFileStatic(anh.getLink())).collect(Collectors.toList());
         this.soLuongThongKe = soLuongThongKe;
     }
+
+
+    public GiayResponse(Giay giay,String ten) {
+        this.id = giay.getId();
+        this.ten = ten;
+        this.thuongHieu = new ThuongHieuResponse(giay.getThuongHieu().getId(),giay.getThuongHieu().getTen());
 
     public GiayResponse(Long id, Integer phanTramGiam) {
         this.id = id;
@@ -182,5 +189,6 @@ public class GiayResponse {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+
     }
 }

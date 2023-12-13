@@ -12,6 +12,8 @@ public interface DiaChiNhanHangService {
 
     Page<DiaChiNhanHangResponse> getPage(int page, String searchText, Integer status);
 
+    List<DiaChiNhanHangResponse> getPageByKhachHang(Long idKhachHang);
+
     DiaChiNhanHangResponse addDiaChiNhanHang(DiaChiNhanHangRequest diaChiNhanHangRequest);
 
     DiaChiNhanHangResponse updateDiaChiNhanHang(Long id, DiaChiNhanHangRequest diaChiNhanHangRequest);

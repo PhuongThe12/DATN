@@ -15,7 +15,7 @@ public class YeuCauSearch {
 
     private Long idYeuCau;
 
-    private String idNhanVien;
+    private Long idNhanVien;
 
     private String tenKhachHang;
 

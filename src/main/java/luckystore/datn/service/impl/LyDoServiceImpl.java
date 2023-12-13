@@ -63,6 +63,7 @@ public class LyDoServiceImpl implements LyDoService {
         List<LyDoResponse> updatedResponses = page.getContent().stream().map(lyDoResponse -> {
             long soLuongYeuCauTra = lyDoResponse.getSoLuongThongKe();
             double tyLe = totalRequests != 0 ? ((double) soLuongYeuCauTra / totalRequests) * 100 : 0;
+            lyDoResponse.setSoLuongYeuCauTra(totalRequests);
             lyDoResponse.setTyLe(Math.round(tyLe)); // Làm tròn tỷ lệ
             return lyDoResponse;
         }).collect(Collectors.toList());
