@@ -121,7 +121,7 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
             return;
         }
         for (let i = 1; i <= hoaDonChiTiet.soLuongTra; i++) {
-            let key = baseId;
+            let key = baseId+'.'+i;
             if (!$scope.mapYeuCauChiTiet.has(key)) {
                 let valueCopy = angular.copy(hoaDonChiTiet);
                 valueCopy.soLuongTra = 1;
@@ -419,7 +419,7 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
             $scope.yeuCau.trangThai = 1;
             //Ngày tạo
             //Ngày Sửa
-            $scope.yeuCau.nguoiTao = $scope.hoaDon.khachHang.id;
+            //Người tạo
             //Ghi chú
             //Id hóa đơn đổi trả
             $scope.yeuCau.thongTinNhanHang = $scope.thongTinNhanHang.tenNguoiNhan + '-' + $scope.thongTinNhanHang.soDienThoaiNhan + '-' + $scope.thongTinNhanHang.diaChiNhan;
@@ -428,17 +428,16 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
             //Người Sửa
             $scope.yeuCau.listYeuCauChiTiet = Array.from($scope.mapYeuCauChiTietSaved.values());
 
-            console.log($scope.yeuCau)
 
             $http.post(host + '/user/rest/yeu-cau-khach-hang/add', JSON.stringify($scope.yeuCau))
                 .then(function (response) {
                     if (response.status === 200) {
-                        toastr["success"]("Thêm thành công");
+                        toastr["success"]("Đã gửi yêu cầu đổi/trả thành công!");
                     }
                     $location.path("/home");
                 })
                 .catch(function (error) {
-                    toastr["error"]("Thêm thất bại");
+                    toastr["error"]("Gửi yêu cầu đổi/trả thất bại!");
                     if (error.status === 400) {
                         $scope.addYeuCauForm.hoaDon.$dirty = false;
                         $scope.errors = error.data;
@@ -610,15 +609,23 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
             logisticInfo.insurance_value = $scope.tongTienHangDoi;
         }
 
-        $http.post('https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/preview', logisticInfo)
-            .then(response => {
-                $scope.feeShippingPerOne = response.data.data.total_fee;
-                $scope.isLoading = false;
-            })
-            .catch(error => {
+        $http({
+            method: 'POST',
+            url: 'https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/preview',
+            headers : {
+                'ShopId' : 189641,
+                'Token' : 'ecf11c4a-5d20-11ee-b1d4-92b443b7a897'
+            },
+            data: logisticInfo
+        }).then(response => {
+            $scope.feeShippingPerOne = response.data.data.total_fee;
+            console.log(response.data);
+            $scope.isLoading = false;
+        }).catch(error => {
+                console.log(error);
                 $scope.feeShippingPerOne = 50000;
                 $scope.isLoading = false;
-            })
+        })
     }
 
     $scope.checkAddDress = function () {

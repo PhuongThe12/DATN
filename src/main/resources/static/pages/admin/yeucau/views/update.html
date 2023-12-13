@@ -169,10 +169,10 @@
                                     </div>
                                 </div>
 
-                                <div class="row" style="padding-left: 10px">
+                                <div class="row" style="padding-left: 10px" ng-show="nguoiTao">
                                     <div class="mb-3 ">
                                         <label class="form-label">Người tạo:</label>
-                                        <strong class="fw-medium fw-bold">{{hoaDon.khachHang.hoTen}}</strong>
+                                        <strong class="fw-medium fw-bold">{{nguoiTao.hoTen}}</strong>
                                     </div>
                                 </div>
 
@@ -312,9 +312,7 @@
 
                                             <div class="d-flex pt-2">
                                                 <p class="font-size-16-ncl fw-bold text-dark">Giá:
-                                                    {{yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.giaBan -
-                                                    (yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.giaBan*(yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.khuyenMai/100))
-                                                    | formatToVND}}</p>
+                                                    {{yeuCauChiTiet.thanhTien | formatToVND}}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -358,9 +356,10 @@
                                                     <div style="flex-grow: 1;"></div>
                                                     <!-- Nút Trả Hàng -->
                                                     <div>
-                                                        <button type="button" class="btn btn-dark"
-                                                                ng-click="addLyDoView(index,yeuCauChiTiet)">Lý
-                                                            Do</i></button>
+                                                        <button type="button" class="btn btn-dark" data-bs-toggle="modal"
+                                                                data-bs-target="#exampleModal"
+                                                                ng-click="addLyDoView(index,yeuCauChiTiet)">Lý Do
+                                                        </button>
                                                         <button type="button" class="btn btn-dark"
                                                                 ng-click="confirmDeleteGiayTra(yeuCauChiTiet)"
                                                                 ng-show="yeuCau.trangThai == 1"><i
@@ -378,9 +377,7 @@
                                                 </div>
                                                 <div class="d-flex pt-2">
                                                     <p class="font-size-16-ncl fw-bold text-dark">Giá:
-                                                        {{yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.giaBan -
-                                                        (yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.giaBan*(yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.khuyenMai/100))
-                                                        | formatToVND}}</p>
+                                                        {{yeuCauChiTiet.thanhTien| formatToVND}}</p>
                                                 </div>
                                             </div>
                                         </div>

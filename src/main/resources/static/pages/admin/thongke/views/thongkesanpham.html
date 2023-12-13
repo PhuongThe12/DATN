@@ -1,0 +1,450 @@
+<style>
+    .table-responsive table thead, .table-responsive table tbody tr {
+        display: table;
+        width: 100%; /* width is set to 100% of the parent (table-responsive div) */
+        table-layout: fixed; /* this is important to keep the columns aligned */
+    }
+
+    .table-responsive table tbody {
+        display: block; /* allows the tbody to be scrollable */
+        height: 300px; /* adjust this value based on your requirement */
+        overflow-y: auto; /* adds the vertical scrollbar */
+    }
+
+    .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+        color: #fff; /* Màu chữ trắng */
+        background-color: #000; /* Màu nền đen */
+        border-color: #000 #000 transparent; /* Màu viền đen */
+    }
+    .nav-link {
+        color: #000; /* Màu chữ đen */
+        background-color: #fff; /* Màu nền trắng */
+        border: 2px solid #000; /* Viền đen */
+    }
+    .nav-link:hover {
+        background-color: #333; /* Màu nền tối khi di chuột */
+        color: #fff; /* Màu chữ trắng khi di chuột */
+        border-color: #333; /* Màu viền tối khi di chuột */
+    }
+    .nav-tabs .nav-link {
+        font-family: 'Arial', sans-serif; /* Phông chữ */
+        font-size: 16px; /* Kích thước chữ */
+    }
+    .nav-tabs .nav-link {
+        border-radius: 5px; /* Làm tròn góc viền */
+        margin-right: 5px; /* Khoảng cách giữa các tab */
+    }
+
+</style>
+<div ng-show="isLoading" class="loading-spinner">
+    <div class="text-center" style="  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Màu nền đục để làm mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; ">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
+<div class="container pt-3">
+
+    <!-- Thanh điều hướng Tab -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="top-giay-ban-chay-tab" data-bs-toggle="tab" data-bs-target="#topGiayBanChay" type="button" role="tab" aria-controls="top-selling" aria-selected="true">Giày bán chạy</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="top-giay-yeu-thich-tab" data-bs-toggle="tab" data-bs-target="#topGiayYeuThich" type="button" role="tab" aria-controls="topGiayYeuThich" aria-selected="false">Giày được yêu thích</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="top-bien-the-giay-ban-chay-tab" data-bs-toggle="tab" data-bs-target="#topBienTheGiayBanChay" type="button" role="tab" aria-controls="topBienTheGiayBanChay" aria-selected="false">Biến thể giày bán chạy</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="top-giay-quan-tam-tab" data-bs-toggle="tab" data-bs-target="#topGiayQuanTam" type="button" role="tab" aria-controls="topGiayQuanTam" aria-selected="false">Biến thể giày được quan tâm</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="top-bien-the-giay-tra-tab" data-bs-toggle="tab" data-bs-target="#topBienTheGiayTra" type="button" role="tab" aria-controls="topBienTheGiayTra" aria-selected="false">Giày khách trả</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="top-ly-do-tab" data-bs-toggle="tab" data-bs-target="#topLyDo" type="button" role="tab" aria-controls="topLyDo" aria-selected="false">Lý do trả hàng</button>
+        </li>
+        <!-- Thêm các tab khác ở đây -->
+    </ul>
+
+    <!-- Nội dung Tab -->
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="topGiayBanChay" role="tabpanel" aria-labelledby="top-giay-ban-chay-tab">
+            <div class="mb-4 pt-2">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center"
+                         style="background-color: black">
+                        <!-- Phần tử Span -->
+                        <span class="fw-bold text-white mb-3">Top giày bán chạy</span>
+
+                        <div class="row" style="padding-right: 10px">
+                            <button type="button" class="btn btn-light" style="width: 40px; margin-right: 10px"
+                                    ng-click="exportTableToExcel1()"><i class="far fa-file-excel"></i></button>
+                            <select class="form-select form-select-sm" aria-label="Small select example" style="width: 100px"
+                                    ng-model="topGiayBanChay" ng-change="topSellingShoesInLastDays()">
+                                <option value="1">Top 5</option>
+                                <option value="2">Top 10</option>
+                                <option value="3">Top 20</option>
+                                <option value="4">Top 30</option>
+                                <option value="5">Top 50</option>
+                                <option value="6">Top 100</option>
+                            </select>
+                            <select class="form-select form-select-sm ms-2" aria-label="Small select example"
+                                    style="width: 100px" ng-model="thoiGian1" ng-change="topSellingShoesInLastDays()">
+                                <option value="1">Ngày</option>
+                                <option value="2">Tuần</option>
+                                <option value="3">1 Tháng</option>
+                                <option value="4">3 Tháng</option>
+                                <option value="5">6 Tháng</option>
+                                <option value="6">Năm</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="card-body overflow-auto" style="height: 431px">
+                        <table class="table" style="margin-bottom: 0">
+                            <thead>
+                            <tr>
+                                <th style="width: 5%;" class="text-center">#</th>
+                                <th style="width: 50%;">Sản Phẩm</th>
+                                <th style="width: 15%;" class="text-center">Thương Hiệu</th>
+                                <th style="width: 15%;" class="text-center">Hình Ảnh</th>
+                                <th style="width: 15%;" class="text-center">Số Lượng Bán</th>
+                            </tr>
+                            </thead>
+                            <tbody ng-repeat="(index, giay) in listTopSellingShoesInLastDays">
+                            <tr>
+                                <td class="text-center">{{ index + 1 }}</td>
+                                <td class="text-truncate"
+                                    style="max-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    {{ giay.ten }}
+                                </td>
+                                <td class="text-center">{{giay.thuongHieu.ten}}</td>
+                                <td class="text-center py-1">
+                                    <img ng-src="{{giay.lstAnh && giay.lstAnh.length > 0 ? giay.lstAnh[0] : 'https://product.hstatic.net/1000361048/product/giay_co_lung_forum_trang_fy4976_02_standard_hover_1af12c21fb0a498eb38c9d41c04e4514_grande.jpg'}}"
+                                         class="img-fluid" style="max-height: 60px;">
+                                </td>
+                                <td class="text-center">{{ giay.soLuongThongKe }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer"></div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="topGiayYeuThich" role="tabpanel" aria-labelledby="top-giay-yeu-thich-tab">
+            <div class="mb-4 pt-2">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center"
+                         style="background-color: black">
+                        <!-- Phần tử Span -->
+                        <span class="fw-bold text-white mb-3">Top giày được khách hàng yêu thích</span>
+
+                        <div class="row" style="padding-right: 10px">
+                            <button type="button" class="btn btn-light" style="width: 40px; margin-right: 10px"
+                                    ng-click="exportTableToExcel2()"><i class="far fa-file-excel"></i></button>
+                            <select class="form-select form-select-sm" aria-label="Small select example" style="width: 100px"
+                                    ng-model="topGiayYeuThich" ng-change="topFavoritedShoes()">
+                                <option value="1">Top 5</option>
+                                <option value="2">Top 10</option>
+                                <option value="3">Top 20</option>
+                                <option value="4">Top 30</option>
+                                <option value="5">Top 50</option>
+                                <option value="6">Top 100</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="card-body overflow-auto" style="height: 431px">
+                        <table class="table" style="margin-bottom: 0">
+                            <thead>
+                            <tr>
+                                <th style="width: 5%;" class="text-center">#</th>
+                                <th style="width: 50%;">Sản Phẩm</th>
+                                <th style="width: 15%;" class="text-center">Thương Hiệu</th>
+                                <th style="width: 15%;" class="text-center">Hình Ảnh</th>
+                                <th style="width: 15%;" class="text-center">Số Lượng Yêu Thích</th>
+                            </tr>
+                            </thead>
+                            <tbody ng-repeat="(index, giay) in listTopFavoritedShoes">
+                            <tr>
+                                <td class="text-center">{{ index + 1 }}</td>
+                                <td class="text-truncate"
+                                    style="max-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    {{ giay.ten }}
+                                </td>
+                                <td class="text-center">{{giay.thuongHieu.ten}}</td>
+                                <td class="text-center py-1">
+                                    <img ng-src="{{giay.lstAnh && giay.lstAnh.length > 0 ? giay.lstAnh[0] : 'https://product.hstatic.net/1000361048/product/giay_co_lung_forum_trang_fy4976_02_standard_hover_1af12c21fb0a498eb38c9d41c04e4514_grande.jpg'}}"
+                                         class="img-fluid" style="max-height: 60px;">
+                                </td>
+                                <td class="text-center">{{ giay.soLuongThongKe }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer"></div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="topBienTheGiayBanChay" role="tabpanel" aria-labelledby="top-bien-the-giay-ban-chay-tab">
+            <div class="mb-4 pt-2">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center"
+                         style="background-color: black">
+                        <!-- Phần tử Span -->
+                        <span class="fw-bold text-white mb-3">Top biến thể giày bán chạy</span>
+
+                        <div class="row" style="padding-right: 10px">
+                            <button type="button" class="btn btn-light" style="width: 40px; margin-right: 10px"
+                                    ng-click="exportTableToExcel3()"><i class="far fa-file-excel"></i></button>
+                            <select class="form-select form-select-sm" aria-label="Small select example" style="width: 100px"
+                                    ng-model="topBienTheGiayBanChay" ng-change="topSellingShoeVariantInLastDays()">
+                                <option value="1">Top 5</option>
+                                <option value="2">Top 10</option>
+                                <option value="3">Top 20</option>
+                                <option value="4">Top 30</option>
+                                <option value="5">Top 50</option>
+                                <option value="6">Top 100</option>
+                            </select>
+                            <select class="form-select form-select-sm ms-2" aria-label="Small select example"
+                                    style="width: 100px" ng-model="thoiGian2" ng-change="topSellingShoeVariantInLastDays()">
+                                style="width: 100px" ng-model="thoiGian1"
+                                ng-change="topSellingShoesInLastDays()">
+                                <option value="1">Ngày</option>
+                                <option value="2">Tuần</option>
+                                <option value="3">1 Tháng</option>
+                                <option value="4">3 Tháng</option>
+                                <option value="5">6 Tháng</option>
+                                <option value="6">Năm</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="card-body overflow-auto" style="height: 431px">
+                        <table class="table" style="margin-bottom: 0">
+                            <thead>
+                            <tr>
+                                <th style="width: 5%;" class="text-center">#</th>
+                                <th style="width: 30%;">Sản Phẩm</th>
+                                <th style="width: 10%;" class="text-center">Màu Sắc</th>
+                                <th style="width: 10%;" class="text-center">Kích Thước</th>
+                                <th style="width: 15%;" class="text-center">Thương Hiệu</th>
+                                <th style="width: 15%;" class="text-center">Hình Ảnh</th>
+                                <th style="width: 15%;" class="text-center">Số Lượng Bán</th>
+                            </tr>
+                            </thead>
+                            <tbody ng-repeat="(index, bienTheGiay) in listTopSellingShoeVariantInLastDays">
+                            <tr>
+                                <td class="text-center">{{ index + 1 }}</td>
+                                <td class="text-truncate"
+                                    style="max-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    {{ bienTheGiay.giayResponse.ten }}
+                                </td>
+                                <td class="text-center">{{bienTheGiay.mauSac.ten}}</td>
+                                <td class="text-center">{{bienTheGiay.kichThuoc.ten}}</td>
+                                <td class="text-center">{{bienTheGiay.giayResponse.thuongHieu.ten}}</td>
+                                <td class="text-center py-1">
+                                    <img ng-src="{{bienTheGiay.hinhAnh ? bienTheGiay.hinhAnh : 'https://product.hstatic.net/1000361048/product/giay_co_lung_forum_trang_fy4976_02_standard_hover_1af12c21fb0a498eb38c9d41c04e4514_grande.jpg'}}"
+                                         class="img-fluid" style="max-height: 60px;">
+                                </td>
+                                <td class="text-center">{{bienTheGiay.soLuongThongKe}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer"></div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="topGiayQuanTam" role="tabpanel" aria-labelledby="top-giay-quan-tam-tab">
+            <div class="mb-4 pt-2">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center"
+                         style="background-color: black">
+                        <!-- Phần tử Span -->
+                        <span class="fw-bold text-white mb-3">Top biến thể giày được quan tâm</span>
+
+                        <div class="row" style="padding-right: 10px">
+                            <button type="button" class="btn btn-light" style="width: 40px; margin-right: 10px"
+                                    ng-click="exportTableToExcel4()"><i class="far fa-file-excel"></i></button>
+                            <select class="form-select form-select-sm" aria-label="Small select example" style="width: 100px"
+                                    ng-model="topBienTheGiayQuanTam" ng-change="topCartVariants()">
+                                <option value="1">Top 5</option>
+                                <option value="2">Top 10</option>
+                                <option value="3">Top 20</option>
+                                <option value="4">Top 30</option>
+                                <option value="5">Top 50</option>
+                                <option value="6">Top 100</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="card-body overflow-auto" style="height: 431px">
+                        <table class="table" style="margin-bottom: 0">
+                            <thead>
+                            <tr>
+                                <th style="width: 5%;" class="text-center">#</th>
+                                <th style="width: 30%;">Sản Phẩm</th>
+                                <th style="width: 10%;" class="text-center">Màu Sắc</th>
+                                <th style="width: 10%;" class="text-center">Kích Thước</th>
+                                <th style="width: 15%;" class="text-center">Thương Hiệu</th>
+                                <th style="width: 15%;" class="text-center">Hình Ảnh</th>
+                                <th style="width: 15%;" class="text-center">Số Lượng Bán</th>
+                            </tr>
+                            </thead>
+                            <tbody ng-repeat="(index, bienTheGiay) in listTopCartVariants">
+                            <tr>
+                                <td class="text-center">{{ index + 1 }}</td>
+                                <td class="text-truncate"
+                                    style="max-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    {{ bienTheGiay.giayResponse.ten }}
+                                </td>
+                                <td class="text-center">{{bienTheGiay.mauSac.ten}}</td>
+                                <td class="text-center">{{bienTheGiay.kichThuoc.ten}}</td>
+                                <td class="text-center">{{bienTheGiay.giayResponse.thuongHieu.ten}}</td>
+                                <td class="text-center py-1">
+                                    <img ng-src="{{bienTheGiay.hinhAnh ? bienTheGiay.hinhAnh : 'https://product.hstatic.net/1000361048/product/giay_co_lung_forum_trang_fy4976_02_standard_hover_1af12c21fb0a498eb38c9d41c04e4514_grande.jpg'}}"
+                                         class="img-fluid" style="max-height: 60px;">
+                                </td>
+                                <td class="text-center">{{bienTheGiay.soLuongThongKe}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer"></div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="topBienTheGiayTra" role="tabpanel" aria-labelledby="top-bien-the-giay-tra-tab">
+            <div class="mb-4 pt-2">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center"
+                         style="background-color: black">
+                        <!-- Phần tử Span -->
+                        <span class="fw-bold text-white mb-3">Top biến thể giày khách trả</span>
+
+                        <div class="row" style="padding-right: 10px">
+                            <button type="button" class="btn btn-light" style="width: 40px; margin-right: 10px"
+                                    ng-click="exportTableToExcel5()"><i class="far fa-file-excel"></i></button>
+                            <select class="form-select form-select-sm" aria-label="Small select example" style="width: 100px"
+                                    ng-model="topBienTheGiayTra" ng-change="topVariantReturnRates()">
+                                <option value="1">Top 5</option>
+                                <option value="2">Top 10</option>
+                                <option value="3">Top 20</option>
+                                <option value="4">Top 30</option>
+                                <option value="5">Top 50</option>
+                                <option value="6">Top 100</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="card-body overflow-auto" style="height: 431px">
+                        <table class="table" style="margin-bottom: 0">
+                            <thead>
+                            <tr>
+                                <th style="width: 5%;" class="text-center">#</th>
+                                <th style="width: 30%;">Sản Phẩm</th>
+                                <th style="width: 10%;" class="text-center">Màu Sắc</th>
+                                <th style="width: 10%;" class="text-center">Kích Thước</th>
+                                <th style="width: 10%;" class="text-center">Thương Hiệu</th>
+                                <th style="width: 10%;" class="text-center">Hình Ảnh</th>
+                                <th style="width: 10%;" class="text-center">Số Lượng Mua</th>
+                                <th style="width: 10%;" class="text-center">Số Lượng Trả</th>
+                                <th style="width: 5%;" class="text-center">Tỷ Lệ Trả</th>
+                            </tr>
+                            </thead>
+                            <tbody ng-repeat="(index, bienTheGiay) in listTopVariantReturnRates">
+                            <tr>
+                                <td class="text-center">{{ index + 1 }}</td>
+                                <td class="text-truncate"
+                                    style="max-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    {{ bienTheGiay.giayResponse.ten }}
+                                </td>
+                                <td class="text-center">{{bienTheGiay.mauSac.ten}}</td>
+                                <td class="text-center">{{bienTheGiay.kichThuoc.ten}}</td>
+                                <td class="text-center">{{bienTheGiay.giayResponse.thuongHieu.ten}}</td>
+                                <td class="text-center py-1">
+                                    <img ng-src="{{bienTheGiay.hinhAnh ? bienTheGiay.hinhAnh : 'https://product.hstatic.net/1000361048/product/giay_co_lung_forum_trang_fy4976_02_standard_hover_1af12c21fb0a498eb38c9d41c04e4514_grande.jpg'}}"
+                                         class="img-fluid" style="max-height: 60px;">
+                                </td>
+                                <td class="text-center">{{bienTheGiay.soLuongMua}}</td>
+                                <td class="text-center">{{bienTheGiay.soLuongTra}}</td>
+                                <td class="text-center">{{bienTheGiay.tyLeTra}}%</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer"></div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="topLyDo" role="tabpanel" aria-labelledby="top-ly-do-tab">
+            <div class="mb-4 pt-2">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center"
+                         style="background-color: black">
+                        <!-- Phần tử Span -->
+                        <span class="fw-bold text-white mb-3">Top lý do trả hàng phổ biến</span>
+
+                        <div class="row" style="padding-right: 10px">
+                            <button type="button" class="btn btn-light" style="width: 40px; margin-right: 10px"
+                                    ng-click="exportTableToExcel6()"><i class="far fa-file-excel"></i></button>
+                            <select class="form-select form-select-sm" aria-label="Small select example" style="width: 100px"
+                                    ng-model="topLyDo" ng-change="topReasonsForReturn()">
+                                <option value="1">Top 5</option>
+                                <option value="2">Top 10</option>
+                                <option value="3">Top 20</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="card-body overflow-auto" style="height: 431px">
+                        <table class="table" style="margin-bottom: 0">
+                            <thead>
+                            <tr>
+                                <th style="width: 5%;" class="text-center">#</th>
+                                <th style="width: 30%;">Lý Do</th>
+                                <th style="width: 10%;" class="text-center">Số Lượng</th>
+                                <th style="width: 10%;" class="text-center">Tỷ Lệ</th>
+                            </tr>
+                            </thead>
+                            <tbody ng-repeat="(index, lyDo) in listTopReasonsForReturn">
+                            <tr>
+                                <td class="text-center">{{ index + 1 }}</td>
+                                <td class="text-truncate"
+                                    style="max-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    {{ lyDo.ten }}
+                                </td>
+                                <td class="text-center">{{lyDo.soLuongThongKe}}/{{lyDo.soLuongYeuCauTra}}</td>
+                                <td class="text-center">{{lyDo.tyLe }}%</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
