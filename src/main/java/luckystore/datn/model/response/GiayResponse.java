@@ -171,8 +171,8 @@ public class GiayResponse {
     public GiayResponse(Giay giay,String ten) {
         this.id = giay.getId();
         this.ten = ten;
-        this.thuongHieu = new ThuongHieuResponse(giay.getThuongHieu().getId(),giay.getThuongHieu().getTen());
-
+        this.thuongHieu = new ThuongHieuResponse(giay.getThuongHieu().getId(), giay.getThuongHieu().getTen());
+    }
     public GiayResponse(Long id, Integer phanTramGiam) {
         this.id = id;
         this.phanTramGiam = phanTramGiam;
