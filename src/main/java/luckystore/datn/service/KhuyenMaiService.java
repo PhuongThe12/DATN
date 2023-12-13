@@ -17,7 +17,6 @@ public interface KhuyenMaiService {
 
     Page<KhuyenMaiResponse> getPage(int page, String searchText, Integer status);
 
-
     KhuyenMaiResponse addKhuyenMai(KhuyenMaiRequest khuyenMaiRequest);
     KhuyenMaiResponse updateKhuyenMai(Long id, KhuyenMaiRequest khuyenMaiRequest);
 
