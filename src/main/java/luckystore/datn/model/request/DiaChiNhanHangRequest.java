@@ -33,6 +33,8 @@ public class DiaChiNhanHangRequest {
 
     private KhachHang khachHang;
 
+    private Long idKhachHang;
+
     private String provinces;
 
     private String districts;
