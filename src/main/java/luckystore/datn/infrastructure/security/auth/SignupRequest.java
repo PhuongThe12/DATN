@@ -1,30 +1,23 @@
 package luckystore.datn.infrastructure.security.auth;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import luckystore.datn.infrastructure.Role;
+import jakarta.validation.constraints.NotNull;
 
-@Setter
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-@ToString
+import java.sql.Date;
+
 public class SignupRequest {
 
-    @NotBlank(message = "Tên đăng nhập trống")
+    private Long idTaiKhoan;
+
+    @NotNull(message = "Không được để trống tên đăng nhập")
     private String tenDangNhap;
 
-    @NotBlank(message = "Mật khẩu trống")
-    @Pattern(regexp = "^(?=.*[0-9])(.{8,})$", message = "Mật khẩu phải có ít nhất 8 ký tự và chứa ít nhất 1 số")
+    @NotNull(message = "Không được để trống tên mật khẩu")
     private String matKhau;
 
-    private Role roles;
+    @NotNull(message = "Không được để trống tên mật khẩu")
+    private String sdt;
 
+    private Boolean gioiTinh;
+
+    private Date ngaySinh;
 }

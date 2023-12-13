@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 public class LyDoRequest {
     private Long id;
 
-    @NotNull(message = "Không được để trống tên lý do")
     private String ten;
 
     private Integer trangThai;
