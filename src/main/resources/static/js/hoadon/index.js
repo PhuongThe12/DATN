@@ -57,8 +57,14 @@ app.controller('hoaDonController', function ($scope, $http, $location) {
 
 
         hoaDonSearch.tuNgay = $scope.tu;
+        if($scope.tu && hoaDonSearch.tuNgay.getHours() === 0) {
+            hoaDonSearch.tuNgay.setHours(hoaDonSearch.tuNgay.getHours() + 7);
+        }
 
         hoaDonSearch.denNgay = $scope.den;
+        if($scope.den && hoaDonSearch.denNgay.getHours() === 0) {
+            hoaDonSearch.denNgay.setHours(hoaDonSearch.denNgay.getHours() + 7);
+        }
 
         hoaDonSearch.currentPage = currentPage;
         hoaDonSearch.pageSize = $scope.itemsPerPage;

@@ -21,7 +21,7 @@ public class RestGioHangController {
     @Autowired
     GioHangService gioHangService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/khach-hang/{id}")
     public ResponseEntity<?> getGioHangByIdKhachHang(@PathVariable("id") Long id) {
         return new ResponseEntity(gioHangService.getGioHangByKhachHang(id), HttpStatus.OK);
     }
@@ -40,8 +40,12 @@ public class RestGioHangController {
 
     @GetMapping("/{idGioHang}/so-luong/{id}")
     public ResponseEntity<?> getSoLuong(@PathVariable("idGioHang") Long idGioHang, @PathVariable("id") Long id) {
-        System.out.println(idGioHang + " " + id);
         return ResponseEntity.ok(gioHangService.getSoLuong(id, idGioHang));
+    }
+
+    @GetMapping("/{idGioHang}/tong-tien")
+    public ResponseEntity<?> getTongTienById(@PathVariable("idGioHang") Long idGioHang){
+        return ResponseEntity.ok(gioHangService.getTongTienByIdGioHang(idGioHang));
     }
 
     @DeleteMapping("/delete")
@@ -71,4 +75,8 @@ public class RestGioHangController {
         }
     }
 
+    @PostMapping("/add")
+    public ResponseEntity<?> addNew(@RequestBody GioHangRequest gioHangRequest) {
+        return new ResponseEntity<>(gioHangService.addGioHang(gioHangRequest), HttpStatus.OK);
+    }
 }

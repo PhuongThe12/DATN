@@ -10,6 +10,7 @@ import luckystore.datn.model.request.DieuKienRequest;
 
 import java.sql.Date;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,9 +24,9 @@ public class DotGiamGiaResponse {
 
     private String ten;
 
-    private Date ngayBatDau;
+    private String ngayBatDau;
 
-    private Date ngayKetThuc;
+    private String ngayKetThuc;
 
     private String ghiChu;
 
@@ -36,12 +37,17 @@ public class DotGiamGiaResponse {
     public DotGiamGiaResponse(DotGiamGia dotGiamGia) {
         this.id = dotGiamGia.getId();
         this.ten = dotGiamGia.getTen();
-        this.ngayBatDau = dotGiamGia.getNgayBatDau();
-        this.ngayKetThuc = dotGiamGia.getNgayKetThuc();
+        this.ngayBatDau = dateFormat(dotGiamGia.getNgayBatDau());
+        this.ngayKetThuc = dateFormat(dotGiamGia.getNgayKetThuc());
         this.ghiChu = dotGiamGia.getGhiChu();
         this.trangThai = dotGiamGia.getTrangThai();
         List<DieuKien> dieuKiens = dotGiamGia.getDanhSachDieuKien();
         this.dieuKienResponses = dieuKiens.stream().map(DieuKienResponse::new).collect(Collectors.toList());
+    }
+
+    private String dateFormat(LocalDateTime dateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return dateTime.format(formatter);
     }
 
 }

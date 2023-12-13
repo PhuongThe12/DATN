@@ -21,13 +21,11 @@ app.config(function ($routeProvider, $locationProvider) {
 app.controller("addDotGiamGiaController", function ($scope, $http, $location) {
     $scope.dotGiamGia = {};
     $scope.dotGiamGia.dieuKienRequests = [{
+        errors: {},
         tongHoaDon: "",
         phanTramGiam: ""
     }];
 
-    $scope.change = function (input) {
-        input.$dirty = true;
-    }
     $scope.checkNgayBatDau = function () {
         var currentDate = new Date();
         currentDate.setHours(0, 0, 0, 0); // Đặt giờ về 0 để so sánh ngày mà không tính giờ, phút, giây
@@ -36,30 +34,60 @@ app.controller("addDotGiamGiaController", function ($scope, $http, $location) {
         return ngayBatDau >= currentDate;
     };
 
-    // Trong controller của bạn
-    $scope.isConditionDuplicate = function (index) {
-        var currentCondition = $scope.dotGiamGia.dieuKienRequests[index];
-        for (var i = 0; i < $scope.dotGiamGia.dieuKienRequests.length; i++) {
-            if (i !== index) {
-                // So sánh các thuộc tính của điều kiện hiện tại với các điều kiện đã có
-                if (currentCondition.tongHoaDon === $scope.dotGiamGia.dieuKienRequests[i].tongHoaDon &&
-                    currentCondition.phanTramGiam === $scope.dotGiamGia.dieuKienRequests[i].phanTramGiam) {
-                    return true; // Điều kiện trùng lặp
-                }
+    $scope.change = function (input, model) {
+        if (model === 'tongHoaDon') {
+            if (input.tongHoaDon) {
+                input.errors.tongHoaDon = null;
+                $scope.dotGiamGia.dieuKienRequests.forEach(item => {
+                    if (item.tongHoaDon === input.tongHoaDon && item !== input) {
+                        input.errors.tongHoaDon = 'Tổng giá trị hóa đơn không được trùng với điều kiện khác';
+                    }
+                });
+            } else {
+                input.errors.tongHoaDon = 'Tổng giá trị hóa đơn phải là số >= 0';
             }
-        }
-        return false; // Không có điều kiện trùng lặp
-    };
 
-    $scope.disableAddDieuKien = function () {
-        // Kiểm tra nếu có điều kiện trùng lặp thì disable nút
-        for (var i = 0; i < $scope.dotGiamGia.dieuKienRequests.length; i++) {
-            if ($scope.isConditionDuplicate(i)) {
-                return true;
+        } else if (model === 'phanTramGiam') {
+            if (input.phanTramGiam) {
+                input.errors.phanTramGiam = null;
+                if (input.phanTramGiam % 1 !== 0) {
+                    input.phanTramGiam = parseInt(input.phanTramGiam);
+                }
+            } else {
+                input.errors.phanTramGiam = 'Phần trăm giảm phải là số nguyên từ 1 - 50';
             }
         }
-        return false;
-    };
+    }
+
+    $scope.addDieuKien = function () {
+
+        let invalid = false;
+        $scope.dotGiamGia.dieuKienRequests.forEach(item => {
+            if (!item.tongHoaDon) {
+                item.errors.tongHoaDon = 'Tổng giá trị hóa đơn phải là số >= 0';
+                invalid = true;
+            }
+            if (!item.phanTramGiam) {
+                item.errors.phanTramGiam = 'Phần trăm giảm phải là số nguyên từ 1 - 50';
+                invalid = true;
+            }
+
+            if (item.errors.tongHoaDon) {
+                invalid = true;
+            }
+        });
+
+        if (invalid) {
+            toastr["error"]("Nhập đúng các điều kiện trước đó để thêm điều kiện mới");
+            return;
+        }
+
+        $scope.dotGiamGia.dieuKienRequests.push({
+            errors: {},
+            tongHoaDon: 0,
+            phanTramGiam: 0
+        });
+    }
 
     $scope.removeDieuKien = function (index) {
         $scope.dotGiamGia.dieuKienRequests.splice(index, 1);
@@ -71,50 +99,72 @@ app.controller("addDotGiamGiaController", function ($scope, $http, $location) {
             return;
         }
 
-        // Gửi danh sách các điều kiện lên backend
-        $scope.dotGiamGia.dieuKienRequests = $scope.dotGiamGia.dieuKienRequests.map(function (dieuKien) {
-            return {
-                tongHoaDon: dieuKien.tongHoaDon,
-                phanTramGiam: dieuKien.phanTramGiam
-            };
-        });
+        let invalid = false;
 
-        $http.post(host + '/rest/admin/dot-giam-gia', $scope.dotGiamGia)
-            .then(function (response) {
-                if (response.status === 200) {
-                    toastr["success"]("Thêm thành công");
-                }
-                $location.path("/list");
-            })
-            .catch(function (error) {
-                toastr["error"]("Thêm thất bại");
-                if (error.status === 400) {
-                    $scope.dotGiamGiaForm.ten.$dirty = false;
-                    $scope.dotGiamGiaForm.ghiChu.$dirty = false;
-                    $scope.errors = error.data;
-                }
-            });
-    }
-
-    $scope.addDieuKien = function () {
-        $scope.dotGiamGia.dieuKienRequests.push({
-            tongHoaDon: "",
-            phanTramGiam: ""
-        });
-    }
-    $scope.hasErrorInItems = false;
-    $scope.checkErrorsInItems = function () {
-        $scope.hasErrorInItems = false;
-        for (var i = 0; i < $scope.items.length; i++) {
-            if ($scope.items[i].itemForm.$invalid) {
-                $scope.hasErrorInItems = true;
-                break;
+        $scope.dotGiamGia.dieuKienRequests.forEach(item => {
+            if (!item.tongHoaDon) {
+                item.errors.tongHoaDon = 'Tổng giá trị hóa đơn phải là số >= 0';
+                invalid = true;
             }
+            if (!item.phanTramGiam) {
+                item.errors.phanTramGiam = 'Phần trăm giảm phải là số nguyên từ 1 - 50';
+                invalid = true;
+            }
+
+            if (item.errors.tongHoaDon) {
+                invalid = true;
+            }
+        });
+
+        if (invalid) {
+            toastr["error"]("Nhập đúng các điều kiện để thêm");
+            return;
         }
-    };
-    $scope.$watch('items', function (newItems, oldItems) {
-        $scope.checkErrorsInItems();
-    }, true);
+
+        if ($scope.dotGiamGia.dieuKienRequests.length === 0) {
+            toastr["error"]("Hãy thêm điều kiện trước khi thêm đợt giảm giá");
+            return;
+        }
+
+        if ($scope.dotGiamGia.ngayBatDau.getHours() === 0) {
+            $scope.dotGiamGia.ngayBatDau.setHours($scope.dotGiamGia.ngayBatDau.getHours() + 7);
+        }
+
+        if ($scope.dotGiamGia.ngayKetThuc.getHours() === 0) {
+            $scope.dotGiamGia.ngayKetThuc.setHours($scope.dotGiamGia.ngayKetThuc.getHours() + 7);
+        }
+
+        Swal.fire({
+            text: "Xác nhận thêm?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $scope.isLoading = true;
+                $http.post(host + '/rest/admin/dot-giam-gia', $scope.dotGiamGia)
+                    .then(function (response) {
+                        if (response.status === 200) {
+                            toastr["success"]("Thêm thành công");
+                            $scope.isLoading = false;
+                        }
+                        $location.path("/list");
+                    })
+                    .catch(function (error) {
+                        toastr["error"]("Thêm thất bại");
+                        if (error.status === 400) {
+                            $scope.dotGiamGiaForm.ten.$dirty = false;
+                            $scope.dotGiamGiaForm.ghiChu.$dirty = false;
+                            $scope.errors = error.data;
+                        }
+                        $scope.isLoading = false;
+                    });
+            }
+        });
+    }
 
 });
 
@@ -137,15 +187,11 @@ app.controller("dotGiamGiaListController", function ($scope, $http, $window, $lo
         $scope.itemsPerPage = 5,
         $scope.maxSize = 5;
 
-    let searchText;
+    $scope.searching = true;
 
     $scope.search = function () {
-        if (!$scope.searchText) {
-            toastr["error"]("Vui lòng nhập tên muốn tìm kiếm");
-            return;
-        }
-        searchText = $scope.searchText;
-        getData(1, searchText);
+        getData(1);
+        $scope.searching = true;
     };
 
     $scope.changeRadio = function (status) {
@@ -154,47 +200,158 @@ app.controller("dotGiamGiaListController", function ($scope, $http, $window, $lo
     }
 
     function getData(currentPage) {
-        let apiUrl = host + '/rest/admin/dot-giam-gia?page=' + currentPage;
-        if (searchText) {
-            apiUrl += '&search=' + searchText;
+        $scope.isLoading = true;
+        let apiUrl = host + '/rest/admin/dot-giam-gia/search';
+        let kmSearch = {};
+
+        if ($scope.searchText.length > 0) {
+            kmSearch.ten = ($scope.searchText + "").trim();
+        } else {
+            kmSearch.ten = null;
         }
 
-        if ($scope.status == 0) {
-            apiUrl += '&status=' + 0;
-        } else if ($scope.status == 1) {
-            apiUrl += '&status=' + 1;
+        if ($scope.status === 1) {
+            kmSearch.status = 1;
+        } else if ($scope.status === 2) {
+            kmSearch.status = 2;
+        } else if ($scope.status === 3) {
+            kmSearch.status = 3;
+        } else if ($scope.status === 0) {
+            kmSearch.status = 0;
+        } else {
+            kmSearch.status = 1;
         }
 
-        $http.get(apiUrl)
-            .then(function (response) {
-                $scope.dotGiamGias = response.data.content;
-                $scope.numOfPages = response.data.totalPages;
-            })
-            .catch(function (error) {
-                toastr["error"]("Lấy dữ liệu thất bại");
-                // window.location.href = feHost + '/trang-chu';
-            });
-    }
 
-    $scope.detailDotGiamGia = function (val) {
-        var id = val;
-        $http.get(host + '/rest/admin/dot-giam-gia/' + id)
+        kmSearch.ngayBatDau = $scope.tu;
+        if ($scope.tu && kmSearch.ngayBatDau.getHours() === 0) {
+            kmSearch.ngayBatDau.setHours(kmSearch.ngayBatDau.getHours() + 7);
+        }
+        kmSearch.ngayKetThuc = $scope.den;
+        if ($scope.den && kmSearch.ngayKetThuc.getHours() === 0) {
+            kmSearch.ngayKetThuc.setHours(kmSearch.ngayKetThuc.getHours() + 7);
+        }
+
+        kmSearch.currentPage = currentPage;
+        kmSearch.pageSize = $scope.itemsPerPage;
+
+        $http.post(apiUrl, kmSearch)
             .then(function (response) {
-                $scope.dotGiamGiaDetail = response.data;
-                const button = document.querySelector('[data-bs-target="#showDotGiamGia"]');
-                if (button) {
-                    button.click();
+                if (response.data) {
+                    $scope.dotGiamGias = response.data.content;
+                    $scope.numOfPages = response.data.totalPages;
+                    if ($scope.status === 0) {
+                        $scope.dotGiamGias.forEach(item => {
+                            const nbd = new Date(item.ngayBatDau);
+                            const nkt = new Date(item.ngayKetThuc);
+                            if (nbd <= new Date() <= nkt) {
+                                item.hienThi = true;
+                            }
+                        })
+                    }
+                    $scope.isLoading = false;
+                } else {
+                    $scope.dotGiamGias = [];
+                    toastr["error"]("Không có đợt giảm giá nào");
                 }
             })
             .catch(function (error) {
+                console.log(error);
                 toastr["error"]("Lấy dữ liệu thất bại");
+                $scope.isLoading = false;
             });
     }
+
+    $scope.resetSearch = function () {
+        if ($scope.searching) {
+            $scope.searchText = '';
+            $scope.tu = null;
+            $scope.den = null;
+            getData(1);
+            $scope.searching = false;
+            $scope.status = 1;
+        } else {
+            toastr["warning"]("Bạn đang không tìm kiếm");
+        }
+    }
+
+    $scope.resetSearch();
 
     $scope.$watch('curPage + numPerPage', function () {
         getData($scope.curPage);
     });
 
+    $scope.hienThiDotGiamGia = function (dotGiamGia) {
+        const nbd = new Date(dotGiamGia.ngayBatDau);
+        const nkt = new Date(dotGiamGia.ngayKetThuc);
+        if (nbd <= new Date() <= nkt) {
+            Swal.fire({
+                text: "Xác nhận hiển thị đợt giảm giá?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Đồng ý",
+                cancelButtonText: "Hủy"
+            }).then((result) => {
+                $http.put(host + '/rest/admin/dot-giam-gia/hien-thi/' + dotGiamGia.id)
+                    .then(function (response) {
+                        toastr["success"]("Hiển thị thành công");
+                        $scope.changeRadio(1);
+                    })
+                    .catch(function (error) {
+                        if (error.status === 406) {
+                            toastr["error"](error.data.data);
+                        } else {
+                            console.log(error);
+                            toastr["error"]("Lấy dữ liệu thất bại");
+                        }
+                        $scope.isLoading = false;
+                    });
+
+            });
+        } else {
+            toastr["error"]("Đợt giảm giá đã kết thúc không được phép chỉnh sửa");
+        }
+    }
+
+    $scope.anDotGiamGia = function (dotGiamGia) {
+        const nbd = new Date(dotGiamGia.ngayBatDau);
+        const nkt = new Date(dotGiamGia.ngayKetThuc);
+        if (nbd <= new Date() <= nkt) {
+            Swal.fire({
+                text: "Xác nhận ẩn đợt giảm giá?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Đồng ý",
+                cancelButtonText: "Hủy"
+            }).then((result) => {
+                $http.put(host + '/rest/admin/dot-giam-gia/an/' + dotGiamGia.id)
+                    .then(function (response) {
+                        toastr["success"]("Ẩn thành công");
+                        $scope.changeRadio(0);
+                    })
+                    .catch(function (error) {
+                        if (error.status === 406) {
+                            toastr["error"](error.data.data);
+                        } else {
+                            console.log(error);
+                            toastr["error"]("Lấy dữ liệu thất bại");
+                        }
+                        $scope.isLoading = false;
+                    });
+
+            });
+        } else {
+            toastr["error"]("Đợt giảm giá đã kết thúc không được phép chỉnh sửa");
+        }
+    }
+
+    $scope.detailDotGiamGia = function (val) {
+        $scope.dotGiamGiaDetail = val;
+    }
 
 });
 
@@ -203,30 +360,48 @@ app.controller("updateDotGiamGiaController", function ($scope, $http, $location,
     $scope.dotGiamGia.id = $routeParams.id;
     $scope.dotGiamGia.dieuKienRequests = [];
 
-    $scope.init = function () {
-        $http.get(host + '/rest/admin/dot-giam-gia/' + $scope.dotGiamGia.id)
-            .then(function (response) {
-                if (response.status === 200) {
-                    $scope.dotGiamGia = response.data;
-                    console.log($scope.dotGiamGia)
+    let getCurrentDay = function () {
+        const current = new Date();
+        current.setHours(0);
+        current.setMinutes(0);
+        current.setMilliseconds(0);
+        current.setSeconds(0);
+        return current;
+    }
 
-                    var ngayBatDau = $scope.dotGiamGia.ngayBatDau;
-                    var object = new Date(ngayBatDau);
-                    $scope.dotGiamGia.ngayBatDau = object;
+    $http.get(host + '/rest/admin/dot-giam-gia/' + $scope.dotGiamGia.id)
+        .then(function (response) {
+            if (response.status === 200) {
+                $scope.dotGiamGia = response.data;
 
-                    var ngayKetThuc = $scope.dotGiamGia.ngayKetThuc;
-                    var object = new Date(ngayKetThuc);
-                    $scope.dotGiamGia.ngayKetThuc = object;
+                var ngayBatDau = $scope.dotGiamGia.ngayBatDau;
+                var object = new Date(ngayBatDau);
+                $scope.dotGiamGia.ngayBatDau = object;
 
-                    console.log("Ngày bắt đầu", $scope.dotGiamGia.ngayBatDau)
-                    console.log("Ngày kết thúc", $scope.dotGiamGia.ngayKetThuc)
+                var ngayKetThuc = $scope.dotGiamGia.ngayKetThuc;
+                var object = new Date(ngayKetThuc);
+                $scope.dotGiamGia.ngayKetThuc = object;
+
+                if ($scope.dotGiamGia.ngayBatDau <= getCurrentDay() && $scope.dotGiamGia.ngayKetThuc >= getCurrentDay()) {
+                    toastr["warning"]("Đợt giảm giá đang diễn ra không được cập nhật");
+                    $location.path("/list");
                 }
-            })
-            .catch(function (error) {
-                toastr["error"]("Lấy dữ liệu thất bại");
-            });
-    };
 
+                if ($scope.dotGiamGia.ngayKetThuc <= getCurrentDay()) {
+                    toastr["warning"]("Đợt giảm giá đã kết thúc không được cập nhật");
+                    $location.path("/list");
+                }
+
+                $scope.dotGiamGia.dieuKienRequests = $scope.dotGiamGia.dieuKienResponses;
+                $scope.dotGiamGia.dieuKienRequests.forEach(item => {
+                    item.errors = {};
+                })
+
+            }
+        })
+        .catch(function (error) {
+            toastr["error"]("Lấy dữ liệu thất bại");
+        });
 
     $scope.change = function (input) {
         input.$dirty = true;
@@ -240,102 +415,95 @@ app.controller("updateDotGiamGiaController", function ($scope, $http, $location,
         return ngayBatDau >= currentDate;
     };
 
-    $scope.isConditionDuplicate = function (index) {
-        var currentCondition = $scope.dotGiamGia.dieuKienResponses[index];
-        console.log("íist ", $scope.dotGiamGia.dieuKienResponses);
-        for (var i = 0; i < $scope.dotGiamGia.dieuKienResponses.length; i++) {
-            if (i !== index) {
-                // So sánh các thuộc tính của điều kiện hiện tại với các điều kiện đã có
-                if (parseInt(currentCondition.tongHoaDon) == $scope.dotGiamGia.dieuKienResponses[i].tongHoaDon &&
-                    parseInt(currentCondition.phanTramGiam) == $scope.dotGiamGia.dieuKienResponses[i].phanTramGiam) {
-                    return true; // Điều kiện trùng lặp
-                }
-            }
-        }
-        return false; // Không có điều kiện trùng lặp
-    };
 
-    $scope.disableAddDieuKien = function () {
-        // Kiểm tra nếu có điều kiện trùng lặp thì disable nút
-        for (var i = 0; i < $scope.dotGiamGia.dieuKienResponses.length; i++) {
-            if ($scope.isConditionDuplicate(i)) {
-                return true;
-            }
-        }
-        return false;
-    };
+    $scope.removeDieuKien = function (index) {
+        $scope.dotGiamGia.dieuKienRequests.splice(index, 1);
+    }
 
-    $scope.removeDieuKien = function (index,dieuKien) {
-        $scope.dotGiamGia.dieuKienResponses.splice(index, 1)
-        $http({
-            method: 'DELETE',
-            url: 'http://localhost:8080/rest/admin/dot-giam-gia/delete-dieu-kien/' + dieuKien
-        }).then(function successCallback(response) {
-            // Xử lý khi API DELETE thành công
-            console.log('Xóa điều kiện giảm giá thành công', response);
-        }, function errorCallback(response) {
-            // Xử lý khi có lỗi xảy ra trong quá trình gọi API DELETE
-            console.error('Lỗi xóa điều kiện giảm giá', response);
-        });
-        console.log("index: ",index)
-        console.log("Điều kiện: ",dieuKien)
-    };
 
     $scope.updateDotGiamGia = function () {
 
         if ($scope.dotGiamGiaForm.$invalid) {
             return;
         }
-        console.log($scope.dotGiamGia);
-        console.log($scope.dotGiamGia.dieuKienRequests);
-        // Gửi danh sách các điều kiện lên backend
-        $scope.dotGiamGia.dieuKienRequests = $scope.dotGiamGia.dieuKienResponses.map(function (dieuKien) {
-            return {
-                id: dieuKien.id,
-                tongHoaDon: dieuKien.tongHoaDon,
-                phanTramGiam: dieuKien.phanTramGiam
-            };
+
+        let invalid = false;
+
+        $scope.dotGiamGia.dieuKienRequests.forEach(item => {
+            if (!item.tongHoaDon) {
+                item.errors.tongHoaDon = 'Tổng giá trị hóa đơn phải là số >= 0';
+                invalid = true;
+            }
+            if (!item.phanTramGiam) {
+                item.errors.phanTramGiam = 'Phần trăm giảm phải là số nguyên từ 1 - 50';
+                invalid = true;
+            }
+
+            if (item.errors.tongHoaDon) {
+                invalid = true;
+            }
         });
 
-        console.log($scope.dotGiamGia);
+        if (invalid) {
+            toastr["error"]("Nhập đúng các điều kiện để thêm");
+            return;
+        }
 
-        $http.put(host + '/rest/admin/dot-giam-gia/' + $scope.dotGiamGia.id, $scope.dotGiamGia)
-            .then(function (response) {
-                if (response.status === 200) {
-                    toastr["success"]("Cập nhật thành công");
-                }
-                $location.path("/list");
-            })
-            .catch(function (error) {
-                toastr["error"]("Cập nhật thất bại");
-                if (error.status === 400) {
-                    $scope.dotGiamGiaForm.ten.$dirty = false;
-                    $scope.dotGiamGiaForm.ghiChu.$dirty = false;
-                    $scope.errors = error.data;
-                }
-            });
+        if ($scope.dotGiamGia.dieuKienRequests.length === 0) {
+            toastr["error"]("Hãy thêm điều kiện trước khi thêm đợt giảm giá");
+            return;
+        }
+
+        if ($scope.dotGiamGia.ngayBatDau.getHours() === 0) {
+            $scope.dotGiamGia.ngayBatDau.setHours($scope.dotGiamGia.ngayBatDau.getHours() + 7);
+        }
+
+        if ($scope.dotGiamGia.ngayKetThuc.getHours() === 0) {
+            $scope.dotGiamGia.ngayKetThuc.setHours($scope.dotGiamGia.ngayKetThuc.getHours() + 7);
+        }
+
+        Swal.fire({
+            text: "Xác nhận cập nhật?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $scope.isLoading = true;
+                $http.put(host + '/rest/admin/dot-giam-gia/' + $scope.dotGiamGia.id, $scope.dotGiamGia)
+                    .then(function (response) {
+                        if (response.status === 200) {
+                            toastr["success"]("Cập nhật thành công");
+                        }
+                        $location.path("/list");
+                        $scope.isLoading = false;
+                    })
+                    .catch(function (error) {
+                        if (error.status === 406) {
+                            toastr["error"](error.data.data);
+                            $location.path("/list");
+                        }
+                        if (error.status === 400) {
+                            $scope.dotGiamGiaForm.ten.$dirty = false;
+                            $scope.dotGiamGiaForm.ghiChu.$dirty = false;
+                            $scope.errors = error.data;
+                            toastr["error"]("Cập nhật thất bại");
+                        }
+                    });
+                $scope.isLoading = false;
+            }
+        });
     }
 
     $scope.addDieuKien = function () {
         $scope.dotGiamGia.dieuKienResponses.push({
+            errors: {},
             tongHoaDon: "",
             phanTramGiam: ""
         });
     }
-    $scope.hasErrorInItems = false;
-    $scope.checkErrorsInItems = function () {
-        $scope.hasErrorInItems = false;
-        for (var i = 0; i < $scope.items.length; i++) {
-            if ($scope.items[i].itemForm.$invalid) {
-                $scope.hasErrorInItems = true;
-                break;
-            }
-        }
-    };
-    $scope.$watch('items', function (newItems, oldItems) {
-        $scope.checkErrorsInItems();
-    }, true);
-
-    $scope.init();
 });
 

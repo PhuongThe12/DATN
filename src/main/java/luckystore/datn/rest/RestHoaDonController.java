@@ -51,12 +51,6 @@ public class RestHoaDonController {
 
     @PostMapping("/yeu-cau")
     public ResponseEntity getPageHoaDonYeuCauPage(@RequestBody HoaDonSearch hoaDonSearch) {
-        if (hoaDonSearch.getNgayBatDau() != null) {
-            hoaDonSearch.setNgayBatDau(hoaDonSearch.getNgayBatDau().toLocalDate().atStartOfDay());
-        }
-        if (hoaDonSearch.getNgayKetThuc() != null) {
-            hoaDonSearch.setNgayBatDau(LocalDateTime.of(hoaDonSearch.getNgayKetThuc().toLocalDate(), LocalTime.MAX));
-        }
         return new ResponseEntity<>(hoaDonService.getPageHoaDonYeuCau(hoaDonSearch), HttpStatus.OK);
     }
 

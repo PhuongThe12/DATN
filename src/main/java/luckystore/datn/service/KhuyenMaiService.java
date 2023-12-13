@@ -2,6 +2,8 @@ package luckystore.datn.service;
 
 import luckystore.datn.model.request.DotGiamGiaRequest;
 import luckystore.datn.model.request.KhuyenMaiRequest;
+import luckystore.datn.model.request.KhuyenMaiSearch;
+import luckystore.datn.model.response.ChiTietKhuyenMaiResponse;
 import luckystore.datn.model.response.DotGiamGiaResponse;
 import luckystore.datn.model.response.KhuyenMaiResponse;
 import org.springframework.data.domain.Page;
@@ -22,4 +24,11 @@ public interface KhuyenMaiService {
 
     KhuyenMaiResponse findById(Long id);
 
+    ChiTietKhuyenMaiResponse getKhuyenMaiById(Long id);
+
+    Page<KhuyenMaiResponse> searchingKhuyenMai(KhuyenMaiSearch kmSearch);
+
+    Long hienThiKhuyenMai(Long id);
+
+    Long anKhuyenMai(Long id);
 }

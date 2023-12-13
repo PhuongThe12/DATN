@@ -1,7 +1,6 @@
 package luckystore.datn.infrastructure.security.session;
 
 import lombok.*;
-import luckystore.datn.infrastructure.Role;
 
 @Setter
 @Getter

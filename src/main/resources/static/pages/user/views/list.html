@@ -32,8 +32,12 @@
     }
 
     .rotate {
-        transform: rotate(180deg);
+        transform: rotate(-90deg);
         transition: transform 0.3s ease; /* Thêm hiệu ứng chuyển động */
+    }
+
+    i {
+        transition: transform 0.3s ease;
     }
 
     .checkbox-label {
@@ -44,96 +48,223 @@
         cursor: pointer;
     }
 
-    .checkbox-label:hover{
+    .checkbox-label:hover {
         border: 1px solid black;
     }
 
     .pd-left-10 {
         padding-left: 10px;
     }
-    .label-search{
+
+    .label-search {
         margin: 2px;
         border: 1px solid #dddddd;
         padding: 2px 9px;
         border-radius: 5px;
     }
-    .label-search:hover{
+
+    .label-search:hover {
         background: grey;
         cursor: pointer;
     }
-    .checkbox-label-mau-sac{
+
+    .checkbox-label-mau-sac {
         margin: 8px;
-        border-radius: 18px;
-        width: 29px;
-        height: 29px;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
         border: 1px solid #e5e5e5;
     }
 
+    .mau-sac.active {
+        display: block !important;
+        position: absolute;
+        top: 0;
+        right: 0;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+        transition: transform 0.5s ease-in-out;
+    }
+
+    .giayHover:hover {
+        border: 1px solid #ee4d2d;
+        padding: 0 5px;
+        transition: padding 0.2s ease-in-out;
+    }
+
 </style>
-<div class="container-fluid  pt-5">
-    <div class="d-flex align-items-center justify-content-between">
-        <div class="mb-3">
-            <p class="font-size-13-ncl">Trang Chủ / Sản Phẩm</p>
+<div ng-show="isLoading" class="loading-spinner">
+    <div class="text-center" style="  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Màu nền đục để làm mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1210; ">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
         </div>
-        <div>
-            <select class="form-select" aria-label="Default select example">
-                <option selected>Tất Cả</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-            </select>
+    </div>
+</div>
+
+<div class="container-fluid  pt-5">
+    <div class="d-flex align-items-center">
+        <div class="mb-3 col-3">
+            <label style="font-weight: 900">Bộ lọc</label>
+        </div>
+        <div class="mx-2">
+            <div class="d-flex justify-content-start radio-filter">
+                <div class="custom-radio">
+                    <input type="radio" id="all" name="status" ng-model="status" value="0"
+                           ng-checked="status == 0"
+                           ng-change="changeRadio(0)">
+                    <label class="radio-label" for="all">Tất cả</label>
+                </div>
+
+                <div class="custom-radio">
+                    <input type="radio" id="active" name="status" ng-model="status" value="1" ng-checked="status == 1"
+                           ng-change="changeRadio(1)">
+                    <label class="radio-label" for="active">Sản phẩm bán chạy</label>
+                </div>
+
+                <div class="custom-radio">
+                    <input type="radio" id="disable" name="status" ng-model="status" value="2" ng-checked="status == 2"
+                           ng-change="changeRadio(2)">
+                    <label class="radio-label" for="disable">Sản phẩm yêu thích</label>
+                </div>
+            </div>
         </div>
 
     </div>
     <div class="row">
         <div class="col-md-3 sticky-top" style="align-self: flex-start;height: auto;">
-            <!--            <button ng-click="submitForm()">a</button>-->
-            <div class="d-flex" style="flex-wrap: wrap-reverse;">
-                <div class="" ng-repeat="searchChooes in lstSearchChoosed">
-                    <div class="label-search">{{searchChooes.selectedValue}} <i class="fas ps-1 fa-times"></i></div>
-                </div>
-            </div>
 
-            <div class="search-price">
-            </div>
-            <div class="search-price">
-
-            </div>
             <div class="row">
-                <div ng-repeat="dropdown in dropdowns" class="custom-dropdown" style="    padding-top: 3px;">
-                    <button style="border-top: 1px solid #ebe9e9;"
-                            class="custom-dropbtn font-size-14-ncl d-flex align-items-center justify-content-between w-100"
-                            ng-click="toggleDropdown($index)"><span>{{ dropdown.ten }}</span> <i
-                            class="fas fa-chevron-down" ng-class="{ 'rotate': dropdown.isOpen }"></i></button>
-                    <div class="custom-dropdown-content"
-                         ng-class="{ 'show': dropdown.isOpen,'d-flex pd-left-10 flex-wrap': (dropdown.ten === 'Kích Cỡ' && dropdown.isOpen) || (dropdown.ten === 'Màu Sắc' && dropdown.isOpen)}">
-                        <!-- Các phần tử trong dropdown -->
-                        <div class="form-check p-0" ng-repeat="value in dropdown.listValue">
-                            <input ng-class="{ 'd-none': dropdown.ten === 'Kích Cỡ' || dropdown.ten === 'Màu Sắc' }" ng-change="changeSearch()" class="form-check-input"
-                                   style="margin-left: 10px;" type="checkbox" ng-model="value.selected"
-                                   id="{{ 'checkbox_' + $parent.$index + '_' + $index }}">
-                                <label ng-class="{ 'checkbox-label': dropdown.ten === 'Kích Cỡ' ,
-                                                    'checkbox-label-mau-sac': dropdown.ten === 'Màu Sắc'
-                                }"
-                                       class="form-check-label ps-2"
-                                       for="{{ 'checkbox_' + $parent.$index + '_' + $index }}"
-                                       ng-style="dropdown.ten === 'Màu Sắc' && {'background-color': value.name}"
-                                       ng-bind="dropdown.ten !== 'Màu Sắc' ? value.name : ''"
-                                >
-                                </label>
+                <div class="py-2">
+                    <div>
+                        <span><strong>Tên giày: </strong></span>
+                    </div>
+                    <input type="text" class="form-control" ng-model="tenSearch">
+                </div>
+                <div class="py-2">
+                    <div class="d-flex justify-content-between" style="cursor: pointer" data-bs-toggle="collapse"
+                         href="#dsMauSac" role="button" aria-expanded="false" aria-controls="dsMauSac" ng-click="toggleCollapse('iconMauSac')">
+                        <span><strong>Màu sắc: </strong></span>
+                        <i class="fas fa-caret-down" id="iconMauSac"></i>
+                    </div>
+                    <div class="collapse show" id="dsMauSac">
+                        <span ng-repeat="mauSac in mauSacs">
+                        <label for="mauSac{{mauSac.id}}"
+                               class="position-relative pointer-event form-check-label ps-2 checkbox-label-mau-sac"
+                               ng-style="{'background-color': mauSac.maMau}">
+                            <i class="fas fa-check" style="display: none; top: -10%; right: -15%; color: green"
+                               ng-class="mauSac.selected? 'mau-sac active' : ''"></i>
+                        </label>
+                        <input type="checkbox" name="mauSac" id="mauSac{{mauSac.id}}" ng-model="mauSac.selected"
+                               style="display: none">
+                        </span>
+                    </div>
+                </div>
+
+                <div class="py-2">
+                    <div class="d-flex justify-content-between" style="cursor: pointer" data-bs-toggle="collapse"
+                         href="#dsKichThuoc" role="button" aria-expanded="false" aria-controls="dsKichThuoc" ng-click="toggleCollapse('iconKichThuoc')">
+                        <span><strong>Kích thước: </strong></span>
+                        <i class="fas fa-caret-down" id="iconKichThuoc"></i>
+                    </div>
+                    <div class="collapse show" id="dsKichThuoc">
+                        <span ng-repeat="kichThuoc in kichThuocs">
+                        <label for="kichThuoc{{kichThuoc.id}}"
+                               class="px-1 mx-2 position-relative pointer-event checkbox-label"
+                               ng-class="kichThuoc.selected? 'btn btn-info' : 'btn'">{{kichThuoc.ten}}
+                            <i class="fas fa-check" style="display: none; top: -10%; right: -15%; color: green"
+                               ng-class="kichThuoc.selected? 'mau-sac active' : ''"></i>
+                        </label>
+                        <input type="checkbox" name="kichThuoc" id="kichThuoc{{kichThuoc.id}}"
+                               ng-model="kichThuoc.selected"
+                               style="display: none">
+                        </span>
+                    </div>
+                </div>
+
+                <div class="py-2">
+                    <div class="d-flex justify-content-between" style="cursor: pointer" data-bs-toggle="collapse"
+                         href="#dsThuongHieu" role="button" aria-expanded="false" aria-controls="dsThuongHieu"  ng-click="toggleCollapse('iconThuongHieu')">
+                        <span><strong>Thương hiệu: </strong></span>
+                        <i class="fas fa-caret-down" id="iconThuongHieu"></i>
+                    </div>
+                    <div class="collapse show" id="dsThuongHieu">
+                        <div ng-repeat="thuongHieu in thuongHieus">
+                            <input type="checkbox" name="thuongHieu" id="thuongHieu{{thuongHieu.id}}"
+                                   ng-model="thuongHieu.selected">
+                            <label for="thuongHieu{{thuongHieu.id}}">{{thuongHieu.ten}}</label>
                         </div>
                     </div>
                 </div>
+
+                <div class="py-2">
+                    <div class="d-flex justify-content-between" style="cursor: pointer" data-bs-toggle="collapse"
+                         href="#dsKhoangGia" role="button" aria-expanded="false" aria-controls="dsKhoangGia"  ng-click="toggleCollapse('iconKhoangGia')">
+                        <span><strong>Khoảng giá: </strong></span>
+                        <i class="fas fa-caret-down" id="iconKhoangGia"></i>
+                    </div>
+                    <div class="collapse show" id="dsKhoangGia">
+                        <div class="input-group">
+                            <span class="input-group-text" id="basic-addon1">vnđ</span>
+                            <input type="number" min="0" class="form-control" placeholder="Giá từ" ng-model="giaTu">
+                        </div>
+                        <div>
+                            <small class="text-danger">{{errorsSearch.giaTu}}</small>
+                        </div>
+                        -
+                        <div class="input-group">
+                            <span class="input-group-text" id="basic-addon2">vnđ</span>
+                            <input type="number" min="0" class="form-control" placeholder="Giá đến" ng-model="giaDen">
+                        </div>
+                        <div>
+                            <small class="text-danger">{{errorsSearch.giaDen}}</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="py-2">
+                    <div class="d-flex justify-content-between" style="cursor: pointer" data-bs-toggle="collapse"
+                         href="#dsHashtag" role="button" aria-expanded="false" aria-controls="dsHashtag"  ng-click="toggleCollapse('iconHashTag')">
+                        <span><strong>Hashtag: </strong></span>
+                        <i class="fas fa-caret-down rotate" id="iconHashTag"></i>
+                    </div>
+                    <div class="collapse" id="dsHashtag">
+                        <span ng-repeat="hashtag in hashtags">
+                        <label for="hashtag{{hashtag.id}}"
+                               class="badge rounded-pill px-1 mx-1 position-relative pointer-event"
+                               ng-class="hashtag.selected? 'bg-primary' : 'bg-secondary'">#{{hashtag.ten}}
+                            <i class="fas fa-check-circle" style="display: none"
+                               ng-class="hashtag.selected? 'mau-sac active' : ''"></i>
+                        </label>
+                        <input type="checkbox" name="hashtag" id="hashtag{{hashtag.id}}" ng-model="hashtag.selected"
+                               style="display: none">
+                        </span>
+                    </div>
+                </div>
+
+                <div class="py-2">
+                    <button class="btn btn-primary" ng-click="searchGiay()">Tìm kiếm</button>
+                    <button class="btn btn-primary" ng-click="resetSearchGiay()">Nhập lại</button>
+                </div>
+
             </div>
         </div>
         <div class="col-md-9">
             <div class="row mb-3">
-                <div class="col-md-3 mb-3" ng-repeat="giay in giays">
+                <div ng-show="giays.length == 0">Không tìm thấy giày nào</div>
+                <div class="col-md-3 mb-3 giayHover" ng-repeat="giay in giays | orderBy : '-soLuongThongKe'">
                     <a href="#/detail/{{giay.id}}" class="text-none">
                         <div class=" position-relative">
                             <div class="mb-2">
-                                <img src="https://product.hstatic.net/1000361048/product/dz0482_001_a_d718733fb6d344febec840aee172ca23_master.jpg"
-                                     width="100%" alt="">
+                                <img src="{{giay.lstAnh.length > 0?giay.lstAnh[0] : ''}}"
+                                     width="100%" alt="" style="height: 291px; object-fit: cover">
                             </div>
                             <div class="product-name">
                                 <h5 class="font-size-14-ncl fw-bold" title="{{giay.ten}}">{{giay.ten}}</h5>
@@ -141,21 +272,25 @@
                             <div class="product-price">
                                 <div class="d-flex align-items-center">
                                     <p class="font-size-14-ncl text-danger m-0">
-                                        {{ '₫' + (giay.giaThapNhat | number) + (giay.giaThapNhat !== giay.giaLonNhat ? '
-                                        - ₫' + (giay.giaLonNhat | number) : '') }}
+                                        {{ '₫' + (giay.giaTu | number : 0) + (giay.giaTu !== giay.giaDen ? '
+                                        - ₫' + (giay.giaDen | number : 0) : '') }}
                                     </p>
 
                                 </div>
                             </div>
-                            <div class="product-variant">
-                                <p class="font-size-14-ncl">{{giay.lstMauSac.length }} Màu </p>
-                            </div>
                             <div class="position-absolute top-0 right-0">
-                                <p class="font-size-14-ncl fw-bold"><span style="    padding: 10px;font-size: 13px;color: red;"
-                                                                          class="">-36%</span></p>
+                                <p class="font-size-14-ncl fw-bold" ng-show="giay.phanTramGiam > 0"><span
+                                        style="padding: 10px;font-size: 13px;color: red; background-color: rgba(255, 255, 0, 0.5)"
+                                        class="">giảm tới {{giay.phanTramGiam}}%</span></p>
                             </div>
-                            <div class="position-absolute " style="color: black;right: 8px;top: 3px;">
-                                <i class="far fa-heart" style="font-size: 20px;"></i>
+<!--                            <div class="position-absolute " style="color: black;right: 8px;top: 3px;">-->
+<!--                                <i class="far fa-heart" style="font-size: 20px;"></i>-->
+<!--                            </div>-->
+
+                            <div class="position-absolute " style="color: black;right: 0px;top: 3px;" ng-show="status === 1">
+                                <p class="font-size-14-ncl fw-bold"><span
+                                        style="padding: 10px;font-size: 13px;color: red; background-color: rgba(255, 255, 0, 0.5)"
+                                        class="">đã bán: {{giay.soLuongThongKe}} sản phẩm</span></p>
                             </div>
                         </div>
                     </a>

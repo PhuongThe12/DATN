@@ -2,13 +2,16 @@ package luckystore.datn.repository;
 
 import luckystore.datn.entity.Giay;
 import luckystore.datn.model.request.GiaySearch;
+import luckystore.datn.model.request.KhuyenMaiSearch;
 import luckystore.datn.model.response.GiayResponse;
+import luckystore.datn.model.response.GiayResponseI;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -98,29 +101,114 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
 
     @Query("select distinct new luckystore.datn.model.response.GiayResponse(g.id, g.ten, anh.link, min(bienThe.giaBan), max(bienThe.giaBan)) from Giay g " +
             "left join g.lstAnh anh " +
+            "left join g.hashTagChiTiets hashTag " +
             "inner join g.lstBienTheGiay bienThe " +
-            "where (anh.link = null or anh.uuTien = 1) and g.trangThai = 1 " +
+            "where (anh is null or anh.uuTien = 1) and g.trangThai = 1 " +
             "and (:#{#giaySearch.ten} is null or g.ten like %:#{#giaySearch.ten}%) " +
             "and (:#{#giaySearch.giaTu} is null or bienThe.giaBan >= :#{#giaySearch.giaTu}) " +
             "and (:#{#giaySearch.giaDen} is null or bienThe.giaBan <= :#{#giaySearch.giaDen}) " +
             "and (:#{#giaySearch.thuongHieuIds} is null or g.thuongHieu.id in :#{#giaySearch.thuongHieuIds}) " +
+            "and (:#{#giaySearch.kichThuocIds} is null or bienThe.kichThuoc.id in :#{#giaySearch.kichThuocIds}) " +
+            "and (:#{#giaySearch.mauSacIds} is null or bienThe.mauSac.id in :#{#giaySearch.mauSacIds}) " +
+            "and (:#{#giaySearch.hashTagIds} is null or hashTag.id in :#{#giaySearch.hashTagIds}) " +
             "group by g.id, g.ten, anh.link"
     )
     Page<GiayResponse> findAllBySearch(GiaySearch giaySearch, Pageable pageable);
+
+    @Query("select distinct new luckystore.datn.model.response.GiayResponse(g.id, g.ten, anh.link, min(bienThe.giaBan), max(bienThe.giaBan)) " +
+            "from SanPhamYeuThich spyt " +
+            "inner join spyt.giay g " +
+            "left join g.lstAnh anh " +
+            "left join g.hashTagChiTiets hashTag " +
+            "inner join g.lstBienTheGiay bienThe " +
+            "where spyt.khachHang.id = :#{#giaySearch.idKhachHang} " +
+            "and (anh is null or anh.uuTien = 1) and g.trangThai = 1 " +
+            "and (:#{#giaySearch.ten} is null or g.ten like %:#{#giaySearch.ten}%) " +
+            "and (:#{#giaySearch.giaTu} is null or bienThe.giaBan >= :#{#giaySearch.giaTu}) " +
+            "and (:#{#giaySearch.giaDen} is null or bienThe.giaBan <= :#{#giaySearch.giaDen}) " +
+            "and (:#{#giaySearch.thuongHieuIds} is null or g.thuongHieu.id in :#{#giaySearch.thuongHieuIds}) " +
+            "and (:#{#giaySearch.kichThuocIds} is null or bienThe.kichThuoc.id in :#{#giaySearch.kichThuocIds}) " +
+            "and (:#{#giaySearch.mauSacIds} is null or bienThe.mauSac.id in :#{#giaySearch.mauSacIds}) " +
+            "and (:#{#giaySearch.hashTagIds} is null or hashTag.id in :#{#giaySearch.hashTagIds}) " +
+            "group by g.id, g.ten, anh.link"
+    )
+    Page<GiayResponse> findAllByKhachHang(GiaySearch giaySearch, Pageable pageable);
+
+    @Query("select distinct new luckystore.datn.model.response.GiayResponse(g.id, g.ten, anh.link, min(bienThe.giaBan), max(bienThe.giaBan)) from Giay g " +
+            "left join g.lstAnh anh " +
+            "inner join g.lstBienTheGiay bienThe " +
+            "where g.id in :ids " +
+            "group by g.id, g.ten, anh.link"
+    )
+    Set<GiayResponse> findAllBySearchIds(Set<Long> ids);
 
     @Query("select new luckystore.datn.model.response.GiayResponse(g.id, g.ten) from Giay g where g.ten in :names")
     List<GiayResponse> getIdsByName(Set<String> names);
 
     Optional<Giay> findByTen(String ten);
 
-    @Query("select new luckystore.datn.model.response.GiayResponse(g.id, g.ten, g.thuongHieu.ten, bienThe.id, bienThe.mauSac.ten, bienThe.kichThuoc.ten, bienThe.giaBan) " +
-            " from Giay g inner join g.lstBienTheGiay bienThe" +
-            " where (:#{#giaySearch.thuongHieuIds} is null or g.thuongHieu.id in :#{#giaySearch.thuongHieuIds}) " +
+    @Query("select new luckystore.datn.model.response.GiayResponse(g.id, g.ten, g.thuongHieu.ten, anh.link, bienThe.id, bienThe.mauSac.ten, bienThe.kichThuoc.ten, bienThe.giaBan) " +
+            " from Giay g left join g.lstBienTheGiay bienThe " +
+            " left join g.lstAnh anh " +
+            " where (anh is null or anh.uuTien = 1)" +
             " and g.id not in (" +
-            " select bt.giay.id from BienTheGiay bt " +
-            " inner join bt.khuyenMaiChiTietList kmct " +
-            " inner join kmct.khuyenMai km " +
-            " where km.ngayBatDau < current_date and km.ngayKetThuc > current_date " +
-            ")")
-    List<GiayResponse> getAllGiayWithoutDiscount(GiaySearch giaySearch);
+            " select bt.giay.id from KhuyenMai km " +
+            " inner join km.khuyenMaiChiTiets kmct " +
+            " inner join kmct.bienTheGiay bt " +
+            " where (:#{#kmSearch.ngayBatDau} between km.ngayBatDau and km.ngayKetThuc " +
+            " or :#{#kmSearch.ngayKetThuc} between km.ngayBatDau and km.ngayKetThuc " +
+            " or (:#{#kmSearch.ngayBatDau} <= km.ngayBatDau and :#{#kmSearch.ngayKetThuc} >= km.ngayKetThuc)))")
+    List<GiayResponse> getAllGiayWithoutDiscount(KhuyenMaiSearch kmSearch);
+
+    @Query("select new luckystore.datn.model.response.GiayResponse(g.id, g.ten, g.thuongHieu.ten, anh.link, bienThe.id, bienThe.mauSac.ten, bienThe.kichThuoc.ten, bienThe.giaBan) " +
+            " from Giay g left join g.lstBienTheGiay bienThe " +
+            " left join g.lstAnh anh " +
+            " where (anh is null or anh.uuTien = 1)" +
+            " and g.id in :idGiays")
+    List<GiayResponse> getAllGiayById(Set<Long> idGiays);
+
+    @Query(value = "select  b1_0.ID_GIAY id, sum(h1_0.SO_LUONG) soLuongThongKe " +
+            "from HoaDonChiTiet h1_0 " +
+            "inner join BienTheGiay b1_0 on b1_0.ID=h1_0.ID_BIEN_THE_GIAY " +
+            "inner join Giay g on g.ID = b1_0.ID_GIAY " +
+            "inner join HoaDon h2_0 on h2_0.ID=h1_0.ID_HOA_DON " +
+            "where h2_0.TRANG_THAI=1 " +
+            "and (:#{#giaySearch.ten} is null or g.TEN  like %:#{#giaySearch.ten}%) " +
+            "and (:#{#giaySearch.giaTu} is null or b1_0.GIA_BAN >= :#{#giaySearch.giaTu}) " +
+            "and (:#{#giaySearch.giaDen} is null or b1_0.GIA_BAN <= :#{#giaySearch.giaDen}) " +
+            "group by b1_0.ID_GIAY " +
+            "order by sum(h1_0.SO_LUONG) desc", nativeQuery = true)
+    Page<GiayResponseI> findTop(Pageable pageable, GiaySearch giaySearch);
+
+
+    //top x giày bán chạy trong y ngày
+    @Query("select new luckystore.datn.model.response.GiayResponse(g, sum(hdc.soLuong)) " +
+            "from HoaDonChiTiet hdc " +
+            "join hdc.bienTheGiay btg " +
+            "join btg.giay g " +
+            "join hdc.hoaDon hd " +
+            "where hd.trangThai = 1 and hd.ngayTao >= :targetDateTime " +
+            "group by g " +
+            "order by sum(hdc.soLuong) desc")
+    Page<GiayResponse> findTopSellingShoesInLastDays(LocalDateTime targetDateTime, Pageable pageable);
+
+    //giày bán chạy nhất
+    @Query("select new luckystore.datn.model.response.GiayResponse(g, sum(hdc.soLuong)) " +
+            "from HoaDonChiTiet hdc " +
+            "join hdc.bienTheGiay btg " +
+            "join btg.giay g " +
+            "join hdc.hoaDon hd " +
+            "where hd.trangThai = 1 " +
+            "group by g " +
+            "order by sum(hdc.soLuong) desc")
+    Page<GiayResponse> findTopSellingShoes(Pageable pageable);
+
+    //top x giày xuất hiện trong sản phẩm yêu thích
+    @Query("select new luckystore.datn.model.response.GiayResponse(g, count(spyt)) " +
+            "from SanPhamYeuThich spyt " +
+            "join spyt.giay g " +
+            "group by g " +
+            "order by count(spyt) desc")
+    Page<GiayResponse> findTopFavoritedShoes(Pageable pageable);
+
 }

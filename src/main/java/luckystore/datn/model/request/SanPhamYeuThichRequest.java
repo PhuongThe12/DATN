@@ -14,9 +14,9 @@ import luckystore.datn.entity.KhachHang;
 @Builder
 public class SanPhamYeuThichRequest {
 
-    private Long id;
+//    private Long id;
 
-    private KhachHang khachHang;
+    private Long khachHangId;
 
-    private Giay giay;
+    private Long giayId;
 }

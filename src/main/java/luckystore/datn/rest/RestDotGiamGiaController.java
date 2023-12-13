@@ -2,6 +2,7 @@ package luckystore.datn.rest;
 
 import jakarta.validation.Valid;
 import luckystore.datn.model.request.DotGiamGiaRequest;
+import luckystore.datn.model.request.KhuyenMaiSearch;
 import luckystore.datn.model.request.MauSacRequest;
 import luckystore.datn.service.DotGiamGiaService;
 import luckystore.datn.util.JsonString;
@@ -24,7 +25,6 @@ public class RestDotGiamGiaController {
 
     @PostMapping
     public ResponseEntity addDotGiamGia(@Valid @RequestBody DotGiamGiaRequest dotGiamGiaRequest, BindingResult result) {
-        System.out.println(dotGiamGiaRequest.toString());
         ResponseEntity errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
@@ -47,6 +47,7 @@ public class RestDotGiamGiaController {
     public ResponseEntity getAll() {
         return new ResponseEntity(dotGiamGiaService.getAll(), HttpStatus.OK);
     }
+
     private ResponseEntity getErrorJson(BindingResult result) {
         if (result.hasErrors()) {
             List<String> fieldErrors = new ArrayList<>();
@@ -59,6 +60,22 @@ public class RestDotGiamGiaController {
         }
         return null;
     }
+
+    @PostMapping("/search")
+    public ResponseEntity<?> searchingDotGiamGia(@RequestBody KhuyenMaiSearch kmSearch) {
+        return ResponseEntity.ok(dotGiamGiaService.searchingDotGiamGia(kmSearch));
+    }
+
+    @PutMapping("/hien-thi/{id}")
+    public ResponseEntity<?> hienThiDotGiamGia(@PathVariable("id")Long id) {
+        return ResponseEntity.ok(dotGiamGiaService.hienThiDotGiamGia(id));
+    }
+
+    @PutMapping("/an/{id}")
+    public ResponseEntity<?> anDotGiamGia(@PathVariable("id")Long id) {
+        return ResponseEntity.ok(dotGiamGiaService.anDotGiamGia(id));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<?> updateDotGiamGia(@PathVariable("id") Long id, @Valid @RequestBody DotGiamGiaRequest dotGiamGiaRequest, BindingResult result) {
         ResponseEntity<?> errorJson = getErrorJson(result);
@@ -67,13 +84,9 @@ public class RestDotGiamGiaController {
         return new ResponseEntity<>(dotGiamGiaService.updateDotGiamGia(id, dotGiamGiaRequest), HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete-dieu-kien/{id}")
-    public void deleteDieuKien(@PathVariable("id") Long id) {
-        dotGiamGiaService.deleteDieuKien(id);
-    }
     @GetMapping("/get-all-active")
-    public ResponseEntity<?> getAllActive() {
-        return new ResponseEntity<>(dotGiamGiaService.getAllActive(), HttpStatus.OK);
+    public ResponseEntity getAllActive() {
+        return new ResponseEntity(dotGiamGiaService.getAllActive(), HttpStatus.OK);
     }
 
 }

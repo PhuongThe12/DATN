@@ -1,34 +1,81 @@
+<div ng-show="isLoading" class="loading-spinner">
+    <div class="text-center" style="  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Màu nền đục để làm mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; ">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<div class="title-page">
+    <h5>Khuyến mại</h5>
+    <div class="d-flex justify-content-between">
+        <p class="text-secondary m-0">Trang chủ - Quản Lý Khuyến Mại - Danh Sách Khuyến mại</p>
+        <div type="button" class="d-flex justify-content-end text-warning px-4" data-bs-toggle="modal"
+             data-bs-target="#waringModal">
+            Lưu ý<i class="fas fa-info-circle"></i></div>
+    </div>
+</div>
 <div class="card" style="margin: 20px">
-    <h5 class="card-header">Danh sách khuyến mại</h5>
+
     <div class="card-body">
-        <div class="d-flex add-search-custom">
+        <div class="d-flex">
             <div class="input-group w-25">
-                <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
+                <span class="input-group-text" id="basic-addon1">Tên</span>
                 <input id="seachText" class="form-control" type="text" ng-model="searchText"
-                       placeholder="Nhập từ khóa">
-                <button class="btn btn-custom " ng-click="search()">Tìm kiếm</button>
+                       placeholder="Nhập tên khuyến mại">
             </div>
-            <a class="btn btn-primary" href="#/add">Thêm khuyến mại</a>
+
+            <div class="input-group w-25 px-2">
+                <span class="input-group-text" id="basic-addon2">Từ ngày: </span>
+                <input type="date" ng-model="tu" id="tu" class="form-control">
+            </div>
+
+            <div class="input-group w-25">
+                <span class="input-group-text" id="basic-addon3">Đến ngày: </span>
+                <input type="date" ng-model="den" id="den" class="form-control">
+            </div>
+            <button class="btn btn-custom " ng-click="search()">Tìm kiếm</button>
+            <button class="btn btn-custom mx-2" ng-click="resetSearch()">Nhập lại</button>
         </div>
 
-        <div class="d-flex justify-content-start radio-filter">
-            <div class="custom-radio">
-                <input type="radio" id="all" name="status" ng-model="status" value="-1"
-                       ng-checked="status != 0 && status != 1"
-                       ng-change="changeRadio(-1)">
-                <label class="radio-label" for="all">Tất cả</label>
-            </div>
+        <div class="d-flex justify-content-between mt-3">
+            <div class="d-flex justify-content-start radio-filter">
+                <div class="custom-radio">
+                    <input type="radio" id="active" name="status" ng-model="status" value="1" ng-checked="status == 1"
+                           ng-change="changeRadio(1)">
+                    <label class="radio-label" for="active">Đang diễn ra</label>
+                </div>
 
-            <div class="custom-radio">
-                <input type="radio" id="active" name="status" ng-model="status" value="1" ng-checked="status == 1"
-                       ng-change="changeRadio(1)">
-                <label class="radio-label" for="active">Kích hoạt</label>
-            </div>
+                <div class="custom-radio">
+                    <input type="radio" id="sapDienRa" name="status" ng-model="status" value="0"
+                           ng-checked="status == 2"
+                           ng-change="changeRadio(2)">
+                    <label class="radio-label" for="sapDienRa">Sắp diễn ra</label>
+                </div>
 
-            <div class="custom-radio">
-                <input type="radio" id="disable" name="status" ng-model="status" value="0" ng-checked="status == 0"
-                       ng-change="changeRadio(0)">
-                <label class="radio-label" for="disable">Chưa kích hoạt</label>
+                <div class="custom-radio">
+                    <input type="radio" id="ketThuc" name="status" ng-model="status" value="0" ng-checked="status == 3"
+                           ng-change="changeRadio(3)">
+                    <label class="radio-label" for="ketThuc">Đã kết thúc</label>
+                </div>
+
+                <div class="custom-radio">
+                    <input type="radio" id="an" name="status" ng-model="status" value="0" ng-checked="status == 0"
+                           ng-change="changeRadio(0)">
+                    <label class="radio-label" for="an">Đã ẩn</label>
+                </div>
+            </div>
+            <div>
+                <a class="btn btn-primary" href="#/add">Thêm khuyến mại</a>
             </div>
         </div>
 
@@ -37,7 +84,6 @@
             <table class="table" border="1">
                 <tr class="table-secondary">
                     <th>Tên chương trình</th>
-                    <th>Ghi chú</th>
                     <th>Ngày bắt đầu</th>
                     <th>Ngày kết thúc</th>
                     <th>Trạng thái</th>
@@ -46,81 +92,128 @@
 
                 <tr ng-repeat="khuyenMai in khuyenMais">
                     <td>{{khuyenMai.ten}}</td>
-                    <td>{{khuyenMai.ghiChu}}</td>
                     <td>{{khuyenMai.ngayBatDau}}</td>
                     <td>{{khuyenMai.ngayKetThuc}}</td>
                     <td>
                         <h5>
                             <span ng-class="{
-                                'badge bd-success-custom': khuyenMai.trangThai == 1,
-                                'badge bd-danger-custom': khuyenMai.trangThai == 0,
-                                'badge bd-warning-custom': khuyenMai.trangThai == 2
+                                'badge bd-success-custom': status == 1,
+                                'badge bd-danger-custom': status == 0,
+                                'badge bd-warning-custom': status == 2 || status == 3
                             }">
-                                {{khuyenMai.trangThai == 1 ? 'Đang diễn ra' :
-                                (khuyenMai.trangThai == 0 ? 'Đã kết thúc' : 'Sắp diễn ra')}}
+                                {{status == 1 ? 'Đang diễn ra' :
+                                (status == 0 ? 'Đã kết thúc' :
+                                status == 2 ? 'Sắp diễn ra' :
+                                'Đã kết thúc')}}
                             </span>
 
                         </h5>
                     <td>
                         <div class="d-sm-inline-flex">
-                            <a ng-if="khuyenMai.trangThai != 1 && khuyenMai.trangThai != 0" class="btn btn-custom" ng-href="#/update/{{khuyenMai.id}}">
+                            <a ng-if="status == 2" class="btn btn-custom" ng-href="#/update/{{khuyenMai.id}}">
                                 <i class="far fa-edit"></i>
                             </a>
-                            <a class="btn btn-custom" ng-href="#/detail/{{khuyenMai.id}}"><i class="fas fa-eye"></i></a>
+                            <a class="btn btn-custom" ng-click="detailKhuyenMai(khuyenMai)" data-bs-toggle="modal"
+                               data-bs-target="#showKhuyenMai"><i class="fas fa-eye"></i></a>
+                            <button class="btn btn-custom" type="button" ng-click="hienThiKhuyenMai(khuyenMai)"
+                                    ng-show="status == 0 && khuyenMai.hienThi">Hiển thị
+                            </button>
+                            <button class="btn btn-custom" type="button" ng-click="anKhuyenMai(khuyenMai)"
+                                    ng-show="status == 1">Ẩn
+                            </button>
                         </div>
                     </td>
                 </tr>
             </table>
 
-            <!-- Button trigger modal -->
-            <button type="button" hidden class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#showKhuyenMai">
-
-            </button>
-
             <!-- Modal -->
             <div class="modal fade" id="showKhuyenMai" tabindex="-1" aria-labelledby="exampleModalLabel"
                  aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Chi Tiết khuyến mại</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <table>
+                            <table style="width: 100%; table-layout: fixed">
                                 <tr>
-                                    <td>ID :</td>
-                                    <th>{{khuyenMaiDetail.id}}</th>
-                                </tr>
-                                <tr>
-                                    <td>Tên :</td>
+                                    <td style="width: 20%;">Tên :</td>
                                     <th>{{khuyenMaiDetail.ten}}</th>
                                 </tr>
                                 <tr>
-                                    <td>Ghi chú :</td>
+                                    <td style="width: 20%;">Ghi chú :</td>
                                     <th>{{khuyenMaiDetail.ghiChu}}</th>
                                 </tr>
                                 <tr>
-                                    <td>Ngày Bắt Đầu :</td>
+                                    <td style="width: 20%;">Ngày Bắt Đầu :</td>
                                     <th>{{khuyenMaiDetail.ngayBatDau}}</th>
                                 </tr>
                                 <tr>
-                                    <td>Ngày Kết Thúc :</td>
+                                    <td style="width: 20%;">Ngày Kết Thúc :</td>
                                     <th>{{khuyenMaiDetail.ngayKetThuc}}</th>
                                 </tr>
                                 <tr>
-                                    <td> Trạng Thái :</td>
+                                    <td style="width: 20%;"> Trạng Thái :</td>
                                     <th>
-                                        {{ khuyenMaiDetail.trangThai === 0 ? "Đã kết thúc" : (khuyenMaiDetail.trangThai
-                                        === 1 ? "Đang diễn ra" : "Sắp diễn ra") }}
+                                        <h5>
+                            <span ng-class="{
+                                'badge bd-success-custom': status == 1,
+                                'badge bd-danger-custom': status == 0,
+                                'badge bd-warning-custom': status == 2 || status == 3
+                            }">
+                                {{status == 1 ? 'Đang diễn ra' :
+                                (status == 0 ? 'Đã kết thúc' :
+                                status == 2 ? 'Sắp diễn ra' :
+                                'Đã kết thúc')}}
+                            </span>
+                                        </h5>
                                     </th>
                                 </tr>
                                 <tr>
-                                    <td>Danh sách giày:</td>
-                                    <th><p ng-repeat="giay in khuyenMaiDetail.khuyenMaiChiTietResponses"
-                                           style="padding-right: 10px;">
-                                        {{giay.bienTheGiayResponsel.hinhAnh}}, {{giay.phanTramGiam}}%
-                                    </p></th>
+                                    <td style="width: 20%; vertical-align: text-top;">Danh sách giày:</td>
+                                    <th>
+
+                                        <table class="table table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col" style="text-align: center;">Tên giày</th>
+                                                <th scope="col" style="text-align: center;">Giá bán</th>
+                                                <th scope="col" style="text-align: center;">% giảm</th>
+                                                <th scope="col" style="text-align: center;">Giá sau giảm</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody ng-repeat="giay in khuyenMaiDetail.giays | orderBy: '-id'">
+                                            <tr>
+                                                <th colspan="4">
+                                                    {{giay.ten}}
+                                                </th>
+                                            </tr>
+                                            <tr ng-repeat="bienTheGiay in giay.lstBienTheGiay">
+                                                <td style="text-align: center; height: 30px;">
+                                                    {{bienTheGiay.mauSac.ten}}, {{bienTheGiay.kichThuoc.ten}}
+                                                </td>
+                                                <td style="text-align: center; height: 30px;">
+                                                    {{bienTheGiay.giaBan| number : 0}}
+                                                </td>
+                                                <td style="text-align: center; height: 30px; width: 20%;">
+                                                    {{bienTheGiay.phanTramGiam}}%
+                                                </td>
+                                                <td
+                                                        ng-if="bienTheGiay.phanTramGiam !== null && bienTheGiay.phanTramGiam !== undefined"
+                                                        style="text-align: center; height: 30px;">
+                                                    {{(bienTheGiay.giaBan - (bienTheGiay.giaBan * bienTheGiay.phanTramGiam / 100)) | number : 0}}
+                                                </td>
+                                                <td
+                                                        ng-if="bienTheGiay.phanTramGiam === null || bienTheGiay.phanTramGiam === undefined"
+                                                        style="text-align: center; height: 30px;">
+                                                    {{bienTheGiay.giaBan| number : 0}}
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </th>
                                 </tr>
                             </table>
                         </div>
@@ -136,5 +229,28 @@
             </div>
         </div>
 
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="waringModal" tabindex="-1" aria-labelledby="warningModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="warningModalLabel">Lưu ý khuyến mại</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul style="list-style-type: circle;">
+                    <li style="line-height: 145%; padding: 5px 0">Đối với khuyến mại đang diễn ra hoặc đã kết thúc:
+                        không thể chỉnh sửa
+                    </li>
+                    <li style="line-height: 145%;">Khi khuyến mại đang diễn chỉ có thể ẩn hoặc hiển thị khuyến mại. Lưu
+                        ý khi ẩn hoặc hiển thị có thể gây lỗi cho khách hàng, hãy chắc chắn rằng các thay đổi của bạn đã
+                        được thông báo
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>

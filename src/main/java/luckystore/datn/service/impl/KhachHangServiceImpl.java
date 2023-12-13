@@ -1,13 +1,13 @@
 package luckystore.datn.service.impl;
 
-import luckystore.datn.constraints.ErrorMessage;
+import luckystore.datn.infrastructure.constraints.ErrorMessage;
 import luckystore.datn.entity.HangKhachHang;
 import luckystore.datn.entity.KhachHang;
 import luckystore.datn.entity.TaiKhoan;
 import luckystore.datn.exception.DuplicateException;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.exception.NullException;
-import luckystore.datn.infrastructure.Role;
+import luckystore.datn.infrastructure.constants.Role;
 import luckystore.datn.model.request.KhachHangRequest;
 import luckystore.datn.model.response.KhachHangResponse;
 import luckystore.datn.repository.HangKhachHangRepository;
@@ -60,14 +60,23 @@ public class KhachHangServiceImpl implements KhachHangService {
 
         KhachHang khachHang = getKhachHang(new KhachHang(), khachHangRequest);
         khachHang.setDiemTichLuy(0);
+
         setHangKhachHang(khachHang);
 
         TaiKhoan taiKhoan = new TaiKhoan();
+        taiKhoan.setMatKhau(khachHangRequest.getSoDienThoai());
+        taiKhoan.setTenDangNhap(khachHangRequest.getEmail());
+        taiKhoan.setRole(Role.ROLE_USER);
+        taiKhoan.setTrangThai(khachHang.getTrangThai());
+
+        setHangKhachHang(khachHang);
+
         taiKhoan.setMatKhau(passwordEncoder.encode(khachHangRequest.getSoDienThoai()));
         taiKhoan.setTenDangNhap(khachHangRequest.getEmail());
         taiKhoan.setRole(Role.ROLE_USER);
         taiKhoan.setTrangThai(khachHang.getTrangThai());
         taiKhoanRepository.save(taiKhoan);
+
         khachHang.setTaiKhoan(taiKhoan);
 
         return new KhachHangResponse(khachHangRepo.save(khachHang));
@@ -124,4 +133,8 @@ public class KhachHangServiceImpl implements KhachHangService {
         khachHang.setTrangThai(khachHangRequest.getTrangThai() == null || khachHangRequest.getTrangThai() == 0 ? 0 : 1);
         return khachHang;
     }
+
 }
+
+
+

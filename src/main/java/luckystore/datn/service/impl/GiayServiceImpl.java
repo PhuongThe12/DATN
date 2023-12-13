@@ -24,6 +24,8 @@ import luckystore.datn.model.request.BienTheGiayRequest;
 import luckystore.datn.model.request.GiayExcelRequest;
 import luckystore.datn.model.request.GiayRequest;
 import luckystore.datn.model.request.GiaySearch;
+import luckystore.datn.model.request.KhuyenMaiSearch;
+import luckystore.datn.model.request.ThongKeRequest;
 import luckystore.datn.model.response.BienTheGiayResponse;
 import luckystore.datn.model.response.ChatLieuResponse;
 import luckystore.datn.model.response.CoGiayResponse;
@@ -38,6 +40,7 @@ import luckystore.datn.model.response.LotGiayResponse;
 import luckystore.datn.model.response.MauSacResponse;
 import luckystore.datn.model.response.MuiGiayResponse;
 import luckystore.datn.model.response.ThuongHieuResponse;
+import luckystore.datn.model.response.GiayResponseI;
 import luckystore.datn.repository.BienTheGiayRepository;
 import luckystore.datn.repository.ChatLieuRepository;
 import luckystore.datn.repository.CoGiayRepository;
@@ -56,11 +59,13 @@ import luckystore.datn.service.GiayService;
 import luckystore.datn.service.ImageHubService;
 import luckystore.datn.util.JsonString;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -69,7 +74,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -424,7 +428,44 @@ public class GiayServiceImpl implements GiayService {
     @Override
     public Page<GiayResponse> findAllBySearch(GiaySearch giaySearch) {
         Pageable pageable = PageRequest.of(giaySearch.getCurrentPage() - 1, giaySearch.getPageSize());
-        return giayRepository.findAllBySearch(giaySearch,pageable);
+
+        Page<GiayResponse> giayResponses = null;
+        if (giaySearch.getTrangThai() == 1) {
+            Page<GiayResponseI> giayResponsesX = giayRepository.findTop(pageable, giaySearch);
+
+            Set<Long> ids = giayResponsesX.getContent().stream().map(GiayResponseI::getId).collect(Collectors.toSet());
+            Set<GiayResponse> giayResponseList = giayRepository.findAllBySearchIds(ids);
+
+            giayResponses = new PageImpl<>(new ArrayList<>(giayResponseList), giayResponsesX.getPageable(), giayResponseList.size());
+            giayResponses.getContent().forEach(response -> {
+                giayResponsesX.getContent().forEach(response2 -> {
+                    if(Objects.equals(response.getId(), response2.getId())) {
+                       response.setSoLuongThongKe(response2.getSoLuongThongKe());
+                    }
+                });
+            });
+        } else if(giaySearch.getTrangThai() == 2) {
+            giayResponses = giayRepository.findAllByKhachHang(giaySearch, pageable);
+        }else {
+            giayResponses = giayRepository.findAllBySearch(giaySearch, pageable);
+        }
+        Set<Long> ids = new HashSet<>();
+        if (giayResponses != null) {
+            giayResponses.getContent().forEach(response -> {
+                ids.add(response.getId());
+            });
+
+            List<GiayResponse> giayKhuyenMai = khuyenMaiChiTietRepository.getAllByKhuyenMaiGiayIds(ids);
+            giayResponses.getContent().forEach(response -> {
+                giayKhuyenMai.forEach(giayKm -> {
+                    if (Objects.equals(response.getId(), giayKm.getId())) {
+                        response.setPhanTramGiam(giayKm.getPhanTramGiam());
+                    }
+                });
+            });
+        }
+
+        return giayResponses;
     }
 
     @Transactional
@@ -999,9 +1040,22 @@ public class GiayServiceImpl implements GiayService {
     }
 
     @Override
-    public List<GiayResponse> getAllGiayWithoutDiscount(GiaySearch giaySearch) {
-        return giayRepository.getAllGiayWithoutDiscount(giaySearch);
+    public List<GiayResponse> getAllGiayWithoutDiscount(KhuyenMaiSearch kmSearch) {
+        List<GiayResponse> giayResponses = giayRepository.getAllGiayWithoutDiscount(kmSearch);
+        Map<Long, GiayResponse> giayResponsesMap = new HashMap<>();
+        giayResponses.forEach(giayResponse -> {
+            if (giayResponsesMap.containsKey(giayResponse.getId())) {
+                if (giayResponse.getLstBienTheGiay().size() == 1) {
+                    giayResponsesMap.get(giayResponse.getId()).getLstBienTheGiay().add(giayResponse.getLstBienTheGiay().get(0));
+                }
+            } else {
+                giayResponsesMap.put(giayResponse.getId(), giayResponse);
+            }
+        });
+
+        return new ArrayList<>(giayResponsesMap.values());
     }
+
 
     @Override
     public GiayResponse getResponseById(Long id) {
@@ -1010,8 +1064,8 @@ public class GiayServiceImpl implements GiayService {
             throw new NotFoundException("Không tìm thấy giày này");
         }
 
-        for(int i = 0; i < giayResponse.getLstBienTheGiay().size(); i ++) {
-            if(giayResponse.getLstBienTheGiay().get(i).getTrangThai() != 1) {
+        for (int i = 0; i < giayResponse.getLstBienTheGiay().size(); i++) {
+            if (giayResponse.getLstBienTheGiay().get(i).getTrangThai() != 1) {
                 giayResponse.getLstBienTheGiay().remove(i);
             }
         }
@@ -1038,6 +1092,46 @@ public class GiayServiceImpl implements GiayService {
 
         return giayResponse;
     }
+
+    @Override
+    public Page<GiayResponse> findTopSellingShoes(ThongKeRequest thongKeRequest) {
+        Pageable pageable = PageRequest.of(thongKeRequest.getCurrentPage() - 1, thongKeRequest.getPageSize());
+        return giayRepository.findTopSellingShoes(pageable);
+    }
+
+    @Override
+    public Page<GiayResponse> findTopSellingShoesInLastDays(ThongKeRequest thongKeRequest) {
+        Pageable pageable = PageRequest.of(thongKeRequest.getCurrentPage() - 1, thongKeRequest.getPageSize());
+        LocalDateTime targetDateTime = LocalDateTime.now().minusDays(thongKeRequest.getLastDate());
+        return giayRepository.findTopSellingShoesInLastDays(targetDateTime, pageable);
+    }
+
+    @Override
+    public Page<BienTheGiayResponse> findTopSellingShoeVariantInLastDays(ThongKeRequest thongKeRequest) {
+        Pageable pageable = PageRequest.of(thongKeRequest.getCurrentPage() - 1, thongKeRequest.getPageSize());
+        LocalDateTime targetDateTime = LocalDateTime.now().minusDays(thongKeRequest.getLastDate());
+        return bienTheGiayRepository.findTopSellingShoeVariantInLastDays(targetDateTime, pageable);
+    }
+
+    @Override
+    public Page<GiayResponse> findTopFavoritedShoes(ThongKeRequest thongKeRequest) {
+        Pageable pageable = PageRequest.of(thongKeRequest.getCurrentPage() - 1, thongKeRequest.getPageSize());
+        return giayRepository.findTopFavoritedShoes(pageable);
+    }
+
+    @Override
+    public Page<BienTheGiayResponse> findTopCartVariants(ThongKeRequest thongKeRequest) {
+        Pageable pageable = PageRequest.of(thongKeRequest.getCurrentPage() - 1, thongKeRequest.getPageSize());
+        return bienTheGiayRepository.findTopCartVariants(pageable);
+    }
+
+
+    @Override
+    public Page<BienTheGiayResponse> findVariantReturnRates(ThongKeRequest thongKeRequest) {
+        Pageable pageable = PageRequest.of(thongKeRequest.getCurrentPage() - 1, thongKeRequest.getPageSize());
+        return bienTheGiayRepository.findVariantHighReturnRates(pageable);
+    }
+
 
     private void getGiay(Giay giay, GiayRequest giayRequest) {
 

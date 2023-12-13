@@ -2,13 +2,10 @@ package luckystore.datn.model.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import luckystore.datn.entity.BienTheGiay;
-import luckystore.datn.entity.Giay;
-import luckystore.datn.entity.HinhAnh;
+import luckystore.datn.entity.*;
 import luckystore.datn.service.impl.ImageHubServiceImpl;
 
 import java.math.BigDecimal;
@@ -43,12 +40,22 @@ public class BienTheGiayResponse extends BaseBienTheResponse {
 
     private GiayResponse giayResponse;
 
+    private Long soLuongThongKe;
+
+    private Long soLuongMua;
+
+    private Long soLuongTra;
+
+    private Long tyLeTra;
+
     public BienTheGiayResponse(BienTheGiay bienTheGiay, int... level) {
         if (bienTheGiay != null) {
             this.id = bienTheGiay.getId();
             this.soLuong = bienTheGiay.getSoLuong();
             this.soLuongLoi = bienTheGiay.getSoLuongLoi();
-            this.hinhAnh = bienTheGiay.getHinhAnh();
+            if (bienTheGiay.getHinhAnh() != null) {
+                this.hinhAnh = ImageHubServiceImpl.getBase64FromFileStatic(bienTheGiay.getHinhAnh());
+            }
             this.giaBan = bienTheGiay.getGiaBan();
             this.barCode = bienTheGiay.getBarCode();
             this.trangThai = bienTheGiay.getTrangThai();
@@ -57,7 +64,7 @@ public class BienTheGiayResponse extends BaseBienTheResponse {
             if (bienTheGiay.getGiay() != null && level != null) {
                 giayResponse = new GiayResponse();
                 giayResponse.setId(bienTheGiay.getGiay().getId());
-                giayResponse.setLstAnh(bienTheGiay.getGiay().getLstAnh().stream().map(HinhAnh::getLink).toList());
+                giayResponse.setLstAnh(bienTheGiay.getGiay().getLstAnh().stream().filter(anh -> anh.getUuTien() == 1).map(anh -> ImageHubServiceImpl.getBase64FromFileStatic(anh.getLink())).toList());
                 giayResponse.setTen(bienTheGiay.getGiay().getTen());
 //                giayResponse.getLstAnh().add(bienTheGiay.getGiay().getLstAnh().isEmpty() ? null :
 //                        ImageHubServiceImpl.getBase64FromFileStatic(bienTheGiay.getGiay().getLstAnh().get(0).getLink()));
@@ -75,7 +82,7 @@ public class BienTheGiayResponse extends BaseBienTheResponse {
         this.kichThuoc = KichThuocResponse.builder().ten(tenKT).build();
     }
 
-    public BienTheGiayResponse(Long id, String tenKT, String tenMS, Integer soLuong, BigDecimal giaBan, String hinhAnh, Integer trangThai, Giay giay) {
+    public BienTheGiayResponse(Long id, String tenKT, String tenMS, Integer soLuong, BigDecimal giaBan, String hinhAnh, Integer trangThai, Giay giay, Integer phanTramGiam) {
         this.id = id;
         this.soLuong = soLuong;
         this.giaBan = giaBan;
@@ -84,6 +91,7 @@ public class BienTheGiayResponse extends BaseBienTheResponse {
         this.mauSac = MauSacResponse.builder().ten(tenMS).build();
         this.kichThuoc = KichThuocResponse.builder().ten(tenKT).build();
         this.giayResponse = GiayResponse.builder().ten(giay.getTen()).build();
+        this.khuyenMai = phanTramGiam;
     }
 
     public BienTheGiayResponse(Long id, BigDecimal giaBan, Integer phanTramGiam, Integer trangThai) {
@@ -105,12 +113,39 @@ public class BienTheGiayResponse extends BaseBienTheResponse {
         this.soLuong = soLuong;
     }
 
+    public BienTheGiayResponse(BienTheGiay bienTheGiay, Giay giay, MauSac mauSac, KichThuoc kichThuoc, Long soLuongThongKe) {
+        this.id = bienTheGiay.getId();
+        this.giayResponse = new GiayResponse(giay, giay.getTen());
+        this.mauSac = new MauSacResponse(mauSac.getId(), mauSac.getTen());
+        this.kichThuoc = new KichThuocResponse(kichThuoc.getId(), kichThuoc.getTen());
+        this.hinhAnh = bienTheGiay.getHinhAnh();
+        this.soLuongThongKe = soLuongThongKe;
+    }
+    public BienTheGiayResponse(BienTheGiay bienTheGiay, Giay giay, MauSac mauSac, KichThuoc kichThuoc, Long soLuongMua, Long soLuongTra,double tyLeTra) {
+        this.id = bienTheGiay.getId();
+        this.giayResponse = new GiayResponse(giay, giay.getTen());
+        this.mauSac = new MauSacResponse(mauSac.getId(), mauSac.getTen());
+        this.kichThuoc = new KichThuocResponse(kichThuoc.getId(), kichThuoc.getTen());
+        this.hinhAnh = bienTheGiay.getHinhAnh();
+        this.soLuongMua = soLuongMua;
+        this.soLuongTra = soLuongTra;
+        this.tyLeTra =  Math.round(tyLeTra);
+    }
+
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BienTheGiayResponse that = (BienTheGiayResponse) o;
         return Objects.equals(id, that.id);
+    }
+
+    public BienTheGiayResponse(Long id, Integer soLuong, BigDecimal giaBan) {
+        this.id = id;
+        this.soLuong = soLuong;
+        this.giaBan = giaBan;
     }
 
     @Override

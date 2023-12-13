@@ -73,6 +73,7 @@ public class HoaDonYeuCauRespone {
         this.ngayTao = hoaDon.getNgayTao();
         this.kenhBan = hoaDon.getKenhBan();
         this.trangThai = hoaDon.getTrangThai();
+        this.diaChiNhan = hoaDon.getDiaChiNhan();
         this.tongTienKhachThanhToan = tongTienKhachThanhToan((hoaDon.getChiTietThanhToans().stream().map(ChiTietThanhToanResponse::new).collect(Collectors.toList())));
         this.phanTramGiam = tinhPhanTramGiam(this.tongGiaTriHoaDon,hoaDon.getTienGiam()) == null ? 0 :tinhPhanTramGiam(this.tongGiaTriHoaDon,hoaDon.getTienGiam()) ;
     }
