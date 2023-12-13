@@ -28,4 +28,6 @@ public interface TaiKhoanRepository extends JpaRepository<TaiKhoan,Long> {
     @Query("select new luckystore.datn.model.response.TaiKhoanResponse(tk) from TaiKhoan tk")
     List<TaiKhoanResponse> findAllResponse();
 
+    @Query("select tk from TaiKhoan tk where tk.tenDangNhap = :email")
+    Optional<TaiKhoan> findByEmail(String email);
 }

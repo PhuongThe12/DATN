@@ -35,4 +35,6 @@ public class KhachHangRequest {
 
     private Integer trangThai;
 
+    private HangKhachHangRequest hangKhachHang;
+
 }

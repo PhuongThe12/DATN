@@ -5,11 +5,16 @@ app.config(function ($routeProvider, $locationProvider) {
     $routeProvider
         .when("/home", {
             templateUrl: '/pages/admin/banhang/views/home.html', controller: 'homeController'
-        }).otherwise({redirectTo: '/home'});
+        })
+        .otherwise({redirectTo: '/home'});
 });
 
-
 app.controller("homeController", function ($scope, $http, $location, $cookies, $rootScope) {
+
+    // $http.get(host + "/session/get-staff")
+    //     .then(response => {
+    //         console.log(response.data);
+    //     })
 
     document.title = 'Bán hàng';
     $scope.curPage = 1, $scope.itemsPerPage = 12, $scope.maxSize = 5;
@@ -97,6 +102,12 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                     if(args.length > 0) {
                         $scope.tienMatTaiQuay = args[0];
                         $scope.chuyenKhoanTaiQuay = args[1];
+                        $scope.phuongThucTaiQuay = args[2];
+                        if(args.length > 3) {
+                            $scope.diaChi = args[3];
+                            $scope.phuongThucDatHang = args[4];
+                            $scope.submitDiaChi();
+                        }
                     }
                 } else {
                     toastr["error"]("Lỗi. Hóa đơn đã được xử lý");
@@ -223,9 +234,6 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                 })
             });
 
-            if (max === 0) {
-                $scope.dotGiamGiaSelect = null;
-            }
         }
         setTongTienPhaiTra();
         $scope.changePhuongThucTaiQuay();
@@ -614,6 +622,10 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
 
     $scope.thanhToanTaiQuay = function () {
 
+        if ($scope.taiQuayForm.$invalid) {
+            return;
+        }
+
         if ($scope.listGiaySelected.length === 0) {
             toastr["error"]("Chưa có sản phẩm trong giỏ hàng");
             return;
@@ -694,8 +706,9 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                                     const  id = $scope.selectedHoaDon.id;
                                     const tienKhachTra = $scope.tienMatTaiQuay;
                                     const tienCK = $scope.chuyenKhoanTaiQuay;
+                                    const  phuongThucTaiQuay = $scope.phuongThucTaiQuay;
                                     $scope.selectedHoaDon = {};
-                                    $scope.selecteHoaDon(id, tienKhachTra, tienCK);
+                                    $scope.selecteHoaDon(id, tienKhachTra, tienCK, phuongThucTaiQuay);
                                 }
 
                             } else if (err.status === 409) {
@@ -744,8 +757,9 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                                 const  id = $scope.selectedHoaDon.id;
                                 const tienKhachTra = $scope.tienMatTaiQuay;
                                 const tienCK = $scope.chuyenKhoanTaiQuay;
+                                const phuongThucTaiQuay = $scope.phuongThucTaiQuay;
                                 $scope.selectedHoaDon = {};
-                                $scope.selecteHoaDon(id, tienKhachTra, tienCK);
+                                $scope.selecteHoaDon(id, tienKhachTra, tienCK, phuongThucTaiQuay);
                             }
                         } else if (err.status === 409) {
                             toastr["error"](err.data.data);
@@ -1583,6 +1597,10 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
 
     $scope.datHang = function () {
 
+        if ($scope.datHangForm.$invalid) {
+            return;
+        }
+
         if ($scope.listGiaySelected.length === 0) {
             toastr["error"]("Chưa có sản phẩm trong giỏ hàng");
             return;
@@ -1637,7 +1655,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                             const index = $scope.hoaDons.findIndex(item => item.id === response.data);
                             if (index !== -1) {
                                 $scope.hoaDons.splice(index, 1);
-                                toastr["success"]("Thanh toán thành công");
+                                toastr["success"]("Đặt hàng thành công");
                                 resetHoaDon();
                             }
                         } else {
@@ -1655,7 +1673,23 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
                         $scope.isLoading = false;
                     })
                     .catch(err => {
-                        if (err.status === 409) {
+                        if (err.status === 406) {
+                            if (err.data.dieuKienError) {
+                                toastr["error"](err.data.dieuKienError);
+                                $scope.getAllDotGiamGia(1);
+                            } else if(err.data.khuyenMaiError) {
+                                toastr["error"](err.data.khuyenMaiError);
+                                const  id = $scope.selectedHoaDon.id;
+                                const tienKhachTra = $scope.tienMatTaiQuay;
+                                const tienCK = $scope.chuyenKhoanTaiQuay;
+                                const  phuongThucTaiQuay = $scope.phuongThucTaiQuay;
+                                const diaChi = $scope.diaChi;
+                                const  phuongThucDatHang = $scope.phuongThucDatHang;
+                                $scope.selectedHoaDon = {};
+                                $scope.selecteHoaDon(id, tienKhachTra, tienCK, phuongThucTaiQuay, diaChi, phuongThucDatHang);
+                            }
+
+                        } else if (err.status === 409) {
                             toastr["error"](err.data.data);
                             $location.path("#home");
                         } else {
@@ -1669,6 +1703,8 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
     }
 
 });
+
+
 
 app.directive('customSelect', function ($injector) {
     return {

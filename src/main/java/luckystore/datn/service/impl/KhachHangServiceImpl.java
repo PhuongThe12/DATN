@@ -61,7 +61,6 @@ public class KhachHangServiceImpl implements KhachHangService {
         KhachHang khachHang = getKhachHang(new KhachHang(), khachHangRequest);
         khachHang.setDiemTichLuy(0);
 
-        System.out.println("Den Day");
         setHangKhachHang(khachHang);
 
         TaiKhoan taiKhoan = new TaiKhoan();
@@ -70,10 +69,8 @@ public class KhachHangServiceImpl implements KhachHangService {
         taiKhoan.setRole(Role.ROLE_USER);
         taiKhoan.setTrangThai(khachHang.getTrangThai());
 
-
         setHangKhachHang(khachHang);
 
-//        mã hoá mật khẩu
         taiKhoan.setMatKhau(passwordEncoder.encode(khachHangRequest.getSoDienThoai()));
         taiKhoan.setTenDangNhap(khachHangRequest.getEmail());
         taiKhoan.setRole(Role.ROLE_USER);

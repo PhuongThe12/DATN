@@ -36,4 +36,8 @@ public interface GioHangChiTietRepository extends JpaRepository<GioHangChiTiet, 
 
     @Query("select new luckystore.datn.model.response.BienTheGiayResponse(ghct.bienTheGiay.id,ghct.bienTheGiay.soLuong,ghct.bienTheGiay.giaBan) from GioHangChiTiet ghct where ghct.gioHang.id = :idGioHang")
     List<BienTheGiayResponse> getBienTheGiayByIdGioHang(Long idGioHang);
+
+//    @Query("delete from GioHangChiTiet ghct where ghct.gioHang.id = :idGiohang and ghct.bienTheGiay.id = :idBientheGiay")
+//    void deleteGioHangChiTietByIdGioHangAndIdBienThe(Long idGioHang, Long idBienTheGiay);
+
 }

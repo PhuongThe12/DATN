@@ -1,12 +1,12 @@
 package luckystore.datn.model.request;
 
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,14 +18,15 @@ public class DotGiamGiaRequest {
 
     private String ten;
 
-    private Date ngayBatDau;
+    private LocalDateTime ngayBatDau;
 
-    private Date ngayKetThuc;
+    private LocalDateTime ngayKetThuc;
 
     private String ghiChu;
 
     private Integer trangThai;
 
+    @Valid
     private List<DieuKienRequest> dieuKienRequests;
 
 }

@@ -22,13 +22,13 @@ public class DieuKien {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "PHAN_TRAM_GIAM",columnDefinition = "INT", nullable = false)
+    @Column(name = "PHAN_TRAM_GIAM",columnDefinition = "INT")
     private Integer phanTramGiam;
 
-    @Column(name = "TONG_HOA_DON", nullable = false, columnDefinition = "DECIMAL(10,2)")
+    @Column(name = "TONG_HOA_DON", nullable = false)
     private BigDecimal tongHoaDon;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "DOT_GIAM_GIA_ID")
     @JsonBackReference
     private DotGiamGia dotGiamGia;

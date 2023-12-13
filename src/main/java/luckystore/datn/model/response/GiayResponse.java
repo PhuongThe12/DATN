@@ -6,14 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import luckystore.datn.entity.BienTheGiay;
-import luckystore.datn.entity.ChatLieu;
-import luckystore.datn.entity.CoGiay;
-import luckystore.datn.entity.DayGiay;
-import luckystore.datn.entity.DeGiay;
 import luckystore.datn.entity.Giay;
-import luckystore.datn.entity.HashTagChiTiet;
 import luckystore.datn.entity.HinhAnh;
-import luckystore.datn.entity.KhuyenMaiChiTiet;
 import luckystore.datn.service.impl.ImageHubServiceImpl;
 
 import java.math.BigDecimal;
@@ -21,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -70,8 +65,16 @@ public class GiayResponse {
 
     private Long soLuongThongKe;
 
+    private Integer phanTramGiam = 0;
+
     public GiayResponse(Long id) {
         this.id = id;
+    }
+
+    public GiayResponse(Long id, Long soLuongThongKe) {
+        this.id = id;
+//        System.out.println("soLuong: " + soLuongThongKe);
+//        this.soLuongThongKe = soLuongThongKe;
     }
 
     public GiayResponse(Giay giay) {
@@ -130,7 +133,9 @@ public class GiayResponse {
     public GiayResponse(Long id, String ten, String thumbnail, BigDecimal giaTu, BigDecimal giaDen) {
         this.id = id;
         this.ten = ten;
-        lstAnh.add(ImageHubServiceImpl.getBase64FromFileStatic(thumbnail));
+        if (thumbnail != null) {
+            lstAnh.add(ImageHubServiceImpl.getBase64FromFileStatic(thumbnail));
+        }
         this.giaTu = giaTu;
         this.giaDen = giaDen;
     }
@@ -162,9 +167,28 @@ public class GiayResponse {
         this.soLuongThongKe = soLuongThongKe;
     }
 
+
     public GiayResponse(Giay giay,String ten) {
         this.id = giay.getId();
         this.ten = ten;
         this.thuongHieu = new ThuongHieuResponse(giay.getThuongHieu().getId(),giay.getThuongHieu().getTen());
+
+    public GiayResponse(Long id, Integer phanTramGiam) {
+        this.id = id;
+        this.phanTramGiam = phanTramGiam;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GiayResponse that = (GiayResponse) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+
     }
 }

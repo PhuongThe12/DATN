@@ -3,6 +3,7 @@
         padding: 0.5rem !important;
         vertical-align: middle;
     }
+
 </style>
 
 <div ng-show="isLoading" class="loading-spinner">
@@ -188,13 +189,13 @@
                 </div>
                 <div class="col-4">
                     <div class="input-group">
-                        <input type="number" min="1" step="1" max="100" class="form-control" name="allPercent"
+                        <input type="number" min="1" step="1" max="50" class="form-control" name="allPercent"
                                id="autoSizingInputGroup" ng-model="giamPhanTramAll" ng-required="true">
                         <div class="input-group-text">%</div>
                     </div>
                     <small class="text-danger"
                            ng-show="(allForm.allPercent.$dirty || allForm.allPercent.$touched) && allForm.allPercent.$invalid">Phần
-                        trăm giảm phải là số nguyên từ 1 -100</small>
+                        trăm giảm phải là số nguyên từ 1 - 50</small>
                 </div>
                 <div class="col-4">
                     <button type="submit" class="btn btn-primary" ng-click="thietLapHangLoat()">Thiết lập hàng
@@ -206,12 +207,12 @@
             <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th scope="col">Tên giày</th>
-                    <th scope="col">Giá bán</th>
-                    <th scope="col">% giảm</th>
-                    <th scope="col">Giá sau giảm</th>
-                    <th scope="col">Bật/Tắt</th>
-                    <th scope="col">Thao tác</th>
+                    <th scope="col" style="text-align: center;">Tên giày</th>
+                    <th scope="col" style="text-align: center;">Giá bán</th>
+                    <th scope="col" style="text-align: center;">% giảm</th>
+                    <th scope="col" style="text-align: center;">Giá sau giảm</th>
+                    <th scope="col" style="text-align: center;">Bật/Tắt</th>
+                    <th scope="col" style="text-align: center;"></th>
                 </tr>
                 </thead>
                 <tbody ng-repeat="giay in selectedGiayTableData | orderBy: '-id'">
@@ -222,7 +223,7 @@
                         {{giay.ten}}
                     </th>
                     <th scope="col">
-                        <button class="btn btn-success" ng-click="xoaDong(giay)">Xóa</button>
+                        <button class="btn" ng-click="xoaDong(giay)"><i class="fas text-danger font-size-16 fa-trash-alt"></i></button>
                     </th>
                 </tr>
                 <tr ng-repeat="bienTheGiay in giay.lstBienTheGiay">
@@ -234,12 +235,12 @@
                     </td>
                     <td style="text-align: center; height: 30px; width: 20%">
                         <div class="input-group">
-                            <input type="number" step="1" min="1" max="100" class="form-control"
+                            <input type="number" step="1" min="1" max="50" class="form-control"
                                    ng-model="bienTheGiay.phanTramGiam" ng-change="blurInput(bienTheGiay)"
                                    aria-label="Recipient's username" aria-describedby="basic-addon2" >
                             <span class="input-group-text" id="basic-addon2">%</span>
                         </div>
-                        <small ng-show="bienTheGiay.errors" class="text-danger">{{bienTheGiay.errors}}</small>
+                        <small ng-show="bienTheGiay.errors && bienTheGiay.trangThai" class="text-danger">{{bienTheGiay.errors}}</small>
                     </td>
                     <td
                             ng-if="bienTheGiay.phanTramGiam !== null && bienTheGiay.phanTramGiam !== undefined"
