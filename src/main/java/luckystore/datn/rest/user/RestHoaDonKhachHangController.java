@@ -1,9 +1,11 @@
 package luckystore.datn.rest.user;
 
 import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import luckystore.datn.model.request.GiayRequest;
 import luckystore.datn.model.request.GioHangThanhToanRequest;
 import luckystore.datn.model.request.HoaDonRequest;
+import luckystore.datn.model.request.HoaDonThanhToanTaiQuayRequest;
 import luckystore.datn.service.user.HoaDonKhachHangService;
 import luckystore.datn.validation.groups.CreateGroup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,5 +31,10 @@ public class RestHoaDonKhachHangController {
         return new ResponseEntity(hoaDonKhachHangService.addHoaDon(gioHangThanhToanRequest), HttpStatus.OK);
     }
 
+    @PostMapping("/hoan-tat-banking")
+    ResponseEntity<?> hoanTatBanking(@Valid @RequestBody HoaDonThanhToanTaiQuayRequest request) {
+        return ResponseEntity.ok(hoaDonKhachHangService.hoanTatThanhToan(request));
+
+    }
 
 }

@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
@@ -37,6 +38,9 @@ public class TaiKhoan implements UserDetails {
 
     @Column(name = "ROLE")
     private Role role;
+
+    @Column(name = "PASSWORD_TOKEN")
+    private String passwordToken;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -70,6 +74,6 @@ public class TaiKhoan implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return trangThai == 1;
     }
 }

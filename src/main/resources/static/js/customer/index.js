@@ -24,35 +24,44 @@ app.config(function ($routeProvider, $locationProvider) {
         templateUrl: '/pages/user/views/thong-tin-tai-khoan.html',
         controller: 'thongTinTaiKhoanController'
     }).when("/thanh-toan-status", {
-        templateUrl: '',
+        template: "<h1>Đang tiến hành thanh toán</h1>",
         controller: 'thanhToanStatusController'
     })
         .otherwise({redirectTo: '/list'});
 });
 
-app.controller('thanhToanStatusController', function ($scope, $http, $location, $cookies, $rootScope) {
+app.controller('thanhToanStatusController', function ($scope, $http, $location) {
     let container = {};
-    location.search.split('&').toString().substr(1).split(",").forEach(item => {
+    let currentUser;
+    $http.get(host + "/session/get-customer")
+        .then(response => {
+            currentUser = response.data;
+        })
+    console.log("current usser: ", currentUser);
+    window.location.hash.split('&').toString().substr(1).split(",").forEach(item => {
         container[item.split("=")[0]] = decodeURIComponent(item.split("=")[1]) ? item.split("=")[1] : "No query strings available";
     });
 
-    if (Object.keys(container).length > 2) {
-        console.log(container, container["vnp_OrderInfo"], container["vnp_OrderInfo"]);
-        const info = container["vnp_OrderInfo"];
+    if (Object.keys(container).length > 3) {
         if (container["vnp_TransactionStatus"] === "00") {
             let request = {
-                idHoaDon: info[0]
+                idHoaDon: container["vnp_OrderInfo"]
             }
             $http.post(host + "/rest/user/hoa-don/hoan-tat-banking", request)
                 .then(response => {
                     toastr["success"]("Thanh toán thành công");
-                    if (storedUserData) {
+                    if (currentUser) {
                         $location.path("/don-hang");
                     } else {
                         $location.path("/list");
                     }
                 })
                 .catch(err => {
+                    if (err.status === 409) {
+                        toastr["error"](err.data.data);
+                    } else {
+                        toastr["error"]("Thanh toán thất bại");
+                    }
                     $location.path("/list");
                 })
 
@@ -60,7 +69,7 @@ app.controller('thanhToanStatusController', function ($scope, $http, $location, 
             $http.get(host + "/vnpay/cancel-banking-order/" + info[0])
                 .then(response => {
                     toastr["warning"]("Bạn chưa hoàn tất thanh toán");
-                    if (storedUserData) {
+                    if (!UserDetailService.getCurrentUser()) {
                         $location.path("/don-hang");
                     } else {
                         $location.path("/cart");
@@ -1612,7 +1621,8 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
                                 $http.post(host + "/vnpay/create-vnpay-order", request)
                                     .then(response => {
                                         $scope.loading = true;
-                                        window.location.href = response.data;
+                                        // window.location.href = response.data;
+                                        console.log(response.data);
                                     })
                                     .catch(err => {
                                         console.log(err);
@@ -1877,3 +1887,7 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
             });
     }
 })
+
+
+
+

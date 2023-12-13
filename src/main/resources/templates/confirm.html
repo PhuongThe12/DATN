@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Confirm</title>
+    <!--Boostrap-->
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+<div class="container" style="    padding: 144px 1px;text-align: center;">
+    <h5 th:text="${message}"></h5>
+    <p>Vui lòng kiểm tra với quản trị viên trang web nếu bạn cho rằng đây là sự nhầm lẫn</p>
+    <a class="btn btn-primary" href="http://localhost:8080/home#/list">Trở về trang chủ</a>
+</div>
+<script th:inline="javascript">
+
+//    const message = [[${message}]];
+//    alert(message);
+
+</script>
+</body>
+</html>
