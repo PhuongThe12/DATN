@@ -4,16 +4,23 @@ import luckystore.datn.infrastructure.constraints.TrangThaiHoaDon;
 import luckystore.datn.entity.HoaDon;
 import luckystore.datn.model.request.HoaDonSearch;
 import luckystore.datn.model.request.HoaDonSearchP;
+import luckystore.datn.model.request.ThongKeRequest;
 import luckystore.datn.model.response.HoaDonBanHangResponse;
 import luckystore.datn.model.response.HoaDonResponse;
 import luckystore.datn.model.response.HoaDonYeuCauRespone;
 import luckystore.datn.model.response.print.HoaDonPrintResponse;
+import luckystore.datn.model.response.thongKe.HoaDonThongKe;
+import luckystore.datn.model.response.thongKe.ThongKeTheoNam;
+import luckystore.datn.model.response.thongKe.ThongKeTongQuan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -101,6 +108,40 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
 
     @Query("select hd from HoaDon hd where hd.hoaDonGoc = :id")
     List<HoaDon> getHoaDonDoiTra(Long id);
+
+    @Query(value = """
+        select count(distinct hd.ID) as 'Tổng hóa đơn',
+        	   sum(hdct.SO_LUONG) as 'Tổng sản phẩm' ,
+        	   sum(cttt.TIEN_THANH_TOAN) as 'Tổng doanh thu' ,
+        	   count(distinct yc.ID) as 'Tổng yêu cầu đổi trả'from HoaDon hd\s
+        left join HoaDonChiTiet hdct on hd.ID = hdct.ID_HOA_DON
+        left join ChiTietThanhToan cttt on hd.ID = cttt.ID_HOA_DON
+        left join YeuCau yc on yc.ID_HOA_DON = hd.ID
+        where hd.NGAY_TAO >= :#{#request.startDate} and hd.NGAY_TAO <= :#{#request.endDate}
+    """, nativeQuery = true)
+    ThongKeTongQuan getThongKeTongQuan(ThongKeRequest request);
+
+    @Query(value = """
+        select kh.HO_TEN, cttt.TIEN_THANH_TOAN, hd.NGAY_TAO, hd.TRANG_THAI from HoaDon hd\s
+        left join KhachHang kh on kh.ID = hd.ID_KHACH_HANG
+        left join HoaDonChiTiet hdct on hd.ID = hdct.ID_HOA_DON
+        left join ChiTietThanhToan cttt on hd.ID = cttt.ID_HOA_DON\s
+        where hd.NGAY_TAO >= :#{#request.startDate} and hd.NGAY_TAO <= :#{#request.endDate}
+        order by hd.NGAY_TAO desc
+    """, nativeQuery = true)
+    List<HoaDonThongKe> getListHoaDonThongKe(ThongKeRequest request);
+
+    @Query(value = """
+        select MONTH(NGAY_TAO) as 'Thang', sum(hdct.SO_LUONG) as 'TONG_SAN_PHAM',\s
+        sum(cttt.TIEN_THANH_TOAN) as 'TONG_TIEN' from HoaDon hd
+        left join HoaDonChiTiet hdct on hd.ID = hdct.ID_HOA_DON
+        left join ChiTietThanhToan cttt on hd.ID = cttt.ID_HOA_DON
+        where YEAR(NGAY_TAO) = :year AND hd.TRANG_THAI = 1
+        group by MONTH(NGAY_TAO)
+        order by MONTH(NGAY_TAO)
+    """, nativeQuery = true)
+    List<ThongKeTheoNam> getThongKeTheoNam(@Param("year") Integer year);
+
 }
 
 

@@ -1,13 +1,16 @@
 package luckystore.datn.repository;
 
 import luckystore.datn.entity.HoaDonChiTiet;
+import luckystore.datn.model.request.ThongKeRequest;
 import luckystore.datn.model.response.BienTheGiayResponse;
 import luckystore.datn.model.response.DonMuaResponse;
 import luckystore.datn.model.response.HoaDonChiTietResponse;
+import luckystore.datn.model.response.thongKe.SanPhamBanChay;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -52,4 +55,16 @@ public interface HoaDonChiTietRepository extends JpaRepository<HoaDonChiTiet,Lon
 
     @Query("SELECT hdct FROM HoaDonChiTiet hdct JOIN FETCH hdct.bienTheGiay WHERE hdct.id = :id")
     HoaDonChiTiet getHoaDonChiTietWithBienTheGiay(Long id);
+
+    @Query(value = """
+        select top = :#{#request.top} g.TEN, btg.GIA_BAN, sum(hdct.SO_LUONG) as 'SO_LUONG' from HoaDonChiTiet hdct
+        left join HoaDon hd on hd.ID = hdct.ID_HOA_DON
+        left join BienTheGiay btg on btg.ID = hdct.ID_BIEN_THE_GIAY
+        left join Giay g on g.ID = btg.ID_GIAY
+        WHERE hd.NGAY_TAO >= :#{#request.startDate} and hd.NGAY_TAO <= :#{#request.endDate} hd.TRANG_THAI = 1
+        group by g.TEN, btg.GIA_BAN
+        order by SO_LUONG desc
+    """,nativeQuery = true)
+    List<SanPhamBanChay> getSanPhamBanChay(ThongKeRequest request);
+
 }
