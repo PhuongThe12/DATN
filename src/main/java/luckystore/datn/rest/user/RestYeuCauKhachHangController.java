@@ -26,7 +26,7 @@ public class RestYeuCauKhachHangController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getChatLieu(@PathVariable("id") Long id) {
+    public ResponseEntity<?> getYeuCau(@PathVariable("id") Long id) {
         return new ResponseEntity<>(yeuCauKhachHangService.getOneHoaDonYeuCauRespone(id), HttpStatus.OK);
     }
 

@@ -37,11 +37,23 @@ public class RestYeuCauController {
         return new ResponseEntity(yeuCauService.getAll(), HttpStatus.OK);
     }
 
+    @GetMapping("/hoa-don/{id}")
+    public ResponseEntity<?> getYeuCau(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(yeuCauService.getOneHoaDonYeuCauRespone(id), HttpStatus.OK);
+    }
     @PostMapping("/add")
     public ResponseEntity addYeuCau(@Valid @RequestBody YeuCauRequest yeuCauRequest, BindingResult result) {
         ResponseEntity errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
         return new ResponseEntity(yeuCauService.addYeuCau(yeuCauRequest), HttpStatus.OK);
+    }
+
+    @PostMapping("/tra-hang-nhanh")
+    public ResponseEntity traHangNhanh(@Valid @RequestBody YeuCauRequest yeuCauRequest, BindingResult result) {
+        ResponseEntity errorJson = getErrorJson(result);
+        if (errorJson != null) return errorJson;
+        yeuCauService.traHangNhanh(yeuCauRequest);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @PutMapping("/confirm")
@@ -65,6 +77,7 @@ public class RestYeuCauController {
     public ResponseEntity getOne(@PathVariable Long id) {
         return new ResponseEntity(yeuCauService.findById(id), HttpStatus.OK);
     }
+
 
     @PostMapping()
     public ResponseEntity getYeuCauPage(@RequestBody YeuCauSearch yeuCauSearch){

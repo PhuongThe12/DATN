@@ -137,25 +137,25 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
 
 
     //top x giày bán chạy trong y ngày
-    @Query("select new luckystore.datn.model.response.GiayResponse(g, count(hdc)) " +
+    @Query("select new luckystore.datn.model.response.GiayResponse(g, sum(hdc.soLuong)) " +
             "from HoaDonChiTiet hdc " +
             "join hdc.bienTheGiay btg " +
             "join btg.giay g " +
             "join hdc.hoaDon hd " +
-            "where hd.trangThai = 5 and hd.ngayTao >= :targetDateTime " +
+            "where hd.trangThai = 1 and hd.ngayTao >= :targetDateTime " +
             "group by g " +
-            "order by count(hdc) desc")
+            "order by sum(hdc.soLuong) desc")
     Page<GiayResponse> findTopSellingShoesInLastDays(LocalDateTime targetDateTime, Pageable pageable);
 
     //giày bán chạy nhất
-    @Query("select new luckystore.datn.model.response.GiayResponse(g, count(hdc)) " +
+    @Query("select new luckystore.datn.model.response.GiayResponse(g, sum(hdc.soLuong)) " +
             "from HoaDonChiTiet hdc " +
             "join hdc.bienTheGiay btg " +
             "join btg.giay g " +
             "join hdc.hoaDon hd " +
-            "where hd.trangThai = 5 " +
+            "where hd.trangThai = 1 " +
             "group by g " +
-            "order by count(hdc) desc")
+            "order by sum(hdc.soLuong) desc")
     Page<GiayResponse> findTopSellingShoes(Pageable pageable);
 
     //top x giày xuất hiện trong sản phẩm yêu thích
@@ -165,8 +165,5 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
             "group by g " +
             "order by count(spyt) desc")
     Page<GiayResponse> findTopFavoritedShoes(Pageable pageable);
-
-
-
 
 }

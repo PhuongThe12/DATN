@@ -1087,7 +1087,7 @@ public class GiayServiceImpl implements GiayService {
     @Override
     public Page<BienTheGiayResponse> findVariantReturnRates(ThongKeRequest thongKeRequest) {
         Pageable pageable = PageRequest.of(thongKeRequest.getCurrentPage() - 1, thongKeRequest.getPageSize());
-        return bienTheGiayRepository.findVariantReturnRates(pageable);
+        return bienTheGiayRepository.findVariantHighReturnRates(pageable);
     }
 
 

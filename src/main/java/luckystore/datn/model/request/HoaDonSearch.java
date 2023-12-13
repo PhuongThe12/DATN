@@ -20,9 +20,9 @@ public class HoaDonSearch {
 
     private Long idHoaDonGoc;
 
-    private String khachHang;
+    private String tenKhachHang;
 
-    private String nhanVien;
+    private Long idNhanVien;
 
     private Date ngayTao;
 
@@ -46,7 +46,7 @@ public class HoaDonSearch {
 
     private String soDienThoaiNhan;
 
-    private String soDienThoaiKhacHang;
+    private String soDienThoaiKhachHang;
 
     private String diaChiNhan;
 
@@ -63,4 +63,8 @@ public class HoaDonSearch {
     private Integer pageSize = 5;
 
     private Integer loaiHoaDon;
+
+    private BigDecimal tongThanhToanMin;
+
+    private BigDecimal tongThanhToanMax;
 }
