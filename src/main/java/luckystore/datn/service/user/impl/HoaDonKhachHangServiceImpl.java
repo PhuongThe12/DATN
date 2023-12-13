@@ -105,6 +105,7 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
 
         HoaDon hoaDon = getHoaDon(new HoaDon(), gioHangThanhToanRequest);
         Set<HoaDonChiTiet> hoaDonChiTiets = getBienTheGiay(gioHangThanhToanRequest.getBienTheGiayRequests(), hoaDon);
+        hoaDon.setListHoaDonChiTiet(hoaDonChiTiets);
 
         setChiTietThanhToan(hoaDon, gioHangThanhToanRequest);
 
@@ -143,7 +144,7 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
             bienTheGiays.forEach(bienThe -> {
                 if (Objects.equals(hdct.getBienTheGiay().getId(), bienThe.getId())) {
                     bienThe.setSoLuong(bienThe.getSoLuong() - hdct.getSoLuong());
-                    if(bienThe.getSoLuong() < 0) {
+                    if (bienThe.getSoLuong() < 0) {
                         throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Số lượng sản phẩm không đủ, vui lòng kiểm tra lại")));
                     }
                 }
@@ -358,6 +359,7 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
             chiTietThanhToan.setTrangThai(0);
         }
         chiTietThanhToans.add(chiTietThanhToan);
+        hoaDon.setChiTietThanhToans(chiTietThanhToans);
     }
 
     private Set<HoaDonChiTiet> getBienTheGiay(Set<BienTheGiayGioHangRequest> bienTheGiayRequests, HoaDon hoaDon) {
