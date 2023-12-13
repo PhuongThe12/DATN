@@ -1733,7 +1733,8 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
                                 $http.post(host + "/vnpay/create-vnpay-order", request)
                                     .then(response => {
                                         $scope.loading = true;
-                                        window.location.href = response.data;
+                                        // window.location.href = response.data;
+                                        console.log(response.data);
                                     })
                                     .catch(err => {
                                         console.log(err);
