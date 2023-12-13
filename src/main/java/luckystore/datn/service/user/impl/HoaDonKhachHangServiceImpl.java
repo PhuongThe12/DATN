@@ -16,6 +16,7 @@ import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.infrastructure.constraints.TrangThaiHoaDon;
 import luckystore.datn.model.request.BienTheGiayGioHangRequest;
 import luckystore.datn.model.request.GioHangThanhToanRequest;
+import luckystore.datn.model.request.HoaDonThanhToanTaiQuayRequest;
 import luckystore.datn.model.response.BienTheGiayResponse;
 import luckystore.datn.model.response.GioHangChiTietResponse;
 import luckystore.datn.model.response.GioHangResponse;
@@ -129,6 +130,7 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
                 chiTietThanhToans.add(chiTietThanhToan);
                 hoaDonSaved.setChiTietThanhToans(chiTietThanhToans);
 
+                hoaDonSaved.setTrangThai(TrangThaiHoaDon.CHUA_THANH_TOAN);
                 hoaDonSaved.setNgayThanhToan(LocalDateTime.now().plusMinutes(10));
             } else {
                 ChiTietThanhToan chiTietThanhToan = new ChiTietThanhToan();
@@ -188,6 +190,23 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         bienTheGiayRepository.saveAll(bienTheGiays);
         hoaDonRepository.save(hoaDon);
 
+    }
+
+    @Override
+    public Long hoanTatThanhToan(HoaDonThanhToanTaiQuayRequest request) {
+        HoaDon hoaDon = hoaDonRepository.findById(Long.valueOf(request.getIdHoaDon()))
+                .orElseThrow(() -> new NotFoundException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không tìm thấy hóa đơn"))));
+        System.out.println("ho đơn: " + hoaDon.getId() + ", " + hoaDon.getTrangThai());
+        if (hoaDon.getTrangThai() != 0) {
+            throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Hóa đơn đã được xử lý vui lòng kiểm tra lại")));
+        }
+
+        hoaDon.setTrangThai(TrangThaiHoaDon.CHO_XAC_NHAN);
+        hoaDon.getChiTietThanhToans().forEach(chiTiet -> {
+            chiTiet.setTrangThai(1);
+        });
+        hoaDonRepository.save(hoaDon);
+        return hoaDon.getId();
     }
 
     private HoaDon getHoaDon(HoaDon hoaDon, GioHangThanhToanRequest gioHangThanhToanRequest) {
