@@ -38,11 +38,11 @@
         <div class=" collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav ms-auto ">
                 <div>
-                     <span ng-if="currentUser.username">
-                      <span ng-click="logoutUser()" class="pointer">LogOut</span>  {{ currentUser.hoTen }}
+                     <span ng-if="khachHang.hoTen">
+                      <span ng-click="logoutUser()" class="pointer">LogOut</span>  {{ khachHang.hoTen }}
                     </span>
                     <span class="pointer" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                          ng-if="!currentUser.username">
+                          ng-if="!khachHang.hoTen">
                         Login
                     </span>
                     <a href="#/thong-tin-tai-khoan"><i class="far fa-user" data-bs-toggle="tooltip" data-bs-placement="top"
@@ -160,7 +160,7 @@
                         <div class="form-group mb-3">
                             <label for="khachHangHoTen">Tên</label>
                             <input type="text" class="form-control" id="khachHangHoTen" name="hoTen"
-                                   ng-model="khachHang.hoTen"
+                                   ng-model="khachHangR.hoTen"
                                    ng-maxlength="50" ng-required="true" ng-change="change(khachHangForm.hoTen)">
                             <small class="error-message"
                                    ng-show="(khachHangForm.hoTen.$dirty || khachHangForm.hoTen.$touched) && khachHangForm.hoTen.$error.required">Không
@@ -179,8 +179,8 @@
                                        style="width: 16px; height: 16px; margin-right: 0"
                                        id="khachHangGioiTinh1" value="true"
                                        name="gioiTinh"
-                                       ng-model="khachHang.gioiTinh" ng-required="true"
-                                       ng-checked="khachHang.gioiTinh == true">
+                                       ng-model="khachHangR.gioiTinh" ng-required="true"
+                                       ng-checked="khachHangR.gioiTinh == true">
                                 <label class="form-check-label" for="khachHangGioiTinh1">
                                     Nam
                                 </label>
@@ -190,8 +190,8 @@
                                        style="width: 16px; height: 16px; margin-right: 0"
                                        id="khachHangGioiTinh2" value="false"
                                        name="gioiTinh"
-                                       ng-model="khachHang.gioiTinh" ng-required="true"
-                                       ng-checked="khachHang.gioiTinh == false">
+                                       ng-model="khachHangR.gioiTinh" ng-required="true"
+                                       ng-checked="khachHangR.gioiTinh == false">
                                 <label class="form-check-label" for="khachHangGioiTinh2">
                                     Nữ
                                 </label>
@@ -206,7 +206,7 @@
                         <div class="form-group mb-3">
                             <label for="khachHangNgaySinh">Ngày Sinh: </label>
                             <input type="date" class="form-control" id="khachHangNgaySinh" name="ngaySinh"
-                                   ng-model="khachHang.ngaySinh" ng-required="true"
+                                   ng-model="khachHangR.ngaySinh" ng-required="true"
                                    ng-change="change(khachHangForm.ngaySinh)">
                             <small class="error-message"
                                    ng-show="(khachHangForm.ngaySinh.$dirty || khachHangForm.ngaySinh.$touched) && khachHangForm.ngaySinh.$error.required">
@@ -218,7 +218,7 @@
                         <div class="form-group mb-3">
                             <label for="khachHangSoDienThoai">Số điện thoại: </label>
                             <input type="text" class="form-control" id="khachHangSoDienThoai" name="soDienThoai"
-                                   ng-model="khachHang.soDienThoai" ng-required="true"
+                                   ng-model="khachHangR.soDienThoai" ng-required="true"
                                    ng-change="change(khachHangForm.soDienThoai)" ng-pattern="/^0\d{9}$/">
                             <small class="error-message"
                                    ng-show="(khachHangForm.soDienThoai.$dirty || khachHangForm.soDienThoai.$touched) && khachHangForm.soDienThoai.$error.required">
@@ -233,7 +233,7 @@
                         <div class="form-group mb-3">
                             <label for="khachHangEmail">Email: </label>
                             <input type="text" class="form-control" id="khachHangEmail" name="email"
-                                   ng-model="khachHang.email" ng-required="true"
+                                   ng-model="khachHangR.email" ng-required="true"
                                    ng-change="change(khachHangForm.email)">
                             <small class="error-message"
                                    ng-show="(khachHangForm.email.$dirty || khachHangForm.email.$touched) && khachHangForm.email.$error.required">

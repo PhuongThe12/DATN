@@ -33,13 +33,18 @@ public class RestDiaChiNhanHangController {
 
     @GetMapping
     public ResponseEntity getDiaChiNhanHangPage(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                               @RequestParam(value = "search", required = false) String searchText,
-                                               @RequestParam(value = "status", required = false) Integer status) {
+                                                @RequestParam(value = "search", required = false) String searchText,
+                                                @RequestParam(value = "status", required = false) Integer status) {
         return new ResponseEntity(diaChiNhanHangService.getPage(page, searchText, status), HttpStatus.OK);
     }
 
+    @GetMapping("/khach-hang")
+    public ResponseEntity getDiaChiNhanHangPageByKhachHang(@RequestParam(value = "idKhachHang", required = false) Long idKhachhang) {
+        return new ResponseEntity(diaChiNhanHangService.getPageByKhachHang(idKhachhang), HttpStatus.OK);
+    }
+
     @PostMapping
-    public ResponseEntity addDiaChiNhanHang( @RequestBody DiaChiNhanHangRequest diaChiNhanHangRequest, BindingResult result) {
+    public ResponseEntity addDiaChiNhanHang(@RequestBody DiaChiNhanHangRequest diaChiNhanHangRequest, BindingResult result) {
         System.out.println(diaChiNhanHangRequest.toString());
         ResponseEntity errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
@@ -83,6 +88,7 @@ public class RestDiaChiNhanHangController {
         }
         return null;
     }
+
     @DeleteMapping("/delete/{id}")
     public void deleteDieuKien(@PathVariable("id") Long id) {
         diaChiNhanHangService.deleteDieuKien(id);
