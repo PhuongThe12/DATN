@@ -1,5 +1,6 @@
 package luckystore.datn.controller.user;
 
+import com.google.gson.Gson;
 import luckystore.datn.service.user.impl.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -26,6 +27,11 @@ public class RestAccountController {
     public ResponseEntity<?> forgotPassword(@RequestParam("email") String email) {
         accountService.forgotPassword(email);
         return ResponseEntity.ok(HttpEntity.EMPTY);
+    }
+
+    @GetMapping("/khach-hang")
+    public ResponseEntity<?> find(@RequestParam("email") String email, @RequestParam("sdt")String sdt) {
+        return ResponseEntity.ok(new Gson().toJson(accountService.find(email, sdt)));
     }
 
 }

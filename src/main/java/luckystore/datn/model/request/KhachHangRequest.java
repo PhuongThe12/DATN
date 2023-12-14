@@ -31,9 +31,11 @@ public class KhachHangRequest {
 
     private String email;
 
-    private Integer diemTichLuy;
+    private String password;
 
-    private Integer trangThai;
+    private Integer diemTichLuy = 0;
+
+    private Integer trangThai = 1;
 
     private HangKhachHangRequest hangKhachHang;
 

@@ -18,4 +18,6 @@ public interface KhachHangService {
     KhachHangResponse findById(Long id);
 
     List<KhachHangResponse> searchByName(String searchText);
+
+    KhachHangResponse dangKyKhachHang(KhachHangRequest requets);
 }
