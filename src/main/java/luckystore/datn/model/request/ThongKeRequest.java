@@ -17,7 +17,7 @@ public class ThongKeRequest {
     private Integer pageSize = 5;
 
     //Top Y
-    private Integer lastDate;
+    private Integer lastDate = 30;
 
 
 }

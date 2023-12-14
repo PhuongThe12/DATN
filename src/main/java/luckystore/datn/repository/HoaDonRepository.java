@@ -1,7 +1,7 @@
 package luckystore.datn.repository;
 
-import luckystore.datn.infrastructure.constraints.TrangThaiHoaDon;
 import luckystore.datn.entity.HoaDon;
+import luckystore.datn.infrastructure.constraints.TrangThaiHoaDon;
 import luckystore.datn.model.request.HoaDonSearch;
 import luckystore.datn.model.request.HoaDonSearchP;
 import luckystore.datn.model.response.HoaDonBanHangResponse;
@@ -30,22 +30,22 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
             "WHERE (:searchText IS NULL OR hd.ghiChu LIKE %:searchText%) AND (:status IS NULL OR hd.trangThai = :status)")
     Page<HoaDonResponse> getPageResponse(String searchText, Integer status, Pageable pageable);
 
-    @Query("SELECT new luckystore.datn.model.response.HoaDonYeuCauRespone(hd, 'getAllYeuCau' )" +
+    @Query("SELECT new luckystore.datn.model.response.HoaDonYeuCauRespone(hd, 'getAllYeuCau') " +
             "FROM HoaDon hd " +
-            "left JOIN hd.khachHang kh on hd.khachHang.id = kh.id " +
-            "left JOIN hd.nhanVien nv on hd.nhanVien.id = nv.id " +
-            "WHERE (hd.loaiHoaDon = 1 OR hd.loaiHoaDon = 2) " +
+            "LEFT JOIN hd.khachHang kh on hd.khachHang.id = kh.id " +
+            "LEFT JOIN hd.nhanVien nv on hd.nhanVien.id = nv.id " +
+            "WHERE (hd.loaiHoaDon = 1 OR hd.loaiHoaDon = 2 and hd.trangThai = 5) " +
             "AND (:#{#hoaDonSearch.idHoaDon} IS NULL OR hd.id  = :#{#hoaDonSearch.idHoaDon}) " +
             "AND (:#{#hoaDonSearch.loaiHoaDon} IS NULL OR hd.loaiHoaDon = :#{#hoaDonSearch.loaiHoaDon}) " +
             "AND (:#{#hoaDonSearch.email} IS NULL OR hd.email like %:#{#hoaDonSearch.email}%) " +
-            "AND (:#{#hoaDonSearch.soDienThoaiKhacHang} IS NULL OR kh.soDienThoai like %:#{#hoaDonSearch.soDienThoaiKhacHang}%) " +
+            "AND (:#{#hoaDonSearch.soDienThoaiKhachHang} IS NULL OR kh.soDienThoai like %:#{#hoaDonSearch.soDienThoaiKhachHang}%) " +
             "AND (:#{#hoaDonSearch.kenhBan} IS NULL OR hd.kenhBan = :#{#hoaDonSearch.kenhBan}) " +
-            "AND (:#{#hoaDonSearch.trangThai} IS NULL OR hd.trangThai = :#{#hoaDonSearch.trangThai}) " +
-            "AND (:#{#hoaDonSearch.khachHang} IS NULL OR kh.hoTen like %:#{#hoaDonSearch.khachHang}%) " +
-            "AND (:#{#hoaDonSearch.nhanVien} IS NULL OR nv.hoTen like %:#{#hoaDonSearch.nhanVien}%) " +
+            "AND (:#{#hoaDonSearch.tenKhachHang} IS NULL OR kh.hoTen like %:#{#hoaDonSearch.tenKhachHang}%) " +
+            "AND (:#{#hoaDonSearch.idNhanVien} IS NULL OR nv.id = :#{#hoaDonSearch.idNhanVien}) " +
             "AND (:#{#hoaDonSearch.ngayBatDau} IS NULL OR hd.ngayTao >= :#{#hoaDonSearch.ngayBatDau}) " +
-            "AND (:#{#hoaDonSearch.ngayKetThuc} IS NULL OR hd.ngayTao <= :#{#hoaDonSearch.ngayKetThuc}) "
-    )
+            "AND (:#{#hoaDonSearch.ngayKetThuc} IS NULL OR hd.ngayTao <= :#{#hoaDonSearch.ngayKetThuc}) " +
+            "AND (:#{#hoaDonSearch.tongThanhToanMin} IS NULL OR (SELECT SUM(cttt.tienThanhToan) FROM ChiTietThanhToan cttt WHERE cttt.hoaDon.id = hd.id) >= :#{#hoaDonSearch.tongThanhToanMin}) " +
+            "AND (:#{#hoaDonSearch.tongThanhToanMax} IS NULL OR (SELECT SUM(cttt.tienThanhToan) FROM ChiTietThanhToan cttt WHERE cttt.hoaDon.id = hd.id) <= :#{#hoaDonSearch.tongThanhToanMax}) " )
     Page<HoaDonYeuCauRespone> getPageHoaDonYeuCauResponse(HoaDonSearch hoaDonSearch, Pageable pageable);
 
     @Query("SELECT new luckystore.datn.model.response.HoaDonBanHangResponse(hd.id)  FROM HoaDon hd " +

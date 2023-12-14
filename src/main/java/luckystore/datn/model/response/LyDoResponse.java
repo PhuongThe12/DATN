@@ -28,6 +28,8 @@ public class LyDoResponse {
 
     private Long tyLe;
 
+    private Long soLuongYeuCauTra;
+
     public LyDoResponse(LyDo lyDo) {
         this.id = lyDo.getId();
         this.ten = lyDo.getTen();

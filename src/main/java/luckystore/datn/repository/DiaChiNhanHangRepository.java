@@ -26,6 +26,11 @@ public interface DiaChiNhanHangRepository extends JpaRepository<DiaChiNhanHang, 
             "ORDER BY CASE WHEN dcn.trangThai = 1 THEN 0 ELSE 1 END, dcn.ngayTao DESC")
     Page<DiaChiNhanHangResponse> getPageResponse(String searchText, Integer status, Pageable pageable);
 
+    @Query("SELECT new luckystore.datn.model.response.DiaChiNhanHangResponse(dcn) " +
+            "FROM DiaChiNhanHang dcn " +
+            "WHERE  dcn.idKhachHang.id = :idKhachHang ")
+    List<DiaChiNhanHangResponse> getPageResponseByKhachHang( Long idKhachHang);
+
     List<DiaChiNhanHang> findByTrangThaiNot(int trangThai);
 
     @Query("SELECT new luckystore.datn.model.response.DiaChiNhanHangResponse(dcn) " +
