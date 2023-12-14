@@ -72,7 +72,7 @@ public class RestThongKeConTroller {
         return new ResponseEntity<>(thongKeService.getThongKeTongQuan(thongKeRequest), HttpStatus.OK);
     }
 
-    @PostMapping("/giay-ban-chay")
+    @PostMapping("/san-pham-ban-chay")
     public ResponseEntity<?> topGiayBanChay(@RequestBody ThongKeRequest thongKeRequest){
         return new ResponseEntity<>(thongKeService.getSanPhamBanChay(thongKeRequest), HttpStatus.OK);
     }
