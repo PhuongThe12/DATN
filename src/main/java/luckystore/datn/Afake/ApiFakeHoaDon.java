@@ -78,10 +78,10 @@ public class ApiFakeHoaDon {
             BigDecimal tongTien = BigDecimal.ZERO;
             Set<HoaDonChiTiet> hoaDonChiTiets = new HashSet<>();
 
-            for (int j = 0; j < soLuong; j++) {
+            for (int j = 0; j < 4 && j < soLuong; j++) {
                 HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
-                hoaDonChiTiet.setDonGia(lstBienTheGiay.get(i).getGiaBan());
-                hoaDonChiTiet.setBienTheGiay(lstBienTheGiay.get(i));
+                hoaDonChiTiet.setDonGia(lstBienTheGiay.get(j).getGiaBan());
+                hoaDonChiTiet.setBienTheGiay(lstBienTheGiay.get(j));
                 hoaDonChiTiet.setTrangThai(1);
                 hoaDonChiTiet.setSoLuong(random.nextInt(5) + 1);
                 hoaDonChiTiet.setHoaDon(hoaDon);
