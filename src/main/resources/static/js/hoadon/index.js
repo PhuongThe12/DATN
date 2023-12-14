@@ -96,7 +96,6 @@ app.controller('hoaDonController', function ($scope, $http, $location) {
 
     $scope.detailHoaDon = function (id) {
         const hoaDon = $scope.hoaDons.find(item => item.id === id);
-        console.log($scope.hoaDons);
         if (hoaDon) {
             $scope.hoaDonDetail = hoaDon;
             $scope.hoaDonDetail.conLai = 0;
@@ -121,7 +120,7 @@ app.controller('hoaDonController', function ($scope, $http, $location) {
             $scope.hoaDonDetail.tongCong = $scope.hoaDonDetail.conLai + $scope.hoaDonDetail.tongTru + $scope.hoaDonDetail.tienShip;
 
             $scope.hoaDonDetail.trangThai = hoaDon.trangThai;
-            // getDetailDoiTra($scope.hoaDonDetail.id);
+            getDetailDoiTra($scope.hoaDonDetail.id);
 
         } else {
             toastr["error"]("Lấy dữ liệu thất bại. Vui lòng thử lại");
@@ -136,7 +135,16 @@ app.controller('hoaDonController', function ($scope, $http, $location) {
 
         $http.get(host + "/rest/admin/hoa-don/get-don-doi-tra/" + id)
             .then(function (response) {
-                console.log(response.data);
+                if (response.data) {
+                    response.data.forEach(item => {
+                        if (item.loaiHoaDon === 1) {
+                            $scope.hoaDonDoi = item;
+                        } else {
+                            $scope.hoaDonTra = item;
+                        }
+                    })
+                }
+
                 $scope.isLoading = false;
             })
             .catch(function (error) {

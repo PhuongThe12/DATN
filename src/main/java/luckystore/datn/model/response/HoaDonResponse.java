@@ -84,7 +84,7 @@ public class HoaDonResponse {
             this.email = hoaDon.getEmail();
             this.phiShip = hoaDon.getPhiShip();
             this.soDienThoaiNhan = hoaDon.getSoDienThoaiNhan();
-            this.diaChiNhan = hoaDon.getDiaChiNhan().trim();
+            this.diaChiNhan = hoaDon.getDiaChiNhan();
             this.trangThai = hoaDon.getTrangThai();
             this.ghiChu = hoaDon.getGhiChu();
             this.loaiHoaDon = hoaDon.getLoaiHoaDon();

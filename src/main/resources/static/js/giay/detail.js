@@ -62,6 +62,7 @@ app.controller('detailGiayController', function ($scope, $http, $location, $rout
         while (sizeButtons.firstChild) {
             sizeButtons.removeChild(sizeButtons.firstChild);
         }
+        console.log($scope.giayDetail);
         $scope.giayChoosed = {};
 
         if (mauSacImages.length === 0) {

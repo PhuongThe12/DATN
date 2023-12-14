@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.sql.Date;
 import java.util.List;
 
 @Data
@@ -18,9 +18,9 @@ public class KhuyenMaiRequest {
 
     private String ten;
 
-    private LocalDateTime ngayBatDau;
+    private Date ngayBatDau;
 
-    private LocalDateTime ngayKetThuc;
+    private Date ngayKetThuc;
 
     private String ghiChu;
 

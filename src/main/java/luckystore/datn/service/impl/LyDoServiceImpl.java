@@ -30,10 +30,14 @@ public class LyDoServiceImpl implements LyDoService {
     }
 
     @Override
-    public LyDoResponse insertOrUpate(LyDoRequest lyDoRequest) {
+    public LyDoResponse insert(LyDoRequest lyDoRequest) {
         checkWhenInsert(lyDoRequest);
         LyDo lyDo = new LyDo(lyDoRequest);
-        return new LyDoResponse(lyDoRepository.save(lyDo));
+        return new LyDoResponse(lyDoRepository.save(new LyDo(lyDoRequest)));
+    }
+    @Override
+    public LyDoResponse update(LyDoRequest lyDoRequest) {
+        return new LyDoResponse(lyDoRepository.save(new LyDo(lyDoRequest)));
     }
 
     private void checkWhenInsert(LyDoRequest lyDoRequest) {

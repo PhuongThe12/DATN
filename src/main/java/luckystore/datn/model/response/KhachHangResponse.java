@@ -56,4 +56,11 @@ public class KhachHangResponse {
         this.id = id;
         this.hoTen = ten;
     }
+
+    public KhachHangResponse(Long id, String hoTen, String soDienThoai, String email) {
+        this.id = id;
+        this.hoTen = hoTen;
+        this.soDienThoai = soDienThoai;
+        this.email = email;
+    }
 }
