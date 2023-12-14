@@ -11,9 +11,13 @@ import luckystore.datn.model.response.print.HoaDonPrintResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -101,6 +105,19 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
 
     @Query("select hd from HoaDon hd where hd.hoaDonGoc = :id")
     List<HoaDon> getHoaDonDoiTra(Long id);
+
+    @Query("select hd.id from HoaDon hd where hd.trangThai = 0 and hd.ngayThanhToan < :current ")
+    List<Long> getHoadonChuaHoanThanh(LocalDateTime current);
+
+
+    @Transactional
+    @Modifying
+    @Query(value = "update HoaDon hd set hd.trangThai = :daHuy, hd.ghiChu = :s where hd.id = :id")
+    void cancelHoaDon(@Param("id") Long id, @Param("daHuy") int daHuy, @Param("s") String s);
+
+    @Query("select new luckystore.datn.model.response.print.HoaDonPrintResponse(hd, 2) " +
+            "from HoaDon hd where hd.id = :maHD and hd.soDienThoaiNhan like %:sdt")
+    HoaDonPrintResponse getTraCuuDon(Long maHD, String sdt);
 }
 
 

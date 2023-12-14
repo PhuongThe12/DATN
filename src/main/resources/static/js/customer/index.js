@@ -27,6 +27,10 @@ app.config(function ($routeProvider, $locationProvider) {
         template: "<h1>Đang tiến hành thanh toán</h1>",
         controller: 'thanhToanStatusController'
     })
+        .when("/tra-cuu-don-hang", {
+            templateUrl: '/pages/user/views/tra-cuu-don-hang.html',
+            controller: 'traCuuDonHangController'
+        })
         .otherwise({redirectTo: '/list'});
 });
 
@@ -37,7 +41,6 @@ app.controller('thanhToanStatusController', function ($scope, $http, $location) 
         .then(response => {
             currentUser = response.data;
         })
-    console.log("current usser: ", currentUser);
     window.location.hash.split('&').toString().substr(1).split(",").forEach(item => {
         container[item.split("=")[0]] = decodeURIComponent(item.split("=")[1]) ? item.split("=")[1] : "No query strings available";
     });
@@ -243,6 +246,11 @@ app.controller('navbarController', function ($rootScope, $scope, $http, $locatio
 
     $scope.khachHangR = {};
     $scope.khachHangRegister = {};
+
+    $scope.togglePassword = function () {
+
+    }
+
     $scope.signUp = function () {
         $http.post(host + '/api/authentication/signup', $scope.khachHangR)
             .then(function (response) {
