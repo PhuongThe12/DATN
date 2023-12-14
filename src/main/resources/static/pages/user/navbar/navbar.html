@@ -15,10 +15,12 @@
     </div>
 </div>
 <div class="container-fluid">
-    <div class="d-flex align-items-center justify-content-center">
-        <img src="/img/logo_datn.png" width="30px" class="rounded" alt="">
-        <h5 class="fw-bold">LUCKYSTORE</h5>
-    </div>
+    <a href="#/list" style="color: black; text-decoration: none">
+        <div class="d-flex align-items-center justify-content-center">
+            <img src="/img/logo_datn.png" width="30px" class="rounded" alt="">
+            <h5 class="fw-bold mb-0">LUCKYSTORE</h5>
+        </div>
+    </a>
 </div>
 <nav class="navbar navbar-expand-lg p-3">
     <div class="container-fluid">
@@ -36,16 +38,32 @@
         <div class=" collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav ms-auto ">
                 <div>
-                    <a href=""><i class="far fa-user" style="color: black;font-size: 23px;"></i></a>
+                     <span ng-if="khachHang.hoTen">
+                      <span ng-click="logoutUser()" class="pointer">LogOut</span>  {{ khachHang.hoTen }}
+                    </span>
+                    <span class="pointer" data-bs-toggle="modal" data-bs-target="#exampleModal" id="loginbutton"
+                          ng-if="!khachHang.hoTen">
+                        Login
+                    </span>
+                    <a href="#/thong-tin-tai-khoan"><i class="far fa-user" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                       title="Quản lý tài khoản"
+                                                       style="color: black;font-size: 23px;"></i></a>
                 </div>
                 <div class="ps-3">
-                    <a href=""><i class="far fa-heart" style="color: black;font-size: 23px;"></i></a>
+                    <a href="#/tra-cuu-don-hang" data-bs-toggle="tooltip" data-bs-placement="top"
+                       title="Tra cứu thông tin hóa đơn"><i class="fas fa-file-invoice"
+                                                            style="color: black;font-size: 23px;"></i></a>
                 </div>
                 <div class="btn-group ps-3" style="cursor: pointer;">
-                    <div data-bs-toggle="dropdown" class="position-relative" ng-click="openCartDropdown()">
-                        <i class="fas fa-shopping-cart" style="color: black;font-size: 23px;"></i>
-                        <span style="position: absolute;top: -7px;padding: 4px 7px; background: #e50000;left: 20px;"
-                              class="badge badge-light">{{ gioHang.length }}</span>
+                    <div>
+                        <a href="#/cart"> <i class="fas fa-shopping-cart" style="color: black;font-size: 23px;"
+                                             data-bs-toggle="tooltip" data-bs-placement="top" title="Giỏ hàng"></i></a>
+                        <span style="position: absolute;
+    top: -17px;
+    padding: 4px 7px;
+    background: #e50000;
+    left: 27px;"
+                              class="badge badge-light">{{ listBienTheGiayLocalStorage.length }}</span>
                     </div>
 
 
@@ -94,3 +112,201 @@
         <div class="overlay" ng-show="isCartVisible"></div>
     </div>
 </nav>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content ">
+            <div class="modal-body py-5">
+                <h5>Đăng nhập </h5>
+                <form name="user" ng-submit="loginUser()">
+                    <div class="form-floating mb-3">
+                        <input type="email" ng-model="userLogin.tenDangNhap" class="form-control" id="email"
+                               placeholder="name@example.com" required>
+                        <label for="email">Địa chỉ Email</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" ng-model="userLogin.matKhau" class="form-control" id="password"
+                               placeholder="name@example.com" required>
+                        <label for="password">Mật khẩu</label>
+                    </div>
+                    <div class="mb-3">
+<!--                        <input type="checkbox" class="form-check-input" id="exampleCheck1">-->
+                        <a type="button" class="form-check-label" data-bs-target="#modalQuenMK"
+                           data-bs-toggle="modal" data-bs-dismiss="modal">Quên mật khẩu?</a>
+                    </div>
+                    <button type="submit" class="btn btn-custom">Đăng nhập</button>
+                    <button type="button" class="btn btn-outline-dark" data-bs-target="#exampleModalToggleLabel2"
+                            data-bs-toggle="modal" data-bs-dismiss="modal">Đăng ký
+                    </button>
+                    <!--                    <a class="btn btn-outline-dark" href="#/signup">Signup</a>-->
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2"
+     tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="display: none" id="closeModalR">Close</button>
+            <div class="modal-body py-5">
+                <h5>Đăng ký</h5>
+
+                <form name="khachHangDangKyForm" ng-submit="signUp()">
+                    <div class="row">
+                        <div class="form-group mb-3">
+                            <label for="khachHangHoTen">Tên</label>
+                            <input type="text" class="form-control" id="khachHangHoTen" name="hoTen"
+                                   ng-model="khachHangR.hoTen"
+                                   ng-maxlength="50" ng-required="true" ng-change="change(khachHangDangKyForm.hoTen)">
+                            <small class="error-message"
+                                   ng-show="(khachHangDangKyForm.hoTen.$dirty || khachHangDangKyForm.hoTen.$touched) && khachHangDangKyForm.hoTen.$error.required">Không
+                                được để
+                                trống tên</small>
+                            <small class="error-message"
+                                   ng-show="(khachHangDangKyForm.hoTen.$dirty || khachHangDangKyForm.hoTen.$touched) && khachHangDangKyForm.hoTen.$error.maxlength">Họ
+                                tên không được vượt quá 100 ký tự</small>
+                            <small class="error-message" ng-show="errors.ten">{{errors.ten}}</small>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label>Giới Tính: </label>
+                            <div class="form-check form-check-inline">
+                                <input type="radio" class="form-check-input"
+                                       style="width: 16px; height: 16px; margin-right: 0"
+                                       id="khachHangGioiTinh1" value="true"
+                                       name="gioiTinh"
+                                       ng-model="khachHangR.gioiTinh" ng-required="true"
+                                       ng-checked="khachHangR.gioiTinh != false">
+                                <label class="form-check-label" for="khachHangGioiTinh1">
+                                    Nam
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input type="radio" class="form-check-input"
+                                       style="width: 16px; height: 16px; margin-right: 0"
+                                       id="khachHangGioiTinh2" value="false"
+                                       name="gioiTinh"
+                                       ng-model="khachHangR.gioiTinh" ng-required="true"
+                                       ng-checked="khachHangR.gioiTinh == false">
+                                <label class="form-check-label" for="khachHangGioiTinh2">
+                                    Nữ
+                                </label>
+                            </div>
+                            <small class="error-message"
+                                   ng-show="(khachHangDangKyForm.gioiTinh.$dirty || khachHangDangKyForm.gioiTinh.$touched) && khachHangDangKyForm.gioiTinh.$error.required">
+                                Không được để trống giới tính</small>
+                            <small class="error-message"
+                                   ng-show="errors.gioiTinh && !khachHangDangKyForm.gioiTinh.$dirty">{{errors.gioiTinh}}</small>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="khachHangNgaySinh">Ngày Sinh: </label>
+                            <input type="date" class="form-control" id="khachHangNgaySinh" name="ngaySinh"
+                                   ng-model="khachHangR.ngaySinh" ng-required="true"
+                                   ng-change="change(khachHangDangKyForm.ngaySinh)">
+                            <small class="error-message"
+                                   ng-show="(khachHangDangKyForm.ngaySinh.$dirty || khachHangDangKyForm.ngaySinh.$touched) && khachHangDangKyForm.ngaySinh.$error.required">
+                                Không được để trống ngày sinh</small>
+                            <small class="error-message"
+                                   ng-show="errors.ngaySinh && !khachHangDangKyForm.ngaySinh.$dirty">{{errors.ngaySinh}}</small>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="khachHangSoDienThoai">Số điện thoại: </label>
+                            <input type="text" class="form-control" id="khachHangSoDienThoai" name="soDienThoai"
+                                   ng-model="khachHangR.soDienThoai" ng-required="true"
+                                   ng-change="change(khachHangDangKyForm.soDienThoai)" ng-pattern="/^0\d{9}$/">
+                            <small class="error-message"
+                                   ng-show="(khachHangDangKyForm.soDienThoai.$dirty || khachHangDangKyForm.soDienThoai.$touched) && khachHangDangKyForm.soDienThoai.$error.required">
+                                Không được để trống số điện thoại</small>
+                            <small ng-show="khachHangDangKyForm.soDienThoai.$error.pattern" class="error-message">Số điện
+                                thoại không đúng định
+                                dạng.</small>
+                            <small class="error-message"
+                                   ng-show="errors.soDienThoai && !khachHangDangKyForm.soDienThoai.$dirty">{{errors.soDienThoai}}</small>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="khachHangEmail">Email: </label>
+                            <input type="email" class="form-control" id="khachHangEmail" name="email"
+                                   ng-model="khachHangR.email" ng-required="true"
+                                   ng-change="change(khachHangDangKyForm.email)" ng-maxlength="50">
+                            <small class="error-message"
+                                   ng-show="(khachHangDangKyForm.email.$dirty || khachHangDangKyForm.email.$touched) && khachHangDangKyForm.email.$invalid">
+                                Email không đúng</small>
+                            <small class="error-message"
+                                   ng-show="errors.email && !khachHangDangKyForm.email.$dirty">{{errors.email}}</small>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="khachHangRPassword">Mật khẩu: </label>
+                            <div class="input-group">
+                            <input type="password" class="form-control" id="khachHangRPassword" name="password"
+                                   ng-model="khachHangR.password" ng-required="true" ng-minlength="6" ng-maxlength="50"
+                                   ng-change="change(khachHangDangKyForm.password)">
+
+                                <input type="checkbox" id="showPassR" style="display: none" ng-model="khachHangR.showPassR" ng-change="toggleShowPassR()">
+                                <label for="showPassR" type="button" class="input-group-text" id="basic-addon1">
+                                    <i class="fas fa-eye" ng-show="khachHangR.showPassR == true"></i>
+                                    <i class="fas fa-eye-slash" ng-show="khachHangR.showPassR == false"></i>
+                                </label>
+                            </div>
+                            <small class="error-message"
+                                   ng-show="(khachHangDangKyForm.password.$dirty || khachHangDangKyForm.password.$touched) && khachHangDangKyForm.password.$error.required">
+                                Không được để trống password</small>
+                            <small class="error-message" ng-show="(khachHangDangKyForm.password.$dirty || khachHangDangKyForm.password.$touched) && khachHangDangKyForm.password.$error.minlength">
+                                Mật khẩu phải trên 6 ký tự</small>
+                            <small class="error-message" ng-show="(khachHangDangKyForm.password.$dirty || khachHangDangKyForm.password.$touched) && khachHangDangKyForm.password.$error.maxlength">
+                                Mật khẩu không được quá 50 ký tự</small>
+                            <small class="error-message"
+                                   ng-show="errors.password && !khachHangDangKyForm.password.$dirty">{{errors.password}}</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Sign up</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalQuenMK" style="z-index: 1210" tabindex="-1" aria-labelledby="modalQuenMK" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Đặt lại mật khẩu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeModalForget"></button>
+            </div>
+            <div class="modal-body">
+                <form name="resetPasswordForm" ng-submit="resetPassword()">
+                    <div class="form-group mb-3">
+                        <label for="khachHangEmail">Email: </label>
+                        <input type="email" class="form-control" id="resetEmail" name="email"
+                               ng-model="resetTaiKhoan.email" ng-required="true"
+                               ng-change="change(resetPasswordForm.email)" ng-maxlength="50">
+                        <small class="error-message"
+                               ng-show="(resetPasswordForm.email.$dirty || resetPasswordForm.email.$touched) && resetPasswordForm.email.$invalid">
+                            Email không đúng</small>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="khachHangSoDienThoai">Số điện thoại: </label>
+                        <input type="text" class="form-control" id="resetSDT" name="soDienThoai"
+                               ng-model="resetTaiKhoan.soDienThoai" ng-required="true"
+                               ng-change="change(resetPasswordForm.soDienThoai)" ng-pattern="/^0\d{9}$/">
+                        <small class="error-message"
+                               ng-show="(resetPasswordForm.soDienThoai.$dirty || resetPasswordForm.soDienThoai.$touched) && resetPasswordForm.soDienThoai.$error.required">
+                            Không được để trống số điện thoại</small>
+                        <small ng-show="resetPasswordForm.soDienThoai.$error.pattern" class="error-message">Số điện
+                            thoại không đúng định
+                            dạng.</small>
+                    </div>
+                    <button type="submit" class="btn btn-custom">Đặt lại mật khẩu</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

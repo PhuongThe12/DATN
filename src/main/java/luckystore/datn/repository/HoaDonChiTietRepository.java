@@ -52,4 +52,7 @@ public interface HoaDonChiTietRepository extends JpaRepository<HoaDonChiTiet,Lon
 
     @Query("SELECT hdct FROM HoaDonChiTiet hdct JOIN FETCH hdct.bienTheGiay WHERE hdct.id = :id")
     HoaDonChiTiet getHoaDonChiTietWithBienTheGiay(Long id);
+
+    @Query("select hdct from HoaDonChiTiet hdct where hdct.hoaDon.id = :id")
+    List<HoaDonChiTiet> findAllByIdHoaDon(Long id);
 }

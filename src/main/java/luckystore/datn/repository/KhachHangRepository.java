@@ -42,4 +42,12 @@ public interface KhachHangRepository extends JpaRepository<KhachHang,Long> {
     Boolean existsByEmailAndIdNot(String email, Long id);
 
     KhachHang getKhachHangByTaiKhoanId(Long idTaiKhoan);
+
+    @Query("select count(tk.id) > 0 from TaiKhoan tk where tk.tenDangNhap = :email and tk.trangThai = 1")
+    boolean existsByEmailAndTrangThai(String email);
+
+    @Query("select kh from KhachHang kh where kh.email = :email")
+    KhachHang getByEmail(String email);
+    @Query("select kh from KhachHang kh where kh.email = :email and kh.soDienThoai = :sdt")
+    Optional<KhachHang> findByEmailAndSdt(String email, String sdt);
 }

@@ -43,8 +43,6 @@ app.controller('detailGiayController', function ($scope, $http, $location, $rout
     });
 
     function detailGiayChiTiet(productData) {
-
-
         $scope.giayDetail = productData;
         const mauSacImages = productData.mauSacImages;
         for (const key in mauSacImages) {
@@ -62,7 +60,6 @@ app.controller('detailGiayController', function ($scope, $http, $location, $rout
         while (sizeButtons.firstChild) {
             sizeButtons.removeChild(sizeButtons.firstChild);
         }
-        console.log($scope.giayDetail);
         $scope.giayChoosed = {};
 
         if (mauSacImages.length === 0) {

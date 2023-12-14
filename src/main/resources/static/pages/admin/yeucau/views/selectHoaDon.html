@@ -29,90 +29,108 @@
         <div class="container-fluid">
             <div class="row">
                 <!-- Nhóm Tìm Kiếm và Nút Tạo Yêu Cầu -->
-                <div class="col-md-6">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
-                        <select class="form-select" aria-label="Default select example" ng-model="typeSearch">
-                            <option value="1">ID</option>
-                            <option value="2">Tên Nhân Viên</option>
-                            <option value="3">Tên Khách Hàng</option>
-                            <option value="4">SĐT</option>
-                            <option value="5">Gmail</option>
-                        </select>
-                        <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3"
-                               placeholder="Nhập từ khóa" ng-model="textSearch">
-                    </div>
-                    <div class="d-flex justify-content-end">
-                        <button class="btn btn-custom mx-2" ng-click="search()">Tìm kiếm</button>
-                        <button class="btn btn-custom mx-2" ng-click="reset()">Nhập lại</button>
-                        <button class="btn btn-primary" type="button" ng-click="taoYeuCau()">
-                            <i class="fas fa-plus"></i>
-                            <span class="ps-2">Tạo Yêu Cầu</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Nhóm Tìm Kiếm Theo Ngày và Giá -->
-                <div class="col-md-6">
-                    <!-- Nhóm Tìm Kiếm Theo Ngày -->
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">Ngày Bắt Đầu/Kết Thúc</span>
-                        <input type="text" class="form-control" id="ngayBatDau">
-                        <input type="text" class="form-control" id="ngayKetThuc">
-                    </div>
-
-                    <!-- Nhóm Slider Giá -->
-                    <div class="input-group mb-3">
-                        <div class="form-floating">
-                            <select class="form-select" id="floatingSelect2" aria-label="Floating label select example"
-                                    ng-model="tongTien" onchange="searchByTotalMoney()">
-                                <option value="1">        < 500.000vnđ</option>
-                                <option value="2">  500.000vnđ - 100.000.000vnđ</option>
-                                <option value="3">1.000.000vnđ - 1.500.000vnđ</option>
-                                <option value="4">1.500.000vnđ - 2.000.000vnđ</option>
-                                <option value="5">2.000.000vnđ - 2.500.000vnđ</option>
-                                <option value="6">2.500.000vnđ - 3.000.000vnđ</option>
-                                <option value="7">      > 3.000.000vnđ</option>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text" id="basic-addon1" ng-show="typeSearch == 1"><i
+                                    class="fas fa-search"></i></span>
+                            <span class="input-group-text" id="basic-addon2" ng-show="typeSearch == 2"><i
+                                    class="fas fa-user-tie"></i> </span>
+                            <span class="input-group-text" id="basic-addon3" ng-show="typeSearch == 3"><i
+                                    class="fas fa-user"></i></span>
+                            <span class="input-group-text" id="basic-addon4" ng-show="typeSearch == 4"><i
+                                    class="fas fa-phone"></i></span>
+                            <span class="input-group-text" id="basic-addon5" ng-show="typeSearch == 5"><i
+                                    class="fas fa-at"></i></span>
+                            <select class="form-select" aria-label="Default select example" ng-model="typeSearch">
+                                <option value="1" selected>ID</option>
+                                <option value="2">Nhân Viên</option>
+                                <option value="3">Khách Hàng</option>
+                                <option value="4">SĐT</option>
+                                <option value="5">Gmail</option>
                             </select>
-                            <label for="floatingSelect2">Tổng Tiền</label>
+                            <input type="text" class="form-control" placeholder="Nhập từ khóa" ng-model="textSearch">
+                            <button class="btn btn-custom" ng-click="searchHoaDon()">Tìm kiếm</button>
+                            <button class="btn btn-custom" ng-click="resetTextSearch()">Nhập Lại</button>
                         </div>
                     </div>
                 </div>
+
+                <div class="col-md-3">
+                    <!-- Nhóm Tìm Kiếm Theo Ngày -->
+                    <div class="input-group mb-3">
+                        <input type="date" class="form-control" placeholder="Ngày bắt đầu"
+                               aria-label="Ngày bắt đầu" ng-model="ngayBatDau">
+                        <span class="input-group-text">Tới</span>
+                        <input type="date" class="form-control" placeholder="Ngày kết thúc"
+                               aria-label="Ngày kết thúc" ng-model="ngayKetThuc">
+                        <button class="btn btn-dark" ng-click="searchByDate()">Tìm</button>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <select class="form-select form-select-sm mb-3" aria-label="Large select example"
+                            style="height: 42px" ng-model="tongTienThanhToan" ng-change="searchByTotalMoney()">
+                        <option value="0" selected>Tổng tiền hóa đơn</option>
+                        <option value="1"> 0 - 500.000</option>
+                        <option value="2"> 500.000 - 100.000.000</option>
+                        <option value="3">1.000.000 - 1.500.000</option>
+                        <option value="4">1.500.000 - 2.000.000</option>
+                        <option value="5">2.000.000 - 2.500.000</option>
+                        <option value="6">2.500.000 - 3.000.000</option>
+                        <option value="7">3.000.000 ></option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <button class="btn btn-dark" type="button" ng-click="taoYeuCau()">
+                        <i class="fas fa-plus"></i>
+                        <span class="ps-2">Đổi/Trả</span>
+                    </button>
+                    <a type="button" class="btn btn-dark" href="#/list"><i class="fas fa-chevron-left"></i> Trở Về </a>
+                </div>
+
             </div>
         </div>
+    </div>
 
 
-        <div class="d-flex justify-content-start">
-            <div class="custom-radio">
-                <input type="radio" id="all" name="loaiHoaDon" ng-model="loaiHoaDon" value="0"
-                       ng-checked="loaiHoaDon != 1 && loaiHoaDon != 2" ng-change="changeRadioLoaiHoaDon()">
-                <label class="radio-label" for="all">Tất cả</label>
-            </div>
-
-            <div class="custom-radio">
-                <input type="radio" id="active" name="loaiHoaDon" ng-model="loaiHoaDon" value="1"
-                       ng-checked="loaiHoaDon == 1" ng-change="changeRadioLoaiHoaDon(1)">
-                <label class="radio-label" for="active">Hóa Đơn Mua</label>
-            </div>
-
-            <div class="custom-radio">
-                <input type="radio" id="disable" name="loaiHoaDon" ng-model="loaiHoaDon" value="2"
-                       ng-checked="loaiHoaDon == 2" ng-change="changeRadioLoaiHoaDon(2)">
-                <label class="radio-label" for="disable">Hóa Đơn Đổi</label>
-            </div>
-
-            <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
-                <label class="form-check-label" for="flexSwitchCheckDefault" id="switchLabel">Tại Quầy</label>
-            </div>
-
+    <div class="d-flex justify-content-start" style="padding-left: 10px">
+        <div class="custom-radio">
+            <input type="radio" id="all" name="loaiHoaDon" ng-model="loaiHoaDon" value="null"
+                   ng-checked="loaiHoaDon != 1 && loaiHoaDon != 2" ng-change="changeRadioLoaiHoaDon()">
+            <label class="radio-label" for="all">Tất cả</label>
         </div>
-        <div>
-            <form name="listHoaDonSelected">
-                <table class="table align-middle text-center" border="1">
+
+        <div class="custom-radio">
+            <input type="radio" id="active" name="loaiHoaDon" ng-model="loaiHoaDon" value="1"
+                   ng-checked="loaiHoaDon == 1" ng-change="changeRadioLoaiHoaDon()">
+            <label class="radio-label" for="active">Hóa Đơn Mua</label>
+        </div>
+
+        <div class="custom-radio">
+            <input type="radio" id="disable" name="loaiHoaDon" ng-model="loaiHoaDon" value="2"
+                   ng-checked="loaiHoaDon == 2" ng-change="changeRadioLoaiHoaDon()">
+            <label class="radio-label" for="disable">Hóa Đơn Đổi</label>
+        </div>
+
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+            <label class="form-check-label" for="flexSwitchCheckDefault" id="switchLabel">Tại Quầy</label>
+        </div>
+
+    </div>
+    <div>
+        <div class="change-product-table table-responsive">
+            <table class="table table-hover table-borderless mw-100 fixed-header"
+                   border="1">
+                <thead>
                     <tr>
-                        <th>Mã Hóa đơn</th>
+                        <th>STT</th>
+                        <th>Hóa đơn</th>
+                        <th>Hóa đơn gốc</th>
                         <th>Khách Hàng</th>
+                        <th>Số điện thoại</th>
                         <th>Nhân Viên</th>
                         <th>Kênh Bán</th>
                         <th>Loại Hóa Đơn</th>
@@ -121,34 +139,35 @@
                         <th>Trạng Thái</th>
                         <th>Chọn</th>
                     </tr>
-
-                    <tr ng-repeat="hoaDon in listHoaDon">
+                </thead>
+                <tbody ng-repeat="(index,hoaDon) in listHoaDon">
+                    <tr>
+                        <td class="text-center">{{index+1}}</td>
                         <td><a>{{hoaDon.loaiHoaDon == 1? "HD" : "HD_HDD"}}{{hoaDon.id}}</a></td>
+                        <td><a ng-show="hoaDon.hoaDonGoc">{{hoaDon.hoaDonGoc}}</a></td>
                         <td>{{hoaDon.khachHang.hoTen}}</td>
+                        <td>{{hoaDon.khachHang.soDienThoai}}</td>
                         <td>{{hoaDon.nhanVien.hoTen}}</td>
                         <td>{{hoaDon.kenhBan ==1?"online":"Tại Quầy"}}</td>
                         <td>{{hoaDon.loaiHoaDon==1?"Hóa Đơn Mua":hoaDon.loaiHoaDon==2?"Hóa Đơn
                             Đổi":hoaDon.loaiHoaDon==3?"Hóa
                             Đơn Trả Hàng - Hòa Tiền":"Hóa Đơn Trả Hàng - Đổi Mới"}}
                         </td>
-                        <td>{{ hoaDon.tongTien | formatToVND }}</td>
+                        <td class="text-center">{{ hoaDon.tongTienKhachThanhToan | formatToVND }}</td>
                         <td>{{ hoaDon.ngayTao | formatDate}}</td>
-                        <td>{{hoaDon.trangThai==1?"Đã Hoàn Thành":hoaDon.trangThai==2?"Đã Xét
-                            Duyệt":hoaDon.trangThai==3?"Đã
-                            Hoàn Thành":"Bị Hủy"}}
+                        <td>{{hoaDon.trangThai==5?"Đã Hoàn Thành":"Trạng Thái Khác"}}
                         </td>
-                        <td><input type="radio" name="hoaDonGroup" ng-click="chonHoaDon(hoaDon)"></td>
+                        <td><input type="radio" name="hoaDonGroup" ng-click="selectedHoaDon(hoaDon)"></td>
                     </tr>
-                </table>
-                <div>
-                    <button type="button" class="btn btn-primary" ng-click="troVe()">Trở Về</button>
-                </div>
-                <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages" data-current-page="curPage"
-                     data-max-size="maxSize"
-                     data-boundary-links="true">
-                </div>
-            </form>
+                </tbody>
+
+            </table>
+        </div>
+        <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages" data-current-page="curPage"
+             data-max-size="maxSize"
+             data-boundary-links="true">
         </div>
     </div>
+</div>
 </div>
 

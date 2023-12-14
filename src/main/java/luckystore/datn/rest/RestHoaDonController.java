@@ -51,12 +51,6 @@ public class RestHoaDonController {
 
     @PostMapping("/yeu-cau")
     public ResponseEntity getPageHoaDonYeuCauPage(@RequestBody HoaDonSearch hoaDonSearch) {
-        if (hoaDonSearch.getNgayBatDau() != null) {
-            hoaDonSearch.setNgayBatDau(hoaDonSearch.getNgayBatDau().toLocalDate().atStartOfDay());
-        }
-        if (hoaDonSearch.getNgayKetThuc() != null) {
-            hoaDonSearch.setNgayBatDau(LocalDateTime.of(hoaDonSearch.getNgayKetThuc().toLocalDate(), LocalTime.MAX));
-        }
         return new ResponseEntity<>(hoaDonService.getPageHoaDonYeuCau(hoaDonSearch), HttpStatus.OK);
     }
 
@@ -162,6 +156,11 @@ public class RestHoaDonController {
     @PostMapping("/get-all-order-ngay-thanh-toan")
     public ResponseEntity<?> getAllOrderNgayThanhToan(@RequestBody HoaDonSearchP hoaDonSearch) {
         return new ResponseEntity<>(hoaDonService.getAllBySearchOrderNgayThanhToan(hoaDonSearch), HttpStatus.OK);
+    }
+
+    @GetMapping("/get-tra-cuu-don")
+    public ResponseEntity<?> getTraCuuDon(@RequestParam("maHD") Long maHD, @RequestParam("sdt") String sdt) {
+        return new ResponseEntity<>(hoaDonService.getTraCuuDon(maHD, sdt), HttpStatus.OK);
     }
 
     @GetMapping("/khach-hang/{idKhachHang}")

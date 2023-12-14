@@ -1,11 +1,12 @@
 package luckystore.datn.service.impl;
 
-
-import luckystore.datn.constraints.*;
 import luckystore.datn.entity.*;
+import luckystore.datn.infrastructure.constraints.*;
 import luckystore.datn.infrastructure.security.session.SessionService;
 import luckystore.datn.model.request.YeuCauChiTietRequest;
 import luckystore.datn.model.request.YeuCauRequest;
+import luckystore.datn.model.request.YeuCauSearch;
+import luckystore.datn.model.response.HoaDonYeuCauRespone;
 import luckystore.datn.model.response.YeuCauResponse;
 import luckystore.datn.repository.*;
 import luckystore.datn.service.ImageHubService;
@@ -14,11 +15,10 @@ import luckystore.datn.service.YeuCauService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -83,13 +83,14 @@ public class YeuCauServiceIplm implements YeuCauService {
 
     @Override
     public YeuCauResponse confirmYeuCau(YeuCauRequest yeuCauRequest) {
-        Long nguoiSuaAndThucHien = sessionService.getAdmintrator() == null ? null : sessionService.getAdmintrator().getId();
+        Long nguoiSuaAndThucHien = sessionService.getAdmintrator().getId() == null ? null : sessionService.getAdmintrator().getId();
         YeuCau yeuCauGoc = yeuCauRepository.findById(yeuCauRequest.getId()).orElse(null);
 
-        YeuCau yeuCauSaved = YeuCau.builder().id(yeuCauGoc.getId()).hoaDon(yeuCauGoc.getHoaDon()).nguoiThucHien(nguoiSuaAndThucHien).trangThai(TrangThaiYeuCau.DA_XAC_NHAN).ngayTao(yeuCauGoc.getNgayTao()).ngaySua(LocalDateTime.now()).ghiChu(yeuCauRequest.getGhiChu()).hoaDonDoiTra(null).thongTinNhanHang(yeuCauGoc.getThongTinNhanHang()).phiShip(yeuCauGoc.getPhiShip()).nguoiTao(yeuCauGoc.getNguoiTao()).nguoiSua(nguoiSuaAndThucHien).build();
+        YeuCau yeuCauSaved = YeuCau.builder().id(yeuCauGoc.getId()).hoaDon(yeuCauGoc.getHoaDon()).nguoiThucHien(nguoiSuaAndThucHien).trangThai(TrangThaiYeuCau.DA_XAC_NHAN).ngayTao(yeuCauGoc.getNgayTao()).ngaySua(LocalDateTime.now()).ghiChu(yeuCauRequest.getGhiChu()).thongTinNhanHang(yeuCauGoc.getThongTinNhanHang()).phiShip(yeuCauGoc.getPhiShip()).nguoiTao(yeuCauGoc.getNguoiTao()).nguoiSua(nguoiSuaAndThucHien).build();
 
 
         List<YeuCauChiTiet> listYeuCauChiTiet = new ArrayList<>();
+
 
         for (YeuCauChiTietRequest ycctRequest : yeuCauRequest.getListYeuCauChiTiet()) {
 
@@ -109,117 +110,167 @@ public class YeuCauServiceIplm implements YeuCauService {
                     bienTheGiayRepository.save(bienTheGiayTra);
                 }
 
-                hoaDonChiTietUpdate.setSoLuongTra(hoaDonChiTietUpdate.getSoLuongTra() + 1);
-
-
                 if (ycctRequest.getLoaiYeuCauChiTiet() == 1) { // Đổi Giày
                     bienTheGiayDoi.setSoLuong(bienTheGiayDoi.getSoLuong() - 1);//trừ sản phẩm đổi trong db
-                    YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(bienTheGiayDoi).lyDo(lyDoUpdate).tienGiam(ycctRequest.getTienGiam()).thanhTien(ycctRequest.getThanhTien()).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).trangThai(TrangThaiYeuCauChiTiet.DA_XAC_NHAN_DA_XAC_NHAN).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).ghiChu(ycctRequest.getGhiChu()).build();
+                    YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(bienTheGiayDoi).lyDo(lyDoUpdate).trangThai(TrangThaiYeuCauChiTiet.DEFAULT).ghiChu(ycctRequest.getGhiChu()).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).tienGiam(ycctRequest.getTienGiam()).thanhTien(ycctRequest.getThanhTien()).build();
                     listYeuCauChiTiet.add(yeuCauChiTietSaved);
                 } else if (ycctRequest.getLoaiYeuCauChiTiet() == 2) { //nếu trả
 
                     if (bienTheGiayDoi != null) { //Trả hàng - Từ chối đổi
-                        YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(bienTheGiayDoi).lyDo(lyDoUpdate).tienGiam(ycctRequest.getTienGiam()).thanhTien(ycctRequest.getThanhTien()).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).trangThai(TrangThaiYeuCauChiTiet.DA_XAC_NHAN_HUY).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).ghiChu(ycctRequest.getGhiChu()).build();
+                        YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(bienTheGiayDoi).lyDo(lyDoUpdate).trangThai(TrangThaiYeuCauChiTiet.HUY_DOI).ghiChu(ycctRequest.getGhiChu()).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).tienGiam(ycctRequest.getTienGiam()).thanhTien(ycctRequest.getThanhTien()).build();
                         listYeuCauChiTiet.add(yeuCauChiTietSaved);
                     } else { //Trả bình thường
-                        YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(null).lyDo(lyDoUpdate).tienGiam(BigDecimal.ZERO).thanhTien(ycctRequest.getThanhTien()).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).trangThai(TrangThaiYeuCauChiTiet.DA_XAC_NHAN_DA_XAC_NHAN).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).ghiChu(ycctRequest.getGhiChu()).build();
+                        YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(null).lyDo(lyDoUpdate).trangThai(TrangThaiYeuCauChiTiet.DEFAULT).ghiChu(ycctRequest.getGhiChu()).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).tienGiam(ycctRequest.getTienGiam()).thanhTien(ycctRequest.getThanhTien()).build();
                         listYeuCauChiTiet.add(yeuCauChiTietSaved);
                     }
 
                 }
-            } else { // nếu là hủy = từ chối
-                YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(bienTheGiayDoi).lyDo(lyDoUpdate).tienGiam(ycctRequest.getTienGiam()).thanhTien(ycctRequest.getThanhTien()).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).trangThai(TrangThaiYeuCauChiTiet.DA_HUY_DA_HUY).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).ghiChu(ycctRequest.getGhiChu()).build();
+            } else { // từ chối trả = từ chối yêu cầu
+                hoaDonChiTietUpdate.setSoLuongTra(hoaDonChiTietUpdate.getSoLuongTra() - 1);
+                hoaDonChiTietRepository.save(hoaDonChiTietUpdate);
+                YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(bienTheGiayDoi).lyDo(lyDoUpdate).trangThai(TrangThaiYeuCauChiTiet.HUY_TRA).ghiChu(ycctRequest.getGhiChu()).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).tienGiam(ycctRequest.getTienGiam()).thanhTien(ycctRequest.getThanhTien()).build();
                 listYeuCauChiTiet.add(yeuCauChiTietSaved);
             }
         }
 
-        taoHoaDon(yeuCauSaved, listYeuCauChiTiet);//đồng thời tạo hóa đơn đổi/trả
-
         yeuCauSaved.setListYeuCauChiTiet(listYeuCauChiTiet);
-        return new YeuCauResponse(yeuCauRepository.save(yeuCauSaved));
+        YeuCau yeuCau = yeuCauRepository.save(yeuCauSaved);
+        if (yeuCau != null && !yeuCau.getListYeuCauChiTiet().isEmpty()) {
+            taoHoaDon(yeuCau, listYeuCauChiTiet);//đồng thời tạo hóa đơn đổi/trả
+        }
+        return null;
     }
 
 
-    private void taoHoaDon(YeuCau yeuCauSaved, List<YeuCauChiTiet> listYeuCauChiTiet) {
-        System.out.println("Hóa đơn: " + yeuCauSaved.getHoaDon().getId());
-        HoaDon hoaDon = yeuCauSaved.getHoaDon();
+    private void taoHoaDon(YeuCau yeuCau, List<YeuCauChiTiet> listYeuCauChiTiet) {
+        HoaDon hoaDon = yeuCau.getHoaDon();
         KhachHang khachHang = hoaDon.getKhachHang();
 
         // người tạo
+        Long nguoiTao = sessionService.getAdmintrator().getId() == null ? null : sessionService.getAdmintrator().getId();
+        NhanVien nhanVien = nguoiTao != null ? nhanVienRepository.findById(nguoiTao).orElse(null) : null;
+        LocalDateTime ngayHienTai = LocalDateTime.now();
         BigDecimal tienGiam = BigDecimal.ZERO;
 
         Set<HoaDonChiTiet> listHoaDonChiTietTra = new HashSet<>();
         Set<HoaDonChiTiet> listHoaDonChiTietDoi = new HashSet<>();
-        for (YeuCauChiTiet ycct : listYeuCauChiTiet) {
-            if (ycct.getLoaiYeuCauChiTiet() == 1) { //tạo hóa đơn chi tiết đổi
-                tienGiam = tienGiam.add(ycct.getTienGiam() == null ? BigDecimal.ZERO : ycct.getTienGiam());
 
-                Integer soLuongDoi = 0;
-                Integer soLuongTra = 0;
-                for (YeuCauChiTiet ycct1 : listYeuCauChiTiet) { //tính tổng số lượng Đổi và thành tiền
-                    if (ycct1.getId() == ycct.getId()) {
-                        soLuongDoi += 1;
-                    }
-                    if (ycct1.getHoaDonChiTiet().getBienTheGiay().getId() == ycct.getHoaDonChiTiet().getBienTheGiay().getId()) {
-                        soLuongTra += 1;
-                    }
-                }
+        Map<BienTheGiay, HoaDonChiTiet> mapHoaDonChiTietDoi = new HashMap<>();
+        Map<BienTheGiay, HoaDonChiTiet> mapHoaDonChiTietTra = new HashMap<>();
+
+        for (YeuCauChiTiet ycct : listYeuCauChiTiet) {
+
+            if (ycct.getLoaiYeuCauChiTiet() == 1) { //tạo hóa đơn chi tiết đổi     loại =1
+
+                tienGiam = tienGiam.add(ycct.getTienGiam() == null ? BigDecimal.ZERO : ycct.getTienGiam());
                 BigDecimal donGia = ycct.getBienTheGiay().getGiaBan().subtract(ycct.getTienGiam() == null ? BigDecimal.ZERO : ycct.getTienGiam());
+
                 HoaDonChiTiet hoaDonChiTietDoi = HoaDonChiTiet.builder()
                         .bienTheGiay(ycct.getBienTheGiay())
                         .donGia(donGia)
-                        .soLuong(soLuongDoi)
-                        .trangThai(TrangThaiHoaDonChiTiet.HOA_DON_CHI_TIET_DOI)
-                        .ghiChu(ycct.getLyDo().getTen()).soLuongTra(0)
+                        .soLuong(1)
+                        .trangThai(1)
+                        .soLuongTra(0)
                         .build();
-                listHoaDonChiTietDoi.add(hoaDonChiTietDoi);
+                BienTheGiay key = hoaDonChiTietDoi.getBienTheGiay();
+                if (mapHoaDonChiTietDoi.containsKey(key)) {
+                    HoaDonChiTiet existing = mapHoaDonChiTietDoi.get(key);
+                    existing.setSoLuong(existing.getSoLuong() + 1);
+                } else {
+                    mapHoaDonChiTietDoi.put(key, hoaDonChiTietDoi);
+                    listHoaDonChiTietDoi.add(hoaDonChiTietDoi);
+                }
 
                 HoaDonChiTiet hoaDonChiTietTra = HoaDonChiTiet.builder()
                         .bienTheGiay(ycct.getHoaDonChiTiet().getBienTheGiay())
-                        .donGia(ycct.getThanhTien()).soLuong(soLuongTra)
-                        .trangThai(TrangThaiHoaDonChiTiet.HOA_DON_CHI_TIET_TRA)
+                        .donGia(ycct.getThanhTien())
+                        .soLuong(1)
+                        .trangThai(0)
+                        .soLuongTra(0)
+                        .build();
+
+                key = hoaDonChiTietTra.getBienTheGiay();
+                if (mapHoaDonChiTietTra.containsKey(key)) {
+                    HoaDonChiTiet existing = mapHoaDonChiTietTra.get(key);
+                    existing.setSoLuong(existing.getSoLuong() + 1);
+                } else {
+                    mapHoaDonChiTietTra.put(key, hoaDonChiTietTra);
+                    listHoaDonChiTietTra.add(hoaDonChiTietTra);
+                    listHoaDonChiTietDoi.add(hoaDonChiTietTra);
+                }
+
+            } else if (ycct.getLoaiYeuCauChiTiet() == 2) { // tạo hóa đơn chi tiết trả
+
+                HoaDonChiTiet hoaDonChiTietTra = HoaDonChiTiet.builder()
+                        .bienTheGiay(ycct.getHoaDonChiTiet().getBienTheGiay())
+                        .donGia(ycct.getThanhTien())
+                        .soLuong(1)
+                        .trangThai(0)
                         .ghiChu(ycct.getLyDo().getTen())
                         .soLuongTra(0)
                         .build();
-                listHoaDonChiTietTra.add(hoaDonChiTietTra);
-            }else if (ycct.getLoaiYeuCauChiTiet() == 2) { // tạo hóa đơn chi tiết trả
 
-                Integer soLuongTra = 0;
-                for (YeuCauChiTiet ycct1 : listYeuCauChiTiet) { //tính tổng số lượng trả và thành tiền
-                    if (ycct1.getHoaDonChiTiet().getBienTheGiay().getId() == ycct.getHoaDonChiTiet().getBienTheGiay().getId()) {
-                        soLuongTra += 1;
-                    }
+                BienTheGiay key = hoaDonChiTietTra.getBienTheGiay();
+                if (mapHoaDonChiTietTra.containsKey(key)) {
+                    HoaDonChiTiet existing = mapHoaDonChiTietTra.get(key);
+                    existing.setSoLuong(existing.getSoLuong() + 1);
+                } else {
+                    mapHoaDonChiTietTra.put(key, hoaDonChiTietTra);
+                    listHoaDonChiTietTra.add(hoaDonChiTietTra);
                 }
-                HoaDonChiTiet hoaDonChiTietTra = HoaDonChiTiet.builder().bienTheGiay(ycct.getHoaDonChiTiet().getBienTheGiay()).donGia(ycct.getThanhTien()).soLuong(soLuongTra).trangThai(TrangThaiHoaDonChiTiet.HOA_DON_CHI_TIET_TRA).ghiChu(ycct.getLyDo().getTen()).soLuongTra(0).build();
-                listHoaDonChiTietTra.add(hoaDonChiTietTra);
-            }
 
+            }
         }
 
-        if (listHoaDonChiTietTra.size() > 0) { //tạo hóa đơn trả
+        if (!listHoaDonChiTietTra.isEmpty()) { //tạo hóa đơn trả
 
-            HoaDon hoaDonTra = HoaDon.builder().hoaDonGoc(hoaDon.getId()).khachHang(khachHang).nhanVien(null).email(khachHang.getEmail()).ngayTao(LocalDateTime.now()).kenhBan(KenhBan.ONLINE).trangThai(TrangThaiHoaDon.CHUA_THANH_TOAN).ghiChu("Hóa Đơn Trả: HD" + hoaDon.getId()).loaiHoaDon(3).build();
+            HoaDon hoaDonTra = HoaDon.builder()
+                    .hoaDonGoc(hoaDon.getId()) //hóa đơn gốc
+                    .khachHang(khachHang)
+                    .nhanVien(nhanVien)
+                    .email(khachHang.getEmail())
+                    .ngayTao(ngayHienTai)
+                    .kenhBan(KenhBan.ONLINE)
+                    .trangThai(TrangThaiHoaDon.CHUA_THANH_TOAN)
+                    .loaiHoaDon(LoaiHoaDon.HOA_DON_TRA)
+                    .ghiChu("" + yeuCau.getId())
+                    .uuDai(0)
+                    .tienGiam(BigDecimal.ZERO)
+                    .build();
+
             for (HoaDonChiTiet hoaDonChiTietTra : listHoaDonChiTietTra) {
                 hoaDonChiTietTra.setHoaDon(hoaDonTra);
             }
+
             hoaDonTra.setListHoaDonChiTiet(listHoaDonChiTietTra);
-            hoaDonRepository.save(hoaDonTra);
+
+            hoaDonRepository.save(hoaDonTra); // save hóa đơn trả
 
         }
 
-        if (listHoaDonChiTietDoi.size() > 0) { //tạo hóa đơn đổi
-            String[] phanTach = yeuCauSaved.getThongTinNhanHang().split("-", 3);
-            String tenNguoiNhan = phanTach[0]; // Phần 1 (tên)
-            String sdtNhan = phanTach[1]; // Phần 2 (số điện thoại)
-            String diaChiNhan = phanTach[2]; // Phần 3 (địa chỉ)
+        if (!listHoaDonChiTietDoi.isEmpty()) { //tạo hóa đơn đổi
+            String[] thongTinNhanHang = yeuCau.getThongTinNhanHang().split("-");
 
-            for (HoaDonChiTiet hoaDonChiTietTra : listHoaDonChiTietTra) {
-                if (hoaDonChiTietTra != null) {
-                    listHoaDonChiTietDoi.add(hoaDonChiTietTra);
-                }
-            }
+            String tenNguoiNhan = thongTinNhanHang[0]; // Phần 1 (tên)
+            String sdtNhan = thongTinNhanHang[1]; // Phần 2 (số điện thoại)
+            String diaChiNhan = thongTinNhanHang[2]; // Phần 3 (địa chỉ)
 
-            HoaDon hoaDonDoi = HoaDon.builder().hoaDonGoc(hoaDon.getId()).khachHang(khachHang).nhanVien(null).email(khachHang.getEmail()).ngayTao(LocalDateTime.now()).phiShip(yeuCauSaved.getPhiShip()).soDienThoaiNhan(sdtNhan).diaChiNhan(diaChiNhan).kenhBan(KenhBan.ONLINE).trangThai(TrangThaiHoaDon.CHUA_THANH_TOAN).ghiChu("Hóa Đơn Đổi: HD" + hoaDon.getId()).loaiHoaDon(2).tienGiam(tienGiam).build();
+            HoaDon hoaDonDoi = HoaDon.builder()
+                    .hoaDonGoc(hoaDon.getId())
+                    .khachHang(khachHang)
+                    .nhanVien(nhanVien)
+                    .email(khachHang.getEmail())
+                    .ngayTao(ngayHienTai)
+                    .phiShip(yeuCau.getPhiShip())
+                    .soDienThoaiNhan(sdtNhan)
+                    .diaChiNhan(diaChiNhan)
+                    .kenhBan(KenhBan.ONLINE)
+                    .trangThai(TrangThaiHoaDon.CHUA_THANH_TOAN)
+                    .ghiChu("" + yeuCau.getId())
+                    .loaiHoaDon(LoaiHoaDon.HOA_DON_DOI)
+                    .uuDai(0)
+                    .tienGiam(tienGiam)
+                    .build();
 
             for (HoaDonChiTiet hoaDonChiTietDoi : listHoaDonChiTietDoi) {
                 hoaDonChiTietDoi.setHoaDon(hoaDonDoi);
@@ -227,7 +278,6 @@ public class YeuCauServiceIplm implements YeuCauService {
 
             hoaDonRepository.save(hoaDonDoi);
         }
-
     }
 
     @Override
@@ -246,9 +296,12 @@ public class YeuCauServiceIplm implements YeuCauService {
         for (YeuCauChiTietRequest ycctRequest : yeuCauRequest.getListYeuCauChiTiet()) {
             YeuCauChiTiet yeuCauChiTiet = yeuCauChiTietRepository.findById(ycctRequest.getId()).orElse(null);
             yeuCauChiTiet.setLoaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet());
-            yeuCauChiTiet.setTrangThai(TrangThaiYeuCauChiTiet.DA_HUY_DA_HUY);
+            yeuCauChiTiet.setTrangThai(TrangThaiYeuCauChiTiet.HUY_TRA);
             yeuCauChiTiet.setTinhTrangSanPham(ycctRequest.getTinhTrangSanPham());
             yeuCauChiTietRepository.save(yeuCauChiTiet);
+            HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findById(ycctRequest.getHoaDonChiTiet()).orElse(null);
+            hoaDonChiTiet.setSoLuongTra(hoaDonChiTiet.getSoLuongTra() - 1);
+            hoaDonChiTietRepository.save(hoaDonChiTiet);
         }
 
         return new YeuCauResponse(yeuCauRepository.save(yeuCauSaved));
@@ -302,25 +355,104 @@ public class YeuCauServiceIplm implements YeuCauService {
     }
 
     @Override
-    public Page<YeuCauResponse> getPage(Integer page, Long searchText, LocalDateTime ngayBatDau, LocalDateTime ngayKetThuc, Integer trangThai) {
-        return yeuCauRepository.getPageResponse(PageRequest.of((page - 1), 5), searchText, ngayBatDau, ngayKetThuc, trangThai);
+    public Page<YeuCauResponse> getPage(YeuCauSearch yeuCauSearch) {
+        Pageable pageable = PageRequest.of(yeuCauSearch.getCurrentPage() - 1, yeuCauSearch.getPageSize());
+        if (yeuCauSearch.getNgayKetThuc() != null) {
+            yeuCauSearch.setNgayKetThuc(yeuCauSearch.getNgayKetThuc().withHour(23).withMinute(59).withSecond(59));
+        }
+        return yeuCauRepository.getPageResponse(pageable, yeuCauSearch);
     }
 
+    @Override
+    public YeuCauResponse traHangNhanh(YeuCauRequest yeuCauRequest) {
+        LocalDateTime ngayHienTai = LocalDateTime.now();
+        Long nguoiThucHien = sessionService.getAdmintrator() == null ? null : sessionService.getAdmintrator().getId();
+        NhanVien nhanVien = nhanVienRepository.findById(nguoiThucHien).orElse(null);
+        HoaDon hoaDon = hoaDonRepository.findById(yeuCauRequest.getHoaDon()).orElse(null);
+        YeuCau yeuCau = YeuCau.builder()
+                .hoaDon(hoaDon)
+                .nguoiThucHien(nhanVien.getId())
+                .trangThai(TrangThaiYeuCau.DA_XAC_NHAN)
+                .thongTinNhanHang(null)
+                .phiShip(BigDecimal.ZERO)
+                .ngayTao(ngayHienTai)
+                .ngaySua(ngayHienTai)
+                .ghiChu(yeuCauRequest.getGhiChu())
+                .nguoiTao(nhanVien.getId())
+                .nguoiSua(nhanVien.getId())
+                .tienKhachTra(yeuCauRequest.getTienKhachTra())
+                .build();
 
-    public Date fomatDate(Date date, String string) {
-
-        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
-        String date1 = sdf1.format(date);
-        //2023-10-26 + 23:59:59
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        try {
-            // Chuyển đổi chuỗi thành đối tượng Date
-            return sdf.parse(date1 + string);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        List<YeuCauChiTiet> listYeuCauChiTiet = new ArrayList<>();
+        for (YeuCauChiTietRequest ycct : yeuCauRequest.getListYeuCauChiTiet()) {
+            HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findById(ycct.getHoaDonChiTiet()).orElse(null);
+            LyDo lyDo = lyDoRepository.findById(ycct.getLyDo()).orElse(null);
+            YeuCauChiTiet yeuCauChiTiet = YeuCauChiTiet.builder()
+                    .yeuCau(yeuCau)
+                    .hoaDonChiTiet(hoaDonChiTiet)
+                    .bienTheGiay(null)
+                    .lyDo(lyDo)
+                    .tienGiam(BigDecimal.ZERO)
+                    .thanhTien(ycct.getThanhTien())
+                    .trangThai(TrangThaiYeuCauChiTiet.DEFAULT)
+                    .tinhTrangSanPham(ycct.getTinhTrangSanPham())
+                    .loaiYeuCauChiTiet(2)
+                    .ghiChu(ycct.getGhiChu())
+                    .build();
+            listYeuCauChiTiet.add(yeuCauChiTiet);
         }
+
+        yeuCau.setListYeuCauChiTiet(listYeuCauChiTiet);
+
+        YeuCau yeuCauSaved = yeuCauRepository.save(yeuCau);
+
+
+        //tạo hóa đơn trả
+        HoaDon hoaDonTra = HoaDon.builder()
+                .hoaDonGoc(hoaDon.getId())
+                .khachHang(hoaDon.getKhachHang())
+                .nhanVien(nhanVien)
+                .email(hoaDon.getKhachHang().getEmail())
+                .ngayTao(ngayHienTai)
+                .kenhBan(KenhBan.OFFLINE)
+                .trangThai(TrangThaiHoaDon.DA_THANH_TOAN)
+                .ghiChu(""+yeuCauSaved.getId())
+                .loaiHoaDon(LoaiHoaDon.HOA_DON_TRA)
+                .uuDai(0)
+                .tienGiam(BigDecimal.ZERO)
+                .build();
+
+
+        Set<HoaDonChiTiet> listHoaDonChiTietTra = new HashSet<>();
+        Map<BienTheGiay, HoaDonChiTiet> mapHoaDonChiTietTra = new HashMap<>();
+
+        for (YeuCauChiTiet ycct : yeuCauSaved.getListYeuCauChiTiet()) {
+            HoaDonChiTiet hoaDonChiTietTra = HoaDonChiTiet.builder()
+                    .hoaDon(hoaDonTra)
+                    .bienTheGiay(ycct.getHoaDonChiTiet().getBienTheGiay())
+                    .donGia(ycct.getThanhTien())
+                    .soLuong(1)
+                    .trangThai(0)
+                    .soLuongTra(0)
+                    .build();
+            BienTheGiay key = hoaDonChiTietTra.getBienTheGiay();
+            if (mapHoaDonChiTietTra.containsKey(key)) {
+                HoaDonChiTiet existing = mapHoaDonChiTietTra.get(key);
+                existing.setSoLuong(existing.getSoLuong() + 1);
+            } else {
+                mapHoaDonChiTietTra.put(key, hoaDonChiTietTra);
+                listHoaDonChiTietTra.add(hoaDonChiTietTra);
+            }
+        }
+
+        hoaDonTra.setListHoaDonChiTiet(listHoaDonChiTietTra);
+        hoaDonRepository.save(hoaDonTra);
         return null;
     }
 
+    @Override
+    public HoaDonYeuCauRespone getOneHoaDonYeuCauRespone(Long id) {
+        return hoaDonRepository.getOneHoaDonYeuCau(id);
+    }
 
 }

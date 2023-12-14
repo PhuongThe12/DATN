@@ -38,6 +38,7 @@ public class KhachHangResponse {
     private TaiKhoan taiKhoan;
 
     public KhachHangResponse(KhachHang khachHang) {
+        System.out.println(khachHang);
         if (khachHang != null) {
             this.id = khachHang.getId();
             this.hoTen = khachHang.getHoTen();
