@@ -372,7 +372,7 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
             hoaDonChiTiet.setHoaDon(hoaDon);
             hoaDonChiTiet.setSoLuong(h.getSoLuongMua());
             hoaDonChiTiet.setTrangThai(1);
-            hoaDonChiTiet.setDonGia(h.getGiaSauKhuyenMai());
+            hoaDonChiTiet.setDonGia(h.getGiaBanSauKhuyenMai());
             hoaDonChiTiets.add(hoaDonChiTiet);
         }
         return hoaDonChiTiets;
