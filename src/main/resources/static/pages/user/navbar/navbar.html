@@ -123,7 +123,7 @@
                 <h5>Đăng nhập </h5>
                 <form name="user" ng-submit="loginUser()">
                     <div class="form-floating mb-3">
-                        <input type="text" ng-model="userLogin.tenDangNhap" class="form-control" id="email"
+                        <input type="email" ng-model="userLogin.tenDangNhap" class="form-control" id="email"
                                placeholder="name@example.com">
                         <label for="email">Địa chỉ Email</label>
                     </div>
@@ -155,19 +155,19 @@
             <div class="modal-body py-5">
                 <h5>Đăng ký</h5>
 
-                <form name="user" ng-submit="signUp()">
+                <form name="khachHangDangKyForm" ng-submit="signUp()">
                     <div class="row">
                         <div class="form-group mb-3">
                             <label for="khachHangHoTen">Tên</label>
                             <input type="text" class="form-control" id="khachHangHoTen" name="hoTen"
                                    ng-model="khachHang.hoTen"
-                                   ng-maxlength="50" ng-required="true" ng-change="change(khachHangForm.hoTen)">
+                                   ng-maxlength="50" ng-required="true" ng-change="change(khachHangDangKyForm.hoTen)">
                             <small class="error-message"
-                                   ng-show="(khachHangForm.hoTen.$dirty || khachHangForm.hoTen.$touched) && khachHangForm.hoTen.$error.required">Không
+                                   ng-show="(khachHangDangKyForm.hoTen.$dirty || khachHangDangKyForm.hoTen.$touched) && khachHangDangKyForm.hoTen.$error.required">Không
                                 được để
                                 trống tên</small>
                             <small class="error-message"
-                                   ng-show="(khachHangForm.hoTen.$dirty || khachHangForm.hoTen.$touched) && khachHangForm.hoTen.$error.maxlength">Họ
+                                   ng-show="(khachHangDangKyForm.hoTen.$dirty || khachHangDangKyForm.hoTen.$touched) && khachHangDangKyForm.hoTen.$error.maxlength">Họ
                                 tên không được vượt quá 100 ký tự</small>
                             <small class="error-message" ng-show="errors.ten">{{errors.ten}}</small>
                         </div>
@@ -180,7 +180,7 @@
                                        id="khachHangGioiTinh1" value="true"
                                        name="gioiTinh"
                                        ng-model="khachHang.gioiTinh" ng-required="true"
-                                       ng-checked="khachHang.gioiTinh == true">
+                                       ng-checked="khachHang.gioiTinh != false">
                                 <label class="form-check-label" for="khachHangGioiTinh1">
                                     Nam
                                 </label>
@@ -197,49 +197,68 @@
                                 </label>
                             </div>
                             <small class="error-message"
-                                   ng-show="(khachHangForm.gioiTinh.$dirty || khachHangForm.gioiTinh.$touched) && khachHangForm.gioiTinh.$error.required">
+                                   ng-show="(khachHangDangKyForm.gioiTinh.$dirty || khachHangDangKyForm.gioiTinh.$touched) && khachHangDangKyForm.gioiTinh.$error.required">
                                 Không được để trống giới tính</small>
                             <small class="error-message"
-                                   ng-show="errors.gioiTinh && !khachHangForm.gioiTinh.$dirty">{{errors.gioiTinh}}</small>
+                                   ng-show="errors.gioiTinh && !khachHangDangKyForm.gioiTinh.$dirty">{{errors.gioiTinh}}</small>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="khachHangNgaySinh">Ngày Sinh: </label>
                             <input type="date" class="form-control" id="khachHangNgaySinh" name="ngaySinh"
                                    ng-model="khachHang.ngaySinh" ng-required="true"
-                                   ng-change="change(khachHangForm.ngaySinh)">
+                                   ng-change="change(khachHangDangKyForm.ngaySinh)">
                             <small class="error-message"
-                                   ng-show="(khachHangForm.ngaySinh.$dirty || khachHangForm.ngaySinh.$touched) && khachHangForm.ngaySinh.$error.required">
+                                   ng-show="(khachHangDangKyForm.ngaySinh.$dirty || khachHangDangKyForm.ngaySinh.$touched) && khachHangDangKyForm.ngaySinh.$error.required">
                                 Không được để trống ngày sinh</small>
                             <small class="error-message"
-                                   ng-show="errors.ngaySinh && !khachHangForm.ngaySinh.$dirty">{{errors.ngaySinh}}</small>
+                                   ng-show="errors.ngaySinh && !khachHangDangKyForm.ngaySinh.$dirty">{{errors.ngaySinh}}</small>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="khachHangSoDienThoai">Số điện thoại: </label>
                             <input type="text" class="form-control" id="khachHangSoDienThoai" name="soDienThoai"
                                    ng-model="khachHang.soDienThoai" ng-required="true"
-                                   ng-change="change(khachHangForm.soDienThoai)" ng-pattern="/^0\d{9}$/">
+                                   ng-change="change(khachHangDangKyForm.soDienThoai)" ng-pattern="/^0\d{9}$/">
                             <small class="error-message"
-                                   ng-show="(khachHangForm.soDienThoai.$dirty || khachHangForm.soDienThoai.$touched) && khachHangForm.soDienThoai.$error.required">
+                                   ng-show="(khachHangDangKyForm.soDienThoai.$dirty || khachHangDangKyForm.soDienThoai.$touched) && khachHangDangKyForm.soDienThoai.$error.required">
                                 Không được để trống số điện thoại</small>
-                            <small ng-show="khachHangForm.soDienThoai.$error.pattern" class="error-message">Số điện
+                            <small ng-show="khachHangDangKyForm.soDienThoai.$error.pattern" class="error-message">Số điện
                                 thoại không đúng định
                                 dạng.</small>
                             <small class="error-message"
-                                   ng-show="errors.soDienThoai && !khachHangForm.soDienThoai.$dirty">{{errors.soDienThoai}}</small>
+                                   ng-show="errors.soDienThoai && !khachHangDangKyForm.soDienThoai.$dirty">{{errors.soDienThoai}}</small>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="khachHangEmail">Email: </label>
-                            <input type="text" class="form-control" id="khachHangEmail" name="email"
+                            <input type="email" class="form-control" id="khachHangEmail" name="email"
                                    ng-model="khachHang.email" ng-required="true"
-                                   ng-change="change(khachHangForm.email)">
+                                   ng-change="change(khachHangDangKyForm.email)">
                             <small class="error-message"
-                                   ng-show="(khachHangForm.email.$dirty || khachHangForm.email.$touched) && khachHangForm.email.$error.required">
+                                   ng-show="(khachHangDangKyForm.email.$dirty || khachHangDangKyForm.email.$touched) && khachHangDangKyForm.email.$error.required">
                                 Không được để trống email</small>
                             <small class="error-message"
-                                   ng-show="errors.email && !khachHangForm.email.$dirty">{{errors.email}}</small>
+                                   ng-show="errors.email && !khachHangDangKyForm.email.$dirty">{{errors.email}}</small>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="khachHangPassword">Mật khẩu: </label>
+                            <div class="input-group">
+                            <input type="password" class="form-control" id="khachHangPassword" name="password"
+                                   ng-model="khachHang.password" ng-required="true" ng-minlength="6" ng-maxlength="50"
+                                   ng-change="change(khachHangDangKyForm.password)">
+                                <button type="button" ng-click="togglePassword()" class="input-group-text" id="basic-addon1"><i class="fas fa-eye" id="passwordToggle"></i></button>
+                            </div>
+                            <small class="error-message"
+                                   ng-show="(khachHangDangKyForm.password.$dirty || khachHangDangKyForm.password.$touched) && khachHangDangKyForm.password.$error.required">
+                                Không được để trống password</small>
+                            <small class="error-message" ng-show="(khachHangDangKyForm.password.$dirty || khachHangDangKyForm.password.$touched) && khachHangDangKyForm.password.$error.minlength">
+                                Mật khẩu phải trên 6 ký tự</small>
+                            <small class="error-message" ng-show="(khachHangDangKyForm.password.$dirty || khachHangDangKyForm.password.$touched) && khachHangDangKyForm.password.$error.maxlength">
+                                Mật khẩu không được quá 50 ký tự</small>
+                            <small class="error-message"
+                                   ng-show="errors.password && !khachHangDangKyForm.password.$dirty">{{errors.password}}</small>
                         </div>
                         <button type="submit" class="btn btn-primary">Sign up</button>
                     </div>

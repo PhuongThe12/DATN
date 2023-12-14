@@ -260,6 +260,7 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         hoaDon.setDiaChiNhan(gioHangThanhToanRequest.getDiaChiNhan());
         hoaDon.setTrangThai(gioHangThanhToanRequest.getTrangThai());
         hoaDon.setGhiChu(gioHangThanhToanRequest.getGhiChu());
+        hoaDon.setKenhBan(2);
 
         return hoaDon;
     }

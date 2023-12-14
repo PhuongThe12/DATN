@@ -164,6 +164,11 @@ public class RestHoaDonController {
         return new ResponseEntity<>(hoaDonService.getAllBySearchOrderNgayThanhToan(hoaDonSearch), HttpStatus.OK);
     }
 
+    @GetMapping("/get-tra-cuu-don")
+    public ResponseEntity<?> getTraCuuDon(@RequestParam("maHD") Long maHD, @RequestParam("sdt") String sdt) {
+        return new ResponseEntity<>(hoaDonService.getTraCuuDon(maHD, sdt), HttpStatus.OK);
+    }
+
     @GetMapping("/khach-hang/{idKhachHang}")
     public ResponseEntity getDonHangByIdKhachHang(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                                   @RequestParam(value = "search", required = false) String searchText,

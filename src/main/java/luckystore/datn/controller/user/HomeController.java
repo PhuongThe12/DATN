@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 public class HomeController {
 
-    private final HttpServletRequest request;
+//    private final HttpServletRequest request;
     @GetMapping("home")
     public String login(){
-        HttpSession session = request.getSession();
-        NhanVien user = (NhanVien) session.getAttribute("employee");
-        if (user != null) {
-            return "/user/login1";
-        }
+//        HttpSession session = request.getSession();
+//        NhanVien user = (NhanVien) session.getAttribute("employee");
+//        if (user != null) {
+//            return "/user/login1";
+//        }
         return "/index";
     }
 }
