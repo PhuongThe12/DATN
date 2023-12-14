@@ -82,4 +82,6 @@ public interface HoaDonService {
     int xacNhanHoanHang(TraMotPhanRequest request);
 
     List<HoaDonResponse> getHoaDonDoiTra(Long id);
+
+    HoaDonPrintResponse getTraCuuDon(Long maHD, String sdt);
 }

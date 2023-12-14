@@ -22,20 +22,24 @@
 
                     <div class="form-group">
                         <label for="">Email: </label>
-                        <input type="text" class="form-control" name="email" ng-model="khachHang.email" ng-required="true"
+                        <input type="email" class="form-control" name="email" ng-model="khachHang.email" ng-required="true"
                                ng-change="change(khachHangForm.email)">
                         <small class="error-message" ng-show="(khachHangForm.email.$dirty || khachHangForm.email.$touched) && khachHangForm.email.$error.required">
-                            Không được để trống số điện thoại</small>
+                            Không được để trống</small>
                         <small class="error-message" ng-show="errors.email && !khachHangForm.email.$dirty">{{errors.email}}</small>
                     </div>
 
                     <div class="form-group">
                         <label for="">Password: </label>
-                        <input type="text" class="form-control" name="email" ng-model="khachHang.email" ng-required="true"
-                               ng-change="change(khachHangForm.email)">
-                        <small class="error-message" ng-show="(khachHangForm.email.$dirty || khachHangForm.email.$touched) && khachHangForm.email.$error.required">
-                            Không được để trống số điện thoại</small>
-                        <small class="error-message" ng-show="errors.email && !khachHangForm.email.$dirty">{{errors.email}}</small>
+                        <input type="password" class="form-control" name="password" ng-model="khachHang.password" ng-required="true"
+                               ng-change="change(khachHangForm.password)" id="passwordDangKy" ng-minlength="6" ng-maxlength="50">
+                        <small class="error-message" ng-show="(khachHangForm.password.$dirty || khachHangForm.password.$touched) && khachHangForm.password.$error.required">
+                            Không được để trống password</small>
+                        <small class="error-message" ng-show="(khachHangForm.password.$dirty || khachHangForm.password.$touched) && khachHangForm.password.$error.minlength">
+                            Mật khẩu phải trên 6 ký tự</small>
+                        <small class="error-message" ng-show="(khachHangForm.password.$dirty || khachHangForm.password.$touched) && khachHangForm.password.$error.maxlength">
+                            Mật khẩu không được quá 50 ký tự</small>
+                        <small class="error-message" ng-show="errors.password && !khachHangForm.password.$dirty">{{errors.password}}</small>
                     </div>
 
 

@@ -1,6 +1,5 @@
 package luckystore.datn.service.impl;
 
-import luckystore.datn.infrastructure.constraints.ErrorMessage;
 import luckystore.datn.entity.HangKhachHang;
 import luckystore.datn.entity.KhachHang;
 import luckystore.datn.entity.TaiKhoan;
@@ -8,6 +7,7 @@ import luckystore.datn.exception.DuplicateException;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.exception.NullException;
 import luckystore.datn.infrastructure.constants.Role;
+import luckystore.datn.infrastructure.constraints.ErrorMessage;
 import luckystore.datn.model.request.KhachHangRequest;
 import luckystore.datn.model.response.KhachHangResponse;
 import luckystore.datn.repository.HangKhachHangRepository;
@@ -20,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -51,15 +52,16 @@ public class KhachHangServiceImpl implements KhachHangService {
     }
 
     @Override
+    @Transactional
     public KhachHangResponse addKhachHang(KhachHangRequest khachHangRequest) {
 
-        if(khachHangRepo.existsByEmail(khachHangRequest.getEmail())) {
+        if (khachHangRepo.existsByEmail(khachHangRequest.getEmail())) {
             String errorObject = JsonString.errorToJsonObject("email", "Email đã tồn tại");
             throw new DuplicateException(JsonString.stringToJson(errorObject));
         }
 
         KhachHang khachHang = getKhachHang(new KhachHang(), khachHangRequest);
-        khachHang.setDiemTichLuy(0);
+        khachHang.setDiemTichLuy(khachHangRequest.getDiemTichLuy());
 
         setHangKhachHang(khachHang);
 
@@ -74,7 +76,7 @@ public class KhachHangServiceImpl implements KhachHangService {
         taiKhoan.setMatKhau(passwordEncoder.encode(khachHangRequest.getSoDienThoai()));
         taiKhoan.setTenDangNhap(khachHangRequest.getEmail());
         taiKhoan.setRole(Role.ROLE_USER);
-        taiKhoan.setTrangThai(khachHang.getTrangThai());
+        taiKhoan.setTrangThai(1);
         taiKhoanRepository.save(taiKhoan);
 
         khachHang.setTaiKhoan(taiKhoan);
@@ -102,7 +104,7 @@ public class KhachHangServiceImpl implements KhachHangService {
             khachHang = khachHangRepo.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND));
         }
 
-        if(khachHangRepo.existsByEmailAndIdNot(khachHangRequest.getEmail(), khachHang.getId())) {
+        if (khachHangRepo.existsByEmailAndIdNot(khachHangRequest.getEmail(), khachHang.getId())) {
             String errorObject = JsonString.errorToJsonObject("email", "Email khách hàng đã tồn tại");
             throw new DuplicateException(JsonString.stringToJson(errorObject));
         }
@@ -121,6 +123,46 @@ public class KhachHangServiceImpl implements KhachHangService {
     @Override
     public List<KhachHangResponse> searchByName(String searchText) {
         return khachHangRepo.searchByName(searchText);
+    }
+
+    @Override
+    @Transactional
+    public KhachHangResponse dangKyKhachHang(KhachHangRequest request) {
+
+        KhachHang khachHang = khachHangRepo.getByEmail(request.getEmail());
+
+        if (khachHang == null) {
+            khachHang = getKhachHang(new KhachHang(), request);
+        }else {
+            khachHang = getKhachHang(khachHang, request);
+            if(khachHang.getTaiKhoan() != null) {
+                if(khachHang.getTaiKhoan().getTrangThai() == 1) {
+                    String errorObject = JsonString.errorToJsonObject("email", "Tài khoản đã được đăng ký. Nếu là tài khooản của bạn hãy ấn vào quên mật khẩu");
+                    throw new DuplicateException(JsonString.stringToJson(errorObject));
+                } else {
+                    TaiKhoan taiKhoan = khachHang.getTaiKhoan();
+                    taiKhoan.setTrangThai(0);
+                    taiKhoan.setMatKhau(passwordEncoder.encode(request.getPassword()));
+                    return new KhachHangResponse(khachHangRepo.save(khachHang));
+                }
+            }
+        }
+
+
+        khachHang.setDiemTichLuy(0);
+        setHangKhachHang(khachHang);
+
+        TaiKhoan taiKhoan = new TaiKhoan();
+
+        setHangKhachHang(khachHang);
+
+        taiKhoan.setMatKhau(passwordEncoder.encode(request.getPassword()));
+        taiKhoan.setTenDangNhap(request.getEmail());
+        taiKhoan.setRole(Role.ROLE_USER);
+        taiKhoan.setTrangThai(0);
+        khachHang.setTaiKhoan(taiKhoan);
+
+        return new KhachHangResponse(khachHangRepo.save(khachHang));
     }
 
     private KhachHang getKhachHang(KhachHang khachHang, KhachHangRequest khachHangRequest) {
