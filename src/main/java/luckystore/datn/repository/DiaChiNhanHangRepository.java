@@ -28,14 +28,23 @@ public interface DiaChiNhanHangRepository extends JpaRepository<DiaChiNhanHang, 
 
     @Query("SELECT new luckystore.datn.model.response.DiaChiNhanHangResponse(dcn) " +
             "FROM DiaChiNhanHang dcn " +
-            "WHERE  dcn.idKhachHang.id = :idKhachHang ")
+            "WHERE  dcn.idKhachHang.id = :idKhachHang ORDER BY dcn.trangThai DESC ")
     List<DiaChiNhanHangResponse> getPageResponseByKhachHang( Long idKhachHang);
 
     List<DiaChiNhanHang> findByTrangThaiNot(int trangThai);
 
     @Query("SELECT new luckystore.datn.model.response.DiaChiNhanHangResponse(dcn) " +
             "FROM DiaChiNhanHang dcn where dcn.idKhachHang.id = :idKhachHang")
-    DiaChiNhanHangResponse findByIdKhachHang(Long idKhachHang);
+    List<DiaChiNhanHangResponse> findByIdKhachHang(Long idKhachHang);
+
+    @Query("SELECT new luckystore.datn.model.response.DiaChiNhanHangResponse(dcn) " +
+            "FROM DiaChiNhanHang dcn where dcn.idKhachHang.id = :idKhachHang and dcn.trangThai = 1")
+    DiaChiNhanHangResponse findOneByIdKhachHang(Long idKhachHang);
+
+    @Query("SELECT dcn " +
+            "FROM DiaChiNhanHang dcn " +
+            "WHERE  dcn.idKhachHang.id = :idKhachHang ")
+    List<DiaChiNhanHang> findByIdKhachHangAndTrangThaiZero(Long idKhachHang);
 
     Boolean existsByDiaChiNhan(String ten);
 

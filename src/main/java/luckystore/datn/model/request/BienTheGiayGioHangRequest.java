@@ -34,7 +34,7 @@ public class BienTheGiayGioHangRequest {
     @DecimalMin(message = "Không được âm", value = "0.0", groups = {CreateGroup.class, UpdateGroup.class, UpdateGiaGroup.class})
     private BigDecimal giaBan;
 
-    private BigDecimal giaSauKhuyenMai;
+    private BigDecimal giaBanSauKhuyenMai;
 
     @NotNull(message = "Không được để trống", groups = {CreateGroup.class, UpdateGroup.class})
     private Integer trangThai = 1;
