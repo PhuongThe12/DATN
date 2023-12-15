@@ -77,4 +77,10 @@ public class RestKhachHangController {
     public ResponseEntity<?> searchByName(@RequestBody String searchText) {
         return new ResponseEntity<>(khachHangService.searchByName(searchText), HttpStatus.OK);
     }
+
+    @PutMapping("/cap-nhat-mot-phan/{id}")
+    public ResponseEntity<?> updateKhachHang(@PathVariable("id") Long id, @RequestBody KhachHangRequest khachHangRequest) {
+        return new ResponseEntity<>(khachHangService.updateMotPhanKhachHang(id, khachHangRequest), HttpStatus.OK);
+    }
+
 }

@@ -1,224 +1,210 @@
 <style>
-    .form-input {
-        background-color: white;
-        padding: 20px;
-        margin: 20px;
-        box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    #buttons-container {
+        display: flex;
     }
 
-    .error-message {
+    .insideDiv {
+        padding: 10px;
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+        margin: 4px;
+        border: 1px solid rgb(180, 180, 180);
+    }
+
+    .button_checked {
+        transition: 0.3s all;
+        border: 1px solid rgb(0, 0, 0) !important;
+    }
+
+    #image-container img {
+        margin-bottom: 10px;
+    }
+
+    .info {
+        max-height: 208px;
+        overflow: hidden;
+    }
+
+    .text-limit {
+        max-height: 60px;
+        overflow: hidden;
+    }
+
+    .toggle-button {
+        background: transparent;
+        border: none;
+        color: blue;
+    }
+
+    .labelTabDelete {
+        cursor: pointer;
+    }
+
+    .labelTabDelete:hover {
         color: red;
-        font-weight: bold;
     }
+
+    .nav-tabs .nav-link.active {
+        color: #495057;
+        font-weight: bolder;
+        background-color: #fff;
+        border-color: #1d1e1e #dee2e6 #fff;
+        border-top: 1.5px solid #1d1e1e;
+    }
+
 </style>
-
-<div class="row">
-    <div class="col-md-12">
-        <button class="ms-5 btn btn-primary" ng-click="backToNhanVienList()">Back</button>
-        <div class=" col-md-10 m-auto">
-            <div class="form-input">
-                <form name="nhanVienForm" ng-submit="updateNhanVien()">
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <input type="text" hidden="hidden" ng-model="nhanVien.id">
-                                <div class="mb-3">
-                                    <label for="nhanVienTen" class="form-label">Tên</label>
-                                    <input type="text" class="form-control" id="nhanVienHoTen" name="hoTen"
-                                           ng-model="nhanVien.hoTen"
-                                           ng-maxlength="50" ng-required="true" ng-change="change(nhanVienForm.hoTen)">
-                                    <small class="error-message"
-                                           ng-show="(nhanVienForm.hoTen.$dirty || nhanVienForm.hoTen.$touched) && nhanVienForm.hoTen.$error.required">Không
-                                        được để
-                                        trống tên</small>
-                                    <small class="error-message"
-                                           ng-show="(nhanVienForm.hoTen.$dirty || nhanVienForm.hoTen.$touched) && nhanVienForm.hoTen.$error.maxlength">Số
-                                        điện thoại không được vượt quá 20 ký tự</small>
-                                    <small class="error-message" ng-show="errors.ten">{{errors.ten}}</small>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="exampleFormControlInput1" class="form-label">Số Điện Thoại</label>
-                                    <input type="text" class="form-control" id="nhanVienSoDienThoai" name="soDienThoai"
-                                           ng-model="nhanVien.soDienThoai" ng-maxlength="20" ng-required="true"
-                                           ng-change="change(nhanVienForm.soDienThoai)">
-                                    <small class="error-message"
-                                           ng-show="(nhanVienForm.soDienThoai.$dirty || nhanVienForm.soDienThoai.$touched) && nhanVienForm.soDienThoai.$error.required">Không
-                                        được để trống số điện thoại</small>
-
-                                    <small class="error-message"
-                                           ng-show="(nhanVienForm.soDienThoai.$dirty || nhanVienForm.soDienThoai.$touched) && nhanVienForm.soDienThoai.$error.maxlength">Số
-                                        điện thoại không được vượt quá 20 ký tự</small>
-                                    <small class="error-message"
-                                           ng-show="errors.soDienThoai">{{errors.soDienThoai}}</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="exampleFormControlInput1" class="form-label">Tên Đăng Nhập</label>
-                                    <input type="text" class="form-control" name="tenDangNhap" id="nhanVienTenDangNhap"
-                                           ng-model="nhanVien.taiKhoan.tenDangNhap" ng-maxlength="30" ng-required="true">
-                                    <small class="error-message"
-                                           ng-show="(nhanVienForm.tenDangNhap.$dirty || nhanVienForm.tenDangNhap.$touched) && nhanVienForm.tenDangNhap.$error.required">Không
-                                        được để trống Email</small>
-
-                                    <small class="error-message"
-                                           ng-show="(nhanVienForm.tenDangNhap.$dirty || nhanVienForm.tenDangNhap.$touched) && nhanVienForm.tenDangNhap.$error.maxlength">Email
-                                        không được vượt quá 20 ký tự</small>
-                                    <small class="error-message"
-                                           ng-show="errors.tenDangNhap">{{errors.tenDangNhap}}</small>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="exampleFormControlInput1" class="form-label">Mật Khẩu</label>
-                                    <input type="text" class="form-control" name="matKhau" ng-model="nhanVien.taiKhoan.matKhau"
-                                           ng-maxlength="30" ng-required="true">
-                                    <small class="error-message"
-                                           ng-show="(nhanVienForm.matKhau.$dirty || nhanVienForm.matKhau.$touched) && nhanVienForm.matKhau.$error.required">Không
-                                        được để trống mật khẩu</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="exampleFormControlInput1" class="form-label">Giới Tính</label>
-                                    <div class="">
-                                        <input class="form-check-input" ng-model="nhanVien.gioiTinh" value="1"
-                                               type="radio"
-                                               name="gioiTinh" id="gioiTinhNam">
-                                        <label class="form-check-label" for="gioiTinhNam">
-                                            Nam
-                                        </label>
-                                    </div>
-                                    <div class="">
-                                        <input class="form-check-input" type="radio" ng-model="nhanVien.gioiTinh"
-                                               value="2"
-                                               name="gioiTinhNu">
-                                        <label class="form-check-label" for="gioiTinhNu">
-                                            Nữ
-                                        </label>
-                                    </div>
-                                    <small class="error-message" ng-show="errors.gioiTinh">{{errors.gioiTinh}}</small>
-                                </div>
-
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="exampleFormControlInput1" class="form-label">Email</label>
-                                    <input type="text" class="form-control" name="email" id="nhanVienEmail"
-                                           ng-model="nhanVien.email" ng-maxlength="30" ng-required="true">
-                                    <small class="error-message"
-                                           ng-show="(nhanVienForm.email.$dirty || nhanVienForm.email.$touched) && nhanVienForm.email.$error.required">Không
-                                        được để trống Email</small>
-
-                                    <small class="error-message"
-                                           ng-show="(nhanVienForm.email.$dirty || nhanVienForm.email.$touched) && nhanVienForm.email.$error.maxlength">Email
-                                        không được vượt quá 20 ký tự</small>
-                                    <small class="error-message"
-                                           ng-show="errors.email">{{errors.email}}</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="nhanVienTrangThai"
-                                               name="trangThai" ng-model="nhanVien.trangThai" ng-true-value="1"
-                                               ng-false-value="0">
-                                        <label class="form-check-label" for="nhanVienTrangThai">Đang làm</label>
-                                        <small class="error-message"
-                                               ng-show="(nhanVienForm.trangThai.$dirty || nhanVienForm.trangThai.$touched) && nhanVienForm.trangThai.$error.required">Không
-                                            được để trống Trạng Thái</small>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Ngày Sinh</label>
-                                    <input type="date" class="form-control" name="ngaySinh" id="nhanVienNgaySinh"
-                                           ng-model="nhanVien.ngaySinh" ng-required="true">
-                                    <small class="error-message"
-                                           ng-show="(nhanVienForm.ngaySinh.$dirty || nhanVienForm.ngaySinh.$touched) && nhanVienForm.ngaySinh.$error.required">Không
-                                        được để trống ngày sinh</small>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Chức Vụ</label>
-                                    <select class="form-select" ng-model="nhanVien.chucVu" id="nhanVienChucVu"
-                                            aria-label="Default select example">
-                                        <option value="2">Chủ cửa hàng</option>
-                                        <option value="1">Nhân Viên</option>
-                                    </select>
-                                    <small class="error-message" ng-show="errors.chucVu">{{errors.chucVu}}</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class=" row">
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Xã</label>
-                                    <select class="form-select" ng-model="nhanVien.xa"
-                                            aria-label="Default select example" id="nhanVienXa">
-                                        <option value="Tân Hòa">Tân Hòa</option>
-                                        <option value="Cộng Hòa">Cộng Hòa</option>
-                                        <option value="Tân Phú">Tân Phú</option>
-                                    </select>
-                                    <small class="error-message" ng-show="errors.xa">{{errors.xa}}</small>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Huyện</label>
-                                    <select class="form-select" ng-model="nhanVien.huyen" id="nhanVienHuyen"
-                                            aria-label="Default select example">
-                                        <option value="Quốc Oai">Quốc Oai</option>
-                                        <option value="Hoài Đức">Hoài Đức</option>
-                                        <option value="Chương Mỹ">Chương Mỹ</option>
-                                    </select>
-                                    <small class="error-message" ng-show="errors.huyen">{{errors.huyen}}</small>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Tỉnh</label>
-                                    <select class="form-select" ng-model="nhanVien.tinh" id="nhanVienTinh"
-                                            aria-label="Default select example">
-                                        <option value="Hà Tĩnh">Hà Tĩnh</option>
-                                        <option value="Cà Mau">Cà Mau</option>
-                                        <option value="Kon Tum">Kon Tum</option>
-
-                                    </select>
-                                    <small class="error-message" ng-show="errors.tinh">{{errors.tinh}}</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
+<button class="ms-4 mb-3 btn btn-primary" ng-click="backToNhanVienList()">< Danh Sách</button>
+<div class="card rounded bg-white ms-4 mx-4">
+    <div class="card-header bg-white">
+        <h5 class="card-title p-2 mt-2">
+            Cập nhật Nhân Viên
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="p-3">
+            <form name="nhanVienForm" ng-submit="updateNhanVien()">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-6">
                             <div class="mb-3">
-                                <div class="form-group">
-                                    <label for="nhanVienGhiChu">Mô tả</label>
-                                    <textarea class="form-control" id="nhanVienGhiChu" rows="3"
-                                              ng-model="nhanVien.ghiChu"
-                                              id="nhanVienGhiChu"
-                                              ng-change="change(nhanVienForm.ghiChu)"></textarea>
-                                    <small class="error-message"
-                                           ng-show="errors.moTa">{{errors.moTa}}</small>
+                                <label for="nhanVienTen" class="form-label">Tên</label>
+                                <input type="text" class="form-control" id="nhanVienHoTen" name="hoTen"
+                                       ng-model="nhanVien.hoTen"
+                                       ng-maxlength="50" ng-required="true" ng-change="change(nhanVienForm.hoTen)">
+                                <small class="error-message"
+                                       ng-show="(nhanVienForm.hoTen.$dirty || nhanVienForm.hoTen.$touched) && nhanVienForm.hoTen.$error.required">Không
+                                    được để
+                                    trống tên</small>
+                                <small class="error-message"
+                                       ng-show="(nhanVienForm.hoTen.$dirty || nhanVienForm.hoTen.$touched) && nhanVienForm.hoTen.$error.maxlength">Số
+                                    điện thoại không được vượt quá 20 ký tự</small>
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="exampleFormControlInput1" class="form-label">Số Điện Thoại</label>
+                                <input type="text" class="form-control" id="nhanVienSoDienThoai" name="soDienThoai"
+                                       ng-model="nhanVien.soDienThoai" ng-required="true"
+                                       ng-change="change(nhanVienForm.soDienThoai)" ng-pattern="/^0\d{9}$/">
+                                <small class="error-message"
+                                       ng-show="(nhanVienForm.soDienThoai.$dirty || nhanVienForm.soDienThoai.$touched) && nhanVienForm.soDienThoai.$error.required">Không
+                                    được để trống số điện thoại</small>
+                                <small ng-show="nhanVienForm.soDienThoai.$error.pattern"
+                                       class="error-message">Số điện
+                                    thoại không đúng định
+                                    dạng.</small>
+                                <small class="error-message"
+                                       ng-show="errors.soDienThoai">{{errors.soDienThoai}}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Giới Tính</label>
+                                <div class="">
+                                    <input class="form-check-input" ng-model="nhanVien.gioiTinh" value="1"
+                                           type="radio" id="gioiTinhNam"
+                                           name="gioiTinh" id="gioiTinhNam" ng-checked="true">
+                                    <label class="form-check-label" for="gioiTinhNam">
+                                        Nam
+                                    </label>
                                 </div>
+                                <div class="">
+                                    <input class="form-check-input" type="radio" ng-model="nhanVien.gioiTinh"
+                                           value="2" id="gioiTinhNu"
+                                           name="gioiTinhNu">
+                                    <label class="form-check-label" for="gioiTinhNu">
+                                        Nữ
+                                    </label>
+                                </div>
+                                <small class="error-message" ng-show="errors.gioiTinh">{{errors.gioiTinh}}</small>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Trạng thái</label>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="nhanVienTrangThai"
+                                           name="trangThai" ng-model="nhanVien.trangThai" ng-true-value="1"
+                                           ng-false-value="0">
+                                    <label class="form-check-label" for="nhanVienTrangThai">Đang làm</label>
+                                    <small class="error-message"
+                                           ng-show="(nhanVienForm.trangThai.$dirty || nhanVienForm.trangThai.$touched) && nhanVienForm.trangThai.$error.required">Không
+                                        được để trống Trạng Thái</small>
+                                </div>
+
                             </div>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Cập nhật</button>
-                </form>
-            </div>
-        </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Ngày Sinh</label>
+                                <input type="date" class="form-control" name="ngaySinh" id="nhanVienNgaySinh"
+                                       ng-model="nhanVien.ngaySinh" ng-required="true">
+                                <small class="error-message"
+                                       ng-show="(nhanVienForm.ngaySinh.$dirty || nhanVienForm.ngaySinh.$touched) && nhanVienForm.ngaySinh.$error.required">Không
+                                    được để trống ngày sinh</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Chức Vụ</label>
+                                <select class="form-select" aria-label="Default select example" name="chucVu"
+                                        ng-model="nhanVien.chucVu" ng-options="chucVu.name for chucVu in chucVus"
+                                        ng-change="changeCV()"></select>
+                                <small class="error-message" ng-show="errors.chucVu">{{errors.chucVu}}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=" row mb-3">
+                        <div class="form-group col-md-4">
+                            <label>Tỉnh/Thành Phố <sup class="text-danger">(*)</sup>: </label>
+                            <select class="form-select" aria-label="Default select example" name="tinhs"
+                                    ng-model="nhanVien.tinh"
+                                    ng-options="tinh.ten  for tinh in tinhs"
+                                    ng-change="changeTinh()"> </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Huyện/Quận <sup class="text-danger">(*)</sup>:</label>
+                            <select class="form-select" aria-label="Default select example" name="huyens"
+                                    ng-model="nhanVien.huyen"
+                                    ng-options="huyen.ten  for huyen in huyens"
+                                    ng-change="changeHuyen()"> </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Xã/Phường <sup class="text-danger">(*)</sup>:</label>
+                            <select class="form-select" aria-label="Default select example" name="xas"
+                                    ng-model="nhanVien.xa"
+                                    ng-options="xa.ten  for xa in xas"
+                                    ng-change="changeXa()"> </select>
+                        </div>
+                        <small ng-show="error.diaChi" class="text-danger">{{error.diaChi}}</small>
+                    </div>
+                    <div>
+                        <div class="mb-3">
+                            <div class="form-group">
+                                <label for="nhanVienGhiChu">Mô tả</label>
+                                <textarea class="form-control" id="nhanVienGhiChu" rows="3"
+                                          ng-model="nhanVien.ghiChu"
+                                          id="nhanVienGhiChu" required></textarea>
+                                <small class="error-message"
+                                       ng-show="errors.moTa && !nhanVienForm.ghiChu.$dirty">{{errors.moTa}}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
+                <button type="submit" class="btn btn-primary">Cập nhật</button>
+            </form>
+        </div>
     </div>
+
 </div>
+

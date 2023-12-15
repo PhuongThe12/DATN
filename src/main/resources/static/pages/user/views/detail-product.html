@@ -175,37 +175,34 @@
         <h5 style="text-align: center; font-weight: bold">Có thể bạn sẽ thích</h5>
     </div>
     <div class="row">
-        <div class="col-md-2" ng-repeat="giay in giays">
+        <div class="col-md-2 mb-3 giayHover" ng-repeat="giay in giays">
             <a href="#/detail/{{giay.id}}" class="text-none">
                 <div class=" position-relative">
                     <div class="mb-2">
-                        <img src="https://product.hstatic.net/1000361048/product/dz0482_001_a_d718733fb6d344febec840aee172ca23_master.jpg"
-                             width="100%" alt="">
+                        <img src="{{giay.lstAnh.length > 0?giay.lstAnh[0] : ''}}"
+                             width="100%" alt="" style="height: 225px; object-fit: cover">
                     </div>
                     <div class="product-name">
-                        <h5 class="font-size-14-ncl" title="{{giay.ten}}">{{giay.ten}}</h5>
+                        <h5 class="font-size-14-ncl fw-bold" title="{{giay.ten}}">{{giay.ten}}</h5>
                     </div>
                     <div class="product-price">
                         <div class="d-flex align-items-center">
                             <p class="font-size-14-ncl text-danger m-0">
-                                {{ '₫' + (giay.giaThapNhat | number) + (giay.giaThapNhat !== giay.giaLonNhat ? '
-                                - ₫' + (giay.giaLonNhat | number) : '') }}
+                                {{ '₫' + (giay.giaTu | number : 0) + (giay.giaTu !== giay.giaDen ? '
+                                - ₫' + (giay.giaDen | number : 0) : '') }}
                             </p>
 
                         </div>
                     </div>
-                    <div class="product-variant">
-                        <p class="font-size-14-ncl">{{giay.lstMauSac.length }} Màu </p>
-                    </div>
                     <div class="position-absolute top-0 right-0">
-                        <p class="font-size-14-ncl fw-bold"><span style="    padding: 10px;font-size: 13px;color: red;"
-                                                                  class="">-36%</span></p>
+                        <p class="font-size-14-ncl fw-bold" ng-show="giay.phanTramGiam > 0"><span
+                                style="padding: 10px;font-size: 13px;color: red; background-color: rgba(255, 255, 0, 0.5)"
+                                class="">giảm tới {{giay.phanTramGiam}}%</span></p>
                     </div>
-                    <div class="position-absolute " style="color: black;right: 8px;top: 3px;">
-                        <i class="far fa-heart" style="font-size: 20px;"></i>
-                    </div>
+
                 </div>
             </a>
         </div>
+
     </div>
 </div>

@@ -1,5 +1,6 @@
 package luckystore.datn.rest;
 
+import com.google.gson.Gson;
 import jakarta.validation.Valid;
 import luckystore.datn.model.request.TaiKhoanRequest;
 import luckystore.datn.service.impl.TaiKhoanServiceImpl;
@@ -40,4 +41,12 @@ public class RestTaiKhoanController {
         }
         return null;
     }
+    
+    @GetMapping("/thay-doi-mat-khau/{id}")
+    public ResponseEntity<?> thayDoiMatKhau(@PathVariable("id") Long id,
+                                            @RequestParam("mkCu")String mkCu,
+                                            @RequestParam("mkMoi")String mkMoi) {
+        return ResponseEntity.ok(new Gson().toJson(taiKhoanService.thayDoiMatKhau(id, mkCu, mkMoi)));
+    }
+
 }
