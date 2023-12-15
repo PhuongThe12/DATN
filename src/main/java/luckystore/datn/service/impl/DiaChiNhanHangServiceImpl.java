@@ -41,25 +41,30 @@ public class DiaChiNhanHangServiceImpl implements DiaChiNhanHangService {
     @Override
     public DiaChiNhanHangResponse addDiaChiNhanHang(DiaChiNhanHangRequest diaChiNhanHangRequest) {
         DiaChiNhanHang diaChiNhanHang = new DiaChiNhanHang();
-        if(diaChiNhanHangRequest.getMacDinh() != null){
+        if (diaChiNhanHangRequest.getMacDinh() != null) {
             List<DiaChiNhanHang> diaChiNhanHangList = diaChiNhanHangRepo.findByIdKhachHangAndTrangThaiZero(diaChiNhanHangRequest.getIdKhachHang());
             for (DiaChiNhanHang diaChi : diaChiNhanHangList) {
                 diaChi.setTrangThai(0); // hoặc cập nhật giá trị mong muốn
                 diaChiNhanHangRepo.save(diaChi);
             }
             diaChiNhanHang = getDiaChiNhanHang(new DiaChiNhanHang(), diaChiNhanHangRequest);
-            if(diaChiNhanHangRequest.getIdKhachHang() != null){
+            if (diaChiNhanHangRequest.getIdKhachHang() != null) {
                 KhachHang khachHang = khachHangRepo.findById(diaChiNhanHangRequest.getIdKhachHang()).get();
                 diaChiNhanHang.setIdKhachHang(khachHang);
             }
             diaChiNhanHang.setTrangThai(1);
-        }else{
+        } else {
             diaChiNhanHang = getDiaChiNhanHang(new DiaChiNhanHang(), diaChiNhanHangRequest);
-            if(diaChiNhanHangRequest.getIdKhachHang() != null){
+            if (diaChiNhanHangRequest.getIdKhachHang() != null) {
                 KhachHang khachHang = khachHangRepo.findById(diaChiNhanHangRequest.getIdKhachHang()).get();
                 diaChiNhanHang.setIdKhachHang(khachHang);
             }
-            diaChiNhanHang.setTrangThai(0);
+
+            if (diaChiNhanHangRepo.findOneByIdKhachHang(diaChiNhanHang.getIdKhachHang().getId()) == null) {
+                diaChiNhanHang.setTrangThai(1);
+            } else {
+                diaChiNhanHang.setTrangThai(0);
+            }
         }
 
 
@@ -135,9 +140,9 @@ public class DiaChiNhanHangServiceImpl implements DiaChiNhanHangService {
     @Override
     public void deleteDieuKien(Long id) {
         DiaChiNhanHang diaChiNhanHang = diaChiNhanHangRepo.findById(id).orElseThrow(() -> new RuntimeException());
-        if(diaChiNhanHang.getTrangThai() != 1){
+        if (diaChiNhanHang.getTrangThai() != 1) {
             diaChiNhanHangRepo.delete(diaChiNhanHang);
-        }else{
+        } else {
             throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Địa chỉ đang là mặc định , không thể xóa !")));
         }
     }

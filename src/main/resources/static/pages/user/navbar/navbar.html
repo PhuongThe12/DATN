@@ -45,7 +45,7 @@
                           ng-if="!khachHang.hoTen">
                         Login
                     </span>
-                    <a href="#/thong-tin-tai-khoan"><i class="far fa-user" data-bs-toggle="tooltip" data-bs-placement="top"
+                    <a ng-if="userLogged" href="#/thong-tin-tai-khoan"><i class="far fa-user" data-bs-toggle="tooltip" data-bs-placement="top"
                                                        title="Quản lý tài khoản"
                                                        style="color: black;font-size: 23px;"></i></a>
                 </div>

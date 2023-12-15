@@ -328,8 +328,8 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         HangKhachHang hangKhachHang = hangKhachHangRepository.findById(gioHangThanhToanRequest.getKhachHang()
                         .getHangKhachHang().getId())
                 .orElseThrow(() -> new NotFoundException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Hạng khách hàng không tồn tại !"))));
-        System.out.println(hangKhachHang.getId() + " - " + gioHangThanhToanRequest.getKhachHang().getHangKhachHang().getId());
-        if (!gioHangThanhToanRequest.getKhachHang().getId().equals(phieuGiamGia.getDoiTuongApDung().getId())) {
+        System.out.println(phieuGiamGia.getDoiTuongApDung().getId()+ " - " + gioHangThanhToanRequest.getKhachHang().getHangKhachHang().getId());
+        if (!gioHangThanhToanRequest.getKhachHang().getHangKhachHang().getId().equals(phieuGiamGia.getDoiTuongApDung().getId())) {
             throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("phieuGiamGiaError", "Hạng khách hàng không phù hợp , vui lòng kiểm tra lại !")));
         }
 

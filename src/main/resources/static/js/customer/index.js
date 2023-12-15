@@ -90,6 +90,7 @@ app.controller('navbarController', function ($rootScope, $scope, $http, $locatio
     $scope.khachHang = {};
     var token = $cookies.get('token');
     if (token) {
+        $scope.userLogged = true;
         $http.get(host + "/session/get-customer")
             .then(response => {
                 if (response.data !== null) {
@@ -102,6 +103,8 @@ app.controller('navbarController', function ($rootScope, $scope, $http, $locatio
                     })
                 }
             })
+    }else{
+        $scope.userLogged = false;
     }
 
 
@@ -295,7 +298,7 @@ app.controller('navbarController', function ($rootScope, $scope, $http, $locatio
 
     $scope.resetTaiKhoan = {};
     $scope.resetPassword = function () {
-        if(!$scope.resetTaiKhoan.email || !$scope.resetTaiKhoan.soDienThoai) {
+        if (!$scope.resetTaiKhoan.email || !$scope.resetTaiKhoan.soDienThoai) {
             toastr["error"]("Vui lòng điển đầy đủ thông tin");
             return;
         }
@@ -1380,7 +1383,7 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
         })
             .catch(error => {
                 console.log(error);
-                    toastr["error"]("Lấy thông tin thất bại");
+                // toastr["error"]("Lấy thông tin thất bại");
                 $scope.tongThanhToan -= $scope.feeShippingPerOne;
                 $scope.feeShippingPerOne = 50000;
                 $scope.tongThanhToan += $scope.feeShippingPerOne;
@@ -1388,10 +1391,10 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
             })
     }
 
-    $scope.thayDoiDiaChiNhanHang = function(){
+    $scope.thayDoiDiaChiNhanHang = function () {
         let apiUrl = host + '/rest/khach-hang/dia-chi-nhan-hang/khach-hang';
 
-        apiUrl+= '?idKhachHang='+$scope.khachHang.id;
+        apiUrl += '?idKhachHang=' + $scope.khachHang.id;
         console.log(apiUrl);
         $http.get(apiUrl)
             .then(function (response) {
@@ -1409,7 +1412,7 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
         $scope.trangThai = {
             "id": dieuKien,
             "trangThai": 1,
-            "idKhachHang" : $scope.khachHang.id
+            "idKhachHang": $scope.khachHang.id
         }
 
         $http({
@@ -1429,10 +1432,10 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
 
     };
 
-    function loadDiaChi(){
+    function loadDiaChi() {
         let apiUrl = host + '/rest/khach-hang/dia-chi-nhan-hang/khach-hang';
 
-        apiUrl+= '?idKhachHang='+$scope.khachHang.id;
+        apiUrl += '?idKhachHang=' + $scope.khachHang.id;
         console.log(apiUrl);
         $http.get(apiUrl)
             .then(function (response) {
@@ -1502,23 +1505,23 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
 
     }
 
-    $scope.selectedDiaChiNhanHang = function(diaChiNhanHang){
+    $scope.selectedDiaChiNhanHang = function (diaChiNhanHang) {
 
         $http.get(host + '/rest/khach-hang/dia-chi-nhan-hang/' + diaChiNhanHang.id)
             .then(function (response) {
                 console.log(response);
                 $scope.diaChiNhanHang = response.data;
-                angular.forEach($scope.diaChiNhanHangs, function(item) {
+                angular.forEach($scope.diaChiNhanHangs, function (item) {
                     item.selected = item.id === diaChiNhanHang.id;
                 });
                 setData();
+
             }).catch(function (error) {
             console.log(error);
             toastr["error"]("Lấy dữ liệu thất bại");
             // $location.path("/list");
         });
     }
-
 
 
     $scope.change = function (input) {
@@ -1571,44 +1574,43 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
     }
 
     function setData() {
-        for (let i = 0; i < $scope.provinces.length; i++) {
-            if ($scope.provinces[i].ten === $scope.diaChiNhanHang.provinces) {
-                $scope.diaChiNhanHang.provinces = $scope.provinces[i];
-                break;
-            }
-        }
-
-        $http.get(host + "/rest/districts/" + $scope.diaChiNhanHang.provinces.id)
-            .then(function (response) {
-                $scope.districts = response.data;
-                for (let j = 0; j < $scope.districts.length; j++) {
-                    if ($scope.districts[j].ten === $scope.diaChiNhanHang.districts) {
-                        $scope.diaChiNhanHang.districts = $scope.districts[j];
-                        $http.get(host + "/rest/wards/" + $scope.diaChiNhanHang.districts.id)
-                            .then(function (response) {
-                                $scope.wards = response.data;
-                                for (let k = 0; k < $scope.wards.length; k++) {
-                                    if ($scope.wards[k].ten === $scope.diaChiNhanHang.wards) {
-                                        $scope.diaChiNhanHang.wards = $scope.wards[k];
-                                        $scope.submitDiaChi();
-                                        break;
-                                    }
-                                }
-                            })
-                            .catch(function (error) {
-                                console.log(error)
-                                toastr["error"]("Lấy dữ liệu xã thất bại");
-                            });
-                        break;
-                    }
+            for (let i = 0; i < $scope.provinces.length; i++) {
+                if ($scope.provinces[i].ten === $scope.diaChiNhanHang.provinces) {
+                    $scope.diaChiNhanHang.provinces = $scope.provinces[i];
+                    break;
                 }
-            })
-            .catch(function (error) {
-                toastr["error"]("Lấy dữ huyện thất bại");
-                console.log(error);
-            });
+            }
 
-
+            $http.get(host + "/rest/districts/" + $scope.diaChiNhanHang.provinces.id)
+                .then(function (response) {
+                    $scope.districts = response.data;
+                    for (let j = 0; j < $scope.districts.length; j++) {
+                        if ($scope.districts[j].ten === $scope.diaChiNhanHang.districts) {
+                            $scope.diaChiNhanHang.districts = $scope.districts[j];
+                            $http.get(host + "/rest/wards/" + $scope.diaChiNhanHang.districts.id)
+                                .then(function (response) {
+                                    $scope.wards = response.data;
+                                    for (let k = 0; k < $scope.wards.length; k++) {
+                                        if ($scope.wards[k].ten === $scope.diaChiNhanHang.wards) {
+                                            $scope.diaChiNhanHang.wards = $scope.wards[k];
+                                            console.log($scope.diaChiNhanHang);
+                                            $scope.submitDiaChi();
+                                            break;
+                                        }
+                                    }
+                                })
+                                .catch(function (error) {
+                                    console.log(error)
+                                    toastr["error"]("Lấy dữ liệu xã thất bại");
+                                });
+                            break;
+                        }
+                    }
+                })
+                .catch(function (error) {
+                    toastr["error"]("Lấy dữ huyện thất bại");
+                    console.log(error);
+                });
     }
 
 
@@ -1616,6 +1618,8 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
     $scope.dieuKienChoosed = {};
 
     $scope.khachHang = {};
+    $scope.diaChiNull = false;
+
     var token = $cookies.get('token');
     if (token) {
         $scope.userLogged = true;
@@ -1628,9 +1632,14 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
                             $scope.khachHang.idGioHang = response.data.id;
                             $http.get(host + '/rest/khach-hang/dia-chi-nhan-hang/' + $scope.khachHang.id + "/khach-hang/get-one")
                                 .then(function (response) {
-                                    console.log(response);
-                                    $scope.diaChiNhanHang = response.data;
-                                    setData();
+                                    if(response.data === ""){
+                                        $scope.errosDiaChiNhan = "Vui lòng thêm địa chỉ để tiếp tục thanh toán !"
+                                    }else{
+                                        $scope.diaChiNull = true;
+                                        $scope.diaChiNhanHang = response.data;
+                                        console.log(response.data);
+                                        setData();
+                                    }
 
                                 }).catch(function (error) {
                                 console.log(error);
@@ -1652,7 +1661,6 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
                 }
             })
     } else {
-        $scope.userLogged = false;
         var gioHangFromCookies = localStorage.getItem('gioHang') || '[]';
         console.log(gioHangFromCookies);
         $scope.gioHang = JSON.parse(gioHangFromCookies);
@@ -1687,15 +1695,15 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
                     var giaSauKhuyenMai = item.giaBan;
                     if (item.khuyenMai) {
                         giaSauKhuyenMai = (giaSauKhuyenMai * item.khuyenMai) / 100;
+                        item.giaBanSauKhuyenMai = item.giaBan - giaSauKhuyenMai;
                         $scope.tongKhuyenMaiSanPham += giaSauKhuyenMai;
-                        $scope.tongTienSanPham += item.soLuongMua * giaSauKhuyenMai;
-                    }else{
+                        $scope.tongTienSanPham += item.soLuongMua * item.giaBanSauKhuyenMai;
+                    } else {
                         $scope.tongTienSanPham += item.soLuongMua * item.giaBan;
                     }
 
-                    $scope.tongTien += item.soLuongMua * item.giaBan;
+                    $scope.tongTien = $scope.tongTienSanPham;
                     $scope.tongSoLuongMua += item.soLuongMua;
-
                 });
                 $http.get(host + '/rest/admin/dot-giam-gia/get-all-active')
                     .then(function (response) {
@@ -1715,7 +1723,10 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
                         $scope.tongKhuyenMaiTheoDot = ($scope.tongTien * $scope.khuyenMaiDot) / 100;
                         $scope.tongTienChuongTrinhGiamGia = $scope.tongTien - ($scope.tongTien * $scope.khuyenMaiDot) / 100;
 
-                        $scope.tongThanhToan = $scope.tongTien - $scope.tongKhuyenMaiHoaDon - $scope.tongKhuyenMaiTheoDot;
+                        $scope.tongTienSauKhuyenMai = $scope.tongTien  - $scope.tongKhuyenMaiTheoDot;
+                        console.log($scope.tongTienSauKhuyenMai);
+                        $scope.tongThanhToan = $scope.tongTienSauKhuyenMai;
+
 
                     }).catch(function (error) {
                     console.log(error);
@@ -1791,8 +1802,9 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
 
 
     $scope.thanhToan = function () {
-        if ($scope.listBienTheGiayLocalStorage.length != 0) {
-            console.log($scope.listBienTheGiayLocalStorage);
+        if(angular.equals({},$scope.diaChiNhanHang)){
+            toastr["warning"]('Vui lòng thêm địa chỉ nhận hàng');
+        } else if ($scope.listBienTheGiayLocalStorage.length != 0) {
             $http.post("/rest/user/gio-hang/check-so-luong", $scope.listBienTheGiayLocalStorage)
                 .then(function (response) {
                     $scope.hoaDonThanhToan = {};
@@ -1884,7 +1896,7 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
                             toastr["warning"](error.data.khuyenMaiHangKhachHangError);
                         } else if (error.data.phieuGiamGiaError) {
                             toastr["warning"](error.data.phieuGiamGiaError);
-                        }else if(error.status){
+                        } else if (error.status) {
 
                         }
                     })
@@ -1919,7 +1931,7 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
                     };
                 }).catch(function (error) {
                 console.log(error);
-                if(error.status == 409){
+                if (error.status == 409) {
                     $scope.showErrorMessages(error.data);
                 }
             })
@@ -2008,7 +2020,7 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
                     item.giaBanSauKhuyenMai = item.giaBan - giaSauKhuyenMai;
                     $scope.tongKhuyenMaiSanPham += giaSauKhuyenMai;
                     $scope.tongTienSanPham += item.soLuongMua * item.giaBanSauKhuyenMai;
-                }else{
+                } else {
                     $scope.tongTienSanPham += item.soLuongMua * item.giaBan;
                 }
 
@@ -2037,8 +2049,8 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
                     $scope.tongKhuyenMaiTheoDot = ($scope.tongTien * $scope.khuyenMaiDot) / 100;
                     $scope.tongTienChuongTrinhGiamGia = $scope.tongTien - ($scope.tongTien * $scope.khuyenMaiDot) / 100;
                     console.log($scope.khachHang);
-                    $scope.tongTienHangKhachHang = $scope.tongTien - ($scope.tongTien * $scope.khachHang.hangKhachHang.uuDai) / 100;
-                    $scope.tongKhuyenMaiHoaDon = ($scope.tongTien * $scope.khachHang.hangKhachHang.uuDai) / 100;
+                    $scope.tongTienHangKhachHang = $scope.tongTien - ($scope.tongTien * $scope.khachHang.hangKhachHang.uuDai) / 100; // non login
+                    $scope.tongKhuyenMaiHoaDon = ($scope.tongTien * $scope.khachHang.hangKhachHang.uuDai) / 100; // non login
 
                     $scope.tongTienSauKhuyenMai = $scope.tongTien - $scope.tongKhuyenMaiHoaDon - $scope.tongKhuyenMaiTheoDot;
                     $scope.tongThanhToan = $scope.tongTienSauKhuyenMai;
@@ -2091,10 +2103,14 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
                     var giaSauKhuyenMai = item.giaBan;
                     if (item.khuyenMai) {
                         giaSauKhuyenMai = (giaSauKhuyenMai * item.khuyenMai) / 100;
+                        item.giaBanSauKhuyenMai = item.giaBan - giaSauKhuyenMai;
                         $scope.tongKhuyenMaiSanPham += giaSauKhuyenMai;
+                        $scope.tongTienSanPham += item.soLuongMua * item.giaBanSauKhuyenMai;
+                    } else {
+                        $scope.tongTienSanPham += item.soLuongMua * item.giaBan;
                     }
 
-                    $scope.tongTien += item.soLuongMua * item.giaBan;
+                    $scope.tongTien = $scope.tongTienSanPham;
                     $scope.tongSoLuongMua += item.soLuongMua;
                 });
                 $http.get(host + '/rest/admin/dot-giam-gia/get-all-active')
@@ -2115,8 +2131,10 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
                         $scope.tongKhuyenMaiTheoDot = ($scope.tongTien * $scope.khuyenMaiDot) / 100;
                         $scope.tongTienChuongTrinhGiamGia = $scope.tongTien - ($scope.tongTien * $scope.khuyenMaiDot) / 100;
 
-                        $scope.tongTienSauKhuyenMai = $scope.tongTien - $scope.tongKhuyenMaiHoaDon - $scope.tongKhuyenMaiTheoDot;
-                        $scope.tongThanhToan = tongTienSauKhuyenMai;
+                        $scope.tongTienSauKhuyenMai = $scope.tongTien  - $scope.tongKhuyenMaiTheoDot;
+                        console.log($scope.tongTienSauKhuyenMai);
+                        $scope.tongThanhToan = $scope.tongTienSauKhuyenMai;
+
 
                     }).catch(function (error) {
                     console.log(error);
@@ -2137,29 +2155,47 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
 
     $scope.diaChiNhanHangAdd = {};
     $scope.addDiaChiNhanHang = function () {
-        if ($scope.diaChiNhanHangForm.$invalid) {
-            return;
-        }
+        // alert()
+        // if ($scope.diaChiNhanHangForm.$invalid) {
+        //     return;
+        // }
 
         $scope.diaChiNhanHangAdd.districts = $scope.diaChiNhanHangAdd.districts.ten;
         $scope.diaChiNhanHangAdd.provinces = $scope.diaChiNhanHangAdd.provinces.ten;
         $scope.diaChiNhanHangAdd.wards = $scope.diaChiNhanHangAdd.wards.ten;
-        if($scope.diaChiNhanHangAdd.macDinh){
+        if ($scope.diaChiNhanHangAdd.macDinh) {
             $scope.diaChiNhanHangAdd.macDinh = $scope.diaChiNhanHangAdd.macDinh;
-        }else{
+        } else {
             $scope.diaChiNhanHangAdd.macDinh = null;
         }
         $scope.diaChiNhanHangAdd.idKhachHang = $scope.khachHang.id;
 
 
-        console.log($scope.diaChiNhanHangAdd);
+        console.log("abc"+$scope.diaChiNhanHangAdd);
         $http.post(host + '/rest/khach-hang/dia-chi-nhan-hang', $scope.diaChiNhanHangAdd)
             .then(function (response) {
                 if (response.status === 200) {
                     $scope.diaChiNhanHangAdd = {};
                     toastr["success"]("Thêm thành công");
-                    $('#modalThemDiaChi').modal('hide');
+                    $('#modalThemDiaChiNhanHang').modal('hide');
                     loadDiaChi();
+                    $http.get(host + '/rest/khach-hang/dia-chi-nhan-hang/' + $scope.khachHang.id + "/khach-hang/get-one")
+                        .then(function (response) {
+                            if(response.data === ""){
+                                $scope.errosDiaChiNhan = "Vui lòng thêm địa chỉ để tiếp tục thanh toán !"
+                            }else{
+                                $scope.errosDiaChiNhan = null;
+                                $scope.diaChiNull = true;
+                                $scope.diaChiNhanHang = response.data;
+                                console.log(response.data);
+                                setData();
+                            }
+
+                        }).catch(function (error) {
+                        console.log(error);
+                        toastr["error"]("Lấy dữ liệu thất bại");
+                        // $location.path("/list");
+                    });
                 }
             })
             .catch(function (error) {
@@ -2173,6 +2209,26 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
                     $scope.errors = error.data;
                 }
             });
+    }
+
+
+    $scope.chonDiaChiNhanHang = function(){
+        if ($scope.diaChiNhanHangForm.$invalid) {
+            return;
+        }
+
+        $scope.diaChiNhanHang.districts = $scope.diaChiNhanHangAdd.districts.ten;
+        $scope.diaChiNhanHang.provinces = $scope.diaChiNhanHangAdd.provinces.ten;
+        $scope.diaChiNhanHang.wards = $scope.diaChiNhanHangAdd.wards.ten;
+        $scope.diaChiNhanHang.hoTen = $scope.diaChiNhanHangAdd.hoTen;
+        $scope.diaChiNhanHang.soDienThoaiNhan = $scope.diaChiNhanHangAdd.soDienThoaiNhan;
+        $scope.diaChiNhanHang.email = $scope.diaChiNhanHangAdd.email;
+        $scope.diaChiNhanHang = $scope.diaChiNhanHangAdd;
+        $scope.khachHang.email = $scope.diaChiNhanHang.email;
+        $scope.diaChiNull = true;
+        console.log($scope.diaChiNhanHang);
+        $scope.submitDiaChi();
+        $scope.diaChiNhanHangAdd = {};
     }
 })
 

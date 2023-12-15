@@ -57,37 +57,54 @@
 <div class="container pt-5">
     <div class="row">
         <div class="col-md-8">
-            <p class="fw-bold">Thông Tin Khách Hàng</p>
+            <p class="fw-bold">Thông Tin Khách Hàng </p>
+            <p class="font-size-12-ncl" ng-show="errosDiaChiNhan !== null">{{errosDiaChiNhan}}</p>
             <div>
                 <form action="">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="mb-3">
-                                <label for="nhanVienTen" class="form-label">Họ và tên</label>
-                                <input type="text" class="form-control" ng-readonly="diaChiNhanHang.hoTen" ng-model="diaChiNhanHang.hoTen">
-
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" ng-model="diaChiNhanHang.hoTen" readonly placeholder="name@example.com">
+                                <label for="floatingInput"  >Họ tên</label>
                             </div>
                         </div>
                         <div class="col-md-12">
-                            <div class="mb-3">
-                                <label for="nhanVienTen" class="form-label">Số điện thoại</label>
-                                <input type="text" ng-readonly="diaChiNhanHang.soDienThoaiNhan" class="form-control" ng-model="diaChiNhanHang.soDienThoaiNhan">
-
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control"  ng-model="diaChiNhanHang.soDienThoaiNhan" readonly placeholder="name@example.com">
+                                <label for="floatingInput" >Số điện thoại</label>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12">
-                            <div class="mb-3">
-                                <label for="nhanVienTen" class="form-label">Email </label>
-                                <input type="text" ng-readonly="khachHang.email" class="form-control" ng-model="khachHang.email">
 
+                        <div class="col-md-12">
+                            <div class="form-floating mb-3">
+                                <input type="email" class="form-control" ng-model="khachHang.email" readonly placeholder="name@example.com">
+                                <label for="floatingInput"  >Email</label>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-md-12">
-                        <p> <span class="font-size-16-ncl fw-bold">Địa chỉ nhận hàng : </span> {{diaChiNhanHang.diaChiNhan}} ,Xã {{diaChiNhanHang.wards.ten}} ,Huyện {{diaChiNhanHang.districts.ten}} ,Huyện {{diaChiNhanHang.provinces.ten}} <button ng-click="thayDoiDiaChiNhanHang()" type="button" class="btn btn-dark"  data-bs-toggle="modal" data-bs-target="#modalDiaChiNhanHang"> Thay đổi </button> </p>
+                        <p ng-if="diaChiNull"><span class="font-size-16-ncl fw-bold">Địa chỉ nhận hàng : </span>
+                            {{diaChiNhanHang.diaChiNhan}} ,Xã {{diaChiNhanHang.wards.ten}} ,Huyện
+                            {{diaChiNhanHang.districts.ten}} ,Huyện {{diaChiNhanHang.provinces.ten}}
+                            <button ng-if="userLogged" ng-click="thayDoiDiaChiNhanHang()" type="button" class="btn btn-dark"
+                                    data-bs-toggle="modal" data-bs-target="#modalDiaChiNhanHang"> Thay đổi
+                            </button>
+
+                            <button ng-if="!userLogged" ng-click="chonDiaChiNhanHang()" type="button" class="btn btn-dark"
+                                    data-bs-toggle="modal" data-bs-target="#modalChonDiaChiNhanHang"> Thay đổi
+                            </button>
+                        </p>
+                        <p ng-if="!diaChiNull"><span class="font-size-16-ncl fw-bold">Địa chỉ nhận hàng : </span> -
+                            <button ng-if="userLogged" ng-click="thayDoiDiaChiNhanHang()" type="button" class="btn btn-dark"
+                                    data-bs-toggle="modal" data-bs-target="#modalDiaChiNhanHang"> Thêm mới
+                            </button>
+                            <button ng-if="!userLogged"  type="button" class="btn btn-dark"
+                                    data-bs-toggle="modal" data-bs-target="#modalChonDiaChiNhanHang"> Chọn
+                            </button>
+                        </p>
                     </div>
 
 
@@ -178,11 +195,13 @@
 
                     <div class="d-flex align-items-center justify-content-between" ng-if="userLogged">
                         <p class=" font-size-14-ncl py-1">Voucher</p>
-                        <p class="fw-bold font-size-14-ncl"> <span>
+
+                        <p class="fw-bold font-size-14-ncl"> <span ng-show="phieuGiamGiaChoosed.maGiamGia">
                             {{phieuGiamGiaChoosed.maGiamGia}} <span
                                 class="font-size-14-ncl text-danger">-{{(tongTien *
                             phieuGiamGiaChoosed.phanTramGiam)/100}}</span>
                         </span>
+                            <span ng-show="!phieuGiamGiaChoosed.maGiamGia">-</span>
                             <button class="btn btn-outline-dark" data-bs-toggle="modal"
                                     data-bs-target="#phieuGiamGiaModal" ng-click="getPhieuGiamGia()"><i
                                     class="fas fa-exchange-alt"></i></button>
@@ -266,7 +285,7 @@
                 <div ng-show="productsLessQuantity.length > 0">
                     <h5>Sản phẩm vượt quá số lượng</h5>
                     <div class="d-flex mb-3" ng-repeat="bienTheGiay in productsLessQuantity">
-                        <div>
+                        <div>F
                             <a href="#/detail/{{bienTheGiay.id}}">
                                 <img class="rounded" width="100%"
                                      src="https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg"
@@ -332,8 +351,6 @@
 </div>
 
 
-
-
 <!-- Modal Dia Chi Nhan Hang -->
 <div class="modal fade" id="modalDiaChiNhanHang" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -343,28 +360,32 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div ng-repeat="diaChiNhanHang in diaChiNhanHangs" >
-                    <div class="border-bottom-1 mb-3 "  >
+                <div ng-repeat="diaChiNhanHang in diaChiNhanHangs">
+                    <div class="border-bottom-1 mb-3 ">
                         <div class="d-flex justify-content-between">
-                            <div> <div class="d-flex align-items-center">
-                                <h5 class="mb-0">{{diaChiNhanHang.hoTen}}</h5>
-                                <p class="font-size-16-ncl  mb-0 ps-3">{{diaChiNhanHang.soDienThoaiNhan}}</p>
-                            </div>
+                            <div>
+                                <div class="d-flex align-items-center">
+                                    <h5 class="mb-0">{{diaChiNhanHang.hoTen}}</h5>
+                                    <p class="font-size-16-ncl  mb-0 ps-3">{{diaChiNhanHang.soDienThoaiNhan}}</p>
+                                </div>
                                 <h5 class="font-size-16-ncl">
                                     {{diaChiNhanHang.diaChiNhan}}
                                 </h5>
                                 <h5 class="font-size-14-ncl">
-                                    Xã <span>{{diaChiNhanHang.wards}}</span>, Huyện <span>{{diaChiNhanHang.districts}}</span>, <span>{{diaChiNhanHang.provinces}}</span>
+                                    Xã <span>{{diaChiNhanHang.wards}}</span>, Huyện
+                                    <span>{{diaChiNhanHang.districts}}</span>, <span>{{diaChiNhanHang.provinces}}</span>
                                 </h5>
                                 <div class="mb-2">
-                            <span class="badge-custom" ng-show="diaChiNhanHang.trangThai == 1" >
+                            <span class="badge-custom" ng-show="diaChiNhanHang.trangThai == 1">
                                 {{diaChiNhanHang.trangThai == 1 ? 'Mặc Định' : 'Không áp dụng'}}
                             </span>
                                 </div>
                             </div>
                             <div>
-                                <div class="d-flex" >
-                                    <button class="btn btn-outline-dark" data-bs-dismiss="modal" ng-click="selectedDiaChiNhanHang(diaChiNhanHang)" >Chọn</button>
+                                <div class="d-flex">
+                                    <button class="btn btn-outline-dark" data-bs-dismiss="modal"
+                                            ng-click="selectedDiaChiNhanHang(diaChiNhanHang)">Chọn
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -373,14 +394,17 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-dark" data-bs-target="#modalThemDiaChiNhanHang" data-bs-toggle="modal" data-bs-dismiss="modal">Thêm Địa Chỉ</button>
+                <button class="btn btn-dark" data-bs-target="#modalThemDiaChiNhanHang" data-bs-toggle="modal"
+                        data-bs-dismiss="modal">Thêm Địa Chỉ
+                </button>
             </div>
         </div>
     </div>
 </div>
 
 
-<div class="modal fade" id="modalThemDiaChiNhanHang" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+<div class="modal fade" id="modalThemDiaChiNhanHang" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2"
+     tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body">
@@ -392,49 +416,132 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-floating mb-3">
-                                    <input type="text" class="form-control"  placeholder="hoTen" name="hoTen" ng-model="diaChiNhanHangAdd.hoTen"
+                                    <input type="text" class="form-control" id="floatingInput" placeholder="hoTen" name="hoTen"
+                                           ng-model="diaChiNhanHangAdd.hoTen"
                                            ng-required="true" ng-change="change(diaChiNhanHangForm.hoTen)">
                                     <label for="floatingInput">Họ Tên</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input type="text" class="form-control"  placeholder="hoTen" name="soDienThoaiNhan" ng-model="diaChiNhanHangAdd.soDienThoaiNhan" >
+                                    <input type="text" class="form-control" placeholder="hoTen" name="soDienThoaiNhan"
+                                           ng-model="diaChiNhanHangAdd.soDienThoaiNhan">
                                     <label for="floatingInput">Số Điện Thoại</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <select class="form-select" id="floatingSelect" aria-label="Tỉnh" name="provinces" ng-model="diaChiNhanHangAdd.provinces" ng-options="province.ten  for province in provinces" ng-change="changeProvince()"  >
+                                    <select class="form-select"  aria-label="Tỉnh" name="provinces"
+                                            ng-model="diaChiNhanHangAdd.provinces"
+                                            ng-options="province.ten  for province in provinces"
+                                            ng-change="changeProvince()">
                                     </select>
                                     <label for="floatingSelect">Tỉnh</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <select class="form-select" id="floatingSelect" aria-label="Huyện" name="districts" ng-model="diaChiNhanHangAdd.districts" ng-options="district.ten for district in districts" ng-change="changeDistrict()"  >
+                                    <select class="form-select"  aria-label="Huyện" name="districts"
+                                            ng-model="diaChiNhanHangAdd.districts"
+                                            ng-options="district.ten for district in districts"
+                                            ng-change="changeDistrict()">
                                     </select>
                                     <label for="floatingSelect">Huyện</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <select class="form-select" id="floatingSelect" aria-label="xã" name="wards"  ng-model="diaChiNhanHangAdd.wards" ng-options="ward.ten for ward in wards"  >
+                                    <select class="form-select" id="floatingSelect" aria-label="xã" name="wards"
+                                            ng-model="diaChiNhanHangAdd.wards" ng-options="ward.ten for ward in wards">
                                     </select>
                                     <label for="floatingSelect">Xã</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="floatingInput" placeholder="hoTen" name="diaChiNhan" ng-model="diaChiNhanHangAdd.diaChiNhan" >
+                                    <input type="text" class="form-control" id="floatingInput" placeholder="hoTen"
+                                           name="diaChiNhan" ng-model="diaChiNhanHangAdd.diaChiNhan">
                                     <label for="floatingInput">Địa Chỉ Chi Tiết</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" ng-model="diaChiNhanHangAdd.macDinh">
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"
+                                           ng-model="diaChiNhanHangAdd.macDinh">
                                     <label class="form-check-label" for="flexCheckDefault">
                                         Đặt làm địa chỉ mặc định
                                     </label>
                                 </div>
                             </div>
-                            <button class="btn btn-dark">Thêm địa chỉ</button>
+                            <button type="submit" class="btn btn-dark">Thêm địa chỉ</button>
                         </div>
                     </form>
 
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-dark" data-bs-target="#modalDiaChiNhanHang" data-bs-toggle="modal" data-bs-dismiss="modal">Trở về</button>
+                <button class="btn btn-dark" data-bs-target="#modalDiaChiNhanHang" data-bs-toggle="modal"
+                        data-bs-dismiss="modal">Trở về
+                </button>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Khach chua login -->
+<div class="modal fade" id="modalChonDiaChiNhanHang" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2"
+     tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="p-3 rounded">
+                    <div>
+                        <h5 class="fw-bold">Chọn địa chỉ nhận hàng</h5>
+                    </div>
+                    <form name="diaChiNhanHangForm" ng-submit="chonDiaChiNhanHang()">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" placeholder="hoTen" name="hoTen"
+                                           ng-model="diaChiNhanHangAdd.hoTen"
+                                           ng-required="true" ng-change="change(diaChiNhanHangForm.hoTen)">
+                                    <label for="floatingInput">Họ Tên</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" placeholder="hoTen" name="soDienThoaiNhan"
+                                           ng-required="true"  ng-model="diaChiNhanHangAdd.soDienThoaiNhan">
+                                    <label for="floatingInput">Số Điện Thoại</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control"  placeholder="hoTen" name="soDienThoaiNhan"
+                                           ng-required="true"  ng-model="diaChiNhanHangAdd.email">
+                                    <label for="floatingInput">Email</label>
+                                </div>
+                            <div class="col-md-12">
+                                <div class="form-floating mb-3">
+                                    <select class="form-select"  aria-label="Tỉnh" name="provinces"
+                                            ng-model="diaChiNhanHangAdd.provinces"
+                                            ng-options="province.ten  for province in provinces"
+                                            ng-change="changeProvince()">
+                                    </select>
+                                    <label for="floatingSelect">Tỉnh</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <select class="form-select"  aria-label="Huyện" name="districts"
+                                            ng-model="diaChiNhanHangAdd.districts"
+                                            ng-options="district.ten for district in districts"
+                                            ng-change="changeDistrict()">
+                                    </select>
+                                    <label for="floatingSelect">Huyện</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <select class="form-select"  aria-label="xã" name="wards"
+                                            ng-model="diaChiNhanHangAdd.wards" ng-options="ward.ten for ward in wards">
+                                    </select>
+                                    <label for="floatingSelect">Xã</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control"  placeholder="hoTen"
+                                           name="diaChiNhan" ng-model="diaChiNhanHangAdd.diaChiNhan">
+                                    <label for="floatingInput">Địa Chỉ Chi Tiết</label>
+                                </div>
+
+                            </div>
+                            <button  class="btn btn-dark">Thêm địa chỉ</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
