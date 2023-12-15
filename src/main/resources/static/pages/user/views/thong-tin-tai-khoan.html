@@ -3,6 +3,23 @@
         width: 20px;
     }
 </style>
+
+<div ng-show="isLoading" class="loading-spinner">
+    <div class="text-center" style="  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Màu nền đục để làm mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1210; ">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
 <div class="container py-5">
     <div class="row">
         <div class="col-md-4">
@@ -26,7 +43,8 @@
                 <h5 class="fw-bold">CHI TIẾT TÀI KHOẢN</h5>
             </div>
             <div class="form-floating mb-3">
-                <input type="text" class="form-control"  placeholder="hoTen" name="hoTen" ng-model="khachHang.hoTen" >
+                <input type="text" class="form-control" placeholder="hoTen" name="hoTen" ng-model="khachHang.hoTen"
+                       readonly>
                 <label for="floatingInput">Họ Tên</label>
             </div>
             <div>
@@ -34,46 +52,102 @@
                     <label class="fw-bold">Mật Khẩu</label>
                     <div class="d-flex align-items-center justify-content-between">
                         <span>***********</span>
-                        <p class="btn btn-dark font-size-16-ncl fw-bold ">Thay Đổi</p>
+                        <p class="btn btn-dark font-size-16-ncl fw-bold" data-bs-toggle="modal"
+                           data-bs-target="#modalMatKhau">Thay Đổi</p>
                     </div>
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="emailInput" placeholder="email" name="email" ng-model="khachHang.email" >
+                    <input type="email" class="form-control" id="emailInput" placeholder="email" name="email"
+                           ng-model="khachHang.email" readonly>
                     <label for="emailInput">Email: </label>
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="sdtInput" placeholder="số điện thoại" name="soDienThoai" ng-model="khachHang.soDienThoai" >
+                    <input type="text" class="form-control" id="sdtInput" placeholder="số điện thoại" name="soDienThoai"
+                           ng-model="khachHang.soDienThoai" readonly>
                     <label for="sdtInput">Số Điện Thoại</label>
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="date" class="form-control" id="ngaySinh" placeholder="ngày sinh" name="ngaySinh" ng-model="khachHang.ngaySinh" >
+                    <input type="date" class="form-control" id="ngaySinh" placeholder="ngày sinh" name="ngaySinh"
+                           ng-model="khachHang.ngaySinh" readonly>
                     <label for="ngaySinh">Ngày Sinh</label>
                 </div>
 
                 <div class="mb-3">
                     <label class="fw-bold">Giới Tính</label>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" value="true" name="gioiTinh" ng-model="khachHang.gioiTinh" ng-required="true"
+                    <div class="form-check" ng-hide="khachHang.gioiTinh != true">
+                        <input class="form-check-input" type="radio" value="true" name="gioiTinh"
+                               ng-model="khachHang.gioiTinh" ng-required="true"
                                ng-change="change(khachHangForm.gioiTinh)" ng-checked="khachHang.gioiTinh == true">
-                        <label class="form-check-label" for="flexRadioDefault1">
+                        <label class="form-check-label">
                             Nam
                         </label>
                     </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" value="false" name="gioiTinh" ng-model="khachHang.gioiTinh" ng-required="true"
-                               ng-change="change(khachHangForm.gioiTinh)" ng-checked="khachHang.gioiTinh == false">
-                        <label class="form-check-label" for="flexRadioDefault1">
+                    <div class="form-check" ng-hide="khachHang.gioiTinh == true">
+                        <input class="form-check-input" type="radio" value="false" name="gioiTinh"
+                               ng-model="khachHang.gioiTinh" ng-required="true"
+                               ng-change="change(khachHangForm.gioiTinh)" ng-checked="khachHang.gioiTinh == false"
+                               readonly>
+                        <label class="form-check-label">
                             Nữ
                         </label>
                     </div>
                 </div>
 
                 <div>
-                    <a class="btn btn-dark font-size-16-ncl fw-bold " data-bs-toggle="modal"  data-bs-target="#modalUpdateKhachHang" ng-click="detailKhachHang(khachHang.id)" >Thay đổi thông tin</a>
+                    <a class="btn btn-dark font-size-16-ncl fw-bold " data-bs-toggle="modal"
+                       data-bs-target="#modalUpdateKhachHang" ng-click="detailKhachHang(khachHang)">Thay đổi thông
+                        tin</a>
                 </div>
 
+                <div style="margin-left: 700px">
+                    <a class="btn btn-dark font-size-16-ncl fw-bold " data-bs-toggle="modal"
+                       data-bs-target="#modalThemDiaChi" ng-click="ThemDiaChiNhan()">Thêm địa chỉ</a>
+                </div>
 
+                <h5 class="fw-bold font-size-16-ncl">Địa Chỉ Nhận Hàng</h5>
+                <div ng-repeat="diaChiNhanHang in diaChiNhanHangs">
+                    <div class="border-bottom-1 mb-3 ">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <div class="d-flex align-items-center">
+                                    <h5 class="mb-0">{{diaChiNhanHang.hoTen}}</h5>
+                                    <p class="font-size-16-ncl  mb-0 ps-3">{{diaChiNhanHang.soDienThoaiNhan}}</p>
+                                </div>
+                                <h5 class="font-size-16-ncl">
+                                    {{diaChiNhanHang.diaChiNhan}}
+                                </h5>
+                                <h5 class="font-size-14-ncl">
+                                    Xã <span>{{diaChiNhanHang.wards}}</span>, Huyện
+                                    <span>{{diaChiNhanHang.districts}}</span>, <span>{{diaChiNhanHang.provinces}}</span>
+                                </h5>
+                                <div class="mb-2">
+                            <span class="badge-custom" ng-show="diaChiNhanHang.trangThai == 1">
+                                {{diaChiNhanHang.trangThai == 1 ? 'Mặc Định' : 'Không áp dụng'}}
+                            </span>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="d-flex justify-content-end">
 
+                                    <div>
+                                        <p class="fw-bold pointer border-bottom-2" data-bs-toggle="modal"
+                                           data-bs-target="#modalDiaChi" ng-click="updateDiaChiNhan(diaChiNhanHang.id)">
+                                            Cập Nhật</p>
+                                    </div>
+
+                                    <div class="ps-2 fw-bold">
+                                        <p class="pointer border-bottom-2" ng-click="removeDieuKien(diaChiNhanHang.id)">
+                                            Xóa</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex">
+                                    <button class="btn btn-outline-dark" ng-click="updateTrangThai(diaChiNhanHang.id)">
+                                        Thiết Lập Mặc Định
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
             </div>
 
@@ -99,31 +173,41 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-floating mb-3">
-                                    <input type="text" class="form-control"  placeholder="hoTen" name="hoTen" ng-model="diaChiNhanHang.hoTen"
+                                    <input type="text" class="form-control" placeholder="hoTen" name="hoTen"
+                                           ng-model="diaChiNhanHang.hoTen"
                                            ng-required="true" ng-change="change(diaChiNhanHangForm.hoTen)">
                                     <label for="floatingInput">Họ Tên</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input type="text" class="form-control"  placeholder="hoTen" name="soDienThoaiNhan" ng-model="diaChiNhanHang.soDienThoaiNhan" >
+                                    <input type="text" class="form-control" placeholder="hoTen" name="soDienThoaiNhan"
+                                           ng-model="diaChiNhanHang.soDienThoaiNhan">
                                     <label for="floatingInput">Số Điện Thoại</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <select class="form-select" id="floatingSelect" aria-label="Tỉnh" name="provinces" ng-model="diaChiNhanHang.provinces" ng-options="province.ten  for province in provinces" ng-change="changeProvince()"  >
+                                    <select class="form-select" id="floatingSelect" aria-label="Tỉnh" name="provinces"
+                                            ng-model="diaChiNhanHang.provinces"
+                                            ng-options="province.ten  for province in provinces"
+                                            ng-change="changeProvince()">
                                     </select>
                                     <label for="floatingSelect">Tỉnh</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <select class="form-select" id="floatingSelect" aria-label="Huyện" name="districts" ng-model="diaChiNhanHang.districts" ng-options="district.ten for district in districts" ng-change="changeDistrict()"  >
+                                    <select class="form-select" id="floatingSelect" aria-label="Huyện" name="districts"
+                                            ng-model="diaChiNhanHang.districts"
+                                            ng-options="district.ten for district in districts"
+                                            ng-change="changeDistrict()">
                                     </select>
                                     <label for="floatingSelect">Huyện</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <select class="form-select" id="floatingSelect" aria-label="xã" name="wards"  ng-model="diaChiNhanHang.wards" ng-options="ward.ten for ward in wards"  >
+                                    <select class="form-select" id="floatingSelect" aria-label="xã" name="wards"
+                                            ng-model="diaChiNhanHang.wards" ng-options="ward.ten for ward in wards">
                                     </select>
                                     <label for="floatingSelect">Xã</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="floatingInput" placeholder="hoTen" name="diaChiNhan" ng-model="diaChiNhanHang.diaChiNhan" >
+                                    <input type="text" class="form-control" id="floatingInput" placeholder="hoTen"
+                                           name="diaChiNhan" ng-model="diaChiNhanHang.diaChiNhan">
                                     <label for="floatingInput">Địa Chỉ Chi Tiết</label>
                                 </div>
                                 <div class="form-check">
@@ -147,12 +231,9 @@
 
 
 <!-- Modal thêm địa chỉ -->
-
-<!-- Modal update thông tin khách hàng -->
-
-<div class="modal fade" id="modalUpdateKhachHang" tabindex="-1" aria-labelledby="#modalUpdateKhachHang" aria-hidden="true">
+<div class="modal fade" id="modalThemDiaChi" tabindex="-1" aria-labelledby="#modalThemDiaChi" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <form name="khachHangForm" ng-submit="updateKhachHang()">
+        <form name="diaChiNhanHangForm" ng-submit="addDiaChiNhanHang()">
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="p-3 rounded">
@@ -161,51 +242,46 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-<!--                                <div class="form-floating mb-3">-->
-<!--                                    <input type="text" class="form-control"  placeholder="hoTen" name="hoTen" ng-model="diaChiNhanHang.hoTen"-->
-<!--                                           ng-required="true" ng-change="change(diaChiNhanHangForm.hoTen)">-->
-<!--                                    <label for="floatingInput">Họ Tên</label>-->
-<!--                                </div>-->
-                                <div>
-                                    <h5 class="fw-bold">CHI TIẾT TÀI KHOẢN</h5>
-                                </div>
                                 <div class="form-floating mb-3">
-                                    <input type="text" class="form-control"  placeholder="hoTen" name="hoTen" ng-model="khachHang.hoTen" >
+                                    <input type="text" class="form-control" placeholder="hoTen" name="hoTen"
+                                           ng-model="diaChiNhanHang.hoTen"
+                                           ng-required="true" ng-change="change(diaChiNhanHangForm.hoTen)">
                                     <label for="floatingInput">Họ Tên</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input type="email" class="form-control" id="emailInput" placeholder="email" name="email" ng-model="khachHang.email" >
-                                    <label for="emailInput">Email: </label>
+                                    <input type="text" class="form-control" placeholder="hoTen" name="soDienThoaiNhan"
+                                           ng-model="diaChiNhanHang.soDienThoaiNhan">
+                                    <label for="floatingInput">Số Điện Thoại</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="sdtInput" placeholder="số điện thoại" name="soDienThoai" ng-model="khachHang.soDienThoai" >
-                                    <label for="sdtInput">Số Điện Thoại</label>
+                                    <select class="form-select" id="floatingSelect" aria-label="Tỉnh" name="provinces"
+                                            ng-model="diaChiNhanHang.provinces"
+                                            ng-options="province.ten  for province in provinces"
+                                            ng-change="changeProvince()">
+                                    </select>
+                                    <label for="floatingSelect">Tỉnh</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input type="date" class="form-control" id="ngaySinh" placeholder="ngày sinh" name="ngaySinh" ng-model="khachHang.ngaySinh" >
-                                    <label for="ngaySinh">Ngày Sinh</label>
+                                    <select class="form-select" id="floatingSelect" aria-label="Huyện" name="districts"
+                                            ng-model="diaChiNhanHang.districts"
+                                            ng-options="district.ten for district in districts"
+                                            ng-change="changeDistrict()">
+                                    </select>
+                                    <label for="floatingSelect">Huyện</label>
                                 </div>
-
-                                <div class="mb-3">
-                                    <label class="fw-bold">Giới Tính</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" value="true" name="gioiTinh" ng-model="khachHang.gioiTinh" ng-required="true"
-                                               ng-change="change(khachHangForm.gioiTinh)" ng-checked="khachHang.gioiTinh == true">
-                                        <label class="form-check-label" for="flexRadioDefault1">
-                                            Nam
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" value="false" name="gioiTinh" ng-model="khachHang.gioiTinh" ng-required="true"
-                                               ng-change="change(khachHangForm.gioiTinh)" ng-checked="khachHang.gioiTinh == false">
-                                        <label class="form-check-label" for="flexRadioDefault1">
-                                            Nữ
-                                        </label>
-                                    </div>
+                                <div class="form-floating mb-3">
+                                    <select class="form-select" id="floatingSelect" aria-label="xã" name="wards"
+                                            ng-model="diaChiNhanHang.wards" ng-options="ward.ten for ward in wards">
+                                    </select>
+                                    <label for="floatingSelect">Xã</label>
                                 </div>
-
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="floatingInput" placeholder="hoTen"
+                                           name="diaChiNhan" ng-model="diaChiNhanHang.diaChiNhan">
+                                    <label for="floatingInput">Địa Chỉ Chi Tiết</label>
+                                </div>
                             </div>
-                            <button class="btn btn-dark">sửa thông tin</button>
+                            <button class="btn btn-dark">Thêm địa chỉ</button>
                         </div>
                     </div>
                 </div>
@@ -213,38 +289,195 @@
         </form>
     </div>
 </div>
+
+<!-- Modal update thông tin khách hàng -->
+<div class="modal fade" id="modalUpdateKhachHang" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Cập nhật thông tin khách hàng</h5>
+                <button type="button" class="btn-close" id="closeModalUpdateKhachhang" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form name="khachHangUpdateForm" ng-submit="updateKhachHang()">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div class="p-3 rounded">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="mb-3">
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control" placeholder="hoTen" name="hoTen"
+                                                       ng-model="khachHangUpdate.hoTen" ng-required="true"
+                                                       ng-maxlength="100">
+                                                <label for="floatingInput">Họ Tên</label>
+                                            </div>
+                                            <small class="error-message"
+                                                   ng-show="(khachHangUpdateForm.hoTen.$dirty || khachHangUpdateForm.hoTen.$touched) && khachHangUpdateForm.hoTen.$error.required">
+                                                Không được để trống</small>
+                                            <small class="error-message"
+                                                   ng-show="(khachHangUpdateForm.hoTen.$dirty || khachHangUpdateForm.hoTen.$touched) && khachHangUpdateForm.hoTen.$error.maxlength">
+                                                Không được quá 100 ký tự</small>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control" id="sdtInputUpdate"
+                                                       placeholder="số điện thoại" name="soDienThoai"
+                                                       ng-model="khachHangUpdate.soDienThoai" ng-pattern="/^0\d{9}$/">
+                                                <label for="sdtInputUpdate">Số Điện Thoại</label>
+                                            </div>
+                                            <small class="error-message"
+                                                   ng-show="(khachHangUpdateForm.soDienThoai.$dirty || khachHangUpdateForm.soDienThoai.$touched) && khachHangUpdateForm.soDienThoai.$error.required">
+                                                Không được để trống số điện thoại</small>
+                                            <small ng-show="khachHangUpdateForm.soDienThoai.$error.pattern"
+                                                   class="error-message">Số điện
+                                                thoại không đúng định
+                                                dạng.</small>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <div class="form-floating">
+                                                <input type="date" class="form-control" id="ngaySinhUpdate"
+                                                       placeholder="ngày sinh" name="ngaySinh"
+                                                       ng-model="khachHangUpdate.ngaySinh" ng-required="true">
+                                                <label for="ngaySinh">Ngày Sinh</label>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Giới Tính</label>
+                                            <div class="form-check">
+                                                <input class="form-check-input" id="khachHangUpdateNam" type="radio"
+                                                       value="true" name="gioiTinh" ng-model="khachHangUpdate.gioiTinh"
+                                                       ng-checked="khachHangUpdate.gioiTinh == true">
+                                                <label class="form-check-label" for="khachHangUpdateNam">
+                                                    Nam
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" id="khachHangUpdateNu" type="radio"
+                                                       value="false" name="gioiTinh" ng-model="khachHangUpdate.gioiTinh"
+                                                       ng-checked="khachHangUpdate.gioiTinh == false">
+                                                <label class="form-check-label" for="khachHangUpdateNu">
+                                                    Nữ
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <button class="btn btn-dark">Cập nhật</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 <!--modal mật khẩu-->
 
 <div class="modal fade" id="modalMatKhau" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-
+            <div class="modal-header">
+                <h5 class="fw-bold">Thay đổi mật khẩu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" id="closeModalUpdateMK"
+                        aria-label="Close"></button>
+            </div>
             <div class="modal-body">
                 <div class="p-3 rounded">
-                    <div>
-                        <h5 class="fw-bold">Cập Nhật Địa Chỉ</h5>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingInput" placeholder="hoTen">
-                                <label for="floatingInput">Mật Khẩu</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingInput" placeholder="hoTen">
-                                <label for="floatingInput">Email</label>
-                            </div>
+                    <form name="updatePasswordForm" ng-submit="updatePassword()">
+                        <div class="form-group mb-3">
+                            <label for="khachHangOldPassword">Mật khẩu cũ: </label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="khachHangOldPassword"
+                                       name="password"
+                                       ng-model="khachHangUpdatePassword.oldPass" ng-required="true" ng-minlength="6"
+                                       ng-maxlength="50"
+                                       ng-keyup="changeOldPassword()">
 
+                                <input type="checkbox" id="showPassOld" style="display: none"
+                                       ng-model="khachHangUpdatePassword.showPassOld"
+                                       ng-change="toggleShowPassUpdate('khachHangOldPassword')">
+                                <label for="showPassOld" type="button" class="input-group-text" id="basic-addon1">
+                                    <i class="fas fa-eye" ng-show="khachHangUpdatePassword.showPassOld == true"></i>
+                                    <i class="fas fa-eye-slash"
+                                       ng-show="khachHangUpdatePassword.showPassOld  != true"></i>
+                                </label>
+                            </div>
+                            <small class="error-message"
+                                   ng-show="(updatePasswordForm.password.$dirty || updatePasswordForm.password.$touched) && updatePasswordForm.password.$error.required">
+                                Không được để trống password</small>
+                            <small class="error-message"
+                                   ng-show="(updatePasswordForm.password.$dirty || updatePasswordForm.password.$touched) && updatePasswordForm.password.$error.minlength">
+                                Mật khẩu phải trên 6 ký tự</small>
+                            <small class="error-message"
+                                   ng-show="(updatePasswordForm.password.$dirty || updatePasswordForm.password.$touched) && updatePasswordForm.password.$error.maxlength">
+                                Mật khẩu không được quá 50 ký tự</small>
+                            <small class="error-message"
+                                   ng-show="errors.password && !updatePasswordForm.password.$dirty">{{errors.password}}</small>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="khachHangNewPassword">Mật khẩu mới: </label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="khachHangNewPassword"
+                                       name="newPassword"
+                                       ng-model="khachHangUpdatePassword.newPass" ng-required="true" ng-minlength="6"
+                                       ng-maxlength="50"
+                                       ng-keyup="changeNewPassword()">
+
+                                <input type="checkbox" id="showPassNew" style="display: none"
+                                       ng-model="khachHangUpdatePassword.showPassNew"
+                                       ng-change="toggleShowPassUpdate('khachHangNewPassword')">
+                                <label for="showPassNew" type="button" class="input-group-text">
+                                    <i class="fas fa-eye" ng-show="khachHangUpdatePassword.showPassNew == true"></i>
+                                    <i class="fas fa-eye-slash"
+                                       ng-show="khachHangUpdatePassword.showPassNew != true"></i>
+                                </label>
+                            </div>
+                            <small class="error-message"
+                                   ng-show="(updatePasswordForm.newPassword.$dirty || updatePasswordForm.newPassword.$touched) && updatePasswordForm.newPassword.$error.required">
+                                Không được để trống</small>
+                            <small class="error-message"
+                                   ng-show="(updatePasswordForm.newPassword.$dirty || updatePasswordForm.newPassword.$touched) && updatePasswordForm.newPassword.$error.minlength">
+                                Mật khẩu phải trên 6 ký tự</small>
+                            <small class="error-message"
+                                   ng-show="(updatePasswordForm.newPassword.$dirty || updatePasswordForm.newPassword.$touched) && updatePasswordForm.newPassword.$error.maxlength">
+                                Mật khẩu không được quá 50 ký tự</small>
+                            <small class="error-message"
+                                   ng-show="errors.newPassword">{{errors.newPassword}}</small>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="khachHangReNewPassword">Nhập lại mật khẩu mới: </label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="khachHangReNewPassword"
+                                       name="renewPassword"
+                                       ng-model="khachHangUpdatePassword.renewPass" ng-required="true" ng-minlength="6"
+                                       ng-maxlength="50"
+                                       ng-keyup="changeRePassword()">
+
+                                <input type="checkbox" id="showPassReNew" style="display: none"
+                                       ng-model="khachHangUpdatePassword.showPassReNew"
+                                       ng-change="toggleShowPassUpdate('khachHangReNewPassword')">
+                                <label for="showPassReNew" type="button" class="input-group-text">
+                                    <i class="fas fa-eye" ng-show="khachHangUpdatePassword.showPassReNew == true"></i>
+                                    <i class="fas fa-eye-slash"
+                                       ng-show="khachHangUpdatePassword.showPassReNew != true"></i>
+                                </label>
+                            </div>
+                            <small class="error-message"
+                                   ng-show="errors.renewPassword">{{errors.renewPassword}}</small>
                         </div>
                         <button class="btn btn-dark">Cập Nhật</button>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
 
 
 

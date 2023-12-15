@@ -151,9 +151,21 @@ app.controller('navbarController', function ($rootScope, $scope, $http, $locatio
     }
 
     $scope.logoutUser = function () {
-        $cookies.put('token', null, {expires: 'Thu, 01 Jan 1970 00:00:00 GMT'});
-        $window.localStorage.clear();
-        $window.location.href = '/home';
+        Swal.fire({
+            text: "Xác nhận đăng xuất?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $cookies.put('token', null, {expires: 'Thu, 01 Jan 1970 00:00:00 GMT'});
+                $window.localStorage.clear();
+                $window.location.href = '/home';
+            }
+        });
     }
 
 
@@ -377,6 +389,9 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
             $scope.giaySeletect.giaLonNhat = giaLonNhat;
             $scope.giaySeletect.lstMauSac = lstMauSac;
             detailGiayChiTiet($scope.giaySeletect);
+
+
+            getData($scope.giaySeletect);
         }).catch(function (error) {
         toastr["error"]("Lấy dữ liệu thất bại");
         console.log(error);
@@ -474,67 +489,25 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
 
     // List Recommend
 
-    $scope.curPage = 1,
-        $scope.itemsPerPage = 6,
-        $scope.maxSize = 6;
-
-    let giaySearch = {};
-
-    function getData(currentPage) {
+    function getData(giay) {
         $scope.isLoading = true;
-        let apiUrl = host + '/rest/admin/giay/get-all-giay';
-
-        if ($scope.searchText) {
-            giaySearch.ten = ($scope.searchText + "").trim();
-        }
-        giaySearch.currentPage = currentPage;
-        giaySearch.pageSize = $scope.itemsPerPage;
+        let apiUrl = host + '/rest/admin/giay/find-all-by-search';
+        const giaySearch = {};
+        giaySearch.currentPage = 1;
+        giaySearch.pageSize = 6;
+        giaySearch.thuongHieuIds = [giay.thuongHieu.id];
+        giaySearch.trangThai = 0;
 
         $http.post(apiUrl, giaySearch)
             .then(function (response) {
                 $scope.giays = response.data.content;
-                for (let bienTheGiayObject of $scope.giays) {
-                    let lstBienTheGiay = bienTheGiayObject.lstBienTheGiay;
-                    let giaThapNhat = lstBienTheGiay[0].giaBan;
-                    let giaLonNhat = lstBienTheGiay[0].giaBan;
-
-                    let uniqueMauSacSet = new Set();
-
-                    let lstMauSac = [];
-
-                    for (let bienTheGiay of lstBienTheGiay) {
-                        if (bienTheGiay.giaBan < giaThapNhat) {
-                            giaThapNhat = bienTheGiay.giaBan;
-                        }
-
-                        if (bienTheGiay.giaBan > giaLonNhat) {
-                            giaLonNhat = bienTheGiay.giaBan;
-                        }
-                        if (bienTheGiay.mauSac && bienTheGiay.mauSac.maMau) {
-                            let maMau = bienTheGiay.mauSac.maMau;
-
-                            if (!uniqueMauSacSet.has(maMau)) {
-                                lstMauSac.push(maMau);
-                                uniqueMauSacSet.add(maMau);
-                            }
-                        }
-                    }
-                    bienTheGiayObject.giaThapNhat = giaThapNhat;
-                    bienTheGiayObject.giaLonNhat = giaLonNhat;
-                    bienTheGiayObject.lstMauSac = lstMauSac;
-                }
-                $scope.numOfPages = response.data.totalPages;
                 $scope.isLoading = false;
             })
             .catch(function (error) {
-                console.log(error);
                 toastr["error"]("Lấy dữ liệu thất bại");
                 $scope.isLoading = false;
-                // window.location.href = feHost + '/trang-chu';
             });
     }
-
-    getData(1);
 
 
     function kiemTraTonTai(arr, id) {

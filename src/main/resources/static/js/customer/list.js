@@ -3,6 +3,7 @@ app.controller('listProductController', function ($scope, $http, $location, $win
     $http.get(host + "/session/get-customer")
         .then(response => {
             $scope.currentKhachHang = response.data;
+            console.log($scope.currentKhachHang);
         })
 
     $scope.giays = [];

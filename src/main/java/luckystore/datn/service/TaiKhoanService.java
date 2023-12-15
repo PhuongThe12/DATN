@@ -21,4 +21,6 @@ public interface TaiKhoanService {
     NhanVienResponse findById(Long id);
 
     TaiKhoanResponse addTaiKhoan(TaiKhoanRequest taiKhoanRequest);
+
+    String thayDoiMatKhau(Long id, String mkCu, String mkMoi);
 }

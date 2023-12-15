@@ -20,4 +20,6 @@ public interface KhachHangService {
     List<KhachHangResponse> searchByName(String searchText);
 
     KhachHangResponse dangKyKhachHang(KhachHangRequest requets);
+
+    KhachHangResponse updateMotPhanKhachHang(Long id, KhachHangRequest khachHangRequest);
 }

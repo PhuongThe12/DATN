@@ -1,6 +1,7 @@
 package luckystore.datn.service.impl;
 
 import luckystore.datn.entity.TaiKhoan;
+import luckystore.datn.exception.InvalidIdException;
 import luckystore.datn.model.request.NhanVienRequest;
 import luckystore.datn.model.request.TaiKhoanRequest;
 import luckystore.datn.model.response.NhanVienResponse;
@@ -8,6 +9,7 @@ import luckystore.datn.model.response.TaiKhoanResponse;
 import luckystore.datn.repository.NhanVienRepository;
 import luckystore.datn.repository.TaiKhoanRepository;
 import luckystore.datn.service.TaiKhoanService;
+import luckystore.datn.util.JsonString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -56,6 +58,19 @@ public class TaiKhoanServiceImpl implements TaiKhoanService {
     public TaiKhoanResponse addTaiKhoan(TaiKhoanRequest taiKhoanRequest) {
         TaiKhoan taiKhoan = getTaiKhoan(new TaiKhoan(), taiKhoanRequest);
         return new TaiKhoanResponse(taiKhoanRepository.save(taiKhoan));
+    }
+
+    @Override
+    public String thayDoiMatKhau(Long id, String mkCu, String mkMoi) {
+        TaiKhoan taiKhoan = taiKhoanRepository.findById(id)
+                .orElseThrow();
+        if(!passwordEncoder.matches(mkCu, taiKhoan.getPassword())) {
+            throw new InvalidIdException(new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Mật khẩu không đúng"))));
+        }
+
+        taiKhoan.setMatKhau(passwordEncoder.encode(mkMoi));
+        taiKhoanRepository.save(taiKhoan);
+        return "Thay đổi mật khẩu thành công";
     }
 
     private TaiKhoan getTaiKhoan(TaiKhoan taiKhoan, TaiKhoanRequest request) {
