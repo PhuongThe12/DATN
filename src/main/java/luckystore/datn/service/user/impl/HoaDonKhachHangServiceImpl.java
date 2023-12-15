@@ -13,6 +13,7 @@ import luckystore.datn.entity.PhieuGiamGia;
 import luckystore.datn.exception.ConflictException;
 import luckystore.datn.exception.InvalidIdException;
 import luckystore.datn.exception.NotFoundException;
+import luckystore.datn.infrastructure.constraints.ErrorMessage;
 import luckystore.datn.infrastructure.constraints.TrangThaiHoaDon;
 import luckystore.datn.model.request.BienTheGiayGioHangRequest;
 import luckystore.datn.model.request.GioHangThanhToanRequest;
@@ -180,6 +181,11 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         bienTheGiayRepository.saveAll(bienTheGiays);
         hoaDonRepository.save(hoaDon);
 
+    }
+
+    @Override
+    public HoaDonResponse findById(Long id) {
+        return new HoaDonResponse(hoaDonRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND)));
     }
 
     @Override

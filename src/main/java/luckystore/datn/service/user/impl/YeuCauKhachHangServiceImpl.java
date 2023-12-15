@@ -59,4 +59,8 @@ public class YeuCauKhachHangServiceImpl implements YeuCauKhachHangService {
         yeuCauSave.setListYeuCauChiTiet(yeuCauChiTietList);
         return new YeuCauResponse(yeuCauRepository.save(yeuCauSave));
     }
+    @Override
+    public List<YeuCauResponse> getListYeuCau(Long idHoaDon) {
+        return yeuCauRepository.getListYeuCau(idHoaDon);
+    }
 }
