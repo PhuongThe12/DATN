@@ -64,14 +64,14 @@
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="nhanVienTen" class="form-label">Họ và tên</label>
-                                <input type="text" class="form-control" ng-model="diaChiNhanHang.hoTen">
+                                <input type="text" class="form-control" ng-readonly="diaChiNhanHang.hoTen" ng-model="diaChiNhanHang.hoTen">
 
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="nhanVienTen" class="form-label">Số điện thoại</label>
-                                <input type="text" class="form-control" ng-model="diaChiNhanHang.soDienThoaiNhan">
+                                <input type="text" ng-readonly="diaChiNhanHang.soDienThoaiNhan" class="form-control" ng-model="diaChiNhanHang.soDienThoaiNhan">
 
                             </div>
                         </div>
@@ -80,52 +80,17 @@
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="nhanVienTen" class="form-label">Email </label>
-                                <input type="text" class="form-control" ng-model="khachHang.email">
+                                <input type="text" ng-readonly="khachHang.email" class="form-control" ng-model="khachHang.email">
 
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="mb-3">
-                                <label class="form-label">Tỉnh / Thành Phố </label>
-                                <select class="form-select" aria-label="Default select example"
-                                        name="provinces" ng-model="diaChiNhanHang.provinces"
-                                        ng-options="province.ten for province in provinces"
-                                        ng-change="changeProvince()">
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="mb-3">
-                                <label class="form-label">Quận / Huyện </label>
-                                <select class="form-select" aria-label="Default select example"
-                                        name="districts" ng-model="diaChiNhanHang.districts"
-                                        ng-options="district.ten for district in districts"
-                                        ng-change="changeDistrict()">
-                                </select>
 
-                            </div>
-                        </div>
+                    <div class="col-md-12">
+                        <p> <span class="font-size-16-ncl fw-bold">Địa chỉ nhận hàng : </span> {{diaChiNhanHang.diaChiNhan}} ,Xã {{diaChiNhanHang.wards.ten}} ,Huyện {{diaChiNhanHang.districts.ten}} ,Huyện {{diaChiNhanHang.provinces.ten}} <button ng-click="thayDoiDiaChiNhanHang()" type="button" class="btn btn-dark"  data-bs-toggle="modal" data-bs-target="#modalDiaChiNhanHang"> Thay đổi </button> </p>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="mb-3">
-                                <label class="form-label">Xã / Phường </label>
-                                <select class="form-select" aria-label="Default select example"
-                                        name="wards" ng-model="diaChiNhanHang.wards"
-                                        ng-options="ward.ten for ward in wards">
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="mb-3">
-                                <label for="exampleFormControlTextarea1" class="form-label">Địa chỉ chi tiết</label>
-                                <textarea ng-model="diaChiNhanHang.diaChiNhan" class="form-control"
-                                          id="exampleFormControlTextarea1" rows="3"></textarea>
-                            </div>
-                        </div>
-                    </div>
+
+
                     <button class="btn btn-custom w-100 mb-5" type="button" ng-click="thanhToan()">Thanh Toán</button>
                 </form>
             </div>
@@ -168,9 +133,9 @@
                                 <div class=" d-flex  mb-3">
                                     <p class="font-size-13-ncl fw-bold text-dark mb-1"><span
                                             ng-show="bienTheGiay.khuyenMai">
-                                            <del>{{bienTheGiay.giaBan  | number:0 }}</del>
+                                            <del>{{bienTheGiay.giaBan  | number : 0:0 }}</del>
                                         <span class="position-relative">
-                                            {{bienTheGiay.giaSauKhuyenMai| number:0 }}
+                                            {{bienTheGiay.giaBanSauKhuyenMai | number : 0:0 }}
                                         <span class="position-absolute top-0 start-100 translate-middle badge bg-danger"
                                               style="transform: translate(0,-50%)!important; padding: 5px;">
                                             -{{bienTheGiay.khuyenMai}}%
@@ -178,7 +143,7 @@
                                         </span>
                                         </span>
                                         <span ng-show="!bienTheGiay.khuyenMai">
-                                            {{ bienTheGiay.giaBan | number:0}}
+                                            {{ bienTheGiay.giaBan | number : 0:0}}
                                         </span></p>
                                 </div>
 
@@ -192,28 +157,28 @@
 
                     <div class="d-flex align-items-center justify-content-between  border-bottom-1">
                         <p class=" font-size-14-ncl py-1">Tổng tiền</p>
-                        <p class="fw-bold font-size-14-ncl">{{tongTien | number}} ₫</p>
+                        <p class="fw-bold font-size-14-ncl">{{tongTienSanPham | number : 0}} ₫</p>
                     </div>
 
-                    <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center justify-content-between" ng-if="userLogged">
                         <p class=" font-size-14-ncl py-1">Hạng Khách Hàng</p>
                         <p class="fw-bold font-size-14-ncl">
                             <span ng-show="tongKhuyenMaiHoaDon === 0">-</span>
-                            <span ng-show="tongKhuyenMaiHoaDon !== 0">-{{tongKhuyenMaiHoaDon | number}} ₫</span>
+                            <span ng-show="tongKhuyenMaiHoaDon !== 0">-{{tongKhuyenMaiHoaDon | number : 0}} ₫</span>
                             <span ng-show="tongKhuyenMaiHoaDon !== 0">(-{{khachHang.hangKhachHang.uuDai}}% )</span></p>
                     </div>
 
                     <div class="d-flex align-items-center justify-content-between">
                         <p class=" font-size-14-ncl py-1">Chương trình giảm giá</p>
                         <p class="fw-bold font-size-14-ncl">
-                            <span ng-show="tongKhuyenMaiTheoDot !== 0">{{tongKhuyenMaiTheoDot | number}} ₫</span>
+                            <span ng-show="tongKhuyenMaiTheoDot !== 0">{{tongKhuyenMaiTheoDot | number : 0 : 0}} ₫</span>
                             <span ng-show="tongKhuyenMaiTheoDot === 0">-</span>
                             <span class="text-danger" ng-show="tongKhuyenMaiTheoDot !== 0">( -{{khuyenMaiDot}}% )</span>
                     </div>
 
-                    <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center justify-content-between" ng-if="userLogged">
                         <p class=" font-size-14-ncl py-1">Voucher</p>
-                        <p class="fw-bold font-size-14-ncl"> <span ng-show="phieuGiamGiaChoosed">
+                        <p class="fw-bold font-size-14-ncl"> <span>
                             {{phieuGiamGiaChoosed.maGiamGia}} <span
                                 class="font-size-14-ncl text-danger">-{{(tongTien *
                             phieuGiamGiaChoosed.phanTramGiam)/100}}</span>
@@ -223,25 +188,33 @@
                                     class="fas fa-exchange-alt"></i></button>
                         </p>
                     </div>
+
+                    <div class="d-flex align-items-center justify-content-between">
+                        <p class=" font-size-14-ncl py-1">Tổng Tiền Tạm Tính</p>
+                        <p class="fw-bold font-size-14-ncl">{{tongTienSauKhuyenMai | number : 0 : 0}} ₫</p>
+                    </div>
+                    <hr>
                     <div class="d-flex align-items-center justify-content-between">
                         <p class=" font-size-14-ncl py-1">Phí ship</p>
-                        <p class="fw-bold font-size-14-ncl">{{feeShippingPerOne | number : 0}} ₫</p>
+                        <p class="fw-bold font-size-14-ncl">{{feeShippingPerOne | number : 0 : 0}} ₫</p>
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
                         <p class=" font-size-14-ncl py-1">Tổng thanh toán</p>
-                        <p class="fw-bold font-size-14-ncl">{{tongThanhToan | number}} ₫</p>
+                        <p class="fw-bold font-size-14-ncl">{{tongThanhToan | number : 0}} ₫</p>
                     </div>
 
                     <div class="mb-4">
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" ng-model="phuongThucThanhToan" value="1"
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1"
+                                   ng-model="phuongThucThanhToan" value="1"
                                    ng-checked="phuongThucThanhToan==1">
                             <label class="form-check-label" for="flexRadioDefault1">
                                 Khi nhận hàng
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" ng-model="phuongThucThanhToan" value="2"
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2"
+                                   ng-model="phuongThucThanhToan" value="2"
                                    ng-checked="phuongThucThanhToan==2">
                             <label class="form-check-label" for="flexRadioDefault2">
                                 Banking
@@ -285,7 +258,7 @@
                             <div class="d-flex align-items-center justify-content-between">
                                 <p class="font-size-14-ncl text-secondary">Kích cỡ : {{bienTheGiay.kichThuoc.ten}} / Màu
                                     Sắc : {{bienTheGiay.mauSac.ten}}</p>
-                                <p class="font-size-16-ncl fw-bold text-dark">{{bienTheGiay.giaBan | number}} ₫</p>
+                                <p class="font-size-16-ncl fw-bold text-dark">{{bienTheGiay.giaBan | number : 0}} ₫</p>
                             </div>
                         </div>
                     </div>
@@ -308,7 +281,7 @@
                             <div class="d-flex align-items-center justify-content-between">
                                 <p class="font-size-14-ncl text-secondary">Kích cỡ : {{bienTheGiay.kichThuoc.ten}} / Màu
                                     Sắc : {{bienTheGiay.mauSac.ten}}</p>
-                                <p class="font-size-16-ncl fw-bold text-dark">{{bienTheGiay.giaBan | number}} ₫</p>
+                                <p class="font-size-16-ncl fw-bold text-dark">{{bienTheGiay.giaBan | number : 0}} ₫</p>
                             </div>
                         </div>
                     </div>
@@ -326,7 +299,7 @@
             <div class="modal-body modal-coupon">
                 <div>
                     <h2 class="font-size-16-ncl">Danh Sách Phiếu Giảm Giá</h2>
-                    <div >
+                    <div>
                         <div class="d-flex coupon-outer align-items-center justify-content-between mb-1"
                              ng-repeat="pgg in phieuGiamGiaList">
 
@@ -338,7 +311,7 @@
                             <div class="ps-3 ms-2 coupon-item-right" style="    border-left: 1px dashed #ccc;">
                                 <p class="font-size-16-ncl fw-bold m-0">Giảm {{pgg.phanTramGiam}}%</p>
                                 <p class="font-size-12-ncl m-0 fw-bold">Đơn Tối Thiểu {{pgg.giaTriDonToiThieu |
-                                    number:0}} đ ( Giảm tối đa {{pgg.giaTriGiamToiDa | number:0}} đ )</p>
+                                    number:0}} đ ( Giảm tối đa {{pgg.giaTriGiamToiDa | number : 0:0}} đ )</p>
                                 <p class="font-size-14-ncl m-0">Mã : {{pgg.maGiamGia}}</p>
                                 <p class="font-size-14-ncl m-0">Số Lượng Còn Lại: {{pgg.soLuongPhieu}}</p>
                             </div>
@@ -353,6 +326,114 @@
                         <h2 style="text-align: center;">Danh sách trống</h2>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- Modal Dia Chi Nhan Hang -->
+<div class="modal fade" id="modalDiaChiNhanHang" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Danh sách địa chỉ</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div ng-repeat="diaChiNhanHang in diaChiNhanHangs" >
+                    <div class="border-bottom-1 mb-3 "  >
+                        <div class="d-flex justify-content-between">
+                            <div> <div class="d-flex align-items-center">
+                                <h5 class="mb-0">{{diaChiNhanHang.hoTen}}</h5>
+                                <p class="font-size-16-ncl  mb-0 ps-3">{{diaChiNhanHang.soDienThoaiNhan}}</p>
+                            </div>
+                                <h5 class="font-size-16-ncl">
+                                    {{diaChiNhanHang.diaChiNhan}}
+                                </h5>
+                                <h5 class="font-size-14-ncl">
+                                    Xã <span>{{diaChiNhanHang.wards}}</span>, Huyện <span>{{diaChiNhanHang.districts}}</span>, <span>{{diaChiNhanHang.provinces}}</span>
+                                </h5>
+                                <div class="mb-2">
+                            <span class="badge-custom" ng-show="diaChiNhanHang.trangThai == 1" >
+                                {{diaChiNhanHang.trangThai == 1 ? 'Mặc Định' : 'Không áp dụng'}}
+                            </span>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="d-flex" >
+                                    <button class="btn btn-outline-dark" data-bs-dismiss="modal" ng-click="selectedDiaChiNhanHang(diaChiNhanHang)" >Chọn</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-dark" data-bs-target="#modalThemDiaChiNhanHang" data-bs-toggle="modal" data-bs-dismiss="modal">Thêm Địa Chỉ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalThemDiaChiNhanHang" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="p-3 rounded">
+                    <div>
+                        <h5 class="fw-bold">Cập Nhật Địa Chỉ</h5>
+                    </div>
+                    <form name="diaChiNhanHangForm" ng-submit="addDiaChiNhanHang()">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control"  placeholder="hoTen" name="hoTen" ng-model="diaChiNhanHangAdd.hoTen"
+                                           ng-required="true" ng-change="change(diaChiNhanHangForm.hoTen)">
+                                    <label for="floatingInput">Họ Tên</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control"  placeholder="hoTen" name="soDienThoaiNhan" ng-model="diaChiNhanHangAdd.soDienThoaiNhan" >
+                                    <label for="floatingInput">Số Điện Thoại</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <select class="form-select" id="floatingSelect" aria-label="Tỉnh" name="provinces" ng-model="diaChiNhanHangAdd.provinces" ng-options="province.ten  for province in provinces" ng-change="changeProvince()"  >
+                                    </select>
+                                    <label for="floatingSelect">Tỉnh</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <select class="form-select" id="floatingSelect" aria-label="Huyện" name="districts" ng-model="diaChiNhanHangAdd.districts" ng-options="district.ten for district in districts" ng-change="changeDistrict()"  >
+                                    </select>
+                                    <label for="floatingSelect">Huyện</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <select class="form-select" id="floatingSelect" aria-label="xã" name="wards"  ng-model="diaChiNhanHangAdd.wards" ng-options="ward.ten for ward in wards"  >
+                                    </select>
+                                    <label for="floatingSelect">Xã</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="floatingInput" placeholder="hoTen" name="diaChiNhan" ng-model="diaChiNhanHangAdd.diaChiNhan" >
+                                    <label for="floatingInput">Địa Chỉ Chi Tiết</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" ng-model="diaChiNhanHangAdd.macDinh">
+                                    <label class="form-check-label" for="flexCheckDefault">
+                                        Đặt làm địa chỉ mặc định
+                                    </label>
+                                </div>
+                            </div>
+                            <button class="btn btn-dark">Thêm địa chỉ</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-dark" data-bs-target="#modalDiaChiNhanHang" data-bs-toggle="modal" data-bs-dismiss="modal">Trở về</button>
             </div>
         </div>
     </div>

@@ -76,6 +76,11 @@ public class RestDiaChiNhanHangController {
         return new ResponseEntity(diaChiNhanHangService.findByIdKhachHang(id), HttpStatus.OK);
     }
 
+    @GetMapping("/{id}/khach-hang/get-one")
+    public ResponseEntity getOneDiaChiNhanHangById(@PathVariable("id") Long id) {
+        return new ResponseEntity(diaChiNhanHangService.findOneByIdKhachHang(id), HttpStatus.OK);
+    }
+
     private ResponseEntity getErrorJson(BindingResult result) {
         if (result.hasErrors()) {
             List<String> fieldErrors = new ArrayList<>();
