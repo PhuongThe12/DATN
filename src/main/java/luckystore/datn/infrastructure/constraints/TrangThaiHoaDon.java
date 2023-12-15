@@ -7,9 +7,7 @@ public class TrangThaiHoaDon {
     public static final int CHO_GIAO_HANG = 2;
     public static final int DANG_GIAO_HANG = 3;
     public static final int CHO_XAC_NHAN = 4;
-
     public static final int HOAN_HANG = 5;
-
     public static final int DA_HOAN_HANG = 6;
 
 }

@@ -29,7 +29,6 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
                     $http.get(apiUrl)
                         .then(function (response) {
                             $scope.diaChiNhanHangs = response.data;
-                            console.log($scope.diaChiNhanHangs);
                         })
                         .catch(function (error) {
                             toastr["error"]("Lấy dữ liệu thất bại");
@@ -132,11 +131,13 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
     //         });
     // }
 
+
     $scope.updateTrangThai = function (dieuKien) {
         console.log(dieuKien)
         $scope.trangThai = {
             "id": dieuKien,
-            "trangThai": 1
+            "trangThai": 1,
+            "idKhachHang": $scope.khachHang.id
         }
 
         $http({
@@ -158,19 +159,35 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
 
 
     $scope.removeDieuKien = function (dieuKien) {
-        $http({
-            method: 'DELETE',
-            url: 'http://localhost:8080/rest/khach-hang/dia-chi-nhan-hang/delete/' + dieuKien
 
-        }).then(function successCallback(response) {
-            // Xử lý khi API DELETE thành công
-            console.log('Xóa điều kiện giảm giá thành công', response);
-            loadDiaChi();
-        }, function errorCallback(response) {
-            // Xử lý khi có lỗi xảy ra trong quá trình gọi API DELETE
-            console.error('Lỗi xóa điều kiện giảm giá', response);
+        Swal.fire({
+            text: "Xác nhận xóa địa chỉ nhận hàng",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $http({
+                    method: 'DELETE',
+                    url: 'http://localhost:8080/rest/khach-hang/dia-chi-nhan-hang/delete/' + dieuKien
+
+                }).then(function successCallback(response) {
+                    // Xử lý khi API DELETE thành công
+                    console.log('Xóa điều kiện giảm giá thành công', response);
+                    loadDiaChi();
+                }, function errorCallback(response) {
+                    console.log(response);
+                    console.error('Lỗi xóa điều kiện giảm giá', response);
+                });
+                console.log("Điều kiện: ", dieuKien)
+
+            }
         });
-        console.log("Điều kiện: ", dieuKien)
+
+
     };
 
 
@@ -247,6 +264,7 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
     $http.get(host + "/rest/provinces/get-all")
         .then(function (response) {
             $scope.provinces = response.data;
+
         })
         .catch(function (error) {
             toastr["error"]("Lấy dữ liệu tỉnh thất bại");
@@ -258,6 +276,7 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
         $http.get(host + "/rest/districts/" + $scope.diaChiNhanHang.provinces.id)
             .then(function (response) {
                 $scope.districts = response.data;
+                $scope.wards = [];
                 // console.log($scope.diaChiNhanHang.provinces)
             })
             .catch(function (error) {
@@ -285,11 +304,11 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
         console.log("vào update")
         console.log(id)
 
-        $http.get(host + '/rest/khach-hang/dia-chi-nhan-hang/' + $scope.khachHang.id)
+        $http.get(host + '/rest/khach-hang/dia-chi-nhan-hang/' + id)
 
             .then(function (response) {
                 $scope.diaChiNhanHang = response.data;
-                console.log("show dia chi:", $scope.diaChiNhanHang)
+
                 setData();
                 $('#modalDiaChi').modal('show');
             })
@@ -309,27 +328,29 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
                 hoTen: $scope.diaChiNhanHang.hoTen,
                 provinces: $scope.diaChiNhanHang.provinces.ten,
                 districts: $scope.diaChiNhanHang.districts.ten,
-                wards: $scope.diaChiNhanHang.wards.ten
+                wards: $scope.diaChiNhanHang.wards.ten,
+                idKhachHang: $scope.khachHang.id
 
 
             };
             // $scope.diaChiNhanHang.districts = $scope.diaChiNhanHang.districts.ten;
             // $scope.diaChiNhanHang.provinces = $scope.diaChiNhanHang.provinces.ten;
             // $scope.diaChiNhanHang.wards = $scope.diaChiNhanHang.wards.ten;
+            console.log(diaChiNhanHangUpdate);
 
-            $http.put(host + '/rest/khach-hang/dia-chi-nhan-hang/' + $scope.khachHang.id, diaChiNhanHangUpdate)
+            $http.put(host + '/rest/khach-hang/dia-chi-nhan-hang/' + id, diaChiNhanHangUpdate)
 
                 .then(function (response) {
                     if (response.status == 200) {
                         toastr["success"]("Cập nhật thành công")
                         $('#modalDiaChi').modal('hide');
+                        $('#modalDanhSachDiaChi').modal('show');
                         console.log("thông tin sau cập nhập")
                         console.log(diaChiNhanHangUpdate)
                         loadDiaChi();
                     } else {
                         toastr["error"]("Cập nhât thất bại. Lỗi bất định")
                     }
-                    $location.path("/list");
                 }).catch(function (error) {
                 toastr["error"]("Cập nhật thất bại");
                 if (error.status === 400) {
@@ -396,6 +417,11 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
             $scope.diaChiNhanHang.provinces = $scope.diaChiNhanHang.provinces.ten;
             $scope.diaChiNhanHang.wards = $scope.diaChiNhanHang.wards.ten;
             $scope.diaChiNhanHang.idKhachHang = $scope.khachHang.id;
+            if ($scope.diaChiNhanHang.macDinh) {
+                $scope.diaChiNhanHang.macDinh = $scope.diaChiNhanHang.macDinh;
+            } else {
+                $scope.diaChiNhanHang.macDinh = null;
+            }
 
             console.log($scope.diaChiNhanHang);
             $http.post(host + '/rest/khach-hang/dia-chi-nhan-hang', $scope.diaChiNhanHang)
@@ -404,6 +430,7 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
                         toastr["success"]("Thêm thành công");
                         $('#modalThemDiaChi').modal('hide');
                         loadDiaChi();
+                        $('#modalDanhSachDiaChi').modal('show');
                     }
                 })
                 .catch(function (error) {

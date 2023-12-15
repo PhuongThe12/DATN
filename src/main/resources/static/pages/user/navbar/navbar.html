@@ -48,11 +48,22 @@
                            title="Quản lý tài khoản"
                            style="color: black;font-size: 23px; transform: translateY(-50%);"></i>
                     </span>
+
                 </a>
 
                 <div class="ps-3" style="transform: translateY(50%);">
                     <a href="http://localhost:8080/home#/tra-cuu-don-hang" data-bs-toggle="tooltip"
                        data-bs-placement="top"
+                    <span class="pointer" data-bs-toggle="modal" data-bs-target="#exampleModal" id="loginbutton"
+                          ng-if="!khachHang.hoTen">
+                        Login
+                    </span>
+                    <a ng-if="userLogged" href="#/thong-tin-tai-khoan"><i class="far fa-user" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                       title="Quản lý tài khoản"
+                                                       style="color: black;font-size: 23px;"></i></a>
+                </div>
+                <div class="ps-3">
+                    <a href="#/tra-cuu-don-hang" data-bs-toggle="tooltip" data-bs-placement="top"
                        title="Tra cứu thông tin hóa đơn"><i class="fas fa-file-invoice"
                                                             style="color: black;font-size: 23px;transform: translateY(-50%);"></i></a>
                 </div>

@@ -12,8 +12,6 @@ public class DatnApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(DatnApplication.class, args);
-        LocalDateTime currentTimes = LocalDateTime.now();
-        System.out.println(currentTimes);
     }
 
 }
