@@ -295,7 +295,7 @@ app.controller('navbarController', function ($rootScope, $scope, $http, $locatio
 
     $scope.resetTaiKhoan = {};
     $scope.resetPassword = function () {
-        if(!$scope.resetTaiKhoan.email || !$scope.resetTaiKhoan.soDienThoai) {
+        if (!$scope.resetTaiKhoan.email || !$scope.resetTaiKhoan.soDienThoai) {
             toastr["error"]("Vui lòng điển đầy đủ thông tin");
             return;
         }
@@ -806,6 +806,7 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
         }
 
     }
+
 // cường làm thêm yêu thích vào đây
     $scope.sanPhamYeuThich = function () {
         console.log("vào trong rùi")
@@ -1171,10 +1172,11 @@ app.controller("donHangListController", function ($scope, $http, $window, $locat
         $http.get(apiUrl)
             .then(function (response) {
                 $scope.hoaDons = response.data.content;
+                console.log($scope.hoaDons)
                 $scope.numOfPages = response.data.totalPages;
             })
             .catch(function (error) {
-                toastr["error"]("Lấy dữ liệu thất bại");
+                toastr["error"]("Lấy dữ liệu thất bại 1");
                 // window.location.href = feHost + '/trang-chu';
             });
     }
@@ -1258,14 +1260,47 @@ app.controller("donHangListController", function ($scope, $http, $window, $locat
 
 app.controller("detailDonHangController", function ($scope, $http, $window, $location, $routeParams) {
     const id = $routeParams.id;
-    $http.get("http://localhost:8080/rest/admin/hoa-don-chi-tiet/find-by-id-hoa-don/" + id)
+    $scope.checkNgayNhan = false;
+
+    $http.get("http://localhost:8080/rest/user/hoa-don-chi-tiet/find-by-id-hoa-don/" + id)
         .then(function (response) {
             $scope.lstHoaDonChiTiet = response.data;
-            console.log($scope.lstHoaDonChiTiet);
+            $http.get("http://localhost:8080/rest/user/hoa-don/" + id)
+                .then(function (response) {
+                    $scope.hoaDon = response.data;
+                    checkNgayNhanHang($scope.hoaDon.ngayNhan);
+                }).catch(function (error) {
+                toastr["error"]("Lấy dữ liệu thất bại");
+                $location.path("/list");
+            });
         }).catch(function (error) {
         toastr["error"]("Lấy dữ liệu thất bại");
         $location.path("/list");
     });
+
+    $http.get("http://localhost:8080/rest/user/yeu-cau/khach-hang/list/" + id)
+        .then(function (response) {
+            $scope.listYeuCau = response.data;
+        }).catch(function (error) {
+        toastr["error"]("Lấy dữ liệu thất bại");
+    });
+
+
+    function checkNgayNhanHang(ngayNhan) {
+        $scope.checkNgayNhan = false;
+
+        var ngayNhan = new Date(ngayNhan);
+        var ngayHienTai = new Date();
+
+        var ngayChenhLech = ngayHienTai - ngayNhan;
+
+        var soNgayChenhLech = Math.round(ngayChenhLech / (1000 * 60 * 60 * 24));
+
+        if(soNgayChenhLech <= 7){
+            $scope.checkNgayNhan = true;
+        }
+    }
+
 });
 
 app.controller("thanhToanController", function ($scope, $http, $window, $location, $routeParams, $timeout, $cookies) {
@@ -1902,7 +1937,25 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
             });
     }
 })
-
+app.filter('formatDate', function () {
+    return function (isoDateString) {
+        if (isoDateString) {
+            const inputDate = new Date(isoDateString);
+            const options = {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+            };
+            const formattedDate = inputDate.toLocaleDateString('en-GB', options);
+            return formattedDate.replace(',', '');
+        } else {
+            return '-'; // Hoặc giá trị mặc định khác nếu không có ngày
+        }
+    };
+});
 
 
 

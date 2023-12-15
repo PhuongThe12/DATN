@@ -14,6 +14,6 @@ public interface HoaDonKhachHangService {
     HoaDonResponse addHoaDon(GioHangThanhToanRequest gioHangThanhToanRequest) throws MessagingException;
 
     void cancelBankingOrder(Long id);
-
+    HoaDonResponse findById(Long id);
     Long hoanTatThanhToan(HoaDonThanhToanTaiQuayRequest request);
 }

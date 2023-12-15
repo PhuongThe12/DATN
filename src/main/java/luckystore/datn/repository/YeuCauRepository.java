@@ -35,6 +35,9 @@ public interface YeuCauRepository extends JpaRepository<YeuCau,Long> {
             "ORDER BY yc.id DESC" )
     Page<YeuCauResponse> getPageResponse(Pageable pageable, YeuCauSearch yeuCauSearch);
 
+    @Query("select new luckystore.datn.model.response.YeuCauResponse(yc,'getListYeuCauKhachHang') from YeuCau yc where yc.hoaDon.id = :idHoaDon")
+    List<YeuCauResponse> getListYeuCau(Long idHoaDon);
+
     @Query("select new luckystore.datn.model.response.YeuCauResponse(yc) from YeuCau yc  where yc.trangThai = 0")
     YeuCauResponse findResponseByStatus();
 
