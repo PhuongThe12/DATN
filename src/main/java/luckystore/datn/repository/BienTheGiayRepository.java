@@ -56,6 +56,9 @@ public interface BienTheGiayRepository extends JpaRepository<BienTheGiay, Long> 
     @Query("select bt from BienTheGiay bt where bt.id in :ids")
     List<BienTheGiay> getAllByIds(List<Long> ids);
 
+    @Query("select bt from BienTheGiay bt where bt.giay.id in :ids")
+    List<BienTheGiay> getAllByGiayIds(List<Long> ids);
+
     //top x biến thể giày bán chạy trong y ngày
     @Query("select new luckystore.datn.model.response.BienTheGiayResponse(btg, g, ms, kt, sum(hdc.soLuong)) " +
             "from HoaDonChiTiet hdc " +

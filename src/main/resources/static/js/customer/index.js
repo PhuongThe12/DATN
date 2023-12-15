@@ -133,9 +133,10 @@ app.controller('navbarController', function ($rootScope, $scope, $http, $locatio
                             $window.location.href = '/admin/tong-quan';
                         }
                     }
-                }).catch(function (error) {
-                console.log(error)
-            });
+                })
+                .catch(function (error) {
+                    toastr["error"]("Đăng nhập thất bại sai thông tin tài khoản mật khẩu");
+                });
         }
 
         function setTokenCookie(token, expiryDays) {
@@ -245,63 +246,70 @@ app.controller('navbarController', function ($rootScope, $scope, $http, $locatio
     }
 
     $scope.khachHangR = {};
+
+    $scope.khachHangR.showPassR = false;
+    $scope.khachHangR.gioiTinh = true;
+    $scope.userLogin.showPass = false;
     $scope.khachHangRegister = {};
 
-    $scope.togglePassword = function () {
-
+    $scope.toggleShowPassR = function () {
+        if ($scope.khachHangR.showPassR) {
+            document.getElementById('khachHangRPassword').type = 'text';
+        } else {
+            document.getElementById('khachHangRPassword').type = 'password';
+        }
     }
 
+    $scope.toggleShowPass = function () {
+        if ($scope.userLogin.showPass) {
+            document.getElementById('password').type = 'text';
+        } else {
+            document.getElementById('password').type = 'password';
+        }
+    }
+
+    $scope.errors = {};
+
     $scope.signUp = function () {
+
+        if (!$scope.khachHangR.email || !$scope.khachHangR.password || !$scope.khachHangR.ngaySinh || !$scope.khachHangR.hoTen || !$scope.khachHangR.soDienThoai) {
+            return;
+        }
+        if ($scope.khachHangR.ngaySinh > new Date()) {
+            toastr["warning"]('Ngày sinh phải là ngày trong quá khứ');
+            return;
+        }
+
         $http.post(host + '/api/authentication/signup', $scope.khachHangR)
             .then(function (response) {
-                if (response.status == 200) {
-                    $scope.gioHangChiTiet = {};
-                    $scope.gioHangChiTiet.khachHang = response.data;
-                    $scope.gioHangChiTiet.gioHangChiTietRequestList = $scope.gioHangChiTietList;
-                    $http.post(host + '/rest/user/gio-hang/add', $scope.gioHangChiTiet)
-                        .then(function (response) {
-                            $scope.khachHangRegister.tenDangNhap = $scope.khachHangR.email;
-                            $scope.khachHangRegister.matKhau = $scope.khachHangR.soDienThoai;
-                            $http.post(host + '/api/authentication/singin', $scope.khachHangRegister)
-                                .then(function (response) {
-                                    if (response.status == 200) {
-                                        setTokenCookie(response.data.token, 1)
-                                        $scope.currentUser.username = response.data.userName
-                                        $scope.currentUser.token = response.data.token
-                                        $scope.currentUser.idKhachHang = response.data.id
-                                        $scope.currentUser.role = response.data.role
-                                        $http.get(host + "/session/get-customer")
-                                            .then(response => {
-                                                if (response.data !== null) {
-                                                    $scope.khachHang = response.data;
-                                                    $http.get("http://localhost:8080/rest/user/gio-hang/khach-hang/" + $scope.khachHang.id)
-                                                        .then(function (response) {
-                                                            $scope.khachHang.idGioHang = response.data.id;
-                                                        }).catch(function (error) {
-
-                                                    })
-                                                }
-                                            })
+                toastr["success"]("Đăng ký thành công vui lòng kiểm tra email để kích hoạt tài khoản");
+            })
+            .catch(function (error) {
+                toastr["error"](error.data.email);
+            });
 
 
-                                        if ($scope.currentUser.role === 'ROLE_USER') {
-                                            $window.location.href = '/home';
-                                        } else if ($scope.currentUser.role === 'ROLE_STAFF') {
-                                            $window.location.href = '/admin/ban-hang';
-                                        } else {
-                                            $window.location.href = '/admin/tong-quan';
-                                        }
-                                    }
-                                }).catch(function (error) {
-                                console.log(error)
-                            });
-                        }).catch(function (error) {
+        $http.get(host + "/rest/account/confirm?email=" + $scope.khachHangR.email)
+        document.getElementById('closeModalR').click();
+    }
 
-                    })
-                }
-            }).catch(function (error) {
-            console.log(error)
-        });
+    $scope.resetTaiKhoan = {};
+    $scope.resetPassword = function () {
+        if(!$scope.resetTaiKhoan.email || !$scope.resetTaiKhoan.soDienThoai) {
+            toastr["error"]("Vui lòng điển đầy đủ thông tin");
+            return;
+        }
+
+        $http.get(host + '/rest/account/khach-hang?email=' + $scope.resetTaiKhoan.email + '&sdt=' + $scope.resetTaiKhoan.soDienThoai)
+            .then(res => {
+                $http.get(host + "/rest/account/forgot-password?email=" + res.data)
+                document.getElementById('closeModalForget').click();
+                toastr["success"]("Đặt lại mật khẩu thành công vui lòng kiểm tra email để hoàn thành");
+                $scope.resetTaiKhoan = {};
+            })
+            .catch(err => {
+                toastr["error"](err.data.data);
+            })
     }
 
 
@@ -1259,7 +1267,7 @@ app.controller("detailDonHangController", function ($scope, $http, $window, $loc
     });
 });
 
-app.controller("thanhToanController", function ($scope, $http, $window, $location, $routeParams, $timeout,$cookies) {
+app.controller("thanhToanController", function ($scope, $http, $window, $location, $routeParams, $timeout, $cookies) {
     $scope.listBienTheGiayLocalStorage = [];
     $scope.tongTien = 0;
     $scope.tongTienHangKhachHang = 0;

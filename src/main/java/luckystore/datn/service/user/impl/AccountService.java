@@ -3,12 +3,15 @@ package luckystore.datn.service.user.impl;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.SneakyThrows;
+import luckystore.datn.entity.KhachHang;
 import luckystore.datn.entity.TaiKhoan;
 import luckystore.datn.exception.ConflictException;
 import luckystore.datn.infrastructure.constants.Role;
+import luckystore.datn.repository.KhachHangRepository;
 import luckystore.datn.repository.TaiKhoanRepository;
 import luckystore.datn.util.JsonString;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,6 +33,8 @@ public class AccountService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private KhachHangRepository khachHangRepository;
 
     public String confirm(Long id, String token) {
 
@@ -75,8 +80,8 @@ public class AccountService {
         String token = RandomString.make(30);
         taiKhoan.setPasswordToken(token);
 
-        sendEmail(taiKhoan.getId(), email, token, 2);
-        taiKhoanRepository.save(taiKhoan);
+        taiKhoan = taiKhoanRepository.save(taiKhoan);
+        sendEmail(taiKhoan.getId(), email, taiKhoan.getPasswordToken(), 2);
     }
 
     private String getContent(Long id, String token) {
@@ -128,7 +133,6 @@ public class AccountService {
 
         mailSender.send(message);
 
-        mailSender.send(message);
     }
 
     @SneakyThrows
@@ -159,10 +163,10 @@ public class AccountService {
         }
 
         taiKhoan.setMatKhau(passwordEncoder.encode(randomString.toString()));
-        sendEmail(null, taiKhoan.getTenDangNhap(), randomString.toString(), 0);
+        sendEmail(null, taiKhoan.getTenDangNhap(), randomString.toString(), null);
         taiKhoanRepository.save(taiKhoan);
 
-        return "Xác nhận tài khoản thành công. Vui lòng kiểm tra email để nhận tài khoản mới";
+        return "Reset mật khẩu thành công. Vui lòng kiểm tra email để nhận mật khẩu mới mới";
 
 
     }
@@ -176,15 +180,34 @@ public class AccountService {
             throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không tìm thấy tài khoản")));
         }
 
-        if (taiKhoan.getTrangThai() == 0) {
-            throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Tài khoản chưa được xác nhận")));
+        if (taiKhoan.getTrangThai() != 0) {
+            throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Tài khoản đã được xử lý")));
         }
 
         String token = RandomString.make(30);
         taiKhoan.setPasswordToken(token);
-        taiKhoanRepository.save(taiKhoan);
+        taiKhoan = taiKhoanRepository.save(taiKhoan);
 
-        sendEmail(taiKhoan.getId(), email, token, -1);
+        sendEmail(taiKhoan.getId(), email, taiKhoan.getPasswordToken(), -1);
+    }
+
+    public String find(String email, String sdt) {
+        KhachHang khachHang = khachHangRepository.findByEmailAndSdt(email, sdt).orElseThrow(()
+                -> new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không tìm thấy tài khoản"))));
+
+        TaiKhoan taiKhoan = khachHang.getTaiKhoan();
+        if(taiKhoan == null) {
+            throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không tìm thấy tài khoản")));
+        }
+        if (taiKhoan.getRole() != Role.ROLE_USER) {
+            throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không tìm thấy tài khoản")));
+        }
+
+        if (taiKhoan.getTrangThai() == 0) {
+            throw new ConflictException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Tài khoản chưa được xác nhận")));
+        }
+
+        return khachHang.getEmail();
     }
 
     public static class RandomString {
