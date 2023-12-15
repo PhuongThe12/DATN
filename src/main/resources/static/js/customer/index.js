@@ -88,6 +88,7 @@ app.controller('thanhToanStatusController', function ($scope, $http, $location) 
 app.controller('navbarController', function ($rootScope, $scope, $http, $location, $cookies, $window) {
 
     $scope.khachHang = {};
+    $scope.userLogged = false;
     var token = $cookies.get('token');
     if (token) {
         $scope.userLogged = true;
