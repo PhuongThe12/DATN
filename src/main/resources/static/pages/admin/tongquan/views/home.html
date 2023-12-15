@@ -1,67 +1,96 @@
 <div style="margin: 20px">
     <div class="d-flex align-items-center justify-content-between">
         <h5 class="fw-bold">Tổng Quan</h5>
-        <div class="btn-report">
-            <button class="btn btn-custom">
-                In Báo Cáo
-            </button>
-        </div>
+        <select ng-model="selectedDate">
+            <option value="" disabled>Chọn ngày tháng</option>
+            <option ng-repeat="date in dates" value="{{ date.value }}">{{ date.display }}</option>
+        </select>
     </div>
-    <div class="row bg-white box-shadow-page" style="border-radius: 11px;
+    <div class="card m-2 p-2 rounded box-shadow-page bg-white">
+        <div class="row bg-white box-shadow-page" style="border-radius: 11px;
     margin: 3px;">
-        <div class="col-md-3">
-            <div class="m-2" >
-                <div class="p-4 rounded box-shadow-page" style="background-image: url(https://dashcode-react.codeshaper.net/assets/widget-bg-2.035e0098.png);">
-                    <h5 class="text-white mb-4">Xin chào Minh Quân</h5>
-                    <p class="text-white font-size-14-ncl">Chào mừng đến với Tổng Quan</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 ">
-            <div class="m-2">
-                <div class="p-4 rounded box-shadow-page " style="background: rgb(12 231 250 / 15%);">
-                    <p class="mb-2 font-size-14-ncl"> Số lượng đơn hàng</p>
-                    <div class="d-flex align-items-center justify-content-between mb-2">
-                        <h5 class="fw-bold"><i class="fas fa-shopping-basket" style="    background: white;padding: 10px;
+            <div class="col-md-2">
+                <div class="m-2">
+                    <div class="p-4 rounded box-shadow-page " style="background: rgb(12 231 250 / 15%);">
+                        <p class="mb-2 font-size-14-ncl">Doanh thu </p>
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <h5 class="fw-bold"><i class="fas fa-shopping-basket" style="background: white;padding: 10px;
     border-radius: 10px;
     color: rgb(12 231 250);"></i> 400</h5>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="m-2">
-                <div class="p-4 rounded box-shadow-page" style=" background: rgb(250 145 107 / 15%);">
-                    <p class="mb-2 font-size-14-ncl">Tổng doanh thu</p>
-                    <div class="d-flex align-items-center justify-content-between mb-2">
-                        <h5 class="fw-bold"><i class="fas fa-wallet" style="background: white;padding: 10px;
-    border-radius: 10px;
-    color: rgb(250 145 107);"></i> 400</h5>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="m-2">
-                <div class="p-4 rounded box-shadow-page" style=" background: rgb(87 67 190 / 15%);">
-                    <p class="mb-2 font-size-14-ncl">Số lượng khách hàng mới</p>
-                    <div class="d-flex align-items-center justify-content-between mb-2">
-                        <h5 class="fw-bold"><i class="fas fa-user-plus" style="padding: 10px; background: white;
+            <div class="col-md-2">
+                <div class="m-2">
+                    <div class="p-4 rounded box-shadow-page" style=" background: rgb(87 67 190 / 15%);">
+                        <p class="mb-2 font-size-14-ncl">Tiền chiết khấu</p>
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <h5 class="fw-bold"><i class="fas fa-user-plus" style="padding: 10px; background: white;
     border-radius: 10px;
     color: rgb(87 67 190);"></i> 400</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="m-2">
+                    <div class="p-4 rounded box-shadow-page " style="background: rgb(12 231 250 / 15%);">
+                        <p class="mb-2 font-size-14-ncl">Hóa đơn bán</p>
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <h5 class="fw-bold"><i class="fas fa-shopping-basket" style="background: white;padding: 10px;
+    border-radius: 10px;
+    color: rgb(12 231 250);"></i> 400</h5>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="m-2">
+                    <div class="p-4 rounded box-shadow-page" style=" background: rgb(250 145 107 / 15%);">
+                        <p class="mb-2 font-size-14-ncl">Sản phẩm bán</p>
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <h5 class="fw-bold"><i class="fas fa-wallet" style="background: white;padding: 10px;
+    border-radius: 10px;
+    color: rgb(250 145 107);"></i> 400</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="m-2">
+                    <div class="p-4 rounded box-shadow-page" style=" background: rgb(87 67 190 / 15%);">
+                        <p class="mb-2 font-size-14-ncl">Phiếu giảm giá</p>
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <h5 class="fw-bold"><i class="fas fa-user-plus" style="padding: 10px; background: white;
+    border-radius: 10px;
+    color: rgb(87 67 190);"></i> 400</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="m-2">
+                    <div class="p-4 rounded box-shadow-page" style=" background: rgb(87 67 190 / 15%);">
+                        <p class="mb-2 font-size-14-ncl">Yêu cầu đổi - trả</p>
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <h5 class="fw-bold"><i class="fas fa-user-plus" style="padding: 10px; background: white;
+    border-radius: 10px;
+    color: rgb(87 67 190);"></i> 400</h5>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-7">
             <div class="">
                 <div class="">
                     <div class="card m-2 p-2 rounded box-shadow-page bg-white">
                         <div class="card-header bg-white">
-                            <p class="fw-bold p-1 mt-1">Doanh thu 14 ngày gần nhất</p>
+                            <p class="fw-bold p-1 mt-1">Doanh thu các tháng trong năm</p>
                         </div>
                         <div class="card-body">
                             <div class="">
@@ -72,30 +101,44 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="mt-2 ">
-                <div class="card rounded">
-                    <div class="card-header bg-white">
-                        <p class="card-title p-1 mt-1 fw-bold">
-                            Lịch sử hoạt động
-                        </p>
+        <div class="col-md-5">
+            <div class="">
+                <div class="">
+                    <div class="card m-2 p-2 rounded box-shadow-page bg-white">
+                        <div class="card-body">
+                            <div class="">
+                                <div id="myPlot1" style="width:100%;max-width:700px"></div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body" style="height: 474px;overflow-x: hidden;">
-                        <div class="activity">
-                            <div ng-repeat="hanhDong in listHanhDong">
-                                <div class="d-flex ">
-                                    <div>
-                                        <div class="li-custom"></div>
-                                    </div>
-                                    <div>
-                                        <div class="d-flex align-items-center"><p class="font-size-13-ncl">
-                                            <span class="fw-bold">{{hanhDong.performerName}}</span>
-                                            {{hanhDong.actionDescription}}</p>
-                                        </div>
-                                        <p class="font-size-12">{{hanhDong.timestamp}}</p>
-                                    </div>
-                                </div>
-                                <div class="line"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-7">
+            <div class="">
+                <div class="">
+                    <div class="card m-2 p-2 rounded box-shadow-page bg-white">
+                        <div class="card-header bg-white">
+                            <p class="fw-bold p-1 mt-1">Danh sách giầy bán chạy</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="">
+                                <canvas id="myChart2"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="">
+                <div class="">
+                    <div class="card m-2 p-2 rounded box-shadow-page bg-white">
+                        <div class="card-body">
+                            <div class="">
+                                <div id="myPlot" style="width:100%;max-width:700px"></div>
                             </div>
                         </div>
                     </div>
