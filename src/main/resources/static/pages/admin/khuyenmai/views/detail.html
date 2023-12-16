@@ -1,0 +1,88 @@
+<form name="khuyenMaiForm">
+    <div class="form-group">
+        <label for="ten">Tên chương trình: </label>
+        <input type="text" class="form-control" id="ten" name="ten" ng-model="khuyenMai.ten" ng-maxlength="50"
+               ng-required="true" ng-change="change(khuyenMaiForm.ten)" readonly>
+    </div>
+    <div class="form-group">
+        <label for="ghiChu">Ghi chú: </label>
+        <textarea class="form-control" id="ghiChu" name="ghiChu" rows="3" ng-model="khuyenMai.ghiChu"
+                  ng-change="changeGhiChu(khuyenMaiForm.ghiChu)" ng-required="true" readonly></textarea>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>Ngày bắt đầu: </label>
+                <input type="date" class="form-control" id="ngayBatDau" name="ngayBatDau"
+                       ng-model="khuyenMai.ngayBatDau" readonly>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>Ngày kết thúc: </label>
+                <input type="date" class="form-control" id="ngayKetThuc" name="ngayKetThuc"
+                       ng-model="khuyenMai.ngayKetThuc" readonly>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>Trạng thái: </label>
+                <div class="form-check form-switch">
+                    <!-- Sử dụng thuộc tính disabled để ngăn chặn sửa đổi trạng thái -->
+                    <input class="form-check-input" type="checkbox" id="khuyenMaiTrangThai" name="trangThai"
+                           ng-model="khuyenMai.trangThai" ng-true-value="1" ng-false-value="0"
+                           ng-init="khuyenMai.trangThai = 1" disabled>
+                    <label class="form-check-label" for="khuyenMaiTrangThai">Kích hoạt</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div ng-show="selectedGiayTableData.length > 0" class="mb-4">
+    <table class="table table-hover table-striped" ng-repeat="giay in selectedGiayTableData">
+        <thead>
+        <tr>
+            <th scope="col">Tên giày</th>
+            <th scope="col">Giá bán</th>
+            <th scope="col">% giảm</th>
+            <th scope="col">Giá sau giảm</th>
+
+        </tr>
+        <tr>
+            <th>
+                {{giay.lstAnh}} {{giay.ten}}
+            </th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="bienTheGiay in giay.lstBienTheGiay">
+            <td class="col-5">
+                <br>
+                {{bienTheGiay.mauSac.ten}}, {{bienTheGiay.kichThuoc.ten}}
+            </td>
+            <td class="col-2">
+                {{bienTheGiay.giaBan}}
+            </td>
+            <td class="col-2">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" ng-model="bienTheGiay.phanTramGiam"
+                           aria-label="Recipient's username" aria-describedby="basic-addon2" placeholder="0" readonly>
+                    <span class="input-group-text" id="basic-addon2">%</span>
+                </div>
+            </td>
+            <td class="col-3"
+                ng-if="bienTheGiay.phanTramGiam !== null && bienTheGiay.phanTramGiam !== undefined">
+                {{bienTheGiay.giaBan - (bienTheGiay.giaBan * bienTheGiay.phanTramGiam / 100)}}
+            </td>
+            <td class="col-3"
+                ng-if="bienTheGiay.phanTramGiam === null || bienTheGiay.phanTramGiam === undefined">
+                {{bienTheGiay.giaBan}}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

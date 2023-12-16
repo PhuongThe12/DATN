@@ -33,4 +33,7 @@ public interface NhanVienRepository extends JpaRepository<NhanVien, Long> {
     NhanVien findNhanVienBySoDienThoai(String soDienThoai);
 
     NhanVien findNhanVienByEmail(String email);
+
+    @Query("select count(nv.id) > 0 from NhanVien nv where nv.id != :id and nv.soDienThoai = :soDienThoai")
+    boolean existsBySoDienThoaiAndIdNot(Long id, String soDienThoai);
 }

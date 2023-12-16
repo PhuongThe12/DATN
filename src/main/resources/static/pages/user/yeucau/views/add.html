@@ -107,26 +107,23 @@
         width: 40px;
         height: 40px;
         margin: 4px;
-        border: 1px solid rgb(180, 180, 180);
+        border-radius: 7px;
     }
 
     .button_checked {
         transition: 0.3s all;
         border: 1px solid rgb(0, 0, 0) !important;
+        border-radius: 7px;
     }
 
     #image-container img {
         margin-bottom: 10px;
     }
 
-    .info {
-        max-height: 208px;
-        overflow: hidden;
-    }
-
     .text-limit {
-        max-height: 60px;
+        max-height: 0px;
         overflow: hidden;
+        transition: 0.3s ease-in-out;
     }
 
     .toggle-button {
@@ -149,6 +146,51 @@
         background-color: #fff;
         border-color: #1d1e1e #dee2e6 #fff;
         border-top: 1.5px solid #1d1e1e;
+    }
+
+    .item {
+        margin-top: 13px;
+        border-bottom: 1px solid #dbdbdb;
+    }
+
+    .item div {
+        justify-content: space-between;
+        position: relative;
+        align-items: center;
+    }
+
+    .item h5 {
+        font-weight: bold;
+    }
+
+    .item p {
+        color: black;
+        font-size: 14px;
+    }
+
+    .btn-size {
+        padding: 10px 20px;
+    }
+
+    .show-text p {
+        max-height: 100px !important;
+        transition: 0.3s ease-in-out;
+    }
+
+    .show-text i {
+        transition: 0.3s ease-in-out;
+        transform: rotate(180deg);
+    }
+
+    .i-button {
+        position: absolute;
+        opacity: 0;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        padding: 10px;
+        cursor: pointer;
     }
 </style>
 
@@ -193,7 +235,7 @@
                                 {{hoaDonChiTiet.bienTheGiay.kichThuoc.ten}} / Màu Sắc :
                                 {{hoaDonChiTiet.bienTheGiay.mauSac.ten}}</p>
                             <p class="font-size-16-ncl fw-bold text-dark">{{hoaDonChiTiet.donGia
-                                -(hoaDonChiTiet.donGia*(hoaDon.phanTramGiam/100)) | number}}</p>
+                                -(hoaDonChiTiet.donGia*(hoaDon.phanTramGiam/100)) | formatToVND}}</p>
                         </div>
                         <div class="d-flex mb-3">
                             <button class="btn btn-light" ng-click="subtraction(hoaDonChiTiet)"><i
@@ -226,11 +268,9 @@
                     <div class="col-md-12">
                         <div class="d-flex mb-3">
                             <div>
-                                <a href="#/detail/{{yeuCauChiTiet.value.hoaDonChiTiet.bienTheGiay.id}}">
-                                    <img class="rounded" width="94%"
-                                         ng-src="{{yeuCauChiTiet.value.hoaDonChiTiet.bienTheGiay.hinhAnh ? yeuCauChiTiet.value.hoaDonChiTiet.bienTheGiay.hinhAnh : 'https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg'}}"
-                                         alt="">
-                                </a>
+                                <img class="rounded" width="94%"
+                                     ng-src="{{yeuCauChiTiet.value.hoaDonChiTiet.bienTheGiay.hinhAnh ? yeuCauChiTiet.value.hoaDonChiTiet.bienTheGiay.hinhAnh : 'https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg'}}"
+                                     alt="">
                             </div>
                             <div class="w-75 ps-2">
                                 <div class="d-flex align-items-center">
@@ -248,6 +288,9 @@
                                     <button type="button" class="btn btn-dark" data-bs-toggle="modal"
                                             data-bs-target="#exampleModal" ng-click="addLyDoView(yeuCauChiTiet)">Lý Do
                                     </button>
+                                    <button type="button" class="btn btn-dark"
+                                            ng-click="deleteGiayTra(yeuCauChiTiet)"><i
+                                            class="fas fa-trash-alt"></i></i></button>
                                 </div>
                                 <div class="d-flex">
                                     <p class="font-size-14-ncl fw-bold text-secondary">Số lượng Trả : 1</p>
@@ -256,14 +299,15 @@
                                     <p class="font-size-16-ncl fw-bold text-dark">Giá:
                                         {{yeuCauChiTiet.value.hoaDonChiTiet.donGia -
                                         (yeuCauChiTiet.value.hoaDonChiTiet.donGia*(hoaDon.phanTramGiam/100)) |
-                                        number}}</p>
+                                        formatToVND}}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="formDoi row pt-3" ng-show="yeuCauChiTiet.value.bienTheGiayDoi.id">
+                <div class="formDoi row pt-3" ng-show="yeuCauChiTiet.value.bienTheGiayDoi.id"
+                     style="border-bottom: 1px solid grey">
                     <div class="col-md-6">
                         <div class="sanPhamTra">
                             <div class="d-flex mb-3">
@@ -302,7 +346,7 @@
                                     <div class="d-flex">
                                         <p class="font-size-16-ncl fw-bold text-dark">Giá:
                                             {{yeuCauChiTiet.value.hoaDonChiTiet.donGia -
-                                            (yeuCauChiTiet.value.hoaDonChiTiet.donGia*(yeuCauChiTiet.value.hoaDonChiTiet.bienTheGiay.khuyenMai/100))
+                                            (yeuCauChiTiet.value.hoaDonChiTiet.donGia*(hoaDon.phanTramGiam/100))
                                             | formatToVND}}</p>
                                     </div>
                                 </div>
@@ -346,10 +390,10 @@
                                             {{yeuCauChiTiet.value.bienTheGiayDoi.giaBan | formatToVND}}</p>
                                         <p class="font-size-16-ncl fw-bold text-dark"
                                            ng-show="yeuCauChiTiet.value.bienTheGiayDoi.khuyenMai > 0">Giá: <span
-                                                class="badge text-bg-dark" style="text-decoration-line: line-through">{{yeuCauChiTiet.value.bienTheGiayDoi.giaBan | number}}</span>{{yeuCauChiTiet.value.bienTheGiayDoi.giaBan
+                                                class="badge text-bg-dark" style="text-decoration-line: line-through">{{yeuCauChiTiet.value.bienTheGiayDoi.giaBan | formatToVND}}</span>{{yeuCauChiTiet.value.bienTheGiayDoi.giaBan
                                             -
                                             (yeuCauChiTiet.value.bienTheGiayDoi.giaBan*yeuCauChiTiet.value.bienTheGiayDoi.khuyenMai
-                                            / 100) | number}}</p>
+                                            / 100) | formatToVND}}</p>
                                     </div>
                                 </div>
                             </div>
@@ -375,26 +419,26 @@
                         <p class=" text-dark">{{tongTienHangDoi | formatToVND}}</p>
                     </div>
 
-                    <div class="d-flex justify-content-between border-bottom-1" ng-show="tongTienHangDoi > 0">
+                    <div class="d-flex justify-content-between" ng-show="tongTienHangDoi > 0">
                         <p class=" text-dark">Khuyến Mại : </p>
                         <p class=" text-dark"> {{tongTienGiamGia | formatToVND}}</p>
                     </div>
 
-                    <div class="d-flex justify-content-between border-bottom-1" ng-show="tongTienHangDoi > 0">
+                    <div class="d-flex justify-content-between " ng-show="tongTienHangDoi > 0">
                         <p class=" text-dark">COD : </p>
                         <p class=" text-dark"> {{phiVanChuyen | formatToVND}}</p>
                     </div>
 
                     <div class="d-flex justify-content-between pt-3"
                          style="border-top: 1px solid grey ; border-bottom:1px solid grey"
-                         ng-show="tongTienHangTra - (tongTienDoiHang + phiVanChuyen + tongTienGiamGia) > 0">
+                         ng-show="(tongTienHangTra + phiVanChuyen) - (tongTienHangDoi + tongTienGiamGia) > 0">
                         <p class="fw-bold text-dark">Tổng tiền hoàn : </p>
                         <p class="fw-bold text-dark">{{tongTienThanhToan | formatToVND}}</p>
                     </div>
 
                     <div class="d-flex justify-content-between pt-3"
                          style="border-top: 1px solid grey ; border-bottom:1px solid grey"
-                         ng-show="tongTienHangTra - (tongTienDoiHang + phiVanChuyen + tongTienGiamGia) <= 0">
+                         ng-show="(tongTienHangTra + phiVanChuyen) - (tongTienHangDoi + tongTienGiamGia) <= 0">
                         <p class="fw-bold text-dark">Tổng thanh toán : </p>
                         <p class="fw-bold text-dark">{{tongTienThanhToan | formatToVND}}</p>
                     </div>
@@ -410,7 +454,8 @@
                     <div class="collapse" id="collapseExample" style="border: none; border-left: 1px solid grey">
                         <div class="form-floating card card-body" style="border: none">
                             <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"
-                                      style="height: 100px; border: 1px solid grey; padding-left: 0"></textarea>
+                                      style="height: 100px; border: 1px solid grey; padding-left: 0"
+                                      ng-model="yeuCau.ghiChu"></textarea>
                         </div>
                     </div>
 
@@ -441,7 +486,7 @@
                             <div class="input-group mb-3">
                                 <input type="text" class="form-control" value="{{thongTinNhanHang.diaChiNhan}}"
                                        aria-describedby="basic-addon2" disabled ng-model="thongTinNhanHang.diaChiNhan">
-                                <span class="input-group-text" id="basic-addon2" data-bs-target="#staticBackdrop1"
+                                <span class="input-group-text" id="basic-addon2" data-bs-target="#exampleModalToggle3"
                                       data-bs-toggle="modal" type="button" ng-click="changeProvince()"><i
                                         class="fas fa-undo-alt"></i></span>
                             </div>
@@ -500,83 +545,186 @@
 
 <!-- Modal chọn giày-->
 <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
-     tabindex="-1" data-bs-backdrop="static">
-    <div class="modal-dialog modal-fullscreen modal-dialog-centered">
+     tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-fullscreen">
         <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Danh Sách Giày</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header" style="background-color: black">
+                <h1 class="modal-title fs-5" id="exampleModalToggleLabel" style="color: white">Danh sách sản phẩm</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        style="color: grey"></button>
             </div>
             <div class="modal-body">
 
-                <div class="d-flex align-items-center justify-content-between">
-                    <div class="mb-3">
-                        <p class="font-size-13-ncl">Trang Chủ / Yêu Cầu / Danh Sách Giày</p>
+                <div class="d-flex align-items-center">
+                    <div class="mb-3 col-3">
+                        <label style="font-weight: 900">Bộ lọc</label>
                     </div>
-                    <div>
-                        <select class="form-select" aria-label="Default select example">
-                            <option selected>Tất Cả</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                        </select>
-                    </div>
-                </div>
+                    <div class="mx-2">
+                        <div class="d-flex justify-content-start radio-filter">
+                            <div class="custom-radio">
+                                <input type="radio" id="all" name="status" ng-model="status" value="0"
+                                       ng-checked="status == 0"
+                                       ng-change="changeRadio(0)">
+                                <label class="radio-label" for="all">Tất cả</label>
+                            </div>
 
-                <div class="row">
-                    <div class="col-md-2 sticky-top" style="align-self: flex-start;height: auto;">
-                        <div class="d-flex" style="flex-wrap: wrap-reverse;">
-                            <div class="" ng-repeat="searchChooes in lstSearchChoosed">
-                                <div class="label-search">{{searchChooes.selectedValue}} <i
-                                        class="fas ps-1 fa-times"></i></div>
+                            <div class="custom-radio">
+                                <input type="radio" id="active" name="status" ng-model="status" value="1"
+                                       ng-checked="status == 1"
+                                       ng-change="changeRadio(1)">
+                                <label class="radio-label" for="active">Sản phẩm bán chạy</label>
+                            </div>
+
+                            <div class="custom-radio">
+                                <input type="radio" id="disable" name="status" ng-model="status" value="2"
+                                       ng-checked="status == 2"
+                                       ng-change="changeRadio(2)">
+                                <label class="radio-label" for="disable">Sản phẩm yêu thích</label>
                             </div>
                         </div>
-
-                        <div class="search-price"></div>
-
-                        <div class="search-price"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 sticky-top" style="align-self: flex-start;height: auto;">
 
                         <div class="row">
-                            <div ng-repeat="dropdown in dropdowns" class="custom-dropdown"
-                                 style="padding-top: 3px;">
+                            <div class="py-2">
+                                <div>
+                                    <span><strong>Tên giày: </strong></span>
+                                </div>
+                                <input type="text" class="form-control" ng-model="tenSearch">
+                            </div>
+                            <div class="py-2">
+                                <div class="d-flex justify-content-between" style="cursor: pointer"
+                                     data-bs-toggle="collapse"
+                                     href="#dsMauSac" role="button" aria-expanded="false" aria-controls="dsMauSac"
+                                     ng-click="toggleCollapse('iconMauSac')">
+                                    <span><strong>Màu sắc: </strong></span>
+                                    <i class="fas fa-caret-down" id="iconMauSac"></i>
+                                </div>
+                                <div class="collapse show" id="dsMauSac">
+                        <span ng-repeat="mauSac in mauSacs">
+                        <label for="mauSac{{mauSac.id}}"
+                               class="position-relative pointer-event form-check-label ps-2 checkbox-label-mau-sac"
+                               ng-style="{'background-color': mauSac.maMau}">
+                            <i class="fas fa-check" style="display: none; top: -10%; right: -15%; color: green"
+                               ng-class="mauSac.selected? 'mau-sac active' : ''"></i>
+                        </label>
+                        <input type="checkbox" name="mauSac" id="mauSac{{mauSac.id}}" ng-model="mauSac.selected"
+                               style="display: none">
+                        </span>
+                                </div>
+                            </div>
 
-                                <button style="border-top: 1px solid #ebe9e9;"
-                                        class="custom-dropbtn font-size-14-ncl d-flex align-items-center justify-content-between w-100"
-                                        ng-click="toggleDropdown($index)"><span>{{ dropdown.ten }}</span> <i
-                                        class="fas fa-chevron-down" ng-class="{ 'rotate': dropdown.isOpen }"></i>
-                                </button>
+                            <div class="py-2">
+                                <div class="d-flex justify-content-between" style="cursor: pointer"
+                                     data-bs-toggle="collapse"
+                                     href="#dsKichThuoc" role="button" aria-expanded="false" aria-controls="dsKichThuoc"
+                                     ng-click="toggleCollapse('iconKichThuoc')">
+                                    <span><strong>Kích thước: </strong></span>
+                                    <i class="fas fa-caret-down" id="iconKichThuoc"></i>
+                                </div>
+                                <div class="collapse show" id="dsKichThuoc">
+                        <span ng-repeat="kichThuoc in kichThuocs">
+                        <label for="kichThuoc{{kichThuoc.id}}"
+                               class="px-1 mx-2 position-relative pointer-event checkbox-label"
+                               ng-class="kichThuoc.selected? 'btn btn-info' : 'btn'">{{kichThuoc.ten}}
+                            <i class="fas fa-check" style="display: none; top: -10%; right: -15%; color: green"
+                               ng-class="kichThuoc.selected? 'mau-sac active' : ''"></i>
+                        </label>
+                        <input type="checkbox" name="kichThuoc" id="kichThuoc{{kichThuoc.id}}"
+                               ng-model="kichThuoc.selected"
+                               style="display: none">
+                        </span>
+                                </div>
+                            </div>
 
-                                <div class="custom-dropdown-content"
-                                     ng-class="{ 'show': dropdown.isOpen,'d-flex pd-left-10 flex-wrap': (dropdown.ten === 'Kích Cỡ' && dropdown.isOpen) || (dropdown.ten === 'Màu Sắc' && dropdown.isOpen)}">
-                                    <!-- Các phần tử trong dropdown -->
-                                    <div class="form-check p-0" ng-repeat="value in dropdown.listValue">
-                                        <input ng-class="{ 'd-none': dropdown.ten === 'Kích Cỡ' || dropdown.ten === 'Màu Sắc' }"
-                                               class="form-check-input"
-                                               style="margin-left: 10px;" type="checkbox" ng-model="value.selected"
-                                               id="{{ 'checkbox_' + $parent.$index + '_' + $index }}">
-                                        <label ng-class="{ 'checkbox-label': dropdown.ten === 'Kích Cỡ' ,
-                                                    'checkbox-label-mau-sac': dropdown.ten === 'Màu Sắc'}"
-                                               class="form-check-label ps-2"
-                                               for="{{ 'checkbox_' + $parent.$index + '_' + $index }}"
-                                               ng-style="dropdown.ten === 'Màu Sắc' && {'background-color': value.name}"
-                                               ng-bind="dropdown.ten !== 'Màu Sắc' ? value.name : ''"
-                                        >
-                                        </label>
+                            <div class="py-2">
+                                <div class="d-flex justify-content-between" style="cursor: pointer"
+                                     data-bs-toggle="collapse"
+                                     href="#dsThuongHieu" role="button" aria-expanded="false"
+                                     aria-controls="dsThuongHieu" ng-click="toggleCollapse('iconThuongHieu')">
+                                    <span><strong>Thương hiệu: </strong></span>
+                                    <i class="fas fa-caret-down" id="iconThuongHieu"></i>
+                                </div>
+                                <div class="collapse show" id="dsThuongHieu">
+                                    <div ng-repeat="thuongHieu in thuongHieus">
+                                        <input type="checkbox" name="thuongHieu" id="thuongHieu{{thuongHieu.id}}"
+                                               ng-model="thuongHieu.selected">
+                                        <label for="thuongHieu{{thuongHieu.id}}">{{thuongHieu.ten}}</label>
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="py-2">
+                                <div class="d-flex justify-content-between" style="cursor: pointer"
+                                     data-bs-toggle="collapse"
+                                     href="#dsKhoangGia" role="button" aria-expanded="false" aria-controls="dsKhoangGia"
+                                     ng-click="toggleCollapse('iconKhoangGia')">
+                                    <span><strong>Khoảng giá: </strong></span>
+                                    <i class="fas fa-caret-down" id="iconKhoangGia"></i>
+                                </div>
+                                <div class="collapse show" id="dsKhoangGia">
+                                    <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon3">vnđ</span>
+                                        <input type="number" min="0" class="form-control" placeholder="Giá từ"
+                                               ng-model="giaTu">
+                                    </div>
+                                    <div>
+                                        <small class="text-danger">{{errorsSearch.giaTu}}</small>
+                                    </div>
+                                    -
+                                    <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon4">vnđ</span>
+                                        <input type="number" min="0" class="form-control" placeholder="Giá đến"
+                                               ng-model="giaDen">
+                                    </div>
+                                    <div>
+                                        <small class="text-danger">{{errorsSearch.giaDen}}</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="py-2">
+                                <div class="d-flex justify-content-between" style="cursor: pointer"
+                                     data-bs-toggle="collapse"
+                                     href="#dsHashtag" role="button" aria-expanded="false" aria-controls="dsHashtag"
+                                     ng-click="toggleCollapse('iconHashTag')">
+                                    <span><strong>Hashtag: </strong></span>
+                                    <i class="fas fa-caret-down rotate" id="iconHashTag"></i>
+                                </div>
+                                <div class="collapse" id="dsHashtag">
+                        <span ng-repeat="hashtag in hashtags">
+                        <label for="hashtag{{hashtag.id}}"
+                               class="badge rounded-pill px-1 mx-1 position-relative pointer-event"
+                               ng-class="hashtag.selected? 'bg-primary' : 'bg-secondary'">#{{hashtag.ten}}
+                            <i class="fas fa-check-circle" style="display: none"
+                               ng-class="hashtag.selected? 'mau-sac active' : ''"></i>
+                        </label>
+                        <input type="checkbox" name="hashtag" id="hashtag{{hashtag.id}}" ng-model="hashtag.selected"
+                               style="display: none">
+                        </span>
+                                </div>
+                            </div>
+
+                            <div class="py-2">
+                                <button class="btn btn-dark" ng-click="searchGiay()">Tìm kiếm</button>
+                                <button class="btn btn-dark" ng-click="resetSearchGiay()">Nhập lại</button>
+                            </div>
+
                         </div>
                     </div>
-                    <div class="col-md-10">
+                    <div class="col-md-9">
                         <div class="row mb-3">
-                            <div class="col-md-3 mb-3" ng-repeat="giay in listGiay"
+                            <div ng-show="giays.length == 0">Không tìm thấy giày nào</div>
+                            <div class="col-md-3 mb-3 giayHover" data-bs-dismiss="modal"
+                                 data-bs-target="#exampleModalToggle2" data-bs-toggle="modal"
                                  ng-click="getOneBienTheGiay(giay)"
-                                 data-bs-dismiss="modal" data-bs-target="#exampleModalToggle2"
-                                 data-bs-toggle="modal">
+                                 ng-repeat="giay in giays | orderBy : '-soLuongThongKe'">
                                 <div class=" position-relative">
                                     <div class="mb-2">
-                                        <img ng-src="{{giay.lstAnh && giay.lstAnh.length > 0 ? giay.lstAnh[0] : 'https://product.hstatic.net/1000361048/product/dz0482_001_a_d718733fb6d344febec840aee172ca23_master.jpg'}}"
-                                             width="100%" alt="Ảnh giày">
+                                        <img src="{{giay.lstAnh.length > 0 ? giay.lstAnh[0] : ''}}"
+                                             width="100%" alt="" style="height: 291px; object-fit: cover">
                                     </div>
                                     <div class="product-name">
                                         <h5 class="font-size-14-ncl fw-bold" title="{{giay.ten}}">{{giay.ten}}</h5>
@@ -584,38 +732,40 @@
                                     <div class="product-price">
                                         <div class="d-flex align-items-center">
                                             <p class="font-size-14-ncl text-danger m-0">
-                                                {{ '₫' + (giay.giaThapNhat | number) + (giay.giaThapNhat !==
-                                                giay.giaLonNhat ? '
-                                                - ₫' + (giay.giaLonNhat | number) : '') }}
+                                                {{ '₫' + (giay.giaTu | number : 0) + (giay.giaTu !== giay.giaDen ? '
+                                                - ₫' + (giay.giaDen | number : 0) : '') }}
                                             </p>
-
                                         </div>
                                     </div>
-                                    <div class="product-variant">
-                                        <p class="font-size-14-ncl">{{giay.lstMauSac.length }} Màu </p>
-                                    </div>
                                     <div class="position-absolute top-0 right-0">
-                                        <p class="font-size-14-ncl fw-bold"><span
-                                                style="    padding: 10px;font-size: 13px;color: red;"
-                                                class="">{{giay.giamGiaLonNhat > 0 ? giay.giamGiaLonNhat:""}}</span></p>
+                                        <p class="font-size-14-ncl fw-bold" ng-show="giay.phanTramGiam > 0"><span
+                                                style="padding: 10px;font-size: 13px;color: red; background-color: rgba(255, 255, 0, 0.5)"
+                                                class="">giảm tới {{giay.phanTramGiam}}%</span></p>
                                     </div>
-                                    <div class="position-absolute " style="color: black;right: 8px;top: 3px;">
-                                        <i class="far fa-heart" style="font-size: 20px;"></i>
+                                    <!--                            <div class="position-absolute " style="color: black;right: 8px;top: 3px;">-->
+                                    <!--                                <i class="far fa-heart" style="font-size: 20px;"></i>-->
+                                    <!--                            </div>-->
+
+                                    <div class="position-absolute " style="color: black;right: 0px;top: 3px;"
+                                         ng-show="status === 1">
+                                        <p class="font-size-14-ncl fw-bold"><span
+                                                style="padding: 10px;font-size: 13px;color: red; background-color: rgba(255, 255, 0, 0.5)"
+                                                class="">đã bán: {{giay.soLuongThongKe}} sản phẩm</span></p>
                                     </div>
                                 </div>
                             </div>
-                            <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages"
-                                 data-current-page="curPage"
-                                 data-max-size="maxSize"
-                                 data-boundary-links="true">
-                            </div>
+
+                        </div>
+                        <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages"
+                             data-current-page="curPage"
+                             data-max-size="maxSize"
+                             data-boundary-links="true">
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer" style="text-align: center">
-                <button type="button" class="btn btn-dark" data-bs-dismiss="modal"><i class="fas fa-chevron-left"></i>
-                    Trở Về
+                <button class="btn btn-dark" data-bs-dismiss="modal"><i class="fas fa-chevron-left"></i> Quay về
                 </button>
             </div>
         </div>
@@ -623,17 +773,19 @@
 </div>
 <div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2"
      tabindex="-1" data-bs-backdrop="static">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header" style="background-color: black">
-                <h1 class="modal-title fs-5" id="exampleModalToggleLabel2" style="color: white">Chi Tiết Giày</h1>
+                <h1 class="modal-title fs-5" id="exampleModalToggleLabel2" style="color: white">Sản phẩm chi tiết</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+
                 <div class="row">
                     <div id="" class=" col-md-5">
                         <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-inner" id="image-container"></div>
+                            <div class="carousel-inner" id="image-container">
+                            </div>
                             <button class="carousel-control-prev" type="button"
                                     data-bs-target="#carouselExampleControls"
                                     data-bs-slide="prev">
@@ -649,41 +801,48 @@
                         </div>
                     </div>
                     <div class="col-md-7">
-                        <div class="side-left">
-                            <div class="title">
-                                <h5 class="py-3 fw-bold border-bottom-1">{{giayDetail.ten}} </h5>
-                                <h5 class="py-2 text-danger fw-bold">
-                                <span id="price-product" class="py-3">
+                        <div class="title">
+                            <h5 class="py-3 fw-bold border-bottom-1">{{giayDetail.ten}} </h5>
+                            <h5 class="py-2 text-danger fw-bold">
+                        <span id="price-product" class="py-3">
 
-                                    <span ng-show="!giayDetail.giaBan">
-                                        {{ '₫' + (giaySeletect.giaThapNhat | number) + (giaySeletect.giaThapNhat !== giaySeletect.giaLonNhat ? '- ₫' + (giaySeletect.giaLonNhat | number) : '') }}
-                                    </span>
-                                        <span ng-show="giayDetail.khuyenMai"><del>{{giayDetail.giaBan  | number:0 }}</del>
-                                        <span class="position-relative">{{(giayDetail.giaBan - (giayDetail.giaBan * giayDetail.khuyenMai / 100))| number:0 }}
+                                <span ng-show="!giayDetail.giaBan">
+                                    {{ '₫' + (giaySeletect.giaThapNhat | number) + (giaySeletect.giaThapNhat !== giaySeletect.giaLonNhat ? '
+                                            - ₫' + (giaySeletect.giaLonNhat | number) : '') }}
+                                </span>
+                                        <span ng-show="giayDetail.khuyenMai">
+                                            <del>{{giayDetail.giaBan  | number:0 }}</del>
+                                        <span class="position-relative">
+                                            {{(giayDetail.giaBan - (giayDetail.giaBan * giayDetail.khuyenMai / 100))| number:0 }}
                                         <span class="position-absolute top-0 start-100 translate-middle badge bg-danger"
-                                              style="transform: translate(0,-50%)!important; padding: 5px;">-{{giayDetail.khuyenMai}}%</span>
+                                              style="transform: translate(0,-50%)!important; padding: 5px;">
+                                            -{{giayDetail.khuyenMai}}%
                                         </span>
                                         </span>
-                                        <span ng-show="!giayDetail.khuyenMai">{{ giayDetail.giaBan | number:0}}₫</span>
+                                        </span>
+                                        <span ng-show="!giayDetail.khuyenMai">
+                                            {{ giayDetail.giaBan | number:0}}
+                                        </span>
                                     </span>
-                                </h5>
-                                <h5 class="font-size-16-ncl fw-bold">Số lượng: <span id="quantity">{{giayDetail.soLuong}}</span>
-                                </h5>
-                            </div>
-                            <h5 class="font-size-16-ncl fw-bold py-3">Màu Sắc:</h5>
-                            <div id="buttons-container"></div>
-                            <div id="product-info"></div>
-                            <div class="size-selector">
-                                <h5 class="font-size-16-ncl fw-bold py-3">Kích Thước:</h5>
-                                <div id="sizeButtons"></div>
-                            </div>
+                            </h5>
+                            <h5 class="font-size-16-ncl fw-bold">Số lượng: <span
+                                    id="quantity">{{giayDetail.soLuong}}</span>
+                            </h5>
+                        </div>
+                        <h5 class="font-size-16-ncl fw-bold py-3">Màu Sắc</h5>
+                        <div id="buttons-container"></div>
+                        <div id="product-info"></div>
+                        <div class="size-selector">
+                            <h5 class="font-size-16-ncl fw-bold py-3">Kích Thước</h5>
+                            <div id="sizeButtons"></div>
                         </div>
                     </div>
                 </div>
+
             </div>
             <div class="modal-footer">
                 <button class="btn btn-dark" data-bs-dismiss="modal" data-bs-target="#exampleModalToggle"
-                        data-bs-toggle="modal"><i class="fas fa-chevron-left"></i> Trở Về
+                        data-bs-toggle="modal"><i class="fas fa-chevron-left"></i> Quay Về
                 </button>
                 <button class="btn btn-dark" data-bs-dismiss="modal" ng-click="selectedGiayDoi()"
                         ng-disabled="!giayChoosed.mauSac.id && !giayChoosed.kichThuoc.id">Đổi <i
@@ -695,12 +854,59 @@
 
 
 <!-- Địa Chỉ modal -->
-<div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-     aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+<div class="modal fade" id="exampleModalToggle3" aria-hidden="true" data-bs-backdrop="static"
+     aria-labelledby="exampleModalToggleLabel4" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header" style="background-color: black">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel1" style="color: white">Địa Chỉ</h1>
+                <h1 class="modal-title fs-5" id="exampleModalToggleLabel4" style="color: white">Địa Chỉ Nhận</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <div ng-repeat="diaChiNhanHang in listDiaChiNhan">
+                    <div class="border-bottom-1 mb-3 ">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <div class="d-flex align-items-center">
+                                    <h5 class="mb-0">{{diaChiNhanHang.hoTen}}</h5> -
+                                    <p class="font-size-16-ncl  mb-0 ps-3">{{diaChiNhanHang.soDienThoaiNhan}}</p>
+                                </div>
+                                <h5 class="font-size-16-ncl">
+                                    {{diaChiNhanHang.diaChiNhan}}
+                                </h5>
+                                <h5 class="font-size-14-ncl">
+                                    Xã <span>{{diaChiNhanHang.wards}}</span>, Huyện
+                                    <span>{{diaChiNhanHang.districts}}</span>, <span>{{diaChiNhanHang.provinces}}</span>
+                                </h5>
+                                <div class="mb-2">
+                            <span class="badge-custom" ng-show="diaChiNhanHang.trangThai == 1">
+                                {{diaChiNhanHang.trangThai == 1 ? 'Mặc Định' : 'Không áp dụng'}}
+                            </span>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="d-flex">
+                                    <button class="btn btn-outline-dark" data-bs-dismiss="modal"  ng-click="updateDiaChiNhan(diaChiNhanHang)">Chọn</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal"><i class="fas fa-chevron-left"></i>Trở về</button>
+                <button class="btn btn-dark" data-bs-target="#exampleModalToggle4" data-bs-dismiss="modal" data-bs-toggle="modal"><i class="fas fa-plus"></i> Thêm mới</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="exampleModalToggle4" aria-hidden="true" data-bs-backdrop="static"
+     aria-labelledby="exampleModalToggleLabel3" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: black">
+                <h1 class="modal-title fs-5" id="exampleModalToggleLabel3" style="color: white">Địa chỉ mới</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -715,7 +921,8 @@
                 <div class="row">
                     <div class="mb-3">
                         <div class="form-floating">
-                            <select class="form-select" id="floatingSelect1" aria-label="Floating label select example"
+                            <select class="form-select" id="floatingSelect1"
+                                    aria-label="Floating label select example"
                                     name="provinces" ng-model="diaChiNhanHangMoi.provinces"
                                     ng-options="province.ten  for province in provinces"
                                     ng-change="changeDistrict()"></select>
@@ -725,7 +932,8 @@
 
                     <div class="mb-3">
                         <div class="form-floating">
-                            <select class="form-select" id="floatingSelect2" aria-label="Floating label select example"
+                            <select class="form-select" id="floatingSelect2"
+                                    aria-label="Floating label select example"
                                     name="districts" ng-model="diaChiNhanHangMoi.districts"
                                     ng-options="district.ten for district in districts"
                                     ng-change="changeWards()"></select>
@@ -735,7 +943,8 @@
 
                     <div class="mb-3">
                         <div class="form-floating">
-                            <select class="form-select" id="floatingSelect3" aria-label="Floating label select example"
+                            <select class="form-select" id="floatingSelect3"
+                                    aria-label="Floating label select example"
                                     name="wards" ng-model="diaChiNhanHangMoi.wards"
                                     ng-options="ward.ten for ward in wards"></select>
                             <label for="floatingSelect3">Phường/Xã<span class="required">(*)</span>:</label>
@@ -754,9 +963,7 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-dark" data-bs-dismiss="modal"><i class="fas fa-chevron-left"></i>
-                    Trở về
-                </button>
+                <button type="button" class="btn btn-dark" data-bs-target="#exampleModalToggle3" data-bs-dismiss="modal"><i class="fas fa-chevron-left"></i> Trở về</button>
                 <button type="button" class="btn btn-dark" data-bs-dismiss="modal" ng-disabled="checkAddDress()"
                         ng-click="saveDiaChi()"><i class="fas fa-check"></i> Lưu
                 </button>
@@ -764,69 +971,3 @@
         </div>
     </div>
 </div>
-
-<p id="soldout" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></p>
-
-<!-- Modal -->
-<div class="modal fade" id="staticBackdrop" tabindex="-1" aria-labelledby="staticBackdrop" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered  modal-lg">
-        <div class="modal-content">
-
-            <div class="modal-body">
-                <h5 class="modal-title mb-1" id="staticBackdropLabel">Số lượng giày trong kho không đủ vui lòng kiểm tra
-                    lại</h5>
-                <p class="font-size-12-ncl mb-3">Tải lại trang để cập nhật mới nhất về trạng thái sản phẩm</p>
-                <div ng-show="productsSoldOutQuantity.length > 0">
-                    <h5>Sản phẩm hết hàng</h5>
-                    <div class="d-flex mb-3" ng-repeat="bienTheGiay in productsSoldOutQuantity">
-                        <div>
-                            <a href="#/detail/{{bienTheGiay.id}}">
-                                <img class="rounded" width="100%"
-                                     src="https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg"
-                                     alt="">
-                            </a>
-                        </div>
-                        <div class="w-75 ps-3">
-                            <div class="d-flex align-items-center">
-                                <p class="font-size-14-ncl fw-bold text-dark mb-2 text-wrap-none">
-                                    {{bienTheGiay.giayResponse.ten}}</p>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-between">
-                                <p class="font-size-14-ncl text-secondary">Kích cỡ : {{bienTheGiay.kichThuoc.ten}} / Màu
-                                    Sắc : {{bienTheGiay.mauSac.ten}}</p>
-                                <p class="font-size-16-ncl fw-bold text-dark">{{bienTheGiay.giaBan | number}} ₫</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div ng-show="productsLessQuantity.length > 0">
-                    <h5>Sản phẩm vượt quá số lượng</h5>
-                    <div class="d-flex mb-3" ng-repeat="bienTheGiay in productsLessQuantity">
-                        <div>
-                            <a href="#/detail/{{bienTheGiay.id}}">
-                                <img class="rounded" width="100%"
-                                     src="https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg"
-                                     alt="">
-                            </a>
-                        </div>
-                        <div class="w-75 ps-3">
-                            <div class="d-flex align-items-center">
-                                <p class="font-size-14-ncl fw-bold text-dark mb-2 text-wrap-none">
-                                    {{bienTheGiay.giayResponse.ten}}</p>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-between">
-                                <p class="font-size-14-ncl text-secondary">Kích cỡ : {{bienTheGiay.kichThuoc.ten}} / Màu
-                                    Sắc : {{bienTheGiay.mauSac.ten}}</p>
-                                <p class="font-size-16-ncl fw-bold text-dark">{{bienTheGiay.giaBan | number}} ₫</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<button type="button" class="btn btn-dark" data-bs-dismiss="modal"
-        data-bs-target="#exampleModalToggle" data-bs-toggle="modal"
-        ng-click="chonGiayDoi()">Đổi
-    <i class="fas fa-undo-alt"></i></button>

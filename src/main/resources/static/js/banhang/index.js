@@ -11,6 +11,11 @@ app.config(function ($routeProvider, $locationProvider) {
 
 app.controller("homeController", function ($scope, $http, $location, $cookies, $rootScope) {
 
+    $http.get(host + "/session/get-staff")
+        .then(response => {
+            console.log(response.data);
+        })
+
     document.title = 'Bán hàng';
     $scope.curPage = 1, $scope.itemsPerPage = 12, $scope.maxSize = 5;
     $scope.hoaDon = {};
@@ -616,6 +621,10 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
     }
 
     $scope.thanhToanTaiQuay = function () {
+
+        if ($scope.taiQuayForm.$invalid) {
+            return;
+        }
 
         if ($scope.listGiaySelected.length === 0) {
             toastr["error"]("Chưa có sản phẩm trong giỏ hàng");
@@ -1587,6 +1596,10 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
     }
 
     $scope.datHang = function () {
+
+        if ($scope.datHangForm.$invalid) {
+            return;
+        }
 
         if ($scope.listGiaySelected.length === 0) {
             toastr["error"]("Chưa có sản phẩm trong giỏ hàng");

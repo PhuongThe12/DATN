@@ -40,7 +40,7 @@ public class BienTheGiayResponse extends BaseBienTheResponse {
 
     private GiayResponse giayResponse;
 
-    private Long soLuongThongke;
+    private Long soLuongThongKe;
 
     private Long soLuongMua;
 
@@ -113,23 +113,23 @@ public class BienTheGiayResponse extends BaseBienTheResponse {
         this.soLuong = soLuong;
     }
 
-    public BienTheGiayResponse(BienTheGiay bienTheGiay, Giay giay, MauSac mauSac, KichThuoc kichThuoc, Long soLuongThongke) {
+    public BienTheGiayResponse(BienTheGiay bienTheGiay, Giay giay, MauSac mauSac, KichThuoc kichThuoc, Long soLuongThongKe) {
         this.id = bienTheGiay.getId();
-        this.giayResponse = new GiayResponse(giay.getId(), giay.getTen());
+        this.giayResponse = new GiayResponse(giay, giay.getTen());
         this.mauSac = new MauSacResponse(mauSac.getId(), mauSac.getTen());
         this.kichThuoc = new KichThuocResponse(kichThuoc.getId(), kichThuoc.getTen());
         this.hinhAnh = bienTheGiay.getHinhAnh();
-        this.soLuongThongke = soLuongThongke;
+        this.soLuongThongKe = soLuongThongKe;
     }
-    public BienTheGiayResponse(BienTheGiay bienTheGiay, Giay giay, MauSac mauSac, KichThuoc kichThuoc, Long soLuongMua, Long soLuongTra) {
+    public BienTheGiayResponse(BienTheGiay bienTheGiay, Giay giay, MauSac mauSac, KichThuoc kichThuoc, Long soLuongMua, Long soLuongTra,double tyLeTra) {
         this.id = bienTheGiay.getId();
-        this.giayResponse = new GiayResponse(giay.getId(), giay.getTen());
+        this.giayResponse = new GiayResponse(giay, giay.getTen());
         this.mauSac = new MauSacResponse(mauSac.getId(), mauSac.getTen());
         this.kichThuoc = new KichThuocResponse(kichThuoc.getId(), kichThuoc.getTen());
         this.hinhAnh = bienTheGiay.getHinhAnh();
         this.soLuongMua = soLuongMua;
         this.soLuongTra = soLuongTra;
-        this.tyLeTra = soLuongMua > 0 ?  ( soLuongTra / soLuongMua) * 100 : 0;
+        this.tyLeTra =  Math.round(tyLeTra);
     }
 
 

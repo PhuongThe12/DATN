@@ -1,5 +1,6 @@
 package luckystore.datn.service;
 
+import luckystore.datn.entity.DiaChiNhanHang;
 import luckystore.datn.model.request.DiaChiNhanHangRequest;
 import luckystore.datn.model.request.KhachHangRequest;
 import luckystore.datn.model.response.DiaChiNhanHangResponse;
@@ -12,13 +13,17 @@ public interface DiaChiNhanHangService {
 
     Page<DiaChiNhanHangResponse> getPage(int page, String searchText, Integer status);
 
+    List<DiaChiNhanHangResponse> getPageByKhachHang(Long idKhachHang);
+
     DiaChiNhanHangResponse addDiaChiNhanHang(DiaChiNhanHangRequest diaChiNhanHangRequest);
 
     DiaChiNhanHangResponse updateDiaChiNhanHang(Long id, DiaChiNhanHangRequest diaChiNhanHangRequest);
 
     DiaChiNhanHangResponse findById(Long id);
 
-    DiaChiNhanHangResponse findByIdKhachHang(Long id);
+    List<DiaChiNhanHangResponse> findByIdKhachHang(Long id);
+
+    DiaChiNhanHangResponse findOneByIdKhachHang(Long id);
 
     DiaChiNhanHangResponse updateTrangThaiDiaChiNhan(Long id, DiaChiNhanHangRequest diaChiNhanHangRequest);
 

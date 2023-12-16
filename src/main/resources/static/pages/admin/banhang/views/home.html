@@ -213,7 +213,7 @@
             </nav>
             <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="banTaiQuay" role="tabpanel" aria-labelledby="nav-home-tab">
-                    <form ng-submit="taoHoaDon(1)">
+                    <form ng-submit="taoHoaDon(1)" name="taiQuayForm">
                         <div class="row">
                             <div class="mb-3">
                                 <label class="form-label" style="margin-bottom: 0">Hóa đơn: <strong
@@ -340,8 +340,9 @@
                             <div class="col-12">
                                 <div class="mb-3">
                                     <label class="form-label" style="margin-bottom: 0">Ghi chú</label>
-                                    <textarea class="form-control" rows="3" ng-model="ghiChuTaiQuay"
+                                    <textarea class="form-control" rows="3" name="ghiChu" ng-model="ghiChuTaiQuay"
                                               ng-maxlength="255"></textarea>
+                                    <small class="text-danger" ng-show="taiQuayForm.ghiChu.$error.maxlength">Không được quá 255 ký tự</small>
                                 </div>
                             </div>
                         </div>
@@ -353,7 +354,7 @@
                     </form>
                 </div>
                 <div class="tab-pane fade" id="datHang" role="tabpanel" aria-labelledby="nav-profile-tab">
-                    <form ng-submit="taoHoaDon(2)">
+                    <form ng-submit="taoHoaDon(2)" name="datHangForm">
                         <div class="row">
                             <div class="mb-3">
                                 <label class="form-label" style="margin-bottom: 0">Hóa đơn: <strong
@@ -474,7 +475,8 @@
                             <div class="col-12">
                                 <div class="mb-3">
                                     <label class="form-label" style="margin-bottom: 0">Ghi chú</label>
-                                    <textarea class="form-control" rows="3" ng-model="ghiChuDatHang"></textarea>
+                                    <textarea class="form-control" name="ghiChu" rows="3" ng-model="ghiChuDatHang" ng-maxlength="255"></textarea>
+                                    <small class="text-danger" ng-show="datHangForm.ghiChu.$error.maxlength">Không được quá 255 ký tự</small>
                                 </div>
                             </div>
                         </div>

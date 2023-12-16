@@ -3,6 +3,9 @@ package luckystore.datn.util;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -20,13 +23,6 @@ public class ConvertDateToLong {
             e.printStackTrace(System.out);
         }
         return milliseconds;
-    }
-
-
-    public String longToDate(Long milliseconds) {
-        Date date = new Date(milliseconds);
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-        return format.format(date);
     }
 
 }

@@ -24,102 +24,87 @@
 <div class="box-shadow-page" style="margin: 20px">
     <div class="card-body">
         <div class="d-flex add-search-custom">
-            <div class="">
-                <a class="btn btn-primary" href="#/add">Thêm Nhân Viên</a>
+            <div class="input-group w-50">
+                <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
+                <input id="seachText" class="form-control" type="text" ng-model="searchText"
+                       placeholder="Nhập tên">
+                <button class="btn btn-custom " ng-click="search()">Tìm kiếm</button>
+                <button class="btn btn-custom mx-2" ng-click="resetSearch()">Nhập lại</button>
+            </div>
+            <a class="btn btn-primary" href="#/add"><i class="fas fa-plus px-2 small"></i>Thêm nhân viên</a>
+        </div>
+
+        <div class="d-flex justify-content-start radio-filter">
+            <div class="custom-radio">
+                <input type="radio" id="all" name="status" ng-model="status" value="-1"
+                       ng-checked="status != 0 && status != 1"
+                       ng-change="changeRadio(-1)">
+                <label class="radio-label" for="all">Tất cả</label>
+            </div>
+
+            <div class="custom-radio">
+                <input type="radio" id="active" name="status" ng-model="status" value="1" ng-checked="status == 1"
+                       ng-change="changeRadio(1)">
+                <label class="radio-label" for="active">Đang làm</label>
+            </div>
+
+            <div class="custom-radio">
+                <input type="radio" id="disable" name="status" ng-model="status" value="0" ng-checked="status == 0"
+                       ng-change="changeRadio(0)">
+                <label class="radio-label" for="disable">Đã nghỉ</label>
             </div>
         </div>
         <div>
-            <div class="card rounded-md bg-white">
-                <main class="card-body p-6">
-                    <div class="d-md-flex justify-content-between align-items-center mb-6">
+            <table class="table align-middle table-borderless text-center mw-100" border="1">
+                <tr class="">
+                    <th>ID</th>
+                    <th>HỌ TÊN</th>
+                    <th>SỐ ĐIỆN THOẠI</th>
+                    <th>EMAIL</th>
+                    <th>CHỨC VỤ</th>
+                    <th>TRẠNG THÁI</th>
+                    <th>ACTION</th>
+                </tr>
 
-                        <div>
-                            <h4 class="card-title fw-bold">
-                                Danh Sách Nhân Viên
-                            </h4>
-                            <div class="d-flex justify-content-start radio-filter">
-                                <div class="custom-radio">
-                                    <input type="radio" id="all" name="status" ng-model="status" value="-1"
-                                           ng-checked="status != 0 && status != 1"
-                                           ng-change="changeRadio(-1)">
-                                    <label class="radio-label" for="all">Tất cả</label>
-                                </div>
-
-                                <div class="custom-radio">
-                                    <input type="radio" id="active" name="status" ng-model="status" value="1"
-                                           ng-checked="status == 1"
-                                           ng-change="changeRadio(1)">
-                                    <label class="radio-label" for="active">Đang Làm</label>
-                                </div>
-
-                                <div class="custom-radio">
-                                    <input type="radio" id="disable" name="status" ng-model="status" value="0"
-                                           ng-checked="status == 0"
-                                           ng-change="changeRadio(0)">
-                                    <label class="radio-label" for="disable">Đã Nghỉ</label>
-                                </div>
-
-                            </div>
-                        </div>
-                        <div>
-                            <div>
-                                <div class="form-group">
-                                    <input type="text" ng-model="searchText" ng-change="search()" placeholder="search..." class="form-control py-2">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <table class="table align-middle table-borderless text-center mw-100" border="1">
-                            <tr class="">
-                                <th>ID</th>
-                                <th>HỌ TÊN</th>
-                                <th>SỐ ĐIỆN THOẠI</th>
-                                <th>EMAIL</th>
-                                <th>CHỨC VỤ</th>
-                                <th>TRẠNG THÁI</th>
-                                <th>ACTION</th>
-                            </tr>
-
-                            <tr ng-repeat="nhanvien in nhanViens">
-                                <td>{{nhanvien.id}}</td>
-                                <td>{{nhanvien.hoTen}}</td>
-                                <td>{{nhanvien.soDienThoai}}</td>
-                                <td>{{nhanvien.email}}</td>
-                                <td>{{nhanvien.chucVu == 1 ? "Nhân Viên" : "Chủ Cửa Hàng"}}</td>
-                                <td>
-                                    <h5>
+                <tr ng-repeat="nhanvien in nhanViens">
+                    <td>{{nhanvien.id}}</td>
+                    <td>{{nhanvien.hoTen}}</td>
+                    <td>{{nhanvien.soDienThoai}}</td>
+                    <td>{{nhanvien.email}}</td>
+                    <td>{{nhanvien.chucVu == 1 ? "Nhân Viên" : "Chủ Cửa Hàng"}}</td>
+                    <td>
+                        <h5>
                                     <span ng-class="{'badge bd-success-custom': nhanvien.trangThai == 1, 'badge bd-danger-custom': nhanvien.trangThai != 1}">
                                         {{nhanvien.trangThai == 1 ? 'Đang Làm' : 'Đã Nghỉ'}}
                                     </span>
-                                    </h5>
-                                </td>
-                                <td>
-                                    <div class="d-sm-inline-flex">
-                                        <button class="btn btn-custom" ng-click="detailNhanVien(nhanvien.id)"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#showNhanVien" data-bs-placement="top"
-                                                title="Xem Chi Tiết">
-                                            <i class="fas fa-eye "></i>
-                                        </button>
-                                        <a class="btn btn-custom" ng-href="#/update/{{nhanvien.id}}"
-                                           data-bs-placement="top"
-                                           title="Cập Nhật"><i class="far fa-edit"></i></a>
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </main>
-            </div>
-            <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages" data-current-page="curPage"
-                 data-max-size="maxSize"
-                 data-boundary-links="true">
-            </div>
-
-
+                        </h5>
+                    </td>
+                    <td>
+                        <div class="d-sm-inline-flex">
+                            <button class="btn btn-custom" ng-click="detailNhanVien(nhanvien.id)"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#showNhanVien" data-bs-placement="top"
+                                    title="Xem Chi Tiết">
+                                <i class="fas fa-eye "></i>
+                            </button>
+                            <a class="btn btn-custom" ng-href="#/update/{{nhanvien.id}}"
+                               data-bs-placement="top"
+                               title="Cập Nhật"><i class="far fa-edit"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            </table>
         </div>
+        </main>
     </div>
+    <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages" data-current-page="curPage"
+         data-max-size="maxSize"
+         data-boundary-links="true">
+    </div>
+
+
+</div>
+</div>
 </div>
 
 <div class="modal fade" id="showNhanVien" tabindex="-1" aria-labelledby="exampleModalLabel"

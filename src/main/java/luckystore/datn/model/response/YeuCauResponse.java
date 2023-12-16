@@ -35,6 +35,8 @@ public class YeuCauResponse {
     private LocalDateTime ngaySua;
     private String thongTinNhanHang;
     private BigDecimal phiShip;
+
+    private BigDecimal tienKhachTra;
     private Long nguoiTao;
     private Long nguoiSua;
     private String ghiChu;
@@ -56,6 +58,23 @@ public class YeuCauResponse {
             this.nguoiTao = yeuCau.getNguoiTao();
             this.nguoiSua = yeuCau.getNguoiSua();
             this.ghiChu = yeuCau.getGhiChu();
+            this.tienKhachTra = yeuCau.getTienKhachTra();
+        }
+    }
+
+    public YeuCauResponse(YeuCau yeuCau,String getListYeuCauKhachHang){
+        if(yeuCau != null){
+            this.id = yeuCau.getId();
+            this.nguoiThucHien = yeuCau.getNguoiThucHien();
+            this.trangThai = yeuCau.getTrangThai();
+            this.thongTinNhanHang = yeuCau.getThongTinNhanHang();
+            this.phiShip = yeuCau.getPhiShip();
+            this.ngayTao = yeuCau.getNgayTao();
+            this.ngaySua = yeuCau.getNgaySua();
+            this.nguoiTao = yeuCau.getNguoiTao();
+            this.nguoiSua = yeuCau.getNguoiSua();
+            this.ghiChu = yeuCau.getGhiChu();
+            this.tienKhachTra = yeuCau.getTienKhachTra();
         }
     }
 
@@ -70,6 +89,7 @@ public class YeuCauResponse {
             this.ngaySua = responseByStatus.getNgaySua();
             this.ghiChu = responseByStatus.getGhiChu();
             this.listYeuCauChiTiet = responseByStatus.getListYeuCauChiTiet();
+            this.tienKhachTra = responseByStatus.getTienKhachTra();
         }
     }
 }

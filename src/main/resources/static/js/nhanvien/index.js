@@ -24,22 +24,35 @@ app.config(function ($routeProvider, $locationProvider) {
 
 app.controller("addNhanVienController", function ($scope, $http, $location, $window) {
 
-    $scope.addTest = function () {
-        $http.post(host + '/rest/admin/nhan-vien', $scope.nhanVien)
-            .then(function (response) {
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
-    // $scope.nhanVien = {};
+    $scope.nhanVien = {
+        gioiTinh: 1
+    };
+
+    $scope.chucVus = [
+        {id: 1, name: "Nhân viên"},
+        {id: 2, name: "Quản lý"}
+    ]
+
+    $scope.nhanVien.chucVu = $scope.chucVus.find(item => item.id === 1);
+
     $scope.change = function (input) {
         input.$dirty = true;
     }
+
     $scope.addNhanVien = function () {
         if ($scope.nhanVienForm.$invalid) {
             return;
         }
+
+        checkDiaChi();
+        if ($scope.error.diaChi) {
+            return;
+        }
+
+        $scope.nhanVien.chucVu = $scope.nhanVien.chucVu.id;
+        $scope.nhanVien.xa = $scope.nhanVien.xa.ten;
+        $scope.nhanVien.huyen = $scope.nhanVien.huyen.ten;
+        $scope.nhanVien.tinh = $scope.nhanVien.tinh.ten;
         console.log($scope.nhanVien);
         $http.post(host + '/rest/admin/nhan-vien', $scope.nhanVien)
             .then(function (response) {
@@ -49,11 +62,12 @@ app.controller("addNhanVienController", function ($scope, $http, $location, $win
                 $location.path("/list");
             })
             .catch(function (error) {
-                toastr["error"]("Thêm thất bại");
+                toastr["error"]("Thêm thất bại: " + error.data.data);
                 console.log(error)
-                if (error.status === 400) {
-                    $scope.errors = error.data;
-                }
+                $scope.nhanVien.chucVu = $scope.chucVus.find(item => item.id === $scope.nhanVien.chucVu);
+                $scope.nhanVien.xa = $scope.xas.find(item => item.ten === $scope.nhanVien.xa);
+                $scope.nhanVien.huyen = $scope.huyens.find(item => item.ten === $scope.nhanVien.huyen);
+                $scope.nhanVien.tinh = $scope.tinhs.find(item => item.ten === $scope.nhanVien.tinh);
             });
     }
 
@@ -61,23 +75,58 @@ app.controller("addNhanVienController", function ($scope, $http, $location, $win
         $window.location.href = '/admin/nhan-vien#/list';
     }
 
+    $scope.changeTinh = function () {
+        if ($scope.nhanVien.tinh && $scope.nhanVien.tinh.id) {
+            $http.get(host + "/rest/districts/" + $scope.nhanVien.tinh.id)
+                .then(response => {
+                    $scope.huyens = response.data;
+                    $scope.nhanVien.huyen = {};
+                    $scope.nhanVien.xa = {};
+                })
+                .catch(err => {
+                    toastr["error"]("Lấy thông tin địa chỉ thất bại");
+                });
+        }
+
+    }
+
+    $scope.changeHuyen = function () {
+        if ($scope.nhanVien.huyen && $scope.nhanVien.huyen.id) {
+            $http.get(host + "/rest/wards/" + $scope.nhanVien.huyen.id)
+                .then(response => {
+                    $scope.xas = response.data;
+                    $scope.nhanVien.xa = {};
+                })
+                .catch(err => {
+                    toastr["error"]("Lấy thông tin địa chỉ thất bại");
+                });
+        }
+    }
+
+    $scope.changeXa = function () {
+        $scope.error = {};
+    }
+
+    $http.get(host + "/rest/provinces/get-all")
+        .then(response => {
+            $scope.tinhs = response.data;
+        })
+        .catch(err => {
+            toastr["error"]("Lấy thông tin địa chỉ thất bại");
+        });
+
+    $scope.error = {};
+
+    function checkDiaChi() {
+        $scope.error = {};
+        if (!$scope.nhanVien.tinh.id || !$scope.nhanVien.huyen.id || !$scope.nhanVien.xa.id) {
+            $scope.error.diaChi = "Địa chỉ phải đầy đủ xã, huyện tỉnh";
+        } else {
+            $scope.error.diaChi = null;
+        }
+    }
+
 });
-// app.controller("indexController", function ($scope, $http, $location, $cookies, $window) {
-//     $http.get(host + '/rest/admin/nhan-vien/check-logged')
-//         .then(function (response) {
-//             if (response.status == 200) {
-//                 $scope.nhanVienLogged = response.data;
-//                 if ($scope.nhanVienLogged.chucVu == 2) {
-//                     $scope.chuCuaHangLogged = true;
-//                 } else if ($scope.nhanVienLogged.chucVu == 1) {
-//                     $scope.chuCuaHangLogged = false;
-//                 }
-//             }
-//         }).catch(function (error) {
-//         toastr["error"]("Không tìm thấy người dùng , vui lòng đăng nhập lại !");
-//         $window.location.href = '/admin/tong-quan#/home';
-//     });
-// });
 
 
 app.controller("detailNhanVienController", function ($scope, $http, $window, $location, $cookies) {
@@ -132,7 +181,7 @@ app.controller("detailNhanVienController", function ($scope, $http, $window, $lo
             tinh: $scope.nhanVien.tinh,
             ghiChu: $scope.nhanVien.ghiChu,
             role: 1,
-            updateAccount : updateAccount
+            updateAccount: updateAccount
         };
         console.log(nhanVienUpdate);
         $http.put(host + '/rest/admin/nhan-vien/' + nhanVienUpdate.id, nhanVienUpdate)
@@ -166,10 +215,10 @@ app.controller("nhanVienListController", function ($scope, $http, $window, $loca
 
 
     $scope.curPage = 1,
-        $scope.itemsPerPage = 3,
+        $scope.itemsPerPage = 5,
         $scope.maxSize = 5;
-    let searchText;
 
+    let searchText;
 
     $scope.search = function () {
         if (!$scope.searchText) {
@@ -186,35 +235,34 @@ app.controller("nhanVienListController", function ($scope, $http, $window, $loca
     }
 
     function getData(currentPage) {
+        $scope.isLoading = true;
         let apiUrl = host + '/rest/admin/nhan-vien?page=' + currentPage;
         if (searchText) {
             apiUrl += '&search=' + searchText;
         }
 
-        if ($scope.status == 0) {
+        if ($scope.status === 0) {
             apiUrl += '&status=' + 0;
-        } else if ($scope.status == 1) {
+        } else if ($scope.status === 1) {
             apiUrl += '&status=' + 1;
-        } else if ($scope.status == 2) {
-            apiUrl += '&chucVu=' + 1;
-        } else if ($scope.status == 3) {
-            apiUrl += '&chucVu=' + 2;
         }
 
-        console.log(apiUrl);
-        $scope.isLoading = true;
-        setTimeout(function () {
-            $http.get(apiUrl)
-                .then(function (response) {
-                    $scope.nhanViens = response.data.content;
-                    $scope.numOfPages = response.data.totalPages;
-                    $scope.isLoading = false;
-                })
-                .catch(function (error) {
-                    toastr["error"]("Lấy dữ liệu thất bại");
-                    // window.location.href = feHost + '/trang-chu';
-                });
-        }, 400);
+        $http.get(apiUrl)
+            .then(function (response) {
+                $scope.nhanViens = response.data.content;
+                $scope.numOfPages = response.data.totalPages;
+                $scope.isLoading = false;
+            })
+            .catch(function (error) {
+                toastr["error"]("Lấy dữ liệu thất bại");
+            });
+    }
+
+    $scope.resetSearch = function () {
+        searchText = null;
+        $scope.searchText = '';
+        $scope.status = -1;
+        getData(1);
     }
 
     $scope.detailNhanVien = function (val) {
@@ -222,7 +270,7 @@ app.controller("nhanVienListController", function ($scope, $http, $window, $loca
         console.log(id);
         if (!isNaN(id)) {
             $scope.nhanVienDetail = $scope.nhanViens.find(function (nhanVien) {
-                return nhanVien.id == id;
+                return nhanVien.id === id;
             });
         } else {
             toastr["error"]("Lấy dữ liệu thất bại");
@@ -232,18 +280,6 @@ app.controller("nhanVienListController", function ($scope, $http, $window, $loca
     $scope.$watch('curPage + numPerPage', function () {
         getData($scope.curPage);
     });
-
-    $scope.inBaoCao = function () {
-        $http.get(host + '/rest/admin/nhan-vien/send-report-daily').then(function (response) {
-            if (response.status == 200) {
-                toastr["success"]("In báo cáo thành công , vui lòng kiểm tra email");
-            }
-        }).catch(function (error) {
-            toastr["error"]("In không thành công , vui lòng liên hệ 0396189965");
-        });
-
-
-    }
 
 
 });
@@ -266,46 +302,108 @@ app.controller("updateNhanVienController", function ($scope, $http, $routeParams
         return result;
     }
 
+    $scope.chucVus = [
+        {id: 1, name: "Nhân viên"},
+        {id: 2, name: "Quản lý"}
+    ]
+
+    $scope.changeTinh = function () {
+        if ($scope.nhanVien.tinh && $scope.nhanVien.tinh.id) {
+            $http.get(host + "/rest/districts/" + $scope.nhanVien.tinh.id)
+                .then(response => {
+                    $scope.huyens = response.data;
+                    $scope.nhanVien.huyen = {};
+                    $scope.nhanVien.xa = {};
+                })
+                .catch(err => {
+                    toastr["error"]("Lấy thông tin địa chỉ thất bại");
+                });
+        }
+
+    }
+
+    $scope.changeHuyen = function () {
+        if ($scope.nhanVien.huyen && $scope.nhanVien.huyen.id) {
+            $http.get(host + "/rest/wards/" + $scope.nhanVien.huyen.id)
+                .then(response => {
+                    $scope.xas = response.data;
+                    $scope.nhanVien.xa = {};
+                })
+                .catch(err => {
+                    toastr["error"]("Lấy thông tin địa chỉ thất bại");
+                });
+        }
+    }
+
+    $scope.changeXa = function () {
+        $scope.error = {};
+    }
+
+    $http.get(host + "/rest/provinces/get-all")
+        .then(response => {
+            $scope.tinhs = response.data;
+        })
+        .catch(err => {
+            toastr["error"]("Lấy thông tin địa chỉ thất bại");
+        });
+
     const id = $routeParams.id;
     $scope.change = function (input) {
         input.$dirty = true;
     }
 
+    $scope.isLoading = true;
     $http.get(host + '/rest/admin/nhan-vien/' + id)
         .then(function (response) {
             var ngaySinh = new Date(response.data.ngaySinh);
             var nhanVienBefore = convertObjectToString(response.data);
             nhanVienBefore.ngaySinh = ngaySinh;
             $scope.nhanVien = nhanVienBefore;
-        }).catch(function (error) {
-        toastr["error"]("Lấy dữ liệu thất bại");
-        $location.path("/list");
-    });
+            $scope.nhanVien.chucVu = $scope.chucVus.find(item => item.id == $scope.nhanVien.chucVu);
+            $scope.nhanVien.trangThai = parseInt($scope.nhanVien.trangThai);
+
+            $http.get(host + "/rest/provinces/get-all")
+                .then(response => {
+                    $scope.tinhs = response.data;
+                    $scope.nhanVien.tinh = $scope.tinhs.find(item => item.ten === $scope.nhanVien.tinh);
+                    $http.get(host + "/rest/districts/" + $scope.nhanVien.tinh.id)
+                        .then(response => {
+                            $scope.huyens = response.data;
+                            $scope.nhanVien.huyen = $scope.huyens.find(item => item.ten === $scope.nhanVien.huyen);
+                            $http.get(host + "/rest/wards/" + $scope.nhanVien.huyen.id)
+                                .then(response => {
+                                    $scope.xas = response.data;
+                                    $scope.nhanVien.xa = $scope.xas.find(item => item.ten === $scope.nhanVien.xa);
+                                    $scope.isLoading = false;
+                                })
+                        })
+                })
+        })
+        .catch(function (error) {
+            toastr["error"]("Lấy dữ liệu thất bại");
+            $location.path("/list");
+            $scope.isLoading = false;
+        });
 
     $scope.updateNhanVien = function () {
         if ($scope.nhanVienForm.$invalid) {
             return;
         }
-        console.log($scope.nhanVien);
         const nhanVienUpdate = {
             id: $scope.nhanVien.id,
             hoTen: $scope.nhanVien.hoTen,
             gioiTinh: $scope.nhanVien.gioiTinh,
-            idTaiKhoan: $scope.nhanVien.taiKhoan.id,
-            tenDangNhap: $scope.nhanVien.taiKhoan.tenDangNhap,
-            matKhau: $scope.nhanVien.taiKhoan.matKhau,
             soDienThoai: $scope.nhanVien.soDienThoai,
-            email: $scope.nhanVien.email,
             trangThai: $scope.nhanVien.trangThai,
-            chucVu: $scope.nhanVien.chucVu,
+            chucVu: $scope.nhanVien.chucVu.id,
             ngaySinh: $scope.nhanVien.ngaySinh,
-            xa: $scope.nhanVien.xa,
-            huyen: $scope.nhanVien.huyen,
-            tinh: $scope.nhanVien.tinh,
             ghiChu: $scope.nhanVien.ghiChu,
-            role: 1
+            xa: $scope.nhanVien.xa.ten,
+            huyen: $scope.nhanVien.huyen.ten,
+            tinh: $scope.nhanVien.tinh.ten,
         };
         console.log(nhanVienUpdate);
+
         $http.put(host + '/rest/admin/nhan-vien/' + id, nhanVienUpdate)
             .then(function (response) {
                 if (response.status == 200) {
@@ -316,11 +414,61 @@ app.controller("updateNhanVienController", function ($scope, $http, $routeParams
                 $location.path("/list");
             }).catch(function (error) {
             console.log(error);
-            toastr["error"]("Tài khoản đang được sử dụng");
+            toastr["error"](error.data.data);
         })
     };
     $scope.backToNhanVienList = function () {
         $window.location.href = '/admin/nhan-vien#/list';
     }
+
 });
 
+
+app.directive('customSelect', function ($injector) {
+    return {
+        restrict: 'E', templateUrl: '/pages/admin/banhang/views/combobox.html', scope: {
+            id: '@', title: '@', items: '=', ngModel: '=', onChange: '&'
+        }, controller: function ($scope) {
+            $scope.isActive = false;
+
+            $scope.toggleDropdown = function () {
+                $scope.isActive = !$scope.isActive;
+            };
+
+            $scope.selectItem = function (item) {
+                $scope.ngModel = item;
+                $scope.selectedItem = item;
+                $scope.isActive = false;
+            };
+
+            $scope.$watch('ngModel', function (newNgModel, oldNgModel) {
+                if (!oldNgModel && newNgModel || newNgModel && newNgModel.id !== oldNgModel.id) {
+                    if ($scope.items) {
+                        var selectedItem = $scope.items.find((item) => item.id === newNgModel.id);
+                        if (selectedItem) {
+                            $scope.selectItem(selectedItem);
+                            $scope.onChange();
+                        }
+                        if (!newNgModel.id) {
+                            $scope.selectedItem = {};
+                        }
+                    }
+                }
+            }, true);
+
+            angular.element(document).on('click', function (event) {
+                var container = angular.element(document.querySelector('#' + $scope.id));
+                if (container.length > 0) {
+                    if (!container[0].contains(event.target)) {
+                        $scope.$apply(function () {
+                            $scope.isActive = false;
+                        });
+                    }
+                }
+            });
+
+
+        }
+    };
+
+});

@@ -43,7 +43,7 @@ public class AuthenticationRestController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup (@Valid @RequestBody KhachHangRequest requets)  {
-        return ResponseEntity.ok(khachHangService.addKhachHang(requets));
+        return ResponseEntity.ok(khachHangService.dangKyKhachHang(requets));
     }
 
     private ResponseEntity<?> getErrorJson(BindingResult result) {

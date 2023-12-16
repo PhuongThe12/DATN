@@ -1,10 +1,7 @@
 package luckystore.datn.model.request;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import luckystore.datn.entity.Districts;
 import luckystore.datn.entity.KhachHang;
 import luckystore.datn.entity.Provinces;
@@ -16,6 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString
 public class DiaChiNhanHangRequest {
 
     private Long id;
@@ -33,9 +31,13 @@ public class DiaChiNhanHangRequest {
 
     private KhachHang khachHang;
 
+    private Long idKhachHang;
+
     private String provinces;
 
     private String districts;
 
     private String wards;
+
+    private Boolean macDinh;
 }

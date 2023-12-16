@@ -32,6 +32,8 @@ public class TokenIntercreptor implements HandlerInterceptor {
         Map<String, Integer> permissionStaff = new HashMap<>();
         Map<String, Integer> permissionCustomer = new HashMap<>();
         permissionStaff.put("/admin/ban-hang", 1);
+        permissionStaff.put("/admin/hoa-don", 1);
+        permissionStaff.put("/admin/yeu-cau", 1);
         permissionCustomer.put("/home", 1);
 
         if (userRoles.contains("ROLE_STAFF") && permissionStaff.containsKey(requestUri)) {

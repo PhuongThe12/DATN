@@ -56,43 +56,46 @@ public interface BienTheGiayRepository extends JpaRepository<BienTheGiay, Long> 
     @Query("select bt from BienTheGiay bt where bt.id in :ids")
     List<BienTheGiay> getAllByIds(List<Long> ids);
 
+    @Query("select bt from BienTheGiay bt where bt.giay.id in :ids")
+    List<BienTheGiay> getAllByGiayIds(List<Long> ids);
+
     //top x biến thể giày bán chạy trong y ngày
-    @Query("select new luckystore.datn.model.response.BienTheGiayResponse(btg, g, ms, kt, count(hdc)) " +
+    @Query("select new luckystore.datn.model.response.BienTheGiayResponse(btg, g, ms, kt, sum(hdc.soLuong)) " +
             "from HoaDonChiTiet hdc " +
             "join hdc.bienTheGiay btg " +
             "join btg.giay g " +
             "join btg.mauSac ms " +
             "join btg.kichThuoc kt " +
             "join hdc.hoaDon hd " +
-            "where hd.trangThai = 5 and hd.ngayTao >= :targetDateTime " +
+            "where hd.trangThai = 1 and hd.ngayTao >= :targetDateTime " +
             "group by btg, g, ms, kt " +
-            "order by count(hdc) desc")
+            "order by sum(hdc.soLuong) desc")
     Page<BienTheGiayResponse> findTopSellingShoeVariantInLastDays(LocalDateTime targetDateTime, Pageable pageable);
 
     //Top x Biến Thể Giày Xuất Hiện Trong Giỏ Hàng
-    @Query("select new luckystore.datn.model.response.BienTheGiayResponse(btg, g, ms, kt, count(ghct)) " +
+    @Query("select new luckystore.datn.model.response.BienTheGiayResponse(btg, g, ms, kt, sum(ghct.soLuong)) " +
             "from GioHangChiTiet ghct " +
             "join ghct.bienTheGiay btg " +
             "join btg.giay g " +
             "join btg.mauSac ms " +
             "join btg.kichThuoc kt " +
             "group by btg, g, ms, kt " +
-            "order by count(ghct) desc")
+            "order by sum(ghct.soLuong) desc")
     Page<BienTheGiayResponse> findTopCartVariants(Pageable pageable);
 
     //Top x Biến Thể Giày có tỷ lệ đổi trả cao
     @Query("select new luckystore.datn.model.response.BienTheGiayResponse(" +
-            "btg, g,ms,kt, sum(hdct.soLuong), sum(hdct.soLuongTra)) " +
+            "btg, g,ms,kt, sum(hdct.soLuong), sum(hdct.soLuongTra),(sum(hdct.soLuongTra) * 1.0 / case when sum(hdct.soLuong) > 0 then sum(hdct.soLuong) else 1 end)*100) " +
             "from HoaDonChiTiet hdct " +
             "join hdct.bienTheGiay btg " +
             "join btg.giay g " +
             "join btg.mauSac ms " +
             "join btg.kichThuoc kt " +
             "join hdct.hoaDon hd " +
-            "where hd.trangThai = 5 " +
+            "where hd.trangThai = 1 " +
             "group by btg, g, ms, kt " +
-            "order by (sum(hdct.soLuongTra) * 1.0 / case when sum(hdct.soLuong) > 0 then sum(hdct.soLuong) else 1 end) desc")
-    Page<BienTheGiayResponse> findVariantReturnRates(Pageable pageable);
+            "order by (sum(hdct.soLuongTra) * 1.0 / case when sum(hdct.soLuong) > 0 then sum(hdct.soLuong) else 1 end)*100 desc")
+    Page<BienTheGiayResponse> findVariantHighReturnRates(Pageable pageable);
 
 
 

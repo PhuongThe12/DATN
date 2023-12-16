@@ -1,5 +1,6 @@
 package luckystore.datn.service.impl;
 
+import luckystore.datn.exception.InvalidIdException;
 import luckystore.datn.infrastructure.constraints.ErrorMessage;
 import luckystore.datn.entity.DiaChiNhanHang;
 import luckystore.datn.entity.KhachHang;
@@ -10,6 +11,7 @@ import luckystore.datn.model.response.DiaChiNhanHangResponse;
 import luckystore.datn.repository.DiaChiNhanHangRepository;
 import luckystore.datn.repository.KhachHangRepository;
 import luckystore.datn.service.DiaChiNhanHangService;
+import luckystore.datn.util.JsonString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,27 +34,56 @@ public class DiaChiNhanHangServiceImpl implements DiaChiNhanHangService {
     }
 
     @Override
+    public List<DiaChiNhanHangResponse> getPageByKhachHang(Long idKhachHang) {
+        return diaChiNhanHangRepo.getPageResponseByKhachHang(idKhachHang);
+    }
+
+    @Override
     public DiaChiNhanHangResponse addDiaChiNhanHang(DiaChiNhanHangRequest diaChiNhanHangRequest) {
-        List<DiaChiNhanHang> diaChiNhanHangList = diaChiNhanHangRepo.findByTrangThaiNot(0);
-        for (DiaChiNhanHang diaChi : diaChiNhanHangList) {
-            diaChi.setTrangThai(0); // hoặc cập nhật giá trị mong muốn
-            diaChiNhanHangRepo.save(diaChi);
+        DiaChiNhanHang diaChiNhanHang = new DiaChiNhanHang();
+        if (diaChiNhanHangRequest.getMacDinh() != null) {
+            List<DiaChiNhanHang> diaChiNhanHangList = diaChiNhanHangRepo.findByIdKhachHangAndTrangThaiZero(diaChiNhanHangRequest.getIdKhachHang());
+            for (DiaChiNhanHang diaChi : diaChiNhanHangList) {
+                diaChi.setTrangThai(0); // hoặc cập nhật giá trị mong muốn
+                diaChiNhanHangRepo.save(diaChi);
+            }
+            diaChiNhanHang = getDiaChiNhanHang(new DiaChiNhanHang(), diaChiNhanHangRequest);
+            if (diaChiNhanHangRequest.getIdKhachHang() != null) {
+                KhachHang khachHang = khachHangRepo.findById(diaChiNhanHangRequest.getIdKhachHang()).get();
+                diaChiNhanHang.setIdKhachHang(khachHang);
+            }
+            diaChiNhanHang.setTrangThai(1);
+        } else {
+            diaChiNhanHang = getDiaChiNhanHang(new DiaChiNhanHang(), diaChiNhanHangRequest);
+            if (diaChiNhanHangRequest.getIdKhachHang() != null) {
+                KhachHang khachHang = khachHangRepo.findById(diaChiNhanHangRequest.getIdKhachHang()).get();
+                diaChiNhanHang.setIdKhachHang(khachHang);
+            }
+
+            if (diaChiNhanHangRepo.findOneByIdKhachHang(diaChiNhanHang.getIdKhachHang().getId()) == null) {
+                diaChiNhanHang.setTrangThai(1);
+            } else {
+                diaChiNhanHang.setTrangThai(0);
+            }
         }
+
+
         if (diaChiNhanHangRequest == null) {
             throw new NullException();
         }
-        DiaChiNhanHang diaChiNhanHang = getDiaChiNhanHang(new DiaChiNhanHang(), diaChiNhanHangRequest);
-        diaChiNhanHang.setIdKhachHang(khachHangRepo.findIdKH(new KhachHang()));
-        diaChiNhanHang.setTrangThai(1);
+
+
         return new DiaChiNhanHangResponse(diaChiNhanHangRepo.save(diaChiNhanHang));
     }
 
     @Override
     public DiaChiNhanHangResponse updateTrangThaiDiaChiNhan(Long id, DiaChiNhanHangRequest diaChiNhanHangRequest) {
-        // Cập nhật tất cả các đối tượng khác có trạng thái khác nhau
-        List<DiaChiNhanHang> diaChiNhanHangList = diaChiNhanHangRepo.findByTrangThaiNot(0);
+
+        System.out.println(diaChiNhanHangRequest.toString());
+
+        List<DiaChiNhanHang> diaChiNhanHangList = diaChiNhanHangRepo.findByIdKhachHangAndTrangThaiZero(diaChiNhanHangRequest.getIdKhachHang());
         for (DiaChiNhanHang diaChi : diaChiNhanHangList) {
-            diaChi.setTrangThai(0); // hoặc cập nhật giá trị mong muốn
+            diaChi.setTrangThai(0);
             diaChiNhanHangRepo.save(diaChi);
         }
         if (id == null || diaChiNhanHangRequest == null) {
@@ -76,15 +107,14 @@ public class DiaChiNhanHangServiceImpl implements DiaChiNhanHangService {
 
     @Override
     public DiaChiNhanHangResponse updateDiaChiNhanHang(Long id, DiaChiNhanHangRequest diaChiNhanHangRequest) {
-
-        // Cập nhật tất cả các đối tượng khác có trạng thái khác nhau
+        System.out.println(diaChiNhanHangRequest.toString());
         DiaChiNhanHang diaChiNhanHangToUpdate = diaChiNhanHangRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND));
 
         // Cập nhật đối tượng cần
         diaChiNhanHangToUpdate = getDiaChiNhanHang(diaChiNhanHangToUpdate, diaChiNhanHangRequest);
-        // Lưu lại đối tượng cần
-        diaChiNhanHangToUpdate.setIdKhachHang(khachHangRepo.findIdKH(new KhachHang()));
+        KhachHang khachHang = khachHangRepo.findById(diaChiNhanHangRequest.getIdKhachHang()).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND));
+        diaChiNhanHangToUpdate.setIdKhachHang(khachHang);
         diaChiNhanHangRepo.save(diaChiNhanHangToUpdate);
 
         return new DiaChiNhanHangResponse(diaChiNhanHangToUpdate);
@@ -98,14 +128,23 @@ public class DiaChiNhanHangServiceImpl implements DiaChiNhanHangService {
     }
 
     @Override
-    public DiaChiNhanHangResponse findByIdKhachHang(Long id) {
+    public List<DiaChiNhanHangResponse> findByIdKhachHang(Long id) {
         return diaChiNhanHangRepo.findByIdKhachHang(id);
+    }
+
+    @Override
+    public DiaChiNhanHangResponse findOneByIdKhachHang(Long id) {
+        return diaChiNhanHangRepo.findOneByIdKhachHang(id);
     }
 
     @Override
     public void deleteDieuKien(Long id) {
         DiaChiNhanHang diaChiNhanHang = diaChiNhanHangRepo.findById(id).orElseThrow(() -> new RuntimeException());
-        diaChiNhanHangRepo.delete(diaChiNhanHang);
+        if (diaChiNhanHang.getTrangThai() != 1) {
+            diaChiNhanHangRepo.delete(diaChiNhanHang);
+        } else {
+            throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Địa chỉ đang là mặc định , không thể xóa !")));
+        }
     }
 
 
@@ -114,7 +153,7 @@ public class DiaChiNhanHangServiceImpl implements DiaChiNhanHangService {
         diaChiNhanHang.setHoTen(diaChiNhanHangRequest.getHoTen());
         diaChiNhanHang.setDiaChiNhan(diaChiNhanHangRequest.getDiaChiNhan());
         diaChiNhanHang.setSoDienThoaiNhan(diaChiNhanHangRequest.getSoDienThoaiNhan());
-        diaChiNhanHang.setIdKhachHang(diaChiNhanHangRequest.getKhachHang());
+//        diaChiNhanHang.setIdKhachHang(diaChiNhanHangRequest.getKhachHang());
         diaChiNhanHang.setDiaChiNhan(diaChiNhanHangRequest.getDiaChiNhan());
         diaChiNhanHang.setProvince(diaChiNhanHangRequest.getProvinces());
         diaChiNhanHang.setDistrict(diaChiNhanHangRequest.getDistricts());

@@ -49,6 +49,8 @@ public class YeuCauKhachHangServiceImpl implements YeuCauKhachHangService {
         List<YeuCauChiTiet> yeuCauChiTietList = new ArrayList<>();
         for (YeuCauChiTietRequest ycct: yeuCauRequest.getListYeuCauChiTiet()) {
             HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findById(ycct.getHoaDonChiTiet()).orElse(null);
+            hoaDonChiTiet.setSoLuongTra(hoaDonChiTiet.getSoLuongTra()+1);
+            hoaDonChiTietRepository.save(hoaDonChiTiet);
             LyDo lyDo = lyDoRepository.findById(ycct.getLyDo()).orElse(null);
             BienTheGiay bienTheGiayDoi = ycct.getBienTheGiay() == null ? null : bienTheGiayRepository.findById(ycct.getBienTheGiay()).orElse(null);
             YeuCauChiTiet yeuCauChiTiet = new YeuCauChiTiet(yeuCauSave,hoaDonChiTiet,bienTheGiayDoi,lyDo,ycct.getTienGiam(),ycct.getThanhTien(),ycct.getTrangThai(),ycct.getLoaiYeuCauChiTiet(),ycct.getTinhTrangSanPham(),ycct.getGhiChu());
@@ -56,5 +58,9 @@ public class YeuCauKhachHangServiceImpl implements YeuCauKhachHangService {
         }
         yeuCauSave.setListYeuCauChiTiet(yeuCauChiTietList);
         return new YeuCauResponse(yeuCauRepository.save(yeuCauSave));
+    }
+    @Override
+    public List<YeuCauResponse> getListYeuCau(Long idHoaDon) {
+        return yeuCauRepository.getListYeuCau(idHoaDon);
     }
 }

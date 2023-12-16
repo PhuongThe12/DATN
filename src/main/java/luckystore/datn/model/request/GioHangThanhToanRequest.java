@@ -57,6 +57,8 @@ public class GioHangThanhToanRequest {
 
     private BigDecimal tongTienThanhToan;
 
+    private BigDecimal tongTienSauKhuyenMai;
+
     private BigDecimal tongTienNoShip;
 
     private Set<BienTheGiayGioHangRequest> bienTheGiayRequests;

@@ -20,7 +20,7 @@ public class KhachHangRequest {
     private Long id;
 
     @NotNull(message = "Không được để trống tên")
-    @Length(message = "Tên không được vượt quá 50 ký tự")
+    @Length(message = "Tên không được vượt quá 100 ký tự", max = 100)
     private String hoTen;
 
     private Boolean gioiTinh;
@@ -31,9 +31,11 @@ public class KhachHangRequest {
 
     private String email;
 
-    private Integer diemTichLuy;
+    private String password;
 
-    private Integer trangThai;
+    private Integer diemTichLuy = 0;
+
+    private Integer trangThai = 1;
 
     private HangKhachHangRequest hangKhachHang;
 
