@@ -22,7 +22,6 @@ public class RestHoaDonKhachHangController {
     @Autowired
     HoaDonKhachHangService hoaDonKhachHangService;
 
-
     @PostMapping
     ResponseEntity<?> addHoaDon(@RequestBody GioHangThanhToanRequest gioHangThanhToanRequest) throws MessagingException {
         return new ResponseEntity(hoaDonKhachHangService.addHoaDon(gioHangThanhToanRequest), HttpStatus.OK);

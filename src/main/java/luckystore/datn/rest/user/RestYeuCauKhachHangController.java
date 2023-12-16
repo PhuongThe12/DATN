@@ -40,6 +40,18 @@ public class RestYeuCauKhachHangController {
         if (errorJson != null) return errorJson;
         return new ResponseEntity(yeuCauKhachHangService.addYeuCau(yeuCauRequest), HttpStatus.OK);
     }
+    @PutMapping("/update")
+    public ResponseEntity updateYeuCau(@Valid @RequestBody YeuCauRequest yeuCauRequest, BindingResult result) {
+        ResponseEntity errorJson = getErrorJson(result);
+        if (errorJson != null) return errorJson;
+        return new ResponseEntity(yeuCauKhachHangService.updateYeuCau(yeuCauRequest), HttpStatus.OK);
+    }
+    @PutMapping("/cancel")
+    public ResponseEntity cancelYeuCau(@Valid @RequestBody YeuCauRequest yeuCauRequest, BindingResult result) {
+        ResponseEntity errorJson = getErrorJson(result);
+        if (errorJson != null) return errorJson;
+        return new ResponseEntity(yeuCauKhachHangService.cancelYeuCau(yeuCauRequest), HttpStatus.OK);
+    }
 
     private ResponseEntity getErrorJson(BindingResult result) {
         if (result.hasErrors()) {

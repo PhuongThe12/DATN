@@ -50,7 +50,6 @@ public class RestNhanVienController {
 
     @PostMapping
     public ResponseEntity addNhanVien(@Valid @RequestBody NhanVienRequest nhanVienRequest, BindingResult result) {
-        System.out.println(nhanVienRequest.toString());
         ResponseEntity errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
