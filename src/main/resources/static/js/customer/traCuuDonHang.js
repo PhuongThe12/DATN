@@ -64,7 +64,7 @@ app.controller('traCuuDonHangController', function ($scope, $http, $location) {
                         }
                     });
                     $scope.hoaDonDetail.tongTru = $scope.hoaDonDetail.tienGiam ? $scope.hoaDonDetail.tienGiam : 0;
-                    $scope.hoaDonDetail.tienShip = $scope.hoaDonDetail.tienShip ? $scope.hoaDonDetail.tienShip : 0;
+                    $scope.hoaDonDetail.tienShip = $scope.hoaDonDetail.phiShip ? $scope.hoaDonDetail.phiShip : 0;
 
                     $scope.hoaDonDetail.tongCong = $scope.hoaDonDetail.conLai + $scope.hoaDonDetail.tongTru + $scope.hoaDonDetail.tienShip;
 

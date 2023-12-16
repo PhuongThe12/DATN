@@ -37,7 +37,6 @@ public class ImageHubServiceImpl implements ImageHubService {
             try {
                 return new String(Files.readAllBytes(Paths.get(filePath)));
             } catch (IOException e) {
-                e.printStackTrace();
                 return null;
             }
         }
@@ -134,11 +133,9 @@ public class ImageHubServiceImpl implements ImageHubService {
 
     @Override
     public String getImage(String filename) {
-        System.out.println("filename: " + filename);
         if (filename != null && !filename.isBlank()) {
             try {
                 Path imagePath = Paths.get(uploadDir, filename);
-                System.out.println("path: " + uploadDir + "/" + filename);
                 Resource resource = new UrlResource(imagePath.toUri());
 
                 if (resource.exists() && resource.isReadable()) {
@@ -147,7 +144,6 @@ public class ImageHubServiceImpl implements ImageHubService {
                     return "data:image/jpeg;base64," + base64Image;
                 }
             } catch (Exception e) {
-                e.printStackTrace();
             }
         }
         return null;

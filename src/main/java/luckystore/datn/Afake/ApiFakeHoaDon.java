@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -42,19 +43,6 @@ public class ApiFakeHoaDon {
     private final TaiKhoanRepository taiKhoanRepository;
 
     private final PasswordEncoder passwordEncoder;
-
-    @PostMapping("/check")
-    public ResponseEntity<?> check(@RequestBody TaiKhoan taiKhoan) {
-        TaiKhoan tk = taiKhoanRepository.findByEmail(taiKhoan.getTenDangNhap()).get();
-        System.out.println("TK: " + taiKhoan.getPassword() + ", " + tk.getPassword());
-        if(passwordEncoder.matches(taiKhoan.getPassword(), tk.getPassword())) {
-            System.out.println("Giống");
-        } else {
-            System.out.println("Khoogn giống");
-        }
-
-        return ResponseEntity.ok("");
-    }
 
     @PostMapping
     @Transactional
