@@ -71,6 +71,8 @@
                     <small class="error-message"
                            ng-show="(phieuGiamGiaForm.ngayBatDau.$dirty || phieuGiamGiaForm.ngayBatDau.$touched) && phieuGiamGiaForm.ngayBatDau.$error.required">Không
                         được để trống ngày bắt đầu</small>
+                    <small class="text-danger"
+                           ng-show="errors.ngayBatDau">{{errors.ngayBatDau}}</small>
                 </div>
 
                 <!--    Ngày kết thúc-->
@@ -81,6 +83,8 @@
                     <small class="error-message"
                            ng-show="(phieuGiamGiaForm.ngayKetThuc.$dirty || phieuGiamGiaForm.ngayKetThuc.$touched) && phieuGiamGiaForm.ngayKetThuc.$error.required">Không
                         được để trống ngày kết thúc</small>
+                    <small class="text-danger"
+                           ng-show="errors.ngayKetThuc">{{errors.ngayKetThuc}}</small>
                 </div>
 
                 <div class="col-md-4"></div>

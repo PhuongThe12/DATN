@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import luckystore.datn.entity.HangKhachHang;
 import luckystore.datn.entity.PhieuGiamGia;
 import luckystore.datn.exception.DuplicateException;
+import luckystore.datn.exception.InvalidIdException;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.exception.NullException;
 import luckystore.datn.exception.RestApiException;
@@ -97,7 +98,6 @@ public class PhieuGiamGiaServiceimpl implements PhieuGiamGiaService {
     private PhieuGiamGia getPhieuGiamGia(PhieuGiamGia phieuGiamGia, PhieuGiamGiaRequest request) {
 
         Optional<HangKhachHang> hangKhachHangCheck = hangKhachHangRepository.getHangKhachHangByTenHang(request.getHangKhachHang());
-        long currentSeconds = (System.currentTimeMillis() / 1000) * 1000;
         LocalDateTime currentTimes = LocalDateTime.now();
         phieuGiamGia.setMaGiamGia(request.getMaGiamGia());
         phieuGiamGia.setPhanTramGiam(request.getPhanTramGiam());
@@ -117,6 +117,15 @@ public class PhieuGiamGiaServiceimpl implements PhieuGiamGiaService {
         LocalDateTime localDateTimeCurr = LocalDateTime.ofInstant(currentInstant, ZoneId.of("UTC"));
         LocalDateTime localDateTimeNgayBatDau = LocalDateTime.ofInstant(ngayBdInstant, ZoneId.of("UTC"));
         LocalDateTime localDateTimeNgayKetThuc = LocalDateTime.ofInstant(ngayKtInstant, ZoneId.of("UTC"));
+
+        if (localDateTimeNgayBatDau.isBefore(localDateTimeCurr)) {
+            throw new RestApiException(JsonString.stringToJson(JsonString.errorToJsonObject
+                    ("ngayBatDau", "Ngày bắt đầu không được là ngày trong quá khứ!")));
+        }
+
+        if (request.getSoLuongPhieu() == 0) {
+
+        }
 
         if (localDateTimeCurr.isBefore(localDateTimeNgayKetThuc)) {
             phieuGiamGia.setTrangThai(0);

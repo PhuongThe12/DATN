@@ -151,6 +151,7 @@ app.controller("phieuGiamGiaListController", function ($scope, $http) {
 
     $scope.resetInputSearch = function () {
         maGiamGia = null;
+        $scope.hangKhachHang = null;
         $scope.maGiamGia = '';
         $scope.ngayBatDau = null;
         $scope.ngayKetThuc = null;

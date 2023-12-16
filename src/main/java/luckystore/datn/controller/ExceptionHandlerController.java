@@ -6,6 +6,7 @@ import luckystore.datn.exception.ExcelException;
 import luckystore.datn.exception.InvalidIdException;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.exception.NullException;
+import luckystore.datn.exception.RestApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -49,5 +50,10 @@ public class ExceptionHandlerController {
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<?> nullExceptionHandler(ConflictException exception) {
         return new ResponseEntity<>(exception.getData(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(RestApiException.class)
+    public ResponseEntity<?> restApiHandler(RestApiException exception) {
+        return new ResponseEntity<>(exception.getData(), HttpStatus.BAD_REQUEST);
     }
 }
