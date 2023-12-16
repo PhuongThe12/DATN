@@ -93,12 +93,10 @@ public class YeuCauKhachHangServiceImpl implements YeuCauKhachHangService {
                     .loaiYeuCauChiTiet(ycct.getLoaiYeuCauChiTiet())
                     .ghiChu(ycct.getGhiChu())
                     .build();
-            yeuCauChiTietList.add(yeuCauChiTiet);
+            yeuCauChiTietRepository.save(yeuCauChiTiet);
         }
-        yeuCauSave.setListYeuCauChiTiet(yeuCauChiTietList);
 
-//        return new YeuCauResponse(yeuCauRepository.save(yeuCauSave));
-        return null;
+        return new YeuCauResponse(yeuCauRepository.save(yeuCauSave));
     }
 
     @Override
