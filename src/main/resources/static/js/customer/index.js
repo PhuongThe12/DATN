@@ -1858,7 +1858,7 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
                     $scope.hoaDonThanhToan.tongTienSanPham = $scope.tongTienSanPham;
                     $scope.hoaDonThanhToan.tongTienSauKhuyenMai = $scope.tongTienSauKhuyenMai;
                     $scope.hoaDonThanhToan.phuongThuc = $scope.phuongThucThanhToan;
-                    console.log($scope.hoaDonThanhToan);
+
                     if ($scope.hoaDonThanhToan.tongTienThanhToan < 10001) {
                         toastr["error"]('Tiền thanh toán không được nhỏ hơn 10.000vnđ');
                         return;

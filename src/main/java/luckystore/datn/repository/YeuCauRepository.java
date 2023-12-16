@@ -41,4 +41,6 @@ public interface YeuCauRepository extends JpaRepository<YeuCau,Long> {
     @Query("select new luckystore.datn.model.response.YeuCauResponse(yc) from YeuCau yc  where yc.trangThai = 0")
     YeuCauResponse findResponseByStatus();
 
+    @Query("select new luckystore.datn.model.response.YeuCauResponse(yc) from YeuCau yc  where yc.id = :idYeuCau")
+    YeuCauResponse getOneYeuCau(Long idYeuCau);
 }
