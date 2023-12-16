@@ -397,7 +397,6 @@ public class YeuCauServiceIplm implements YeuCauService {
                 .ghiChu("Trả hàng nhanh - "+yeuCauRequest.getGhiChu())
                 .nguoiTao(nhanVien.getId())
                 .nguoiSua(nhanVien.getId())
-                .tienKhachTra(yeuCauRequest.getTienKhachTra())
                 .build();
 
         List<YeuCauChiTiet> listYeuCauChiTiet = new ArrayList<>();

@@ -940,9 +940,9 @@ app.controller("updateYeuCauKhachHangController", function ($scope, $http, $rout
         .then(function (response) {
             $scope.listYeuCauChiTietResponse = response.data;
             $scope.yeuCau = response.data[0].yeuCau;
-            console.log($scope.yeuCau)
             $scope.hoaDon = $scope.yeuCau.hoaDon;
             loadListYeuCau(response.data)
+            console.log($scope.listYeuCauChiTiet)
             getListLyDo();
             tinhTongTienHangTra();
             tinhTongTienHangDoi();
@@ -959,7 +959,6 @@ app.controller("updateYeuCauKhachHangController", function ($scope, $http, $rout
         listYeuCauChiTietResponse.forEach((item, index) => {
             let yeuCauChiTiet = item;
             let baseId = index + 1;
-
             $scope.traHang(baseId, yeuCauChiTiet);
         });
     }
