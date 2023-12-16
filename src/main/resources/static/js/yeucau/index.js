@@ -990,7 +990,7 @@ app.controller("selectedHoaDonController", function ($scope, $http, $location, $
     function getData(hoaDonSearch) {
         console.log(JSON.stringify(hoaDonSearch))
         $scope.isLoading = true;
-        $http.post(host + '/rest/admin/hoa-don/yeu-cau', JSON.stringify(hoaDonSearch))
+        $http.post(host + '/rest/user/hoa-don/yeu-cau', JSON.stringify(hoaDonSearch))
             .then(function (response) {
                 $scope.listHoaDon = response.data.content;
                 console.log( $scope.listHoaDon)

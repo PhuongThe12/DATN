@@ -165,6 +165,16 @@ public class KhachHangServiceImpl implements KhachHangService {
         return new KhachHangResponse(khachHangRepo.save(khachHang));
     }
 
+    @Override
+    public KhachHangResponse updateMotPhanKhachHang(Long id, KhachHangRequest khachHangRequest) {
+        KhachHang khachHang = khachHangRepo.findById(id).orElseThrow();
+        khachHang.setHoTen(khachHangRequest.getHoTen());
+        khachHang.setSoDienThoai(khachHangRequest.getSoDienThoai());
+        khachHang.setGioiTinh(khachHangRequest.getGioiTinh());
+        khachHang.setNgaySinh(khachHangRequest.getNgaySinh());
+        return new KhachHangResponse(khachHangRepo.save(khachHang));
+    }
+
     private KhachHang getKhachHang(KhachHang khachHang, KhachHangRequest khachHangRequest) {
         khachHang.setHoTen(khachHangRequest.getHoTen());
         khachHang.setGioiTinh(khachHangRequest.getGioiTinh());

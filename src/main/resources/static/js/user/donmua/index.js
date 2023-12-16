@@ -41,7 +41,6 @@ app.config(function ($routeProvider, $locationProvider) {
                     $scope.donMuas = response.data.content;
                     $scope.numOfPages = response.data.totalPages;
                     console.log($scope.donMuas)
-                    console.log("AAAAAAAAAA")
                 })
                 .catch(function (error) {
                     toastr["error"]("Lấy dữ liệu thất bại");
@@ -55,10 +54,10 @@ app.config(function ($routeProvider, $locationProvider) {
 
 app.controller("detailDonMuaController", function ($scope, $http, $window, $location,$routeParams) {
     const id = $routeParams.id;
-    console.log("aaaaaaaaaaaaaaaa")
     $http.get(host + '/rest/admin/hoa-don/' + id)
         .then(function (response) {
             $scope.hoaDon = response.data;
+            console.log($scope.hoaDon)
         }).catch(function (error) {
         toastr["error"]("Lấy dữ liệu thất bại");
         $location.path("/list");

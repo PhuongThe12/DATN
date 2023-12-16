@@ -2,10 +2,10 @@ package luckystore.datn.rest;
 
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
-import luckystore.datn.infrastructure.constraints.ErrorMessage;
-import luckystore.datn.infrastructure.constraints.SystemHistory;
 import luckystore.datn.entity.HoaDonChiTiet;
 import luckystore.datn.exception.NotFoundException;
+import luckystore.datn.infrastructure.constraints.ErrorMessage;
+import luckystore.datn.infrastructure.constraints.SystemHistory;
 import luckystore.datn.model.request.NhanVienRequest;
 import luckystore.datn.repository.HoaDonChiTietRepository;
 import luckystore.datn.service.NhanVienService;
@@ -17,7 +17,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +43,9 @@ public class RestNhanVienController {
     private HoaDonChiTietRepository hoaDonChiTietRepository;
 
     @GetMapping("/hdct/{id}")
-    public ResponseEntity getOne(@PathVariable Long id){
+    public ResponseEntity getOne(@PathVariable Long id) {
         HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findById(id).get();
-        return new ResponseEntity(hoaDonChiTiet,HttpStatus.OK);
+        return new ResponseEntity(hoaDonChiTiet, HttpStatus.OK);
     }
 
     @PostMapping
@@ -54,12 +61,12 @@ public class RestNhanVienController {
     public ResponseEntity updateNhanVien(@PathVariable("id") Long id,
                                          @Valid @RequestBody NhanVienRequest nhanVienRequest,
                                          BindingResult result) {
-        System.out.println(nhanVienRequest);
-        ResponseEntity errorJson = getErrorJson(result);
-        if (errorJson != null) return errorJson;
-        if ((nhanVienRequest.getId() == SystemHistory.nhanVien.getId()) && (nhanVienRequest.getUpdateAccount() == null)) {
-            return new ResponseEntity("Tài khoản đang được sử dụng, Vui lòng sử dụng 1 tài khoản khác để chỉnh sửa", HttpStatus.BAD_REQUEST);
-        }
+//        System.out.println(nhanVienRequest);
+//        ResponseEntity errorJson = getErrorJson(result);
+//        if (errorJson != null) return errorJson;
+//        if ((nhanVienRequest.getId() == SystemHistory.nhanVien.getId()) && (nhanVienRequest.getUpdateAccount() == null)) {
+//            return new ResponseEntity("Tài khoản đang được sử dụng, Vui lòng sử dụng 1 tài khoản khác để chỉnh sửa", HttpStatus.BAD_REQUEST);
+//        }
         return new ResponseEntity(nhanVienService.updateNhanVien(id, nhanVienRequest), HttpStatus.OK);
     }
 
@@ -72,8 +79,7 @@ public class RestNhanVienController {
     public ResponseEntity getNhanVienPage(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                           @RequestParam(value = "search", required = false) String searchText,
                                           @RequestParam(value = "status", required = false) Integer status,
-                                          @RequestParam(value = "chucVu", required = false) Integer chucVu) throws InterruptedException {
-//        Thread.sleep(2000); // Fake Lag - Tạm dừng 2s trước khi gọi đến DB
+                                          @RequestParam(value = "chucVu", required = false) Integer chucVu) {
         return new ResponseEntity(nhanVienService.getPage(page, searchText, status, chucVu), HttpStatus.OK);
     }
 

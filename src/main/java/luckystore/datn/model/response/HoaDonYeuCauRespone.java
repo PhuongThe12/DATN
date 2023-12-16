@@ -37,6 +37,12 @@ public class HoaDonYeuCauRespone {
     private Integer loaiHoaDon;
 
     private LocalDateTime ngayTao;
+
+    private LocalDateTime ngayShip;
+
+    private LocalDateTime ngayNhan;
+
+    private LocalDateTime ngayThanhToan;
     private String ghiChu;
 
     private String soDienThoaiNhan;
@@ -58,6 +64,9 @@ public class HoaDonYeuCauRespone {
         this.trangThai = hoaDon.getTrangThai();
         this.loaiHoaDon = hoaDon.getLoaiHoaDon();
         this.ngayTao = hoaDon.getNgayTao();
+        this.ngayShip = hoaDon.getNgayShip();
+        this.ngayNhan = hoaDon.getNgayNhan();
+        this.ngayThanhToan = hoaDon.getNgayThanhToan();
         this.ghiChu = hoaDon.getGhiChu();
         this.listHoaDonChiTiet = (hoaDon.getListHoaDonChiTiet().stream().map(HoaDonChiTietResponse::new).collect(Collectors.toList()));
         this.tongTienKhachThanhToan = tongTienKhachThanhToan((hoaDon.getChiTietThanhToans().stream().map(ChiTietThanhToanResponse::new).collect(Collectors.toList())));

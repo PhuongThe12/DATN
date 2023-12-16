@@ -54,10 +54,8 @@ public class NhanVienRequest {
 
     private Long idTaiKhoan;
 
-    @NotNull(message = "Không được để trống tên đăng nhập")
     private String tenDangNhap;
 
-    @NotNull(message = "Không được để trống mật khẩu")
     private String matKhau;
 
     private Role role;

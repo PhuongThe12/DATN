@@ -67,6 +67,7 @@ public class YeuCau {
             this.trangThai = yeuCauRequest.getTrangThai();
             this.ngayTao = ngayTao;
             this.ngaySua = ngaySua;
+            this.nguoiTao = yeuCauRequest.getNguoiTao();
             this.ghiChu = yeuCauRequest.getGhiChu();
             this.thongTinNhanHang = yeuCauRequest.getThongTinNhanHang();
             this.phiShip = yeuCauRequest.getPhiShip();
