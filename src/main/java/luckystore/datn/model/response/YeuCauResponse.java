@@ -62,6 +62,23 @@ public class YeuCauResponse {
         }
     }
 
+    public YeuCauResponse(YeuCau yeuCau, Long idYeuCauKhachHang){
+        if(yeuCau != null){
+            this.id = yeuCau.getId();
+            this.nguoiThucHien = yeuCau.getNguoiThucHien();
+            this.hoaDon = new HoaDonYeuCauRespone(yeuCau.getHoaDon(),"getAllYeuCau");
+            this.trangThai = yeuCau.getTrangThai();
+            this.thongTinNhanHang = yeuCau.getThongTinNhanHang();
+            this.phiShip = yeuCau.getPhiShip();
+            this.ngayTao = yeuCau.getNgayTao();
+            this.ngaySua = yeuCau.getNgaySua();
+            this.nguoiTao = yeuCau.getNguoiTao();
+            this.nguoiSua = yeuCau.getNguoiSua();
+            this.ghiChu = yeuCau.getGhiChu();
+            this.tienKhachTra = yeuCau.getTienKhachTra();
+        }
+    }
+
     public YeuCauResponse(YeuCau yeuCau,String getListYeuCauKhachHang){
         if(yeuCau != null){
             this.id = yeuCau.getId();

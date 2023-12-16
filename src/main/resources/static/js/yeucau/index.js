@@ -23,10 +23,11 @@ app.controller("yeuCauListController", function ($scope, $http, $window, $locati
 
     $scope.yeuCauSearch = {}, $scope.yeuCauSearch.pageSize = 5, $scope.textSearch = '', $scope.yeuCauSearch.pageSize = 6;
 
+    getAllLyDo();
+
     $scope.$watch('curPage + numPerPage', function () {
         $scope.yeuCauSearch.currentPage = $scope.curPage;
         getData($scope.yeuCauSearch);
-        getAllLyDo();
     });
 
 
@@ -268,6 +269,7 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
     $http.get(host + '/rest/admin/yeu-cau-chi-tiet/list/' + idYeuCau)
         .then(function (response) {
             $scope.listYeuCauChiTietResponse = response.data;
+            console.log($scope.listYeuCauChiTietResponse)
             $scope.yeuCau = response.data[0].yeuCau;
             $scope.hoaDon = $scope.yeuCau.hoaDon;
             getAllLyDo();
@@ -445,13 +447,14 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
         $scope.yeuCau.trangThai = 2;//trạng thái đã xác nhận
         $scope.yeuCau.hoaDon = $scope.hoaDon.id;
         $scope.yeuCau.listYeuCauChiTiet = listYeuCauChiTiet;
-
+        $scope.yeuCau.phiShip = $scope.phiVanChuyen;
         $http.put(host + '/rest/admin/yeu-cau/confirm', JSON.stringify($scope.yeuCau))
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Đã xác nhận yêu cầu!");
                 }
                 $location.path("/list");
+                isLoading = false;
             })
             .catch(function (error) {
                 toastr["error"]("Xác nhận yêu cầu thất bại!");
@@ -475,8 +478,8 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
             return yeuCauChiTietRequest;
         });
         $scope.yeuCau.listYeuCauChiTiet = listYeuCauChiTietUpdate;
-
-
+        $scope.yeuCau.hoaDon = $scope.hoaDon.id;
+        console.log( $scope.yeuCau)
 
         // Gửi yêu cầu POST đến máy chủ Spring Boot
         $http.put(host + '/rest/admin/yeu-cau/update', JSON.stringify($scope.yeuCau))
@@ -571,14 +574,14 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
         }
 
         if (yeuCau.nguoiTao) {
-            $http.get(host + '/rest/admin/nhan-vien/' + yeuCau.nguoiTao)
+            $http.get(host + '/rest/admin/khach-hang/' + yeuCau.nguoiTao)
                 .then(function (response) {
                     $scope.nguoiTao = response.data;
                     $scope.isLoading = false;
                 })
                 .catch(function (error) {
                     console.log(error)
-                    toastr["error"]("Không tìm thấy người sửa!");
+                    toastr["error"]("Không tìm thấy người tạo!");
                 });
         }
     }
@@ -804,7 +807,6 @@ app.controller("selectedHoaDonController", function ($scope, $http, $location, $
         $scope.hoaDonSearch.currentPage = $scope.curPage;
         getData($scope.hoaDonSearch);
         console.log($scope.hoaDonSearch)
-
     });
 
     $scope.searchHoaDon = function () {
@@ -914,8 +916,6 @@ app.controller("selectedHoaDonController", function ($scope, $http, $location, $
         }else if($scope.ngayBatDau && $scope.ngayKetThuc){
             $scope.hoaDonSearch.ngayBatDau = formatISOToJavaLocalDateTime($scope.ngayBatDau)
             $scope.hoaDonSearch.ngayKetThuc = formatISOToJavaLocalDateTime($scope.ngayKetThuc)
-            console.log( $scope.hoaDonSearch.ngayBatDau)
-            console.log( $scope.hoaDonSearch.ngayKetThuc)
             getData($scope.hoaDonSearch)
         }else {
             $scope.hoaDonSearch.ngayBatDau = null;
@@ -988,12 +988,10 @@ app.controller("selectedHoaDonController", function ($scope, $http, $location, $
 
 
     function getData(hoaDonSearch) {
-        console.log(JSON.stringify(hoaDonSearch))
         $scope.isLoading = true;
         $http.post(host + '/rest/user/hoa-don/yeu-cau', JSON.stringify(hoaDonSearch))
             .then(function (response) {
                 $scope.listHoaDon = response.data.content;
-                console.log( $scope.listHoaDon)
                 $scope.numOfPages = response.data.totalPages;
                 $scope.isLoading = false;
             })
