@@ -88,6 +88,7 @@ app.controller('thanhToanStatusController', function ($scope, $http, $location) 
 app.controller('navbarController', function ($rootScope, $scope, $http, $location, $cookies, $window) {
 
     $scope.khachHang = {};
+    $scope.userLogged = false;
     var token = $cookies.get('token');
     if (token) {
         $scope.userLogged = true;
@@ -1780,6 +1781,9 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
             .then(function (response) {
                 if ($scope.tongTien >= response.data.giaTriDonToiThieu && response.data.trangThai === 1 && response.data.soLuongPhieu > 0) {
                     var tongTienPhieuGiamGia = ($scope.tongTien * response.data.phanTramGiam) / 100;
+                    if(tongTienPhieuGiamGia > response.data.giaTriGiamToiDa){
+                        tongTienPhieuGiamGia = response.data.giaTriGiamToiDa;
+                    }
                     $scope.tongTienSauKhuyenMai = $scope.tongTien - $scope.tongKhuyenMaiHoaDon - $scope.tongKhuyenMaiTheoDot - tongTienPhieuGiamGia;
                     $scope.tongThanhToan = $scope.tongTienSauKhuyenMai + $scope.feeShippingPerOne;
                     if ($scope.tongTienSauKhuyenMai < 0) {
