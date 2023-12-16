@@ -9,23 +9,26 @@
 //         .otherwise({redirectTo: '/thong-tin-tai-khoan'});
 // });
 
-app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $location,$cookies) {
+app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $location, $cookies) {
 
     $scope.khachHang = {};
+    $scope.khachHangUpdatePassword = {};
+
     var token = $cookies.get('token');
     if (token) {
         $http.get(host + "/session/get-customer")
             .then(response => {
                 if (response.data !== null) {
                     $scope.khachHang = response.data;
+                    $scope.khachHang.ngaySinh = new Date($scope.khachHang.ngaySinh);
+
                     let apiUrl = host + '/rest/khach-hang/dia-chi-nhan-hang/khach-hang';
 
-                    apiUrl+= '?idKhachHang='+$scope.khachHang.id;
+                    apiUrl += '?idKhachHang=' + $scope.khachHang.id;
                     console.log(apiUrl);
                     $http.get(apiUrl)
                         .then(function (response) {
                             $scope.diaChiNhanHangs = response.data;
-                            console.log($scope.diaChiNhanHangs);
                         })
                         .catch(function (error) {
                             toastr["error"]("Lấy dữ liệu thất bại");
@@ -33,9 +36,83 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
                         });
                 }
             })
-    }else{
+    } else {
         $window.location.href = '/home';
     }
+
+    $scope.toggleShowPassUpdate = function (idDom) {
+        if (idDom === 'khachHangOldPassword') {
+            document.getElementById('khachHangOldPassword').type = $scope.khachHangUpdatePassword.showPassOld ? 'text' : 'password';
+        }
+        if (idDom === 'khachHangNewPassword') {
+            document.getElementById('khachHangNewPassword').type = $scope.khachHangUpdatePassword.showPassNew ? 'text' : 'password';
+        }
+        if (idDom === 'khachHangReNewPassword') {
+            document.getElementById('khachHangReNewPassword').type = $scope.khachHangUpdatePassword.showPassReNew ? 'text' : 'password';
+        }
+    }
+
+    $scope.errors = {};
+
+    $scope.changeOldPassword = function () {
+        if ($scope.khachHangUpdatePassword.oldPass === $scope.khachHangUpdatePassword.newPass && $scope.khachHangUpdatePassword.oldPass && $scope.khachHangUpdatePassword.newPass) {
+            $scope.errors.newPassword = 'Mật khẩu mới không được giống mật khẩu cũ';
+        } else {
+            $scope.errors.newPassword = null;
+        }
+    }
+
+    $scope.changeNewPassword = function () {
+        if ($scope.khachHangUpdatePassword.oldPass === $scope.khachHangUpdatePassword.newPass && $scope.khachHangUpdatePassword.oldPass && $scope.khachHangUpdatePassword.newPass) {
+            $scope.errors.newPassword = 'Mật khẩu mới không được giống mật khẩu cũ';
+        } else {
+            $scope.errors.newPassword = null;
+        }
+        if ($scope.khachHangUpdatePassword.renewPass !== $scope.khachHangUpdatePassword.newPass || !$scope.khachHangUpdatePassword.renewPass) {
+            $scope.errors.renewPassword = 'Mật khẩu không trùng khớp';
+        } else {
+            $scope.errors.renewPassword = null;
+            $scope.errors.newPassword = null;
+        }
+    }
+
+    $scope.changeRePassword = function () {
+        if ($scope.khachHangUpdatePassword.renewPass !== $scope.khachHangUpdatePassword.newPass || !$scope.khachHangUpdatePassword.renewPass) {
+            $scope.errors.renewPassword = 'Mật khẩu không trùng khớp';
+        } else {
+            $scope.errors.renewPassword = null;
+        }
+
+    }
+
+    $scope.updatePassword = function () {
+        if (!$scope.khachHangUpdatePassword.oldPass || !$scope.khachHangUpdatePassword.newPass || !$scope.khachHangUpdatePassword.renewPass) {
+            return;
+        }
+
+        if ($scope.khachHangUpdatePassword.oldPass === $scope.khachHangUpdatePassword.newPass) {
+            return;
+        }
+
+        if ($scope.khachHang.taiKhoan) {
+            $scope.isLoading = true;
+            $http.get(host + "/tai-khoan/thay-doi-mat-khau/" + $scope.khachHang.taiKhoan.id + "?mkCu=" + $scope.khachHangUpdatePassword.oldPass + "&mkMoi=" + $scope.khachHangUpdatePassword.newPass)
+                .then(response => {
+                    toastr["success"]("Thay đổi mật khẩu thành công");
+                    document.getElementById('closeModalUpdateMK').click();
+                    $scope.khachHangUpdatePassword = {};
+                    $scope.isLoading = false;
+                })
+                .catch(error => {
+                    toastr["error"]("Thay đổi mật khẩu thất bại vui lòng kiểm tra lại");
+                    $scope.isLoading = false;
+                })
+        } else {
+            toastr["warning"]("Vui lòng đăng nhập để thực hiện chứ năng này");
+        }
+
+    }
+
 
     // function getData() {
     //
@@ -54,11 +131,13 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
     //         });
     // }
 
+
     $scope.updateTrangThai = function (dieuKien) {
         console.log(dieuKien)
         $scope.trangThai = {
             "id": dieuKien,
-            "trangThai": 1
+            "trangThai": 1,
+            "idKhachHang": $scope.khachHang.id
         }
 
         $http({
@@ -80,26 +159,42 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
 
 
     $scope.removeDieuKien = function (dieuKien) {
-        $http({
-            method: 'DELETE',
-            url: 'http://localhost:8080/rest/khach-hang/dia-chi-nhan-hang/delete/' + dieuKien
 
-        }).then(function successCallback(response) {
-            // Xử lý khi API DELETE thành công
-            console.log('Xóa điều kiện giảm giá thành công', response);
-            loadDiaChi();
-        }, function errorCallback(response) {
-            // Xử lý khi có lỗi xảy ra trong quá trình gọi API DELETE
-            console.error('Lỗi xóa điều kiện giảm giá', response);
+        Swal.fire({
+            text: "Xác nhận xóa địa chỉ nhận hàng",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $http({
+                    method: 'DELETE',
+                    url: 'http://localhost:8080/rest/khach-hang/dia-chi-nhan-hang/delete/' + dieuKien
+
+                }).then(function successCallback(response) {
+                    // Xử lý khi API DELETE thành công
+                    console.log('Xóa điều kiện giảm giá thành công', response);
+                    loadDiaChi();
+                }, function errorCallback(response) {
+                    console.log(response);
+                    console.error('Lỗi xóa điều kiện giảm giá', response);
+                });
+                console.log("Điều kiện: ", dieuKien)
+
+            }
         });
-        console.log("Điều kiện: ", dieuKien)
+
+
     };
 
 
-    function loadDiaChi(){
+    function loadDiaChi() {
         let apiUrl = host + '/rest/khach-hang/dia-chi-nhan-hang/khach-hang';
 
-        apiUrl+= '?idKhachHang='+$scope.khachHang.id;
+        apiUrl += '?idKhachHang=' + $scope.khachHang.id;
         console.log(apiUrl);
         $http.get(apiUrl)
             .then(function (response) {
@@ -114,63 +209,54 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
 
 
     //hiển thị thông tin khách hàng lên modal
-    $scope.detailKhachHang = function (val) {
-        var id = val;
-        console.log("vào detail khách hàng" + "id khách hàng" + val)
-        $http.get(host + '/rest/admin/khach-hang/' + $scope.khachHang.id)
-            .then(function (response) {
-                $scope.khachHang = response.data;
-                var ngaySinh = $scope.khachHang.ngaySinh;
-                var object = new Date(ngaySinh);
-                $scope.khachHang.ngaySinh = object;
-                console.log("$scope.khachHangDetail ")
-                console.log($scope.khachHang)
-                const button = document.querySelector('[data-bs-target="#modalUpdateKhachHang"]');
-            })
-            .catch(function (error) {
-                toastr["error"]("Lấy dữ liệu thất bại");
-            });
+    $scope.detailKhachHang = function (khachHang) {
+        if (khachHang.id) {
+            console.log(khachHang);
+            $scope.khachHangUpdate = {};
+            $scope.khachHangUpdate.id = khachHang.id;
+            $scope.khachHangUpdate.gioiTinh = khachHang.gioiTinh;
+            $scope.khachHangUpdate.hoTen = khachHang.hoTen;
+            $scope.khachHangUpdate.ngaySinh = khachHang.ngaySinh;
+            $scope.khachHangUpdate.soDienThoai = khachHang.soDienThoai;
+        } else {
+            toastr["warning"]("Vui lòng đăng nhập để thực hiện chứ năng này");
+        }
     }
 
     // cập nhật thông tin khách hàng
     $scope.updateKhachHang = function () {
-        if ($scope.khachHangForm.$invalid) {
+        if ($scope.khachHangUpdateForm.$invalid) {
             return;
         }
+
         const khachHangUpdate = {
-            id: $scope.khachHang.id,
-            hoTen: $scope.khachHang.hoTen,
-            gioiTinh: $scope.khachHang.gioiTinh,
-            ngaySinh: $scope.khachHang.ngaySinh,
-            soDienThoai: $scope.khachHang.soDienThoai,
-            email: $scope.khachHang.email,
-            // diemTichLuy: $scope.khachHang.diemTichLuy,
-            // trangThai: $scope.khachHang.trangThai,
+            id: $scope.khachHangUpdate.id,
+            hoTen: $scope.khachHangUpdate.hoTen,
+            gioiTinh: $scope.khachHangUpdate.gioiTinh,
+            ngaySinh: $scope.khachHangUpdate.ngaySinh,
+            soDienThoai: $scope.khachHangUpdate.soDienThoai
 
         };
-        console.log($scope.khachHang);
-        $http.put(host + '/rest/admin/khach-hang/' + $scope.khachHang.id, khachHangUpdate)
+
+        $scope.isLoading = true;
+        $http.put(host + '/rest/admin/khach-hang/cap-nhat-mot-phan/' + khachHangUpdate.id, khachHangUpdate)
             .then(function (response) {
-                if (response.status == 200) {
+                if (response.status === 200) {
                     toastr["success"]("Cập nhật thành công")
-                    $('#modalUpdateKhachHang').modal('hide');
-                    getData(1)
+                    $scope.khachHang.hoTen = response.data.hoTen;
+                    $scope.khachHang.gioTinh = response.data.gioiTinh;
+                    $scope.khachHang.ngaySinh = new Date(response.data.ngaySinh);
+                    $scope.khachHang.soDienThoai = response.data.soDienThoai;
+                    document.getElementById('closeModalUpdateKhachhang').click();
                 } else {
                     toastr["error"]("Cập nhât thất bại. Lỗi bất định")
                 }
-                $location.path("/list");
-            }).catch(function (error) {
-            console.log(error);
-            toastr["error"]("Cập nhật thất bại");
-            if (error.status === 400) {
-                $scope.khachHangForm.hoTen.$dirty = false;
-                $scope.khachHangForm.gioiTinh.$dirty = false;
-                $scope.khachHangForm.ngaySinh.$dirty = false;
-                $scope.khachHangForm.soDienThoai.$dirty = false;
-                $scope.khachHangForm.email.$dirty = false;
-                $scope.errors = error.data;
-            }
-        })
+                $scope.isLoading = false;
+            })
+            .catch(function (error) {
+                toastr["error"]("Cập nhật thất bại vui lòng thử lại");
+                $scope.isLoading = false;
+            })
     };
     //
 
@@ -178,6 +264,7 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
     $http.get(host + "/rest/provinces/get-all")
         .then(function (response) {
             $scope.provinces = response.data;
+
         })
         .catch(function (error) {
             toastr["error"]("Lấy dữ liệu tỉnh thất bại");
@@ -189,6 +276,7 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
         $http.get(host + "/rest/districts/" + $scope.diaChiNhanHang.provinces.id)
             .then(function (response) {
                 $scope.districts = response.data;
+                $scope.wards = [];
                 // console.log($scope.diaChiNhanHang.provinces)
             })
             .catch(function (error) {
@@ -216,11 +304,11 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
         console.log("vào update")
         console.log(id)
 
-        $http.get(host + '/rest/khach-hang/dia-chi-nhan-hang/' + $scope.khachHang.id)
+        $http.get(host + '/rest/khach-hang/dia-chi-nhan-hang/' + id)
 
             .then(function (response) {
                 $scope.diaChiNhanHang = response.data;
-                console.log("show dia chi:", $scope.diaChiNhanHang)
+
                 setData();
                 $('#modalDiaChi').modal('show');
             })
@@ -240,27 +328,29 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
                 hoTen: $scope.diaChiNhanHang.hoTen,
                 provinces: $scope.diaChiNhanHang.provinces.ten,
                 districts: $scope.diaChiNhanHang.districts.ten,
-                wards: $scope.diaChiNhanHang.wards.ten
+                wards: $scope.diaChiNhanHang.wards.ten,
+                idKhachHang: $scope.khachHang.id
 
 
             };
             // $scope.diaChiNhanHang.districts = $scope.diaChiNhanHang.districts.ten;
             // $scope.diaChiNhanHang.provinces = $scope.diaChiNhanHang.provinces.ten;
             // $scope.diaChiNhanHang.wards = $scope.diaChiNhanHang.wards.ten;
+            console.log(diaChiNhanHangUpdate);
 
-            $http.put(host + '/rest/khach-hang/dia-chi-nhan-hang/' + $scope.khachHang.id, diaChiNhanHangUpdate)
+            $http.put(host + '/rest/khach-hang/dia-chi-nhan-hang/' + id, diaChiNhanHangUpdate)
 
                 .then(function (response) {
                     if (response.status == 200) {
                         toastr["success"]("Cập nhật thành công")
                         $('#modalDiaChi').modal('hide');
+                        $('#modalDanhSachDiaChi').modal('show');
                         console.log("thông tin sau cập nhập")
                         console.log(diaChiNhanHangUpdate)
                         loadDiaChi();
                     } else {
                         toastr["error"]("Cập nhât thất bại. Lỗi bất định")
                     }
-                    $location.path("/list");
                 }).catch(function (error) {
                 toastr["error"]("Cập nhật thất bại");
                 if (error.status === 400) {
@@ -327,6 +417,11 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
             $scope.diaChiNhanHang.provinces = $scope.diaChiNhanHang.provinces.ten;
             $scope.diaChiNhanHang.wards = $scope.diaChiNhanHang.wards.ten;
             $scope.diaChiNhanHang.idKhachHang = $scope.khachHang.id;
+            if ($scope.diaChiNhanHang.macDinh) {
+                $scope.diaChiNhanHang.macDinh = $scope.diaChiNhanHang.macDinh;
+            } else {
+                $scope.diaChiNhanHang.macDinh = null;
+            }
 
             console.log($scope.diaChiNhanHang);
             $http.post(host + '/rest/khach-hang/dia-chi-nhan-hang', $scope.diaChiNhanHang)
@@ -335,6 +430,7 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
                         toastr["success"]("Thêm thành công");
                         $('#modalThemDiaChi').modal('hide');
                         loadDiaChi();
+                        $('#modalDanhSachDiaChi').modal('show');
                     }
                 })
                 .catch(function (error) {

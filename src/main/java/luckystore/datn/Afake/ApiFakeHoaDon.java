@@ -7,8 +7,12 @@ import luckystore.datn.entity.HoaDon;
 import luckystore.datn.entity.HoaDonChiTiet;
 import luckystore.datn.entity.KhachHang;
 import luckystore.datn.entity.NhanVien;
+import luckystore.datn.entity.TaiKhoan;
 import luckystore.datn.repository.BienTheGiayRepository;
 import luckystore.datn.repository.HoaDonRepository;
+import luckystore.datn.repository.TaiKhoanRepository;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,6 +38,23 @@ public class ApiFakeHoaDon {
     private final HoaDonRepository hoaDonRepository;
 
     private final BienTheGiayRepository bienTheGiayRepository;
+
+    private final TaiKhoanRepository taiKhoanRepository;
+
+    private final PasswordEncoder passwordEncoder;
+
+    @PostMapping("/check")
+    public ResponseEntity<?> check(@RequestBody TaiKhoan taiKhoan) {
+        TaiKhoan tk = taiKhoanRepository.findByEmail(taiKhoan.getTenDangNhap()).get();
+        System.out.println("TK: " + taiKhoan.getPassword() + ", " + tk.getPassword());
+        if(passwordEncoder.matches(taiKhoan.getPassword(), tk.getPassword())) {
+            System.out.println("Giống");
+        } else {
+            System.out.println("Khoogn giống");
+        }
+
+        return ResponseEntity.ok("");
+    }
 
     @PostMapping
     @Transactional
@@ -78,10 +99,10 @@ public class ApiFakeHoaDon {
             BigDecimal tongTien = BigDecimal.ZERO;
             Set<HoaDonChiTiet> hoaDonChiTiets = new HashSet<>();
 
-            for (int j = 0; j < soLuong; j++) {
+            for (int j = 0; j < 4 && j < soLuong; j++) {
                 HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
-                hoaDonChiTiet.setDonGia(lstBienTheGiay.get(i).getGiaBan());
-                hoaDonChiTiet.setBienTheGiay(lstBienTheGiay.get(i));
+                hoaDonChiTiet.setDonGia(lstBienTheGiay.get(j).getGiaBan());
+                hoaDonChiTiet.setBienTheGiay(lstBienTheGiay.get(j));
                 hoaDonChiTiet.setTrangThai(1);
                 hoaDonChiTiet.setSoLuong(random.nextInt(5) + 1);
                 hoaDonChiTiet.setHoaDon(hoaDon);

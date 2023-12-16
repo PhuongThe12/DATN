@@ -41,6 +41,7 @@ public class RestYeuCauController {
     public ResponseEntity<?> getYeuCau(@PathVariable("id") Long id) {
         return new ResponseEntity<>(yeuCauService.getOneHoaDonYeuCauRespone(id), HttpStatus.OK);
     }
+
     @PostMapping("/add")
     public ResponseEntity addYeuCau(@Valid @RequestBody YeuCauRequest yeuCauRequest, BindingResult result) {
         ResponseEntity errorJson = getErrorJson(result);

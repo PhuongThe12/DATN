@@ -11,10 +11,10 @@ app.config(function ($routeProvider, $locationProvider) {
 
 app.controller("homeController", function ($scope, $http, $location, $cookies, $rootScope) {
 
-    // $http.get(host + "/session/get-staff")
-    //     .then(response => {
-    //         console.log(response.data);
-    //     })
+    $http.get(host + "/session/get-staff")
+        .then(response => {
+            console.log(response.data);
+        })
 
     document.title = 'Bán hàng';
     $scope.curPage = 1, $scope.itemsPerPage = 12, $scope.maxSize = 5;

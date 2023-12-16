@@ -18,6 +18,7 @@ import luckystore.datn.util.JsonString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,6 +32,9 @@ public class NhanVienServiceImpl implements NhanVienService {
 
     @Autowired
     private TaiKhoanRepository taiKhoanRepo;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public List<NhanVienResponse> getAll() {
@@ -47,25 +51,26 @@ public class NhanVienServiceImpl implements NhanVienService {
     public NhanVienResponse addNhanVien(NhanVienRequest nhanVienRequest) {
         checkWhenInsertTaiKhoan(nhanVienRequest);
         checkWhenInsert(nhanVienRequest);
+ 
+        NhanVien nhanVien = new NhanVien();
+
         TaiKhoan taiKhoan = new TaiKhoan();
-        taiKhoan.setTenDangNhap(nhanVienRequest.getTenDangNhap());
-        taiKhoan.setMatKhau(nhanVienRequest.getMatKhau());
+        taiKhoan.setTenDangNhap(nhanVienRequest.getEmail());
+        taiKhoan.setMatKhau(passwordEncoder.encode(nhanVienRequest.getMatKhau()));
         taiKhoan.setTrangThai(1);
-        taiKhoan.setRole(Role.ROLE_STAFF);
-        NhanVien nhanVien = getNhanVien(new NhanVien(), nhanVienRequest);
-        nhanVien.setTaiKhoan(taiKhoanRepo.save(taiKhoan));
-        if (SystemHistory.nhanVien == null) {
-            SystemHistoryLogger.writeSystemHistoryEntry(new SystemHistoryEntry("Guest", SystemHistory.ADD_NV, "" + SystemHistoryLogger.getDateNow()));
-        } else {
-            SystemHistoryLogger.writeSystemHistoryEntry(new SystemHistoryEntry(SystemHistory.nhanVien.getTaiKhoan().getTenDangNhap(), SystemHistory.ADD_NV, "" + SystemHistoryLogger.getDateNow()));
-        }
+        getNhanVien(nhanVien, nhanVienRequest);
+
+        taiKhoan.setRole(nhanVien.getChucVu() == 2? Role.ROLE_ADMIN : Role.ROLE_STAFF);
+
+        taiKhoan = taiKhoanRepo.save(taiKhoan);
+        nhanVien.setTaiKhoan(taiKhoan);
+
         return new NhanVienResponse(nhanVienRepo.save(nhanVien));
     }
 
     @Override
     public NhanVienResponse updateNhanVien(Long id, NhanVienRequest nhanVienRequest) {
-        checkWhenUpdateSoDienThoai(nhanVienRequest);
-        checkWhenUpdateEmail(nhanVienRequest);
+        checkWhenUpdateSoDienThoai(id, nhanVienRequest);
         NhanVien nhanVien;
         if (id == null) {
             throw new NullException();
@@ -73,22 +78,19 @@ public class NhanVienServiceImpl implements NhanVienService {
             nhanVien = nhanVienRepo.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND));
         }
 
-        TaiKhoan taiKhoan = new TaiKhoan();
-        taiKhoan.setId(nhanVienRequest.getIdTaiKhoan());
-        taiKhoan.setTenDangNhap(nhanVienRequest.getTenDangNhap());
-        taiKhoan.setMatKhau(nhanVienRequest.getMatKhau());
-        taiKhoan.setTrangThai(1);
-        taiKhoan.setRole(nhanVienRequest.getRole());
-        nhanVien.setTaiKhoan(taiKhoanRepo.save(taiKhoan));
-        nhanVien = getNhanVien(nhanVien, nhanVienRequest);
-        if (SystemHistory.nhanVien == null) {
-            SystemHistoryLogger.writeSystemHistoryEntry(new SystemHistoryEntry("Guest", SystemHistory.UPDATE_NV, "" + SystemHistoryLogger.getDateNow()));
-        } else if (nhanVienRequest.getUpdateAccount() != null) {
-            SystemHistoryLogger.writeSystemHistoryEntry(new SystemHistoryEntry(SystemHistory.nhanVien.getTaiKhoan().getTenDangNhap(), SystemHistory.UPDATE_ACCOUNT_INFO, "" + SystemHistoryLogger.getDateNow()));
-        } else {
-            SystemHistoryLogger.writeSystemHistoryEntry(new SystemHistoryEntry(SystemHistory.nhanVien.getTaiKhoan().getTenDangNhap(), SystemHistory.UPDATE_NV, "" + SystemHistoryLogger.getDateNow()));
+        nhanVien.setHoTen(nhanVienRequest.getHoTen());
+        nhanVien.setGioiTinh(nhanVienRequest.getGioiTinh());
+        nhanVien.setNgaySinh(nhanVienRequest.getNgaySinh());
+        nhanVien.setSoDienThoai(nhanVienRequest.getSoDienThoai());
+        nhanVien.setGhiChu(nhanVienRequest.getGhiChu());
+        nhanVien.setTrangThai(nhanVienRequest.getTrangThai());
+        nhanVien.setXa(nhanVienRequest.getXa());
+        nhanVien.setHuyen(nhanVienRequest.getHuyen());
+        nhanVien.setTinh(nhanVienRequest.getTinh());
+        nhanVien.setChucVu(nhanVienRequest.getChucVu());
 
-        }
+        TaiKhoan taiKhoan = nhanVien.getTaiKhoan();
+        taiKhoan.setTrangThai(nhanVienRequest.getTrangThai());
 
         return new NhanVienResponse(nhanVienRepo.save(nhanVien));
     }
@@ -130,36 +132,27 @@ public class NhanVienServiceImpl implements NhanVienService {
 
     private void checkWhenInsert(NhanVienRequest nhanVienRequest) {
         if (nhanVienRepo.existsBySoDienThoai(nhanVienRequest.getSoDienThoai())) {
-            String errorObject = JsonString.errorToJsonObject("soDienThoai", "Số điện thoại đã tồn tại");
+            String errorObject = JsonString.errorToJsonObject("data", "Số điện thoại đã tồn tại");
             throw new DuplicateException(JsonString.stringToJson(errorObject));
         } else if (nhanVienRepo.existsByEmail(nhanVienRequest.getEmail())) {
-            String errorObject = JsonString.errorToJsonObject("email", "Email đã tồn tại");
+            String errorObject = JsonString.errorToJsonObject("data", "Email đã tồn tại");
             throw new DuplicateException(JsonString.stringToJson(errorObject));
         }
     }
 
     private void checkWhenInsertTaiKhoan(NhanVienRequest nhanVienRequest) {
-        if (taiKhoanRepo.existsByTenDangNhap(nhanVienRequest.getTenDangNhap())) {
-            String errorObject = JsonString.errorToJsonObject("tenDangNhap", "Tài Khoản đã tồn tại");
+        if (taiKhoanRepo.existsByTenDangNhap(nhanVienRequest.getEmail())) {
+            String errorObject = JsonString.errorToJsonObject("data", "Email đã tồn tại");
             throw new DuplicateException(JsonString.stringToJson(errorObject));
         }
     }
 
-    private void checkWhenUpdateSoDienThoai(NhanVienRequest nhanVienRequest) {
-        NhanVien nhanVien = nhanVienRepo.findNhanVienBySoDienThoai(nhanVienRequest.getSoDienThoai());
+    private void checkWhenUpdateSoDienThoai(Long id, NhanVienRequest nhanVienRequest) {
         String errorObject = "";
-        if (nhanVien != null && !Objects.equals(nhanVien.getId(), nhanVienRequest.getId())) {
-            errorObject = JsonString.errorToJsonObject("soDienThoai", "Số điện thoại đã tồn tại");
+        if (nhanVienRepo.existsBySoDienThoaiAndIdNot(id, nhanVienRequest.getSoDienThoai())) {
+            errorObject = JsonString.errorToJsonObject("data", "Số điện thoại đã tồn tại");
             throw new DuplicateException(JsonString.stringToJson(errorObject));
         }
     }
 
-    private void checkWhenUpdateEmail(NhanVienRequest nhanVienRequest) {
-        NhanVien nhanVien = nhanVienRepo.findNhanVienByEmail(nhanVienRequest.getEmail());
-        String errorObject = "";
-        if (nhanVien != null && !Objects.equals(nhanVien.getId(), nhanVienRequest.getId())) {
-            errorObject = JsonString.errorToJsonObject("email", "Email đã tồn tại");
-            throw new DuplicateException(JsonString.stringToJson(errorObject));
-        }
-    }
 }

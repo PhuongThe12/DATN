@@ -106,7 +106,7 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
     @Query("select hd from HoaDon hd where hd.hoaDonGoc = :id")
     List<HoaDon> getHoaDonDoiTra(Long id);
 
-    @Query("select hd.id from HoaDon hd where hd.trangThai = 0 and hd.ngayThanhToan < :current ")
+    @Query("select hd.id from HoaDon hd where hd.trangThai = 0 and hd.ngayThanhToan < :current")
     List<Long> getHoadonChuaHoanThanh(LocalDateTime current);
 
 
