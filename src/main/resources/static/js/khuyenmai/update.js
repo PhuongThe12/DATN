@@ -79,6 +79,7 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
             })
             .catch(function (error) {
                 toastr["error"]("Lấy dữ liệu thất bại");
+                $location.path("/list");
                 $scope.loading = false;
             });
     };
@@ -364,6 +365,7 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
                                 const index = $scope.selectedGiayTableData.findIndex(item => item.id === id);
                                 if (index !== -1) {
                                     $scope.selectedGiayTableData.splice(index, 1);
+                                    $scope.selectedGiay.filter(item => item.id !== id);
                                 }
 
                             })
@@ -393,7 +395,8 @@ app.controller("updateKhuyenMaiController", function ($scope, $http, $location, 
         angular.forEach($scope.selectedGiayTableData, function (giay) {
             angular.forEach(giay.lstBienTheGiay, function (bienTheGiay) {
                 if (giay.selected) {
-                    bienTheGiay.phanTramGiam = giamPhanTram
+                    bienTheGiay.phanTramGiam = giamPhanTram;
+                    bienTheGiay.errors = null;
                 }
             });
         })

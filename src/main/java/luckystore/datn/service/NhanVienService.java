@@ -23,4 +23,6 @@ public interface NhanVienService {
     NhanVienResponse findNhanVienByIdTaiKhoan(Long id);
 
     List<SystemHistoryEntry> getLogger();
+
+    void resetPassword(Long id);
 }
