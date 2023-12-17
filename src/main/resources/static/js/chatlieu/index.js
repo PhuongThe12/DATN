@@ -1,4 +1,4 @@
-const app = angular.module("app", ["ngRoute", "ui.bootstrap"]);
+const app = angular.module("app", ["ngRoute", "ui.bootstrap","ngCookies"]);
 app.config(function ($routeProvider, $locationProvider) {
     $locationProvider.hashPrefix('');
     $routeProvider
