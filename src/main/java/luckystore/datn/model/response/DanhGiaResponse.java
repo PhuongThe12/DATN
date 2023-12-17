@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import luckystore.datn.entity.DanhGia;
+import luckystore.datn.entity.KhachHang;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -42,6 +43,18 @@ public class DanhGiaResponse {
             this.giayResponse = new GiayResponse(danhGia.getGiay());
             this.khachHangResponse = new KhachHangResponse(danhGia.getKhachHang());
         }
+    }
+
+    public DanhGiaResponse(Long id, Integer saoDanhGia, String binhLuan, Integer trangThai, Date thoiGian,
+                           Date ngayTao, Long idGiay, String ten, String thumbnail, KhachHang khachHang) {
+        this.id = id;
+        this.saoDanhGia = saoDanhGia;
+        this.binhLuan = binhLuan;
+        this.trangThai = trangThai;
+        this.thoiGian = thoiGian;
+        this.ngayTao = ngayTao;
+        this.giayResponse = new GiayResponse(idGiay, ten, thumbnail);
+        this.khachHangResponse = new KhachHangResponse(khachHang);
     }
 
 }

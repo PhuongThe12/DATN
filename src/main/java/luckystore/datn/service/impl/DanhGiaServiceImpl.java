@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
+import java.util.List;
 
 @Service
 public class DanhGiaServiceImpl implements DanhGiaService {
@@ -62,6 +63,16 @@ public class DanhGiaServiceImpl implements DanhGiaService {
         danhGia.setNgayTao(ngayHienTai);
         danhGia.setThoiGian(ngayHienTai);
         return new DanhGiaResponse(danhGiaRepository.save(danhGia));
+    }
+
+    @Override
+    public DanhGiaResponse findByIdKhAndIdGiay(Long idKhachHang, Long idGiay) {
+        return danhGiaRepository.findByIdKhAndIdGiay(idKhachHang,idGiay);
+    }
+
+    @Override
+    public List<DanhGiaResponse> getAllByIdKhachHang(Long idKhachHang) {
+        return danhGiaRepository.findByIdKhachHang(idKhachHang);
     }
 
     private void checkWhenInsert(DanhGiaRequest danhGiaRequest) {
