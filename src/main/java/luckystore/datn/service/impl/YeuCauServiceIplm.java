@@ -142,7 +142,7 @@ public class YeuCauServiceIplm implements YeuCauService {
     }
 
 
-    private void taoHoaDon(YeuCau yeuCau, List<YeuCauChiTiet> listYeuCauChiTiet) {
+    private HoaDon taoHoaDon(YeuCau yeuCau, List<YeuCauChiTiet> listYeuCauChiTiet) {
         HoaDon hoaDon = yeuCau.getHoaDon();
         KhachHang khachHang = hoaDon.getKhachHang();
 
@@ -151,9 +151,11 @@ public class YeuCauServiceIplm implements YeuCauService {
         NhanVien nhanVien = nguoiTao != null ? nhanVienRepository.findById(nguoiTao).orElse(null) : null;
         LocalDateTime ngayHienTai = LocalDateTime.now();
         BigDecimal tienGiam = BigDecimal.ZERO;
+        BigDecimal tienThanhToan = BigDecimal.ZERO;
 
         Set<HoaDonChiTiet> listHoaDonChiTietTra = new HashSet<>();
         Set<HoaDonChiTiet> listHoaDonChiTietDoi = new HashSet<>();
+        Set<ChiTietThanhToan> chiTietThanhToans = new HashSet<>();
 
         Map<BienTheGiay, HoaDonChiTiet> mapHoaDonChiTietDoi = new HashMap<>();
         Map<BienTheGiay, HoaDonChiTiet> mapHoaDonChiTietTra = new HashMap<>();
@@ -274,10 +276,25 @@ public class YeuCauServiceIplm implements YeuCauService {
 
             for (HoaDonChiTiet hoaDonChiTietDoi : listHoaDonChiTietDoi) {
                 hoaDonChiTietDoi.setHoaDon(hoaDonDoi);
+                if(hoaDonChiTietDoi.getTrangThai() == 1){
+                    BigDecimal soLuong = new BigDecimal(hoaDonChiTietDoi.getSoLuong());
+                    BigDecimal donGia = hoaDonChiTietDoi.getDonGia();
+                    tienThanhToan = tienThanhToan.add(soLuong.multiply(donGia));}
             }
 
-            hoaDonRepository.save(hoaDonDoi);
+            ChiTietThanhToan chiTietThanhToan = ChiTietThanhToan.builder()
+                    .hoaDon(hoaDonDoi)
+                    .hinhThucThanhToan(1)
+                    .tienThanhToan(tienThanhToan)
+                    .trangThai(1)
+                    .build();
+            chiTietThanhToans.add(chiTietThanhToan);
+
+            hoaDonDoi.setChiTietThanhToans(chiTietThanhToans);
+
+           return hoaDonRepository.save(hoaDonDoi);
         }
+        return null;
     }
 
     @Override
@@ -377,13 +394,13 @@ public class YeuCauServiceIplm implements YeuCauService {
                 .phiShip(BigDecimal.ZERO)
                 .ngayTao(ngayHienTai)
                 .ngaySua(ngayHienTai)
-                .ghiChu(yeuCauRequest.getGhiChu())
+                .ghiChu("Trả hàng nhanh - "+yeuCauRequest.getGhiChu())
                 .nguoiTao(nhanVien.getId())
                 .nguoiSua(nhanVien.getId())
-                .tienKhachTra(yeuCauRequest.getTienKhachTra())
                 .build();
 
         List<YeuCauChiTiet> listYeuCauChiTiet = new ArrayList<>();
+
         for (YeuCauChiTietRequest ycct : yeuCauRequest.getListYeuCauChiTiet()) {
             HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findById(ycct.getHoaDonChiTiet()).orElse(null);
             LyDo lyDo = lyDoRepository.findById(ycct.getLyDo()).orElse(null);

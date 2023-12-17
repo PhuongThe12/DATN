@@ -8,19 +8,14 @@ import luckystore.datn.entity.HoaDonChiTiet;
 import luckystore.datn.entity.KhachHang;
 import luckystore.datn.entity.NhanVien;
 import luckystore.datn.entity.TaiKhoan;
-import luckystore.datn.repository.BienTheGiayRepository;
-import luckystore.datn.repository.HoaDonRepository;
-import luckystore.datn.repository.TaiKhoanRepository;
+import luckystore.datn.infrastructure.constants.Role;
+import luckystore.datn.repository.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -43,6 +38,21 @@ public class ApiFakeHoaDon {
     private final TaiKhoanRepository taiKhoanRepository;
 
     private final PasswordEncoder passwordEncoder;
+
+    private  final KhachHangRepository khachHangRepository;
+
+    @PostMapping("/check")
+    public ResponseEntity<?> check(@RequestBody TaiKhoan taiKhoan) {
+        TaiKhoan tk = taiKhoanRepository.findByEmail(taiKhoan.getTenDangNhap()).get();
+        System.out.println("TK: " + taiKhoan.getPassword() + ", " + tk.getPassword());
+        if(passwordEncoder.matches(taiKhoan.getPassword(), tk.getPassword())) {
+            System.out.println("Giống");
+        } else {
+            System.out.println("Khoogn giống");
+        }
+
+        return ResponseEntity.ok("");
+    }
 
     @PostMapping
     @Transactional
@@ -117,6 +127,24 @@ public class ApiFakeHoaDon {
 
         hoaDonRepository.saveAll(lstHoaDon);
 
+    }
+
+
+    @GetMapping("/nhan-vien")
+    public void fakeNhanVien(){
+        List<KhachHang> listKhachHang = khachHangRepository.findAll();
+
+        for (KhachHang khachHang : listKhachHang) {
+            TaiKhoan taiKhoan = TaiKhoan.builder()
+                    .tenDangNhap(khachHang.getEmail())
+                    .matKhau(passwordEncoder.encode("123456"))
+                    .trangThai(1)
+                    .role(Role.ROLE_USER)
+                    .build();
+            khachHang.setTaiKhoan(taiKhoan);
+        }
+
+        khachHangRepository.saveAll(listKhachHang);
     }
 
 }

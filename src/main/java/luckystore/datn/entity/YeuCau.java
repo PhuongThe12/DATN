@@ -33,8 +33,6 @@ public class YeuCau {
     @JsonBackReference
     private HoaDon hoaDon;
 
-    @Column(name = "TIEN_KHACH_TRA")
-    private BigDecimal tienKhachTra;
     @Column(name = "TRANG_THAI")
     private Integer trangThai;
 
@@ -67,10 +65,10 @@ public class YeuCau {
             this.trangThai = yeuCauRequest.getTrangThai();
             this.ngayTao = ngayTao;
             this.ngaySua = ngaySua;
+            this.nguoiTao = yeuCauRequest.getNguoiTao();
             this.ghiChu = yeuCauRequest.getGhiChu();
             this.thongTinNhanHang = yeuCauRequest.getThongTinNhanHang();
             this.phiShip = yeuCauRequest.getPhiShip();
-            this.tienKhachTra = yeuCauRequest.getTienKhachTra();
         }
     }
 
