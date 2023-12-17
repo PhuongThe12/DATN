@@ -49,11 +49,13 @@
         border-color: #1d1e1e #dee2e6 #fff;
         border-top: 1.5px solid #1d1e1e;
     }
-    .item{
-        margin-top:13px;
+
+    .item {
+        margin-top: 13px;
         border-bottom: 1px solid #dbdbdb;
     }
-    .item div{
+
+    .item div {
         justify-content: space-between;
         position: relative;
         align-items: center;
@@ -67,18 +69,22 @@
         color: black;
         font-size: 14px;
     }
-    .btn-size{
+
+    .btn-size {
         padding: 10px 20px;
     }
-    .show-text p{
+
+    .show-text p {
         max-height: 100px !important;
         transition: 0.3s ease-in-out;
     }
-    .show-text i{
+
+    .show-text i {
         transition: 0.3s ease-in-out;
         transform: rotate(180deg);
     }
-    .i-button{
+
+    .i-button {
         position: absolute;
         opacity: 0;
         left: 0;
@@ -87,6 +93,23 @@
         right: 0;
         padding: 10px;
         cursor: pointer;
+    }
+
+    .rating {
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    .star {
+        color: #ccc;
+    }
+
+    .filled {
+        color: gold;
+    }
+
+    .hover {
+        color: orange;
     }
 
 </style>
@@ -116,6 +139,19 @@
             <div class="side-left">
                 <div class="title">
                     <h5 class="py-3 fw-bold border-bottom-1">{{giayDetail.ten}} </h5>
+                    <div class="d-flex align-items-center">
+                        <div class="d-flex align-items-center">
+                            <p class="m-0 fw-bold">{{ rating }}</p>
+                            <div class="rating ps-2">
+                                <span ng-repeat="star in stars" class="star" ng-class="starClass(star)"
+                                >&#9733;</span>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center ps-4">
+                            <p class="m-0 fw-bold">{{listDanhGia.length }}</p>
+                            <p class="m-0 ps-2">Đánh giá</p>
+                        </div>
+                    </div>
                     <h5 class="py-2 text-danger fw-bold">
                         <span id="price-product" class="py-3">
 
@@ -151,7 +187,8 @@
                 <div class="mt-3 d-flex" style="width: 263px;">
                     <button class="btn btn-light" ng-click="giamSoLuong()"><i class="fas fa-minus"></i></button>
                     <input type="number" class="form-control" ng-model="soLuongMua" ng-init="1">
-                    <button class="btn btn-light" ng-click="themSoLuong(giayDetail)"><i class="fas fa-plus"></i></button>
+                    <button class="btn btn-light" ng-click="themSoLuong(giayDetail)"><i class="fas fa-plus"></i>
+                    </button>
                 </div>
 
             </div>
@@ -168,6 +205,32 @@
         <h5 class="font-size-16-ncl">Mô tả sản phẩm</h5>
         <div class="info"></div>
     </div>
+
+    <p>
+        <button class="btn w-100" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            Xem đánh giá từ khách hàng
+        </button>
+    </p>
+    <div class="collapse" id="collapseExample">
+        <div class="card card-body">
+            <div ng-repeat="danhGia in listDanhGia">
+                <div class="d-flex">
+                    <img class="rounded-circle" src="https://cdn5.vectorstock.com/i/1000x1000/20/74/woman-avatar-profile-vector-21372074.jpg" width="40px" alt="">
+                    <div>
+                        <p class="font-size-12-ncl m-0">{{danhGia.khachHangResponse.hoTen}}</p>
+                        <p class="font-size-12 m-0">Đã đánh giá {{danhGia.saoDanhGia}} sao</p>
+                        <p class="font-size-12 m-0">{{danhGia.thoiGian}}</p>
+                    </div>
+                </div>
+                <div>
+                    <p class=""><span class="font-size-12">Đánh Giá : </span>{{danhGia.binhLuan}}</p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
 
     <div class="py-5">
         <h5 style="text-align: center; font-weight: bold">Có thể bạn sẽ thích</h5>

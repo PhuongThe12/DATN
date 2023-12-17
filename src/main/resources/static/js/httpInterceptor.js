@@ -1,4 +1,3 @@
-
 app.factory('httpInterceptor', function ($q, $location) {
     return {
         'responseError': function (rejection) {
@@ -12,6 +11,50 @@ app.factory('httpInterceptor', function ($q, $location) {
 
 app.config(function ($httpProvider) {
     $httpProvider.interceptors.push('httpInterceptor');
+});
+
+app.controller('navbarAdminController', function ($rootScope, $scope, $http, $location, $window, $cookies) {
+    $scope.nhanVienSession = {};
+    var token = $cookies.get('token');
+    if (token) {
+        $http.get(host + "/session/get-staff")
+            .then(response => {
+                $scope.nhanVienSession = response.data;
+            })
+    } else {
+        $window.location.href = '/login';
+    }
+
+
+    $scope.logOutNhanVien = function () {
+        Swal.fire({
+            text: "Xác nhận đăng xuất?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                setTokenCookie(null, null);
+                $window.localStorage.clear();
+                $window.location.href = '/login';
+            }
+        });
+    }
+
+    function setTokenCookie(token, expiryDays) {
+        const d = new Date();
+        d.setTime(d.getTime() + (expiryDays * 24 * 60 * 60 * 1000));
+        const expires = "expires=" + d.toUTCString();
+        document.cookie = `token=${token}; ${expires}; path=/`;
+    }
+
+    $scope.deleteCookie = function(cookieName) {
+        $cookies.remove(cookieName);
+    };
+
 });
 
 function getTokenFromCookie() {
@@ -33,10 +76,10 @@ function getTokenFromCookie() {
 
 
 const headers = {
-    'Authorization': 'Bearer '+getTokenFromCookie(),
+    'Authorization': 'Bearer ' + getTokenFromCookie(),
     'Content-Type': 'application/json',
-    'ShopId' : 189641,
-    'Token' : 'ecf11c4a-5d20-11ee-b1d4-92b443b7a897'
+    'ShopId': 189641,
+    'Token': 'ecf11c4a-5d20-11ee-b1d4-92b443b7a897'
 };
 
 app.factory('headerInterceptor', function () {

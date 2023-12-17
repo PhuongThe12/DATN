@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
+import java.util.List;
 
 @Service
 public class DanhGiaServiceImpl implements DanhGiaService {
@@ -55,13 +56,29 @@ public class DanhGiaServiceImpl implements DanhGiaService {
         danhGia.setSaoDanhGia(danhGiaRequest.getSaoDanhGia());
         danhGia.setBinhLuan(danhGiaRequest.getBinhLuan());
         danhGia.setTrangThai(1);
-        Giay giay =  giayRepository.findById(danhGiaRequest.getIdGiay()).orElseThrow(() -> new RuntimeException());
-        KhachHang khachHang = khachHangRepository.findById(danhGiaRequest.getIdKhachHang()).orElseThrow(() -> new RuntimeException());;
+        Giay giay = giayRepository.findById(danhGiaRequest.getIdGiay()).orElseThrow(() -> new RuntimeException());
+        KhachHang khachHang = khachHangRepository.findById(danhGiaRequest.getIdKhachHang()).orElseThrow(() -> new RuntimeException());
+        ;
         danhGia.setGiay(giay);
         danhGia.setKhachHang(khachHang);
         danhGia.setNgayTao(ngayHienTai);
         danhGia.setThoiGian(ngayHienTai);
         return new DanhGiaResponse(danhGiaRepository.save(danhGia));
+    }
+
+    @Override
+    public DanhGiaResponse findByIdKhAndIdGiay(Long idKhachHang, Long idGiay) {
+        return danhGiaRepository.findByIdKhAndIdGiay(idKhachHang, idGiay);
+    }
+
+    @Override
+    public List<DanhGiaResponse> getAllByIdKhachHang(Long idKhachHang) {
+        return danhGiaRepository.findByIdKhachHang(idKhachHang);
+    }
+
+    @Override
+    public List<DanhGiaResponse> getDanhGiaByIdGiay(Long idGiay) {
+        return danhGiaRepository.getSaoDanhGiaByIdGiay(idGiay);
     }
 
     private void checkWhenInsert(DanhGiaRequest danhGiaRequest) {
