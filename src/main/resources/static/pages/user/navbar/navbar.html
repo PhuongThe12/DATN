@@ -37,7 +37,7 @@
 
         <div class=" collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav ms-auto ">
-                <a style="transform: translateY(50%); position: relative"
+                <a ng-show="khachHang.hoTen" style="transform: translateY(50%); position: relative"
                    href="http://localhost:8080/home#/thong-tin-tai-khoan">
                     <strong style="position: absolute; right: 120%; top: -50%; transform: translateY(50%);">{{
                         khachHang.hoTen }}</strong>
@@ -48,30 +48,19 @@
                            title="Quản lý tài khoản"
                            style="color: black;font-size: 23px; transform: translateY(-50%);"></i>
                     </span>
-
                 </a>
 
                 <div class="ps-3" style="transform: translateY(50%);">
                     <a href="http://localhost:8080/home#/tra-cuu-don-hang" data-bs-toggle="tooltip"
                        data-bs-placement="top"
-                    <span class="pointer" data-bs-toggle="modal" data-bs-target="#exampleModal" id="loginbutton"
-                          ng-if="!khachHang.hoTen">
-                        Login
-                    </span>
-                    <a ng-if="userLogged" href="#/thong-tin-tai-khoan"><i class="far fa-user" data-bs-toggle="tooltip" data-bs-placement="top"
-                                                       title="Quản lý tài khoản"
-                                                       style="color: black;font-size: 23px;"></i></a>
-                </div>
-                <div class="ps-3">
-                    <a href="#/tra-cuu-don-hang" data-bs-toggle="tooltip" data-bs-placement="top"
                        title="Tra cứu thông tin hóa đơn"><i class="fas fa-file-invoice"
-                                                            style="color: black;font-size: 23px;transform: translateY(-50%);"></i></a>
+                                                            style="color: black;font-size: 23px;"></i></a>
                 </div>
 
-                <div class="btn-group ps-3" style="cursor: pointer; transform: translateY(50%);">
+                <div class="btn-group ps-3" style="cursor: pointer;">
                     <div>
                         <a href="http://localhost:8080/home#/cart"> <i class="fas fa-shopping-cart"
-                                                                       style="color: black;font-size: 23px;transform: translateY(-50%);"
+                                                                       style="color: black;font-size: 23px;"
                                                                        data-bs-toggle="tooltip" data-bs-placement="top"
                                                                        title="Giỏ hàng"></i></a>
                         <span style="position: absolute; top: -50%; padding: 4px 7px !important; background: #e50000; left: 85%;"

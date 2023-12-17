@@ -119,6 +119,10 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
     @Query("select new luckystore.datn.model.response.print.HoaDonPrintResponse(hd, 2) " +
             "from HoaDon hd where hd.id = :maHD and hd.soDienThoaiNhan like %:sdt")
     HoaDonPrintResponse getTraCuuDon(Long maHD, String sdt);
+
+    @Query("select new luckystore.datn.model.response.print.HoaDonPrintResponse(hd, 2) " +
+            "from HoaDon hd where hd.id = :maHD ")
+    HoaDonPrintResponse getThanhToanChiTiet(Long maHD);
 }
 
 

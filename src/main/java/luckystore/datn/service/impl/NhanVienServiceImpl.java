@@ -114,6 +114,14 @@ public class NhanVienServiceImpl implements NhanVienService {
         return SystemHistoryLogger.readSystemHistoryEntries();
     }
 
+    @Override
+    public void resetPassword(Long id) {
+        NhanVien nhanVien = nhanVienRepo.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND));
+        TaiKhoan taiKhoan = nhanVien.getTaiKhoan();
+        taiKhoan.setMatKhau(passwordEncoder.encode("123456"));
+        taiKhoanRepo.save(taiKhoan);
+    }
+
     private NhanVien getNhanVien(NhanVien nhanVien, NhanVienRequest nhanVienRequest) {
         nhanVien.setHoTen(nhanVienRequest.getHoTen());
         nhanVien.setGioiTinh(nhanVienRequest.getGioiTinh());

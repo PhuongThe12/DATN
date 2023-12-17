@@ -282,6 +282,30 @@ app.controller("nhanVienListController", function ($scope, $http, $window, $loca
     });
 
 
+    $scope.resetPassword = function (id) {
+        Swal.fire({
+            text: "Xác nhận reset mật khẩu? Mật khẩu mặc định sẽ là 123456",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $http.put(host + "/rest/admin/nhan-vien/reset-password/" + id)
+                    .then((response) => {
+                        toastr["success"]("Reset mật khẩu thành công");
+                    })
+                    .catch (err => {
+                        toastr["error"]("Reset mật khẩu thất bại. Lỗi bất định");
+                    })
+
+            }
+        });
+
+    }
+
 });
 
 app.controller("updateNhanVienController", function ($scope, $http, $routeParams, $location, $window) {

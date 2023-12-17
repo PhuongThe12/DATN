@@ -28,8 +28,8 @@ public interface KhuyenMaiRepository extends JpaRepository<KhuyenMai, Long> {
     @Query("select  distinct kmct.bienTheGiay.giay.id from KhuyenMai km" +
             " inner join km.khuyenMaiChiTiets kmct " +
             " where kmct.bienTheGiay.id in :#{#kmSearch.bienTheIds} " +
-            " and (:#{#kmSearch.ngayBatDau} between km.ngayBatDau and km.ngayKetThuc " +
-            " or :#{#kmSearch.ngayKetThuc} between km.ngayBatDau and km.ngayKetThuc " +
+            " and ((:#{#kmSearch.ngayBatDau} >= km.ngayBatDau and km.ngayKetThuc >= :#{#kmSearch.ngayBatDau}) " +
+            " or (:#{#kmSearch.ngayKetThuc} >= km.ngayBatDau and km.ngayKetThuc >= :#{#kmSearch.ngayKetThuc}) " +
             " or (:#{#kmSearch.ngayBatDau} <= km.ngayBatDau and :#{#kmSearch.ngayKetThuc} >= km.ngayKetThuc))")
     List<Long> getDaTonTaiKhuyenMai(KhuyenMaiSearch kmSearch);
 

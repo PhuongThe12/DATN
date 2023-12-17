@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 
@@ -74,13 +73,13 @@ public class KhuyenMaiServiceImpl implements KhuyenMaiService {
         List<KhuyenMaiChiTiet> chiTietList = new ArrayList<>();
 
         if (khuyenMai.getNgayBatDau().isBefore(LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0))) {
-            System.out.println(khuyenMai.getNgayBatDau() + ": ngày bắt đầu :  " + LocalDateTime.now());
             throw new InvalidIdException("Ngày không được là ngày trong quá khứ");
         }
 
         if (!khuyenMai.getNgayBatDau().isBefore(khuyenMai.getNgayKetThuc())) {
             throw new InvalidIdException("Ngày kết thúc phải lớn hơn ngày bắt đầu");
         }
+
 
         for (KhuyenMaiChiTietRequest chiTietRequest : khuyenMaiRequest.getKhuyenMaiChiTietRequests()) {
             KhuyenMaiChiTiet chiTiet = new KhuyenMaiChiTiet();
@@ -236,9 +235,9 @@ public class KhuyenMaiServiceImpl implements KhuyenMaiService {
         List<Long> ids = khuyenMaiResponses.getContent().stream().map(KhuyenMaiResponse::getId).toList();
         List<KhuyenMaiChiTietResponse> khuyenMaiChiTietResponses = khuyenMaiChiTietRepository.getAllByKhuyenMaiIds(ids);
 
-        for(KhuyenMaiResponse khuyenMaiResponse : khuyenMaiResponses.getContent()) {
+        for (KhuyenMaiResponse khuyenMaiResponse : khuyenMaiResponses.getContent()) {
             for (KhuyenMaiChiTietResponse khuyenMaiChiTietResponse : khuyenMaiChiTietResponses) {
-                if(Objects.equals(khuyenMaiResponse.getId(), khuyenMaiChiTietResponse.getIdKhuyenMai())) {
+                if (Objects.equals(khuyenMaiResponse.getId(), khuyenMaiChiTietResponse.getIdKhuyenMai())) {
                     khuyenMaiResponse.getKhuyenMaiChiTietResponses().add(khuyenMaiChiTietResponse);
                 }
             }
@@ -289,6 +288,7 @@ public class KhuyenMaiServiceImpl implements KhuyenMaiService {
         } else {
             return khuyenMaiRepository.getDaTonTaiKhuyenMai(kmSearch);
         }
+
     }
 
     private List<Long> getDaTonTaiAndIdNot(KhuyenMaiSearch kmSearch) {
