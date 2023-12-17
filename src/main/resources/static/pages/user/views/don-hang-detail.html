@@ -112,30 +112,7 @@
                             </table>
                             <hr>
                             <div class="row">
-                                <div class="col-6"
-                                     ng-hide="hoaDon.thongTinThanhToan.show && hoaDon.trangThai != -1"></div>
-                                <div class="col-6"
-                                     ng-show="hoaDon.thongTinThanhToan.show && hoaDon.trangThai != -1">
-                                    <div class="py-2"><strong>Thông tin thanh toán:</strong></div>
-                                    <div class="py-2"
-                                         ng-show="hoaDon.thongTinThanhToan.show && hoaDon.thongTinThanhToan.tienMat">
-                                        Tiền mặt:
-                                        <strong>{{hoaDon.thongTinThanhToan.tienMat?
-                                            hoaDon.thongTinThanhToan.tienMat
-                                            : 0
-                                            | number : 0}} VND</strong>
-                                        <div ng-show="hoaDon.thongTinThanhToan.show && hoaDon.thongTinThanhToan.chuyenKhoan"
-                                             style="border-bottom: 2px slategray dashed;"></div>
-                                    </div>
-                                    <div class="py-2"
-                                         ng-show="hoaDon.thongTinThanhToan.show && hoaDon.thongTinThanhToan.chuyenKhoan">
-                                        Chuyển khoản:
-                                        <strong>{{hoaDon.thongTinThanhToan.chuyenKhoan?
-                                            hoaDon.thongTinThanhToan.chuyenKhoan : 0 | number : 0}} VND</strong>
-                                        <div>Mã giao dịch: <strong>{{hoaDon.thongTinThanhToan.maGiaoDich}}</strong>
-                                        </div>
-                                    </div>
-                                </div>
+
                                 <div class="invoice-total col-6">
                                     <p class="py-2"><strong>Tổng Cộng : </strong> {{hoaDon.conLai + hoaDon.tongTru| number : 0}} VND</p>
                                     <p class="py-2"><strong>Giảm giá : </strong>- {{hoaDon.tongTru | number : 0}} VND</p>

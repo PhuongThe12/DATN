@@ -1,5 +1,6 @@
 package luckystore.datn.service.impl;
 
+import luckystore.datn.entity.GioHang;
 import luckystore.datn.entity.HangKhachHang;
 import luckystore.datn.entity.KhachHang;
 import luckystore.datn.entity.TaiKhoan;
@@ -10,6 +11,7 @@ import luckystore.datn.infrastructure.constants.Role;
 import luckystore.datn.infrastructure.constraints.ErrorMessage;
 import luckystore.datn.model.request.KhachHangRequest;
 import luckystore.datn.model.response.KhachHangResponse;
+import luckystore.datn.repository.GioHangRepository;
 import luckystore.datn.repository.HangKhachHangRepository;
 import luckystore.datn.repository.KhachHangRepository;
 import luckystore.datn.repository.TaiKhoanRepository;
@@ -22,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -39,6 +42,8 @@ public class KhachHangServiceImpl implements KhachHangService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private GioHangRepository gioHangRepository;
 
     @Override
     public List<KhachHangResponse> getAll() {
@@ -80,8 +85,15 @@ public class KhachHangServiceImpl implements KhachHangService {
         taiKhoanRepository.save(taiKhoan);
 
         khachHang.setTaiKhoan(taiKhoan);
+        khachHang = khachHangRepo.save(khachHang);
+        GioHang gioHang = new GioHang();
+        gioHang.setGhiChu("Giỏ hàng ");
+        gioHang.setTrangThai(1);
+        gioHang.setNgayTao(LocalDateTime.now());
+        gioHang.setKhachHang(khachHang);
+        gioHangRepository.save(gioHang);
 
-        return new KhachHangResponse(khachHangRepo.save(khachHang));
+        return new KhachHangResponse(khachHang);
     }
 
     private void setHangKhachHang(KhachHang khachHang) {
@@ -131,8 +143,13 @@ public class KhachHangServiceImpl implements KhachHangService {
 
         KhachHang khachHang = khachHangRepo.getByEmail(request.getEmail());
 
+        GioHang gioHang = null;
         if (khachHang == null) {
             khachHang = getKhachHang(new KhachHang(), request);
+            gioHang = new GioHang();
+            gioHang.setGhiChu("Giỏ hàng ");
+            gioHang.setTrangThai(1);
+            gioHang.setNgayTao(LocalDateTime.now());
         }else {
             khachHang = getKhachHang(khachHang, request);
             if(khachHang.getTaiKhoan() != null) {
@@ -143,6 +160,7 @@ public class KhachHangServiceImpl implements KhachHangService {
                     TaiKhoan taiKhoan = khachHang.getTaiKhoan();
                     taiKhoan.setTrangThai(0);
                     taiKhoan.setMatKhau(passwordEncoder.encode(request.getPassword()));
+                    khachHang.setTaiKhoan(taiKhoan);
                     return new KhachHangResponse(khachHangRepo.save(khachHang));
                 }
             }
@@ -162,7 +180,13 @@ public class KhachHangServiceImpl implements KhachHangService {
         taiKhoan.setTrangThai(0);
         khachHang.setTaiKhoan(taiKhoan);
 
-        return new KhachHangResponse(khachHangRepo.save(khachHang));
+        khachHang = khachHangRepo.save(khachHang);
+        if(gioHang != null) {
+            gioHang.setKhachHang(khachHang);
+            gioHangRepository.save(gioHang);
+        }
+
+        return new KhachHangResponse(khachHang);
     }
 
     @Override

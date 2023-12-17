@@ -15,6 +15,7 @@
     <!--AngularJS-->
     <script src="/angular-1.8.2/angular.min.js"></script>
     <script src="/angular-1.8.2/angular-route.min.js"></script>
+    <script src="/angular-1.8.2/angular-cookies.js"></script>
     <!--Toastr-->
     <script src="/toastr/jquery/dist/jquery.min.js"></script>
     <link rel="stylesheet" href="/toastr/toastr/build/toastr.min.css">
@@ -32,7 +33,20 @@
 </head>
 
 <body>
-<div ng-view></div>
+<div class="page-flex">
+    <div ng-include="'/pages/admin/nav/aside.html'"></div>
+
+    <div class="main-wrapper" ng-controller="navbarAdminController">
+        <!-- ! Main nav -->
+        <div ng-include="'/pages/admin/nav/nav.html'"></div>
+
+        <main class="main">
+            <div ng-view></div>
+        </main>
+
+    </div>
+</div>
+
 <script src="/js/diachinhanhang/index.js"></script>
 
 </body>
