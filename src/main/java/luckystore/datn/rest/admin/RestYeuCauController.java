@@ -63,6 +63,12 @@ public class RestYeuCauController {
         if (errorJson != null) return errorJson;
         return new ResponseEntity(yeuCauService.confirmYeuCau(yeuCauRequest), HttpStatus.OK);
     }
+    @PutMapping("/unconfirm")
+    public ResponseEntity unConfirmYeuCau(@Valid @RequestBody YeuCauRequest yeuCauRequest, BindingResult result) {
+        ResponseEntity errorJson = getErrorJson(result);
+        if (errorJson != null) return errorJson;
+        return new ResponseEntity(yeuCauService.unConfirmYeuCau(yeuCauRequest), HttpStatus.OK);
+    }
 
     @PutMapping("/update")
     public ResponseEntity updateYeuCau(@Valid @RequestBody YeuCauRequest yeuCauRequest, BindingResult result) {

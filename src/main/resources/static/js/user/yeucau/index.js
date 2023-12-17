@@ -2,14 +2,14 @@ var app = angular.module("app", ["ngRoute", "ui.bootstrap"]);
 app.config(function ($routeProvider, $locationProvider) {
     $locationProvider.hashPrefix('');
     $routeProvider
-        .when("/don-hang", {
-            templateUrl: '/pages/user/views/donhang.html',
+        .when("/list", {
+            templateUrl: '/pages/user/yeucau/list.html',
             controller: 'donHangListController'
         }).when("/update/:id", {
         templateUrl: '/pages/user/yeucau/views/update.html', controller: 'updateYeuCauKhachHangController'
         }).when("/add/:id", {
         templateUrl: '/pages/user/yeucau/views/add.html', controller: 'addYeuCauKhachHangController'
-        }).otherwise({redirectTo: '/don-hang'});
+        }).otherwise({redirectTo: '/list'});
 });
 
 app.controller("addYeuCauKhachHangController", function ($scope, $http, $routeParams, $window, $location) {
@@ -64,7 +64,7 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
         $scope.tongTienGiamGia = 0;
 
         $scope.mapYeuCauChiTiet.forEach((item) => {
-            if (item.bienTheGiayDoi.id) {
+            if (item.bienTheGiayDoi) {
                 let giaBan = item.bienTheGiayDoi.giaBan;
                 let khuyenMai = item.bienTheGiayDoi.khuyenMai ? item.bienTheGiayDoi.khuyenMai / 100 : 0;
                 let tienGiam = giaBan * khuyenMai;
@@ -78,9 +78,11 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
         $scope.tongTienHangDoi = 0;
         $scope.soLuongDoi = 0;
         $scope.mapYeuCauChiTiet.forEach((item) => {
-            if (item.bienTheGiayDoi.id) {
+            if (item.bienTheGiayDoi) {
                 let giaBan = item.bienTheGiayDoi.giaBan;
-                $scope.tongTienHangDoi += giaBan;
+                let tienGiam = item.bienTheGiayDoi.giaBan*(item.bienTheGiayDoi.khuyenMai/100);
+                let tienHangDoi = giaBan - tienGiam;
+                $scope.tongTienHangDoi += tienHangDoi;
                 $scope.soLuongDoi += 1;
             }
         })
@@ -104,7 +106,6 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
 
 
     $scope.traHang = function (baseId, hoaDonChiTiet) {
-
         if (hoaDonChiTiet.soLuongTra <= 0) {
             toastr.error('Bạn chưa chọn số lượng muốn trả!');
             return;
@@ -163,6 +164,7 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
                 ghiChu: value.ghiChu                // value4
             });
             $scope.listYeuCauChiTiet = Array.from($scope.mapYeuCauChiTiet, ([key, value]) => ({key, value}));
+            console.log($scope.listYeuCauChiTiet)
             tinhTongTienHangDoi();
         } else {
             toastr["error"]("Không tồn tại giày này trong danh sách sản phẩm trả");
@@ -208,6 +210,7 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
             $scope.listYeuCauChiTiet = Array.from($scope.mapYeuCauChiTiet, ([key, value]) => ({key, value}));
             $scope.giayChoosed = null;
             tinhTongTienHangDoi();
+            console.log($scope.listYeuCauChiTiet)
         } else {
             toastr["error"]("Không tồn tại yêu cầu chi tiết có key: " + $scope.yeuCauChiTiet.key);
         }
@@ -573,9 +576,10 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
     $scope.taoYeuCau = function () {
         let coPhanTuKhongHopLe = false;
 
-        $scope.mapYeuCauChiTiet.forEach((yeuCauChiTiet, key) => {
+        $scope.mapYeuCauChiTiet.forEach((yeuCauChiTiet) => {
+            console.log(yeuCauChiTiet)
             if (!yeuCauChiTiet.lyDo || !yeuCauChiTiet.ghiChu) {
-                toastr["error"]("Bạn chưa điền đủ thông tin lý do hoặc ghi chú cho sản phẩm có mã: " + key);
+                toastr["error"]("Vui lòng chọn lý do đổi trả cho sản phẩm : " + yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.giayResponse.ten);
                 coPhanTuKhongHopLe = true;
             }
         });
@@ -635,12 +639,12 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
 
             console.log(JSON.stringify($scope.yeuCau))
 
-            $http.post(host + '/rest/user/yeu-cau/khach-hang/add', JSON.stringify($scope.yeuCau))
+            $http.post(host + '/rest/user/yeu-cau/add', JSON.stringify($scope.yeuCau))
                 .then(function (response) {
                     if (response.status === 200) {
                         toastr["success"]("Đã gửi yêu cầu đổi/trả thành công!");
                     }
-                    $location.path("/home");
+                    window.location.href = 'http://localhost:8080/home#/don-hang/detail/'+$scope.hoaDon.id;
                 })
                 .catch(function (error) {
                     toastr["error"]("Gửi yêu cầu đổi/trả thất bại!");
@@ -655,11 +659,10 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
 
     function getListHoaDonChiTiet(id) {
         $scope.isLoading = true;
-        $http.get(host + '/rest/user/yeu-cau/khach-hang/' + id)
+        $http.get(host + '/rest/user/yeu-cau/hoa-don/' + id)
             .then(function (response) {
                 $scope.hoaDon = response.data;
                 $scope.listHoaDonChiTiet = response.data.listHoaDonChiTiet;
-                console.log($scope.listHoaDonChiTiet)
                 layPhiShip($scope.hoaDon.diaChiNhan);
                 $scope.isLoading = false;
             }).catch(function (error) {
@@ -704,7 +707,6 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
     $scope.updateDiaChiNhan = function (diaChiNhanHang) {
         let diaChiNhan = diaChiNhanHang.diaChiNhan + ', ' + diaChiNhanHang.wards + ', ' + diaChiNhanHang.districts + ', ' + diaChiNhanHang.provinces;
         $scope.thongTinNhanHang.diaChiNhan = diaChiNhan;
-        console.log(diaChiNhan)
         layPhiShip(diaChiNhan);
     }
 
@@ -940,13 +942,18 @@ app.controller("updateYeuCauKhachHangController", function ($scope, $http, $rout
         .then(function (response) {
             $scope.listYeuCauChiTietResponse = response.data;
             $scope.yeuCau = response.data[0].yeuCau;
+            $scope.feeShippingPerOne = $scope.yeuCau.phiShip;
             $scope.hoaDon = $scope.yeuCau.hoaDon;
             loadListYeuCau(response.data)
-            console.log($scope.listYeuCauChiTiet)
             getListLyDo();
             tinhTongTienHangTra();
             tinhTongTienHangDoi();
             getKhachHang();
+            console.log( $scope.phiVanChuyen)
+            console.log( $scope.tongTienHangDoi)
+            console.log( $scope.tongTienHangTra)
+            console.log( $scope.tongTienGiamGia)
+            console.log( $scope.tongTienThanhToan)
             $scope.isLoading = false;
         })
         .catch(function (error) {
@@ -1001,10 +1008,7 @@ app.controller("updateYeuCauKhachHangController", function ($scope, $http, $rout
 
         $scope.mapYeuCauChiTiet.forEach((item) => {
             if (item.bienTheGiayDoi) {
-                let giaBan = item.bienTheGiayDoi.giaBan;
-                let khuyenMai = item.bienTheGiayDoi.khuyenMai ? item.bienTheGiayDoi.khuyenMai / 100 : 0;
-                let tienGiam = giaBan * khuyenMai;
-                $scope.tongTienGiamGia += tienGiam;
+                $scope.tongTienGiamGia += item.tienGiam;
             }
         })
     }
@@ -1016,7 +1020,7 @@ app.controller("updateYeuCauKhachHangController", function ($scope, $http, $rout
         $scope.mapYeuCauChiTiet.forEach((item) => {
             if (item.bienTheGiayDoi) {
                 let giaBan = item.bienTheGiayDoi.giaBan;
-                $scope.tongTienHangDoi += (giaBan - item.tienGiam);
+                $scope.tongTienHangDoi += (giaBan);
                 $scope.soLuongDoi += 1;
             }
         })
@@ -1039,7 +1043,7 @@ app.controller("updateYeuCauKhachHangController", function ($scope, $http, $rout
         $scope.mapYeuCauChiTiet.set(key, {
             id: yeuCauChiTiet.id,
             hoaDonChiTiet: yeuCauChiTiet.hoaDonChiTiet, // value1
-            bienTheGiayDoi: yeuCauChiTiet.bienTheGiay,
+            bienTheGiayDoi: yeuCauChiTiet.bienTheGiay.id != null && yeuCauChiTiet.bienTheGiay.id != undefined ? yeuCauChiTiet.bienTheGiay : null,
             tienGiam: yeuCauChiTiet.tienGiam,
             thanhTien: yeuCauChiTiet.thanhTien,
             lyDo: yeuCauChiTiet.lyDo.id,              // value2
@@ -1130,12 +1134,13 @@ app.controller("updateYeuCauKhachHangController", function ($scope, $http, $rout
                 id: value.id,
                 hoaDonChiTiet: value.hoaDonChiTiet, // value1
                 bienTheGiayDoi: $scope.giayChoosed,
-                tienGiam: value.tienGiam,
+                tienGiam: $scope.giayChoosed.khuyenMai > 0 ? $scope.giayChoosed.giaBan*($scope.giayChoosed.khuyenMai/100) : 0,
                 thanhTien: value.thanhTien,
                 lyDo: value.lyDo,              // value2
                 ghiChu: value.ghiChu              // value3
             });
             $scope.listYeuCauChiTiet = Array.from($scope.mapYeuCauChiTiet, ([key, value]) => ({key, value}));
+            console.log($scope.listYeuCauChiTiet)
             $scope.giayChoosed = null;
             tinhTongTienHangDoi();
         } else {
@@ -1524,27 +1529,23 @@ app.controller("updateYeuCauKhachHangController", function ($scope, $http, $rout
         // Nếu tất cả các entry đều hợp lệ, thực hiện xử lý tiếp theo
         if (!coPhanTuKhongHopLe) {
             $scope.mapYeuCauChiTiet.forEach((yeuCauChiTiet, key) => {
-                let sanPhamDoi = $scope.mapYeuCauChiTiet.has(key) ? $scope.mapYeuCauChiTiet.get(key).bienTheGiayDoi : {
-                    bienTheGiayDoi: null
-                };
-
-
-                let tienHoanKhach = yeuCauChiTiet.thanhTien;
-                let tienGiamSanPhamDoi = sanPhamDoi && sanPhamDoi.khuyenMai > 0 ? sanPhamDoi.giaBan * sanPhamDoi.khuyenMai / 100 : yeuCauChiTiet.tienGiam;
+                // Tối ưu việc gán giá trị với nullish coalescing
+                let sanPhamDoi = yeuCauChiTiet.bienTheGiayDoi ?? null;
 
                 $scope.mapYeuCauChiTietSaved.set(key, {
-                    id:yeuCauChiTiet.id,
-                    hoaDonChiTiet: yeuCauChiTiet.hoaDonChiTiet.id,
-                    bienTheGiay: sanPhamDoi ? sanPhamDoi.id : null,
+                    id: yeuCauChiTiet.id,
+                    hoaDonChiTiet: yeuCauChiTiet.hoaDonChiTiet?.id, // Sử dụng optional chaining để tránh lỗi
+                    bienTheGiay: sanPhamDoi.id,
                     lyDo: yeuCauChiTiet.lyDo,
                     trangThai: 0,
                     ghiChu: yeuCauChiTiet.ghiChu,
                     loaiYeuCauChiTiet: sanPhamDoi ? 1 : 2,
                     tinhTrangSanPham: false,
-                    tienGiam: yeuCauChiTiet.bienTheGiay ? tienGiamSanPhamDoi : 0,
-                    thanhTien: tienHoanKhach ? tienHoanKhach : 0,
+                    tienGiam: sanPhamDoi ? yeuCauChiTiet.tienGiam : 0,
+                    thanhTien: yeuCauChiTiet.thanhTien,
                 });
             });
+
 
 
             $scope.yeuCau.hoaDon = $scope.hoaDon.id;
@@ -1563,12 +1564,13 @@ app.controller("updateYeuCauKhachHangController", function ($scope, $http, $rout
 
             console.log(JSON.stringify($scope.yeuCau))
 
-            $http.put(host + '/rest/user/yeu-cau/khach-hang/update', JSON.stringify($scope.yeuCau))
+
+            $http.put(host + '/rest/user/yeu-cau/update', JSON.stringify($scope.yeuCau))
                 .then(function (response) {
                     if (response.status === 200) {
                         toastr["success"]("Đã gửi yêu cầu đổi/trả thành công!");
                     }
-                    $location.path("/home");
+                    window.location.href = 'http://localhost:8080/home#/don-hang/detail/'+$scope.hoaDon.id;
                 })
                 .catch(function (error) {
                     toastr["error"]("Gửi yêu cầu đổi/trả thất bại!");
@@ -1623,12 +1625,12 @@ app.controller("updateYeuCauKhachHangController", function ($scope, $http, $rout
 
             console.log(JSON.stringify($scope.yeuCau))
 
-            $http.put(host + '/rest/user/yeu-cau/khach-hang/cancel', JSON.stringify($scope.yeuCau))
+            $http.put(host + '/rest/user/yeu-cau/cancel', JSON.stringify($scope.yeuCau))
                 .then(function (response) {
                     if (response.status === 200) {
                         toastr["success"]("Đã gửi yêu cầu đổi/trả thành công!");
                     }
-                    $location.path("http://localhost:8080/home#/don-hang/detail/"+$scope.hoaDon.id);
+                    window.location.href = 'http://localhost:8080/home#/don-hang/list';
                 })
                 .catch(function (error) {
                     toastr["error"]("Gửi yêu cầu đổi/trả thất bại!");

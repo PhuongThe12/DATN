@@ -34,7 +34,7 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
             "FROM HoaDon hd " +
             "LEFT JOIN hd.khachHang kh on hd.khachHang.id = kh.id " +
             "LEFT JOIN hd.nhanVien nv on hd.nhanVien.id = nv.id " +
-            "WHERE (hd.loaiHoaDon = 1 OR hd.loaiHoaDon = 2 and hd.trangThai = 5) " +
+            "WHERE (hd.loaiHoaDon = 1 or hd.loaiHoaDon = 2 and hd.trangThai = 1) " +
             "AND (:#{#hoaDonSearch.idHoaDon} IS NULL OR hd.id  = :#{#hoaDonSearch.idHoaDon}) " +
             "AND (:#{#hoaDonSearch.loaiHoaDon} IS NULL OR hd.loaiHoaDon = :#{#hoaDonSearch.loaiHoaDon}) " +
             "AND (:#{#hoaDonSearch.email} IS NULL OR hd.email like %:#{#hoaDonSearch.email}%) " +
@@ -45,8 +45,9 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
             "AND (:#{#hoaDonSearch.ngayBatDau} IS NULL OR hd.ngayTao >= :#{#hoaDonSearch.ngayBatDau}) " +
             "AND (:#{#hoaDonSearch.ngayKetThuc} IS NULL OR hd.ngayTao <= :#{#hoaDonSearch.ngayKetThuc}) " +
             "AND (:#{#hoaDonSearch.tongThanhToanMin} IS NULL OR (SELECT SUM(cttt.tienThanhToan) FROM ChiTietThanhToan cttt WHERE cttt.hoaDon.id = hd.id) >= :#{#hoaDonSearch.tongThanhToanMin}) " +
-            "AND (:#{#hoaDonSearch.tongThanhToanMax} IS NULL OR (SELECT SUM(cttt.tienThanhToan) FROM ChiTietThanhToan cttt WHERE cttt.hoaDon.id = hd.id) <= :#{#hoaDonSearch.tongThanhToanMax}) " )
+            "AND (:#{#hoaDonSearch.tongThanhToanMax} IS NULL OR (SELECT SUM(cttt.tienThanhToan) FROM ChiTietThanhToan cttt WHERE cttt.hoaDon.id = hd.id) <= :#{#hoaDonSearch.tongThanhToanMax})")
     Page<HoaDonYeuCauRespone> getPageHoaDonYeuCauResponse(HoaDonSearch hoaDonSearch, Pageable pageable);
+
 
     @Query("SELECT new luckystore.datn.model.response.HoaDonBanHangResponse(hd.id)  FROM HoaDon hd " +
             "where hd.trangThai = " + TrangThaiHoaDon.CHUA_THANH_TOAN +

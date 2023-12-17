@@ -3,7 +3,6 @@ package luckystore.datn.service.impl;
 import luckystore.datn.entity.LyDo;
 import luckystore.datn.exception.DuplicateException;
 import luckystore.datn.model.request.LyDoRequest;
-import luckystore.datn.model.request.MauSacRequest;
 import luckystore.datn.model.request.ThongKeRequest;
 import luckystore.datn.model.response.LyDoResponse;
 import luckystore.datn.repository.LyDoRepository;
@@ -37,21 +36,27 @@ public class LyDoServiceImpl implements LyDoService {
 
     @Override
     public boolean insert(LyDoRequest lyDoRequest) {
-        if (checkWhenInsert(lyDoRequest)==true) {
+        boolean check =  checkWhenInsert(lyDoRequest);
+        if (check==true) {
             lyDoRepository.save(new LyDo(lyDoRequest));
-            return checkWhenInsert(lyDoRequest);
-        }else {
-            return checkWhenInsert(lyDoRequest);
+            return true;
         }
+        return false;
     }
     @Override
     public boolean update(LyDoRequest lyDoRequest) {
-        if (checkWhenInsert(lyDoRequest)==true) {
+        boolean check =  checkWhenInsert(lyDoRequest);
+        if (check==true) {
             lyDoRepository.save(new LyDo(lyDoRequest));
-            return checkWhenInsert(lyDoRequest);
-        }else {
-            return checkWhenInsert(lyDoRequest);
+            return true;
         }
+        return false;
+    }
+
+    @Override
+    public boolean updateTrangThaiLyDo(LyDoRequest lyDoRequest) {
+        lyDoRepository.save(new LyDo(lyDoRequest));
+        return true;
     }
 
     @Override
@@ -74,11 +79,11 @@ public class LyDoServiceImpl implements LyDoService {
 
 
     private boolean checkWhenInsert(LyDoRequest lyDoRequest) {
-        boolean check =false;
+        boolean check =true;
         String error = "";
         if (lyDoRepository.existsByTen(lyDoRequest.getTen())) {
             error += JsonString.errorToJsonObject("ten", "Lý Do Đã Tồn Tại");
-            check = true;
+            check = false;
         }
         if(!error.isBlank()) {
             throw new DuplicateException(JsonString.stringToJson(error));

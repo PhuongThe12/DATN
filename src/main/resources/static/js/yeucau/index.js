@@ -90,6 +90,7 @@ app.controller("yeuCauListController", function ($scope, $http, $window, $locati
             getData($scope.yeuCauSearch);
         }
     };
+
     // Hàm để định dạng ngày thành chuỗi "yyyy-MM-dd 00:00:00"
     function formatISOToJavaLocalDateTime(isoString) {
         // Chuyển đổi chuỗi ISO 8601 thành một định dạng có thể sử dụng trong Java
@@ -106,19 +107,19 @@ app.controller("yeuCauListController", function ($scope, $http, $window, $locati
     }
 
 // JavaScript trong Controller của AngularJS
-    $scope.searchByDate = function() {
+    $scope.searchByDate = function () {
         var ngayHienTai = new Date();
         ngayHienTai.setHours(0, 0, 0, 0); // Đặt thời gian về đầu ngày
 
         var ngayBatDau = new Date($scope.ngayBatDau);
         var ngayKetThuc = new Date($scope.ngayKetThuc);
 
-        if ( ngayBatDau > ngayHienTai) {
+        if (ngayBatDau > ngayHienTai) {
             toastr["error"]("Ngày bắt đầu không được lớn hơn ngày hiện tại!");
             return;
         }
 
-        if ( ngayKetThuc > ngayHienTai) {
+        if (ngayKetThuc > ngayHienTai) {
             toastr["error"]("Ngày kết thúc không được lớn hơn ngày hiện tại!");
             return;
         }
@@ -137,20 +138,20 @@ app.controller("yeuCauListController", function ($scope, $http, $window, $locati
         $scope.errorMessage = "";
         // Logic tìm kiếm ở đây
 
-        if($scope.ngayBatDau && !$scope.ngayKetThuc){
+        if ($scope.ngayBatDau && !$scope.ngayKetThuc) {
             $scope.yeuCauSearch.ngayKetThuc = null;
             $scope.yeuCauSearch.ngayBatDau = formatISOToJavaLocalDateTime($scope.ngayBatDau)
             getData($scope.yeuCauSearch)
-        } else if(!$scope.ngayBatDau && $scope.ngayKetThuc){
+        } else if (!$scope.ngayBatDau && $scope.ngayKetThuc) {
             $scope.yeuCauSearch.ngayBatDau = null;
             $scope.yeuCauSearch.ngayKetThuc = formatISOToJavaLocalDateTime($scope.ngayKetThuc)
             console.log($scope.yeuCauSearch)
             getData($scope.yeuCauSearch)
-        }else if($scope.ngayBatDau && $scope.ngayKetThuc){
+        } else if ($scope.ngayBatDau && $scope.ngayKetThuc) {
             $scope.yeuCauSearch.ngayBatDau = formatISOToJavaLocalDateTime($scope.ngayBatDau)
             $scope.yeuCauSearch.ngayKetThuc = formatISOToJavaLocalDateTime($scope.ngayKetThuc)
             getData($scope.yeuCauSearch)
-        }else {
+        } else {
             $scope.yeuCauSearch.ngayBatDau = null;
             $scope.yeuCauSearch.ngayKetThuc = null;
             getData($scope.yeuCauSearch)
@@ -172,6 +173,7 @@ app.controller("yeuCauListController", function ($scope, $http, $window, $locati
                 $scope.listYeuCau = response.data.content;
                 $scope.typeSearch = "1";
                 $scope.numOfPages = response.data.totalPages;
+                $scope.isLoading = false;
             })
             .catch(function (error) {
                 toastr["error"]("Lấy dữ liệu thất bại");
@@ -181,18 +183,23 @@ app.controller("yeuCauListController", function ($scope, $http, $window, $locati
 
     $scope.lyDo = {};
 
-    $scope.detailLyDo = function (lyDo) {
+    $scope.detailLyDo = function (lyDo,ten,trangThai) {
         $scope.lyDo = lyDo;
+        $scope.tenLyDo = ten;
+        $scope.trangThaiLyDo = trangThai;
     }
 
     $scope.updateLyDo = function () {
         if ($scope.lyDo.ten === '' || $scope.lyDo.ten == null) {
             toastr["error"]("Bạn chưa điều tên lý do!");
             return;
-        } else {
+        } else if( $scope.trangThaiLyDo == $scope.lyDo.trangThai ) {
             updateLyDo($scope.lyDo);
             $('#staticBackdrop').modal('show');
-            $scope.$apply();
+            $scope.lyDo = null;
+        }else{
+            updateTrangThaiLyDo($scope.lyDo);
+            $('#staticBackdrop').modal('show');
             $scope.lyDo = null;
         }
     }
@@ -204,19 +211,10 @@ app.controller("yeuCauListController", function ($scope, $http, $window, $locati
         } else {
             $scope.lyDo.trangThai = $scope.lyDo.trangThai == null ? 2 : $scope.lyDo.trangThai;
             addLyDo($scope.lyDo);
-            $scope.$apply();
             $scope.lyDo = null;
         }
     }
 
-
-    $scope.deletelyDo = function () {
-        $scope.lyDo.trangThai = 0;
-        updateLyDo($scope.lyDo);
-        $scope.$apply();
-        $('#staticBackdrop').modal('show');
-        $scope.lyDo = null;
-    }
 
     function getAllLyDo() {
         $scope.isLoading = true;
@@ -245,6 +243,20 @@ app.controller("yeuCauListController", function ($scope, $http, $window, $locati
         });
     }
 
+    function updateTrangThaiLyDo(lyDo) {
+        $scope.isLoading = true;
+        $http.put(host + '/rest/admin/ly-do/update-trang-thai', JSON.stringify(lyDo))
+            .then(function (response) {
+                $scope.isLoading = false;
+                if (response.data == true) {
+                    toastr["success"]("Đã cập nhật lý do!");
+                }
+            }).catch(function (error) {
+            toastr["error"]("" + error.data.ten);
+            $scope.isLoading = false;
+        });
+    }
+
     function addLyDo(lyDo) {
         $scope.isLoading = true;
         $http.post(host + '/rest/admin/ly-do/add', JSON.stringify(lyDo))
@@ -253,6 +265,7 @@ app.controller("yeuCauListController", function ($scope, $http, $window, $locati
                 if (response.data == true) {
                     toastr["success"]("Đã thêm mới lý do!");
                 }
+                getAllLyDo();
             }).catch(function (error) {
             toastr["error"]("" + error.data.ten);
             $scope.isLoading = false;
@@ -276,6 +289,7 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
             tinhTongTienHangTra();
             tinhTongTienHangDoi();
             getNhanVien($scope.yeuCau);
+
             console.log($scope.yeuCau)
             $scope.isLoading = false;
         })
@@ -288,7 +302,7 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
 
     function tinhTongTienThanhToan() {
         $scope.tongTienThanhToan = 0;
-        let tongTienThanhToan = $scope.tongTienHangTra - (($scope.tongTienHangDoi - $scope.tongTienGiamGia) + $scope.phiVanChuyen);
+        let tongTienThanhToan = ($scope.tongTienHangTra + $scope.phiVanChuyen) - ($scope.tongTienHangDoi - $scope.tongTienGiamGia);
         $scope.tongTienThanhToan = tongTienThanhToan > 0 ? tongTienThanhToan : Math.abs(tongTienThanhToan);
     }
 
@@ -454,7 +468,7 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
                     toastr["success"]("Đã xác nhận yêu cầu!");
                 }
                 $location.path("/list");
-                isLoading = false;
+                $scope.isLoading = false;
             })
             .catch(function (error) {
                 toastr["error"]("Xác nhận yêu cầu thất bại!");
@@ -462,6 +476,7 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
                     $scope.addYeuCauForm.hoaDon.$dirty = false;
                     $scope.errors = error.data;
                 }
+                $scope.isLoading = false;
             });
     }
 
@@ -472,14 +487,14 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
                 id: item.id,
                 ghiChu: item.ghiChu,
                 lyDo: item.lyDo.id,
-                tinhTrangSanPham: item.tinhTrangSanPham == null ? false : item.tinhTrangSanPham,
+                tinhTrangSanPham: !!item.tinhTrangSanPham, // Chuyển đổi sang boolean
                 bienTheGiayTra: item.hoaDonChiTiet.bienTheGiay.id,
             };
             return yeuCauChiTietRequest;
         });
         $scope.yeuCau.listYeuCauChiTiet = listYeuCauChiTietUpdate;
         $scope.yeuCau.hoaDon = $scope.hoaDon.id;
-        console.log( $scope.yeuCau)
+        console.log($scope.yeuCau)
 
         // Gửi yêu cầu POST đến máy chủ Spring Boot
         $http.put(host + '/rest/admin/yeu-cau/update', JSON.stringify($scope.yeuCau))
@@ -512,10 +527,12 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
             return yeuCauChiTietRequest;
         });
 
-        $scope.yeuCau.trangThai = 0;//trạng thái bbị hủy
+        $scope.yeuCau.trangThai = 0;//trạng thái bị hủy
         $scope.yeuCau.hoaDon = $scope.hoaDon.id;
 
         $scope.yeuCau.listYeuCauChiTiet = listYeuCauChiTietUncomfim;
+
+        console.log(JSON.stringify($scope.yeuCau))
 
         // Gửi yêu cầu POST đến máy chủ Spring Boot
         $http.put(host + '/rest/admin/yeu-cau/unconfirm', JSON.stringify($scope.yeuCau))
@@ -633,7 +650,7 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
             return;
         }
         for (let i = 1; i <= hoaDonChiTiet.soLuongTra; i++) {
-            let key = baseId+'.'+i;
+            let key = baseId + '.' + i;
             if (!$scope.mapYeuCauChiTiet.has(key)) {
                 let valueCopy = angular.copy(hoaDonChiTiet);
                 valueCopy.soLuongTra = 1;
@@ -702,8 +719,9 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
         let coPhanTuKhongHopLe = false;
 
         $scope.mapYeuCauChiTiet.forEach((yeuCauChiTiet, key) => {
+            console.log(yeuCauChiTiet)
             if (!yeuCauChiTiet.lyDo || !yeuCauChiTiet.ghiChu) {
-                toastr["error"]("Bạn chưa điền đủ thông tin lý do hoặc ghi chú cho sản phẩm có mã: " + key);
+                toastr["error"]("Bạn chưa điền đủ thông tin lý do hoặc ghi chú cho sản phẩm có mã: " + yeuCauChiTiet.hoaDonChiTiet.bienTheGiay.giayResponse.ten);
                 coPhanTuKhongHopLe = true;
             }
         });
@@ -762,7 +780,6 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
                 $scope.hoaDon = response.data;
                 console.log($scope.hoaDon)
                 $scope.listHoaDonChiTiet = response.data.listHoaDonChiTiet;
-                $scope.nguoiTao = getNhanVien();
                 $scope.isLoading = false;
             }).catch(function (error) {
             console.log(error);
@@ -777,21 +794,20 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
                 $scope.listLyDo = response.data;
             }).catch(function (error) {
             console.log(error);
-            toastr["error"]("Lấy dữ liệu thất bại");
+            toastr["error"]("Lấy lý do thất bại");
             throw error; // Đẩy lỗi để xử lý ở nơi gọi hàm
         });
     }
 
-    function getNhanVien(idNhanVien) {
-        $http.get(host + '/rest/admin/nhan-vien/', idNhanVien)
-            .then(function (response) {
-                return response.data;
-            }).catch(function (error) {
-            console.log(error);
-            toastr["error"]("Lấy dữ liệu thất bại");
-            throw error; // Đẩy lỗi để xử lý ở nơi gọi hàm
-        });
-    }
+
+    $http.get(host + '/session/get-staff')
+        .then(function (response) {
+            $scope.nguoiTao = response.data;
+        }).catch(function (error) {
+        console.log(error);
+        toastr["error"]("Lấy nhân viên thất bại");
+        throw error; // Đẩy lỗi để xử lý ở nơi gọi hàm
+    });
 
 
 });
@@ -799,14 +815,14 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
 
 app.controller("selectedHoaDonController", function ($scope, $http, $location, $routeParams) {
     $scope.isLoading = true, $scope.searchText;
-    $scope.hoaDonSearch = {},$scope.tongTienThanhToan = "0";
-    $scope.hoaDonSearch.currentPage = 1, $scope.hoaDonSearch.itemsPerPage = 5, $scope.hoaDonSearch.pageSize = 6, $scope.maxSize = 5, $scope.curPage = 1;
+    $scope.hoaDonSearch = {}, $scope.tongTienThanhToan = "0";
+    $scope.itemsPerPage = 5, $scope.hoaDonSearch.pageSize = 6, $scope.maxSize = 5, $scope.curPage = 1;
     $scope.typeSearch = "1", $scope.textSearch = '';
+
 
     $scope.$watch('curPage + numPerPage', function () {
         $scope.hoaDonSearch.currentPage = $scope.curPage;
         getData($scope.hoaDonSearch);
-        console.log($scope.hoaDonSearch)
     });
 
     $scope.searchHoaDon = function () {
@@ -874,19 +890,19 @@ app.controller("selectedHoaDonController", function ($scope, $http, $location, $
     }
 
 // JavaScript trong Controller của AngularJS
-    $scope.searchByDate = function() {
+    $scope.searchByDate = function () {
         var ngayHienTai = new Date();
         ngayHienTai.setHours(0, 0, 0, 0); // Đặt thời gian về đầu ngày
 
         var ngayBatDau = new Date($scope.ngayBatDau);
         var ngayKetThuc = new Date($scope.ngayKetThuc);
 
-        if ( ngayBatDau > ngayHienTai) {
+        if (ngayBatDau > ngayHienTai) {
             toastr["error"]("Ngày bắt đầu không được lớn hơn ngày hiện tại!");
             return;
         }
 
-        if ( ngayKetThuc > ngayHienTai) {
+        if (ngayKetThuc > ngayHienTai) {
             toastr["error"]("Ngày kết thúc không được lớn hơn ngày hiện tại!");
             return;
         }
@@ -905,19 +921,19 @@ app.controller("selectedHoaDonController", function ($scope, $http, $location, $
         $scope.errorMessage = "";
         // Logic tìm kiếm ở đây
 
-        if($scope.ngayBatDau && !$scope.ngayKetThuc){
+        if ($scope.ngayBatDau && !$scope.ngayKetThuc) {
             $scope.hoaDonSearch.ngayBatDau = formatISOToJavaLocalDateTime($scope.ngayBatDau)
             $scope.hoaDonSearch.ngayKetThuc = null;
             getData($scope.hoaDonSearch)
-        } else if(!$scope.ngayBatDau && $scope.ngayKetThuc){
+        } else if (!$scope.ngayBatDau && $scope.ngayKetThuc) {
             $scope.hoaDonSearch.ngayBatDau = null;
             $scope.hoaDonSearch.ngayKetThuc = formatISOToJavaLocalDateTime($scope.ngayKetThuc)
             getData($scope.hoaDonSearch)
-        }else if($scope.ngayBatDau && $scope.ngayKetThuc){
+        } else if ($scope.ngayBatDau && $scope.ngayKetThuc) {
             $scope.hoaDonSearch.ngayBatDau = formatISOToJavaLocalDateTime($scope.ngayBatDau)
             $scope.hoaDonSearch.ngayKetThuc = formatISOToJavaLocalDateTime($scope.ngayKetThuc)
             getData($scope.hoaDonSearch)
-        }else {
+        } else {
             $scope.hoaDonSearch.ngayBatDau = null;
             $scope.hoaDonSearch.ngayKetThuc = null;
             getData($scope.hoaDonSearch)
@@ -946,7 +962,7 @@ app.controller("selectedHoaDonController", function ($scope, $http, $location, $
     }
 
     $scope.searchByTotalMoney = function () {
-        if($scope.tongTienThanhToan == 0){
+        if ($scope.tongTienThanhToan == 0) {
             $scope.hoaDonSearch.tongThanhToanMin = null;
             $scope.hoaDonSearch.tongThanhToanMax = null;
         } else if ($scope.tongTienThanhToan == 1) {
@@ -989,19 +1005,18 @@ app.controller("selectedHoaDonController", function ($scope, $http, $location, $
 
     function getData(hoaDonSearch) {
         $scope.isLoading = true;
-        $http.post(host + '/rest/user/hoa-don/yeu-cau', JSON.stringify(hoaDonSearch))
+        $http.post(host + '/rest/admin/hoa-don/yeu-cau', JSON.stringify(hoaDonSearch))
             .then(function (response) {
                 $scope.listHoaDon = response.data.content;
                 $scope.numOfPages = response.data.totalPages;
                 $scope.isLoading = false;
             })
             .catch(function (error) {
-                toastr["error"]("Lấy dữ liệu thất bại");
+                console.log(error)
                 // window.location.href = feHost + '/trang-chu';
                 $scope.isLoading = false;
             });
     }
-
 
 
     $scope.selectedHoaDon = function (hoaDon) {

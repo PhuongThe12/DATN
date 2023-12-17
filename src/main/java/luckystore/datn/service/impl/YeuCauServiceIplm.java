@@ -102,11 +102,12 @@ public class YeuCauServiceIplm implements YeuCauService {
             if (ycctRequest.getLoaiYeuCauChiTiet() != 3) { // Nếu không bị hủy yêu câù chi tiết nào
 
                 //Kiểm tra giày lỗi
-                if (ycctRequest.getTinhTrangSanPham() == false) { //giày không lỗi
+                if (ycctRequest.getTinhTrangSanPham() == false) { //giày không
                     bienTheGiayTra.setSoLuong(bienTheGiayTra.getSoLuong() + 1);
                     bienTheGiayRepository.save(bienTheGiayTra);
                 } else if (ycctRequest.getTinhTrangSanPham() == true) { // giày lỗi
-                    bienTheGiayTra.setSoLuongLoi(bienTheGiayTra.getSoLuongLoi() + 1);
+                    int soLuongLoi = bienTheGiayTra.getSoLuongLoi() != null ? bienTheGiayTra.getSoLuongLoi() : 0;
+                    bienTheGiayTra.setSoLuongLoi(soLuongLoi + 1);
                     bienTheGiayRepository.save(bienTheGiayTra);
                 }
 
@@ -276,10 +277,11 @@ public class YeuCauServiceIplm implements YeuCauService {
 
             for (HoaDonChiTiet hoaDonChiTietDoi : listHoaDonChiTietDoi) {
                 hoaDonChiTietDoi.setHoaDon(hoaDonDoi);
-                if(hoaDonChiTietDoi.getTrangThai() == 1){
+                if (hoaDonChiTietDoi.getTrangThai() == 1) {
                     BigDecimal soLuong = new BigDecimal(hoaDonChiTietDoi.getSoLuong());
                     BigDecimal donGia = hoaDonChiTietDoi.getDonGia();
-                    tienThanhToan = tienThanhToan.add(soLuong.multiply(donGia));}
+                    tienThanhToan = tienThanhToan.add(soLuong.multiply(donGia));
+                }
             }
 
             ChiTietThanhToan chiTietThanhToan = ChiTietThanhToan.builder()
@@ -292,7 +294,7 @@ public class YeuCauServiceIplm implements YeuCauService {
 
             hoaDonDoi.setChiTietThanhToans(chiTietThanhToans);
 
-           return hoaDonRepository.save(hoaDonDoi);
+            return hoaDonRepository.save(hoaDonDoi);
         }
         return null;
     }
@@ -348,7 +350,8 @@ public class YeuCauServiceIplm implements YeuCauService {
                 bienTheGiayRepository.save(bienTheGiayTra);
             } else if (yeuCauChiTiet.getTinhTrangSanPham() == false && ycctRequest.getTinhTrangSanPham() == true) {
                 BienTheGiay bienTheGiayTra = bienTheGiayRepository.findById(ycctRequest.getBienTheGiayTra()).orElse(null);
-                bienTheGiayTra.setSoLuongLoi(bienTheGiayTra.getSoLuongLoi() + 1);
+                int soLuongLoi = bienTheGiayTra.getSoLuongLoi() != null ? bienTheGiayTra.getSoLuongLoi() : 0;
+                bienTheGiayTra.setSoLuongLoi(soLuongLoi + 1);
                 bienTheGiayTra.setSoLuong(bienTheGiayTra.getSoLuong() - 1);
                 bienTheGiayRepository.save(bienTheGiayTra);
             }
@@ -394,7 +397,7 @@ public class YeuCauServiceIplm implements YeuCauService {
                 .phiShip(BigDecimal.ZERO)
                 .ngayTao(ngayHienTai)
                 .ngaySua(ngayHienTai)
-                .ghiChu("Trả hàng nhanh - "+yeuCauRequest.getGhiChu())
+                .ghiChu("Trả hàng nhanh - " + yeuCauRequest.getGhiChu())
                 .nguoiTao(nhanVien.getId())
                 .nguoiSua(nhanVien.getId())
                 .build();
@@ -433,7 +436,7 @@ public class YeuCauServiceIplm implements YeuCauService {
                 .ngayTao(ngayHienTai)
                 .kenhBan(KenhBan.OFFLINE)
                 .trangThai(TrangThaiHoaDon.DA_THANH_TOAN)
-                .ghiChu(""+yeuCauSaved.getId())
+                .ghiChu("" + yeuCauSaved.getId())
                 .loaiHoaDon(LoaiHoaDon.HOA_DON_TRA)
                 .uuDai(0)
                 .tienGiam(BigDecimal.ZERO)

@@ -44,9 +44,7 @@ public class HoaDonChiTietResponse {
             this.trangThai = hoaDonChiTiet.getTrangThai();
             this.soLuongTra = hoaDonChiTiet.getSoLuongTra();
             this.ghiChu = hoaDonChiTiet.getGhiChu();
-            if (hoaDonChiTiet.getSoLuongTra() != null) {
-                this.soLuongDuocTra = hoaDonChiTiet.getSoLuong() - hoaDonChiTiet.getSoLuongTra();
-            }
+            this.soLuongDuocTra = hoaDonChiTiet.getSoLuongTra() == null ? hoaDonChiTiet.getSoLuong() : hoaDonChiTiet.getSoLuong() - hoaDonChiTiet.getSoLuongTra();
         }
     }
 
