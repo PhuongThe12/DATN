@@ -110,8 +110,7 @@ app.controller('hoaDonChoController', function ($scope, $http, $location) {
             $scope.hoaDonDetail.tongTru = hoaDon.tienGiam ? hoaDon.tienGiam : 0;
             $scope.hoaDonDetail.tienShip = hoaDon.phiShip ? hoaDon.phiShip : 0;
 
-            $scope.hoaDonDetail.tongCong = $scope.hoaDonDetail.conLai + $scope.hoaDonDetail.tienShip + $scope.hoaDonDetail.tongTru;
-            console.log($scope.hoaDons, $scope.hoaDonDetail.phiShip, $scope.hoaDonDetail.tongCong);
+            $scope.hoaDonDetail.tongCong = $scope.hoaDonDetail.conLai + $scope.hoaDonDetail.tienShip;
 
         } else {
             toastr["error"]("Lấy dữ liệu thất bại. Vui lòng thử lại");
