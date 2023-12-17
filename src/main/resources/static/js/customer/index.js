@@ -303,14 +303,14 @@ app.controller('navbarController', function ($rootScope, $scope, $http, $locatio
         $http.post(host + '/api/authentication/signup', $scope.khachHangR)
             .then(function (response) {
                 toastr["success"]("Đăng ký thành công vui lòng kiểm tra email để kích hoạt tài khoản");
+                $http.get(host + "/rest/account/confirm?email=" + $scope.khachHangR.email)
+                document.getElementById('closeModalR').click();
+                $scope.khachHangR = {gioiTinh: true, hoTen: '', soDienThoai: '', matKhau: '', email: ''};
             })
             .catch(function (error) {
                 toastr["error"](error.data.email);
             });
 
-
-        $http.get(host + "/rest/account/confirm?email=" + $scope.khachHangR.email)
-        document.getElementById('closeModalR').click();
     }
 
     $scope.resetTaiKhoan = {};
