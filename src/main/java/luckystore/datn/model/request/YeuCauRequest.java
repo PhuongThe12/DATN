@@ -42,8 +42,6 @@ public class YeuCauRequest {
 
     private BigDecimal phiShip;
 
-    private BigDecimal tienKhachTra;
-
     private List<YeuCauChiTietRequest> listYeuCauChiTiet;
 
 }

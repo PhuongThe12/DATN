@@ -914,7 +914,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies, $
 
                 outerDiv.addEventListener('click', () => {
                     $scope.giayChoosed = {};
-                    $scope.giayDetail = {};
+                    $scope.giayDetail = {ten: productData.ten};
                     input.checked = true;
                     productInfoContainer.innerHTML = '';
                     sizeButtons.innerHTML = '';

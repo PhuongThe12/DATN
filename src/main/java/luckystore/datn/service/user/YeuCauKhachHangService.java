@@ -10,7 +10,8 @@ import java.util.List;
 
 public interface YeuCauKhachHangService {
     HoaDonYeuCauRespone getOneHoaDonYeuCauRespone(Long id);
-
     YeuCauResponse addYeuCau(YeuCauRequest yeuCauRequest);
+    YeuCauResponse updateYeuCau(YeuCauRequest yeuCauRequest);
+    YeuCauResponse cancelYeuCau(YeuCauRequest yeuCauRequest);
     List<YeuCauResponse> getListYeuCau(Long idHoaDon);
 }

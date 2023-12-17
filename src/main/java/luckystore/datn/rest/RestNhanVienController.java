@@ -13,6 +13,7 @@ import luckystore.datn.service.impl.EmailSenderService;
 import luckystore.datn.service.impl.SystemHistoryLogger;
 import luckystore.datn.util.JsonString;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -50,12 +51,18 @@ public class RestNhanVienController {
 
     @PostMapping
     public ResponseEntity addNhanVien(@Valid @RequestBody NhanVienRequest nhanVienRequest, BindingResult result) {
-        System.out.println(nhanVienRequest.toString());
         ResponseEntity errorJson = getErrorJson(result);
         if (errorJson != null) return errorJson;
 
         return new ResponseEntity(nhanVienService.addNhanVien(nhanVienRequest), HttpStatus.OK);
     }
+
+    @PutMapping("/reset-password/{id}")
+    public ResponseEntity<?> resetPassword(@PathVariable("id")Long id) {
+        nhanVienService.resetPassword(id);
+        return ResponseEntity.ok(HttpEntity.EMPTY);
+    }
+
 
     @PutMapping("/{id}")
     public ResponseEntity updateNhanVien(@PathVariable("id") Long id,

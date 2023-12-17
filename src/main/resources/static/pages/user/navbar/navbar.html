@@ -37,27 +37,22 @@
 
         <div class=" collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav ms-auto ">
-<!--                <a style="transform: translateY(50%); position: relative"-->
-<!--                   href="http://localhost:8080/home#/thong-tin-tai-khoan">-->
-<!--                    <strong style="position: absolute; right: 120%; top: -50%; transform: translateY(50%);">{{-->
-<!--                        khachHang.hoTen }}</strong>-->
-<!--                    <span>-->
-<!--                        <i class="far fa-user"-->
-<!--                           data-bs-toggle="tooltip"-->
-<!--                           data-bs-placement="top"-->
-<!--                           title="Quản lý tài khoản"-->
-<!--                           style="color: black;font-size: 23px; transform: translateY(-50%);"></i>-->
-<!--                    </span>-->
+                <a ng-show="khachHang.hoTen" style="transform: translateY(50%); position: relative"
+                   href="http://localhost:8080/home#/thong-tin-tai-khoan">
+                    <strong style="position: absolute; right: 120%; top: -50%; transform: translateY(50%);">{{
+                        khachHang.hoTen }}</strong>
+                    <span>
+                        <i class="far fa-user"
+                           data-bs-toggle="tooltip"
+                           data-bs-placement="top"
+                           title="Quản lý tài khoản"
+                           style="color: black;font-size: 23px; transform: translateY(-50%);"></i>
+                    </span>
+                </a>
 
-<!--                </a>-->
-
-                <div class="ps-3">
-                    <a ng-if="khachHang.hoTen" href="#/thong-tin-tai-khoan"> {{khachHang.hoTen}} <i class="far fa-user" data-bs-toggle="tooltip" data-bs-placement="top"
-                                                       title="Quản lý tài khoản"
-                                                       style="color: black;font-size: 23px;"></i></a>
-                </div>
-                <div class="ps-3">
-                    <a href="#/tra-cuu-don-hang" data-bs-toggle="tooltip" data-bs-placement="top"
+                <div class="ps-3" style="transform: translateY(50%);">
+                    <a href="http://localhost:8080/home#/tra-cuu-don-hang" data-bs-toggle="tooltip"
+                       data-bs-placement="top"
                        title="Tra cứu thông tin hóa đơn"><i class="fas fa-file-invoice"
                                                             style="color: black;font-size: 23px;"></i></a>
                 </div>

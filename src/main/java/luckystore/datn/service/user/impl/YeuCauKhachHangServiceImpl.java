@@ -1,6 +1,8 @@
 package luckystore.datn.service.user.impl;
 
 import luckystore.datn.entity.*;
+import luckystore.datn.infrastructure.constraints.TrangThaiYeuCau;
+import luckystore.datn.infrastructure.constraints.TrangThaiYeuCauChiTiet;
 import luckystore.datn.infrastructure.security.session.SessionService;
 import luckystore.datn.model.request.YeuCauChiTietRequest;
 import luckystore.datn.model.request.YeuCauRequest;
@@ -19,6 +21,8 @@ import java.util.List;
 public class YeuCauKhachHangServiceImpl implements YeuCauKhachHangService {
     private final HoaDonRepository hoaDonRepository;
     private final YeuCauRepository yeuCauRepository;
+
+    private final YeuCauChiTietRepository yeuCauChiTietRepository;
     private final HoaDonChiTietRepository hoaDonChiTietRepository;
     private final LyDoRepository lyDoRepository;
 
@@ -28,9 +32,10 @@ public class YeuCauKhachHangServiceImpl implements YeuCauKhachHangService {
 
 
     @Autowired
-    public YeuCauKhachHangServiceImpl(HoaDonRepository hoaDonRepository, YeuCauRepository yeuCauRepository, HoaDonChiTietRepository hoaDonChiTietRepository, LyDoRepository lyDoRepository, SessionService sessionService, BienTheGiayRepository bienTheGiayRepository) {
+    public YeuCauKhachHangServiceImpl(HoaDonRepository hoaDonRepository, YeuCauRepository yeuCauRepository, YeuCauChiTietRepository yeuCauChiTietRepository, HoaDonChiTietRepository hoaDonChiTietRepository, LyDoRepository lyDoRepository, SessionService sessionService, BienTheGiayRepository bienTheGiayRepository) {
         this.hoaDonRepository = hoaDonRepository;
         this.yeuCauRepository = yeuCauRepository;
+        this.yeuCauChiTietRepository = yeuCauChiTietRepository;
         this.hoaDonChiTietRepository = hoaDonChiTietRepository;
         this.lyDoRepository = lyDoRepository;
         this.sessionService = sessionService;
@@ -59,8 +64,68 @@ public class YeuCauKhachHangServiceImpl implements YeuCauKhachHangService {
         yeuCauSave.setListYeuCauChiTiet(yeuCauChiTietList);
         return new YeuCauResponse(yeuCauRepository.save(yeuCauSave));
     }
+
+    @Override
+    public YeuCauResponse updateYeuCau(YeuCauRequest yeuCauRequest) {
+        YeuCau yeuCauSave = yeuCauRepository.findById(yeuCauRequest.getId()).orElse(null);
+        //ngày sửa
+        yeuCauSave.setNgaySua(LocalDateTime.now());
+
+        yeuCauSave.setGhiChu(yeuCauRequest.getGhiChu());
+
+        List<YeuCauChiTiet> yeuCauChiTietList = new ArrayList<>();
+        for (YeuCauChiTietRequest ycct: yeuCauRequest.getListYeuCauChiTiet()) {
+            HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findById(ycct.getHoaDonChiTiet()).orElse(null);
+            hoaDonChiTiet.setSoLuongTra(hoaDonChiTiet.getSoLuongTra()-1);
+            hoaDonChiTietRepository.save(hoaDonChiTiet);
+            LyDo lyDo = lyDoRepository.findById(ycct.getLyDo()).orElse(null);
+            BienTheGiay bienTheGiayDoi = ycct.getBienTheGiay() == null ? null : bienTheGiayRepository.findById(ycct.getBienTheGiay()).orElse(null);
+            YeuCauChiTiet yeuCauChiTiet = YeuCauChiTiet.builder()
+                    .id(ycct.getId())
+                    .yeuCau(yeuCauSave)
+                    .hoaDonChiTiet(hoaDonChiTiet)
+                    .bienTheGiay(bienTheGiayDoi)
+                    .lyDo(lyDo)
+                    .tienGiam(ycct.getTienGiam())
+                    .thanhTien(ycct.getThanhTien())
+                    .trangThai(ycct.getTrangThai())
+                    .tinhTrangSanPham(false)
+                    .loaiYeuCauChiTiet(ycct.getLoaiYeuCauChiTiet())
+                    .ghiChu(ycct.getGhiChu())
+                    .build();
+            yeuCauChiTietRepository.save(yeuCauChiTiet);
+        }
+
+        return new YeuCauResponse(yeuCauRepository.save(yeuCauSave));
+    }
+
+    @Override
+    public YeuCauResponse cancelYeuCau(YeuCauRequest yeuCauRequest) {
+        YeuCau yeuCauSaved = yeuCauRepository.findById(yeuCauRequest.getId()).orElse(null);
+        //ngày từ chối
+        yeuCauSaved.setNgaySua(LocalDateTime.now());
+        //người sửa
+        //người từ chối
+        yeuCauSaved.setGhiChu(yeuCauRequest.getGhiChu());
+        yeuCauSaved.setTrangThai(TrangThaiYeuCau.BI_HUY);
+
+        for (YeuCauChiTietRequest ycctRequest : yeuCauRequest.getListYeuCauChiTiet()) {
+            YeuCauChiTiet yeuCauChiTiet = yeuCauChiTietRepository.findById(ycctRequest.getId()).orElse(null);
+            yeuCauChiTiet.setLoaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet());
+            yeuCauChiTiet.setTrangThai(TrangThaiYeuCauChiTiet.HUY_TRA);
+            yeuCauChiTiet.setTinhTrangSanPham(ycctRequest.getTinhTrangSanPham());
+            yeuCauChiTietRepository.save(yeuCauChiTiet);
+            HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findById(ycctRequest.getHoaDonChiTiet()).orElse(null);
+            hoaDonChiTiet.setSoLuongTra(hoaDonChiTiet.getSoLuongTra() - 1);
+            hoaDonChiTietRepository.save(hoaDonChiTiet);
+        }
+
+        return new YeuCauResponse(yeuCauRepository.save(yeuCauSaved));
+    }
+
     @Override
     public List<YeuCauResponse> getListYeuCau(Long idHoaDon) {
         return yeuCauRepository.getListYeuCau(idHoaDon);
     }
+
 }

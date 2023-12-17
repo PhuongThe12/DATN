@@ -394,13 +394,13 @@ public class YeuCauServiceIplm implements YeuCauService {
                 .phiShip(BigDecimal.ZERO)
                 .ngayTao(ngayHienTai)
                 .ngaySua(ngayHienTai)
-                .ghiChu(yeuCauRequest.getGhiChu())
+                .ghiChu("Trả hàng nhanh - "+yeuCauRequest.getGhiChu())
                 .nguoiTao(nhanVien.getId())
                 .nguoiSua(nhanVien.getId())
-                .tienKhachTra(yeuCauRequest.getTienKhachTra())
                 .build();
 
         List<YeuCauChiTiet> listYeuCauChiTiet = new ArrayList<>();
+
         for (YeuCauChiTietRequest ycct : yeuCauRequest.getListYeuCauChiTiet()) {
             HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findById(ycct.getHoaDonChiTiet()).orElse(null);
             LyDo lyDo = lyDoRepository.findById(ycct.getLyDo()).orElse(null);
