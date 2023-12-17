@@ -487,7 +487,7 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
             } else {
                 var gioHangFromCookies = localStorage.getItem('gioHang') || '[]';
                 $scope.gioHang = JSON.parse(gioHangFromCookies);
-
+                console.log($scope.gioHang);
                 var giaTriCanThem = {idBienTheGiay: $scope.giayChoosed.id, soLuong: $scope.soLuongMua};
 
                 var tonTai = kiemTraTonTai($scope.gioHang, giaTriCanThem.idBienTheGiay);
@@ -888,6 +888,7 @@ app.controller('cartProductController', function ($scope, $http, $location, $coo
         $http.post("http://localhost:8080/rest/admin/giay/bien-the/get-all-by-list-id", resultJson)
             .then(function (response) {
                 $scope.listBienTheGiayLocalStorage = response.data;
+                console.log($scope.listBienTheGiayLocalStorage);
                 $scope.gioHang.forEach(function (item1) {
                     var correspondingObject = $scope.listBienTheGiayLocalStorage.find(function (item2) {
                         return item2.id === item1.idBienTheGiay;

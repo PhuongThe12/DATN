@@ -439,14 +439,14 @@ public class GiayServiceImpl implements GiayService {
             giayResponses = new PageImpl<>(new ArrayList<>(giayResponseList), giayResponsesX.getPageable(), giayResponseList.size());
             giayResponses.getContent().forEach(response -> {
                 giayResponsesX.getContent().forEach(response2 -> {
-                    if(Objects.equals(response.getId(), response2.getId())) {
-                       response.setSoLuongThongKe(response2.getSoLuongThongKe());
+                    if (Objects.equals(response.getId(), response2.getId())) {
+                        response.setSoLuongThongKe(response2.getSoLuongThongKe());
                     }
                 });
             });
-        } else if(giaySearch.getTrangThai() == 2) {
+        } else if (giaySearch.getTrangThai() == 2) {
             giayResponses = giayRepository.findAllByKhachHang(giaySearch, pageable);
-        }else {
+        } else {
             giayResponses = giayRepository.findAllBySearch(giaySearch, pageable);
         }
         Set<Long> ids = new HashSet<>();
@@ -1029,7 +1029,24 @@ public class GiayServiceImpl implements GiayService {
 
     @Override
     public List<BienTheGiayResponse> getBienTheGiayByListId(List<Long> ids) {
-        return bienTheGiayRepository.findAllByIdIn(ids);
+        List<BienTheGiayResponse> listNotCheckKhuyenMai = bienTheGiayRepository.findAllByIdIn(ids);
+        List<BienTheGiayResponse> listCheckKhuyenMai = bienTheGiayRepository.bienTheGiay(ids);
+        System.out.println(listNotCheckKhuyenMai.size() + "abc" + listCheckKhuyenMai.size());
+        for (BienTheGiayResponse bienTheGiayResponse : listNotCheckKhuyenMai) {
+            boolean tonTai = false;
+            for (BienTheGiayResponse bienTheGiayResponseKhuyenMai : listCheckKhuyenMai) {
+                if (bienTheGiayResponse.getId().equals(bienTheGiayResponseKhuyenMai.getId())) {
+                  tonTai = true;
+                  bienTheGiayResponse.setKhuyenMai(bienTheGiayResponseKhuyenMai.getKhuyenMai());
+                  bienTheGiayResponse.setPhanTramGiam(bienTheGiayResponseKhuyenMai.getPhanTramGiam());
+                }
+            }
+            if(!tonTai){
+                bienTheGiayResponse.setKhuyenMai(0);
+                bienTheGiayResponse.setPhanTramGiam(0);
+            }
+        }
+        return listNotCheckKhuyenMai;
     }
 
     @Override
