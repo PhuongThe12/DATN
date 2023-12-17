@@ -38,6 +38,7 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
             })
     } else {
         $window.location.href = '/home';
+        return ;
     }
 
     $scope.toggleShowPassUpdate = function (idDom) {

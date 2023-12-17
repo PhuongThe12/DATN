@@ -1,15 +1,7 @@
 package luckystore.datn.service.user.impl;
 
 import jakarta.mail.MessagingException;
-import luckystore.datn.entity.BienTheGiay;
-import luckystore.datn.entity.ChiTietThanhToan;
-import luckystore.datn.entity.DieuKien;
-import luckystore.datn.entity.GioHang;
-import luckystore.datn.entity.HangKhachHang;
-import luckystore.datn.entity.HoaDon;
-import luckystore.datn.entity.HoaDonChiTiet;
-import luckystore.datn.entity.KhachHang;
-import luckystore.datn.entity.PhieuGiamGia;
+import luckystore.datn.entity.*;
 import luckystore.datn.exception.ConflictException;
 import luckystore.datn.exception.InvalidIdException;
 import luckystore.datn.exception.NotFoundException;
@@ -17,22 +9,14 @@ import luckystore.datn.infrastructure.constraints.ErrorMessage;
 import luckystore.datn.infrastructure.constraints.TrangThaiHoaDon;
 import luckystore.datn.model.request.BienTheGiayGioHangRequest;
 import luckystore.datn.model.request.GioHangThanhToanRequest;
+import luckystore.datn.model.request.HoaDonDiaChiNhanRequest;
 import luckystore.datn.model.request.HoaDonThanhToanTaiQuayRequest;
 import luckystore.datn.model.response.BienTheGiayResponse;
 import luckystore.datn.model.response.GioHangChiTietResponse;
 import luckystore.datn.model.response.GioHangResponse;
 import luckystore.datn.model.response.HoaDonResponse;
-import luckystore.datn.repository.BienTheGiayRepository;
-import luckystore.datn.repository.DieuKienRepository;
-import luckystore.datn.repository.GioHangChiTietRepository;
-import luckystore.datn.repository.GioHangRepository;
-import luckystore.datn.repository.HangKhachHangRepository;
-import luckystore.datn.repository.HoaDonChiTietRepository;
-import luckystore.datn.repository.HoaDonRepository;
-import luckystore.datn.repository.KhachHangRepository;
-import luckystore.datn.repository.KichThuocRepository;
-import luckystore.datn.repository.MauSacRepository;
-import luckystore.datn.repository.PhieuGiamGiaRepository;
+import luckystore.datn.model.response.print.HoaDonPrintResponse;
+import luckystore.datn.repository.*;
 import luckystore.datn.service.impl.EmailSenderService;
 import luckystore.datn.service.user.HoaDonKhachHangService;
 import luckystore.datn.util.JsonString;
@@ -42,11 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
@@ -87,6 +67,9 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
     @Autowired
     PhieuGiamGiaRepository phieuGiamGiaRepository;
 
+    @Autowired
+    PhieuGiamGiaChiTietRepository phieuGiamGiaChiTietRepository;
+
     private static GioHangChiTietResponse getObjectWithId(List<GioHangChiTietResponse> list, Long id) {
         for (GioHangChiTietResponse obj : list) {
             if (Objects.equals(obj.getBienTheGiay().getId(), id)) {
@@ -107,7 +90,8 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
 
         if (gioHangThanhToanRequest.getKhachHang() == null) {
             subtractSoLuongGiay(hoaDonChiTiets);
-            return new HoaDonResponse(hoaDonRepository.save(hoaDon));
+            hoaDon = hoaDonRepository.save(hoaDon);
+            return new HoaDonResponse(hoaDon);
         } else {
             checkKhuyenMaiSanPham(gioHangThanhToanRequest);
             checkKhuyenMaiKhachHang(gioHangThanhToanRequest);
@@ -116,8 +100,15 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
             }
             subtractSoLuongGiay(hoaDonChiTiets);
             hoaDon = hoaDonRepository.save(hoaDon);
+            if (gioHangThanhToanRequest.getPhieuGiamGia() != null) {
+                PhieuGiamGiaChiTiet phieuGiamGiaChiTiet = getPhieuGiamGiaChiTiet(new PhieuGiamGiaChiTiet(), gioHangThanhToanRequest, hoaDon);
+                phieuGiamGiaChiTietRepository.save(phieuGiamGiaChiTiet);
 
-//            emailSenderService.sendEmailOrder("quanchun11022@gmail.com","abc",generateHtmlTable(hoaDonChiTiets),null);
+                PhieuGiamGia phieuGiamGia = phieuGiamGiaRepository.findById(gioHangThanhToanRequest.getPhieuGiamGia().getId()).get();
+                phieuGiamGia.setSoLuongPhieu(phieuGiamGia.getSoLuongPhieu() - 1);
+                phieuGiamGiaRepository.save(phieuGiamGia);
+            }
+
 
             List<GioHangChiTietResponse> bienTheGiayResponseList = gioHangChiTietRepository.findGioHangChiTietByIdGioHang(gioHangThanhToanRequest.getId());
             for (BienTheGiayGioHangRequest bienTheGiayRequest : gioHangThanhToanRequest.getBienTheGiayRequests()) {
@@ -146,6 +137,16 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         });
 
         bienTheGiayRepository.saveAll(bienTheGiays);
+    }
+
+    private PhieuGiamGiaChiTiet getPhieuGiamGiaChiTiet(PhieuGiamGiaChiTiet phieuGiamGiaChiTiet, GioHangThanhToanRequest gioHangThanhToanRequest, HoaDon hoaDon) {
+        phieuGiamGiaChiTiet.setIdHoaDon(hoaDon);
+        phieuGiamGiaChiTiet.setIdPhieuGiamGia(gioHangThanhToanRequest.getPhieuGiamGia());
+        phieuGiamGiaChiTiet.setGiaTruocGiam(gioHangThanhToanRequest.getTongTien());
+        phieuGiamGiaChiTiet.setGiaSauGiam(gioHangThanhToanRequest.getTongTien().subtract(gioHangThanhToanRequest.getTongTienPhieuGiamGia()));
+        phieuGiamGiaChiTiet.setNgayTao(LocalDateTime.now());
+        phieuGiamGiaChiTiet.setTrangThai(1);
+        return phieuGiamGiaChiTiet;
     }
 
     @Override
@@ -203,6 +204,31 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         });
         hoaDonRepository.save(hoaDon);
         return hoaDon.getId();
+    }
+
+    @Override
+    public HoaDonResponse sendMailHoaDon(Long idHoaDon) throws MessagingException {
+        HoaDon hoaDon = hoaDonRepository.findById(idHoaDon).get();
+        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findAllByIdHoaDon(idHoaDon);
+        Set<HoaDonChiTiet> linkedHashSet = new LinkedHashSet<>(hoaDonChiTietList);
+        emailSenderService.sendEmailOrder(hoaDon.getEmail(), "Thông tin đơn hàng", generateHtmlTable(linkedHashSet, hoaDon), null);
+
+        return new HoaDonResponse(hoaDon);
+    }
+
+    @Override
+    public HoaDonResponse capNhatDiaChiNhan(HoaDonDiaChiNhanRequest hoaDonDiaChiNhanRequest) {
+        HoaDon hoaDon = hoaDonRepository.findById(hoaDonDiaChiNhanRequest.getId()).get();
+        hoaDon.setSoDienThoaiNhan(hoaDonDiaChiNhanRequest.getSoDienThoaiNhan());
+        hoaDon.setDiaChiNhan(hoaDonDiaChiNhanRequest.getDiaChiNhan());
+        hoaDon.setPhiShip(hoaDonDiaChiNhanRequest.getPhiShip());
+
+        return new HoaDonResponse(hoaDonRepository.save(hoaDon));
+    }
+
+    @Override
+    public HoaDonPrintResponse getThanhToanChiTiet(Long idHoaDon) {
+        return hoaDonRepository.getThanhToanChiTiet(idHoaDon);
     }
 
     private HoaDon getHoaDon(HoaDon hoaDon, GioHangThanhToanRequest gioHangThanhToanRequest) {
@@ -334,7 +360,7 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         HangKhachHang hangKhachHang = hangKhachHangRepository.findById(gioHangThanhToanRequest.getKhachHang()
                         .getHangKhachHang().getId())
                 .orElseThrow(() -> new NotFoundException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Hạng khách hàng không tồn tại !"))));
-        System.out.println(phieuGiamGia.getDoiTuongApDung().getId()+ " - " + gioHangThanhToanRequest.getKhachHang().getHangKhachHang().getId());
+        System.out.println(phieuGiamGia.getDoiTuongApDung().getId() + " - " + gioHangThanhToanRequest.getKhachHang().getHangKhachHang().getId());
         if (!gioHangThanhToanRequest.getKhachHang().getHangKhachHang().getId().equals(phieuGiamGia.getDoiTuongApDung().getId())) {
             throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("phieuGiamGiaError", "Hạng khách hàng không phù hợp , vui lòng kiểm tra lại !")));
         }
@@ -411,8 +437,13 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         }
     }
 
-    public String generateHtmlTable(Set<HoaDonChiTiet> hoaDonChiTiets) {
+    public String generateHtmlTable(Set<HoaDonChiTiet> hoaDonChiTiets, HoaDon hoaDon) {
         StringBuilder htmlTable = new StringBuilder();
+
+        Long idHoaDon = hoaDon.getId();
+        String soDienThoai = hoaDon.getSoDienThoaiNhan().substring(hoaDon.getSoDienThoaiNhan().length() - 4);
+
+        htmlTable.append("<p>Tra cứu đơn hàng <a href=" + "http://localhost:8080/home#/tra-cuu-don-hang?maHD=" + hoaDon.getId() + "&sdt=" + soDienThoai + ">tại đây</a></p>");
 
         htmlTable.append("<table border='1'>");
 
@@ -433,6 +464,8 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         }
 
         htmlTable.append("</table>");
+
+
         return htmlTable.toString();
     }
 
