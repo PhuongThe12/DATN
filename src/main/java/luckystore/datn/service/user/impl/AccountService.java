@@ -81,7 +81,7 @@ public class AccountService {
         taiKhoan.setPasswordToken(token);
 
         taiKhoan = taiKhoanRepository.save(taiKhoan);
-        sendEmail(taiKhoan.getId(), email, taiKhoan.getPasswordToken(), 2);
+        sendEmail(taiKhoan.getId(), taiKhoan.getTenDangNhap(), taiKhoan.getPasswordToken(), 2);
     }
 
     private String getContent(Long id, String token) {
@@ -188,7 +188,8 @@ public class AccountService {
         taiKhoan.setPasswordToken(token);
         taiKhoan = taiKhoanRepository.save(taiKhoan);
 
-        sendEmail(taiKhoan.getId(), email, taiKhoan.getPasswordToken(), -1);
+        sendEmail(taiKhoan.getId(), taiKhoan.getTenDangNhap(), taiKhoan.getPasswordToken(), -1);
+        System.out.println("Send: " + taiKhoan.getId() + ", " + email + ", " + taiKhoan.getPasswordToken());
     }
 
     public String find(String email, String sdt) {

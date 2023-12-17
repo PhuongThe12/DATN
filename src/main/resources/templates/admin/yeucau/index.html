@@ -42,14 +42,94 @@
 
 <div class="page-flex">
 
-    <div ng-include="'/pages/admin/nav/aside.html'"></div>
+    <aside class="sidebar" style="max-width: fit-content">
+        <div class="sidebar-start">
+            <div class="sidebar-head">
+                <a href="http://localhost:8080/admin/ban-hang#/home" class="logo-wrapper" title="Home">
+                    <span class="sr-only">Home</span>
+                    <img style="    border-radius: 10px;width: 35px;margin-right: 6px;" src="/img/logo_datn.png" alt="">
+                    <div class="logo-text">
+                        <span class="logo-title">LuckyStore</span>
+                        <span class="logo-subtitle"></span>
+                    </div>
 
-    <div class="main-wrapper" ng-controller="navbarAdminController">
-        <main class="main">
-            <div ng-view></div>
-        </main>
+                </a>
+                <button class="sidebar-toggle transparent-btn" title="Menu" type="button">
+                    <span class="sr-only">Toggle menu</span>
+                    <i class="far icon fa-caret-square-left"></i>
+                </button>
+            </div>
+            <div class="sidebar-body">
+                <span class="system-menu__title">Quản Lý</span>
+                <ul class="sidebar-body-menu">
+                    <li>
+                        <a class="active" href="http://localhost:8080/admin/tong-quan#/home"><i
+                                class="icon fas fa-th-large"></i></span>Tổng quan</a>
+                    </li>
+                </ul>
+                <span class="system-menu__title">Bán Hàng</span>
+                <ul class="sidebar-body-menu">
+                    <li>
+                        <a href="http://localhost:8080/admin/ban-hang#/home"><i class="icon fas fa-vote-yea"></i></span>
+                            Máy POS</a>
+                    </li>
+
+                    <li>
+                        <a class="show-cat-btn" href="##">
+                            <i class="icon fas fa-file-invoice"></i></span>Hóa Đơn
+                            <span class="category__btn transparent-btn" title="Open list">
+                                    <span class="sr-only">Open list</span>
+                                    <i class="icon fas fa-angle-down"></i>
+                                </span>
+                        </a>
+                        <ul class="cat-sub-menu">
+
+                            <li>
+                                <a href="http://localhost:8080/admin/hoa-don#/hoa-don">Hóa đơn</a>
+                            </li>
+
+                            <li>
+                                <a href="http://localhost:8080/admin/hoa-don#/hoa-don-cho">Chờ xác nhận</a>
+                            </li>
+
+                            <li>
+                                <a href="http://localhost:8080/admin/hoa-don#/hoa-don-hoan">Đơn hoàn</a>
+                            </li>
+
+                        </ul>
+
+                    </li>
+
+                    <li>
+                        <a class="show-cat-btn" href="##">
+                            <i class="icon fas fa-users"></i></span>Yêu Cầu
+                            <span class="category__btn transparent-btn" title="Open list">
+                                    <span class="sr-only">Open list</span>
+                                   <i class="icon fas fa-angle-down"></i>
+                                </span>
+                        </a>
+                        <ul class="cat-sub-menu">
+                            <li>
+                                <a href="http://localhost:8080/admin/yeu-cau">Danh Sách</a>
+                            </li>
+                            <li>
+                                <a href="http://localhost:8080/admin/yeu-cau#/hoa-don">Đổi Trả Nhanh</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!--                    <li>-->
+                    <!--                        <a href="##"><i class="icon fas fa-info-circle"></i></span>-->
+                    <!--                            Thông tin cá nhân</a>-->
+                    <!--                    </li>-->
+                </ul>
+            </div>
+        </div>
+    </aside>
+
+    <div class="main-wrapper">
+        <div ng-view></div>
     </div>
-
 </div>
 
 <script src="/sweetalert2/dist/sweetalert2.min.js"></script>
