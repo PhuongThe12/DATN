@@ -1448,9 +1448,10 @@ app.controller("detailDonHangController", function ($scope, $http, $window, $loc
         // $location.path("/list");
     });
 
-    $http.get("http://localhost:8080/rest/user/yeu-cau/khach-hang/list/" + id)
+    $http.get("http://localhost:8080/rest/user/yeu-cau/list/" + id)
         .then(function (response) {
             $scope.listYeuCau = response.data;
+            console.log($scope.listYeuCau)
         }).catch(function (error) {
         toastr["error"]("Lấy dữ liệu thất bại");
     });

@@ -1,6 +1,7 @@
 package luckystore.datn.service.impl;
 
 import luckystore.datn.entity.*;
+import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.infrastructure.constraints.*;
 import luckystore.datn.infrastructure.security.session.SessionService;
 import luckystore.datn.model.request.YeuCauChiTietRequest;
@@ -84,10 +85,13 @@ public class YeuCauServiceIplm implements YeuCauService {
     @Override
     public YeuCauResponse confirmYeuCau(YeuCauRequest yeuCauRequest) {
         Long nguoiSuaAndThucHien = sessionService.getAdmintrator().getId() == null ? null : sessionService.getAdmintrator().getId();
-        YeuCau yeuCauGoc = yeuCauRepository.findById(yeuCauRequest.getId()).orElse(null);
+        YeuCau yeuCauGoc = yeuCauRepository.findById(yeuCauRequest.getId()).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND));
+
+        if(yeuCauGoc.getTrangThai() != TrangThaiYeuCau.CHO_XAC_NHAN){
+            throw new NotFoundException();
+        }
 
         YeuCau yeuCauSaved = YeuCau.builder().id(yeuCauGoc.getId()).hoaDon(yeuCauGoc.getHoaDon()).nguoiThucHien(nguoiSuaAndThucHien).trangThai(TrangThaiYeuCau.DA_XAC_NHAN).ngayTao(yeuCauGoc.getNgayTao()).ngaySua(LocalDateTime.now()).ghiChu(yeuCauRequest.getGhiChu()).thongTinNhanHang(yeuCauGoc.getThongTinNhanHang()).phiShip(yeuCauGoc.getPhiShip()).nguoiTao(yeuCauGoc.getNguoiTao()).nguoiSua(nguoiSuaAndThucHien).build();
-
 
         List<YeuCauChiTiet> listYeuCauChiTiet = new ArrayList<>();
 

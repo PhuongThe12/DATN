@@ -18,7 +18,6 @@ app.config(function ($routeProvider, $locationProvider) {
 
 
 app.controller("yeuCauListController", function ($scope, $http, $window, $location) {
-
     $scope.curPage = 1, $scope.itemsPerPage = 5, $scope.maxSize = 5;
 
     $scope.yeuCauSearch = {}, $scope.yeuCauSearch.pageSize = 5, $scope.textSearch = '', $scope.yeuCauSearch.pageSize = 6;
@@ -173,7 +172,6 @@ app.controller("yeuCauListController", function ($scope, $http, $window, $locati
                 $scope.listYeuCau = response.data.content;
                 $scope.typeSearch = "1";
                 $scope.numOfPages = response.data.totalPages;
-                $scope.isLoading = false;
             })
             .catch(function (error) {
                 toastr["error"]("Lấy dữ liệu thất bại");
@@ -217,58 +215,46 @@ app.controller("yeuCauListController", function ($scope, $http, $window, $locati
 
 
     function getAllLyDo() {
-        $scope.isLoading = true;
         $http.get(host + '/rest/admin/ly-do/list')
             .then(function (response) {
                 $scope.listLyDo = response.data;
-                $scope.isLoading = false;
             }).catch(function (error) {
             toastr["error"]("" + error.data.ten);
             throw error; // Đẩy lỗi để xử lý ở nơi gọi hàm
-            $scope.isLoading = false;
         });
     }
 
     function updateLyDo(lyDo) {
-        $scope.isLoading = true;
         $http.put(host + '/rest/admin/ly-do/update', JSON.stringify(lyDo))
             .then(function (response) {
-                $scope.isLoading = false;
                 if (response.data == true) {
                     toastr["success"]("Đã cập nhật lý do!");
                 }
             }).catch(function (error) {
             toastr["error"]("" + error.data.ten);
-            $scope.isLoading = false;
         });
     }
 
     function updateTrangThaiLyDo(lyDo) {
-        $scope.isLoading = true;
         $http.put(host + '/rest/admin/ly-do/update-trang-thai', JSON.stringify(lyDo))
             .then(function (response) {
-                $scope.isLoading = false;
                 if (response.data == true) {
                     toastr["success"]("Đã cập nhật lý do!");
                 }
             }).catch(function (error) {
             toastr["error"]("" + error.data.ten);
-            $scope.isLoading = false;
         });
     }
 
     function addLyDo(lyDo) {
-        $scope.isLoading = true;
         $http.post(host + '/rest/admin/ly-do/add', JSON.stringify(lyDo))
             .then(function (response) {
-                $scope.isLoading = false;
                 if (response.data == true) {
                     toastr["success"]("Đã thêm mới lý do!");
                 }
                 getAllLyDo();
             }).catch(function (error) {
             toastr["error"]("" + error.data.ten);
-            $scope.isLoading = false;
         });
     }
 });
@@ -276,27 +262,23 @@ app.controller("yeuCauListController", function ($scope, $http, $window, $locati
 app.controller("updateYeuCauController", function ($scope, $http, $routeParams, $location) {
     const idYeuCau = $routeParams.id;
     $scope.listYeuCauChiTiet = [];
-    $scope.isLoading = true;
     $scope.tongTienHangTra = 0, $scope.tongTienDoiHang = 0, $scope.tongTienHangDoi = 0, $scope.tongTienGiamGia = 0, $scope.tongTienThanhToan = 0, $scope.phiVanChuyen = 0, $scope.soLuongDoi = 0;
 
     $http.get(host + '/rest/admin/yeu-cau-chi-tiet/list/' + idYeuCau)
         .then(function (response) {
+            console.log(host + '/rest/admin/yeu-cau-chi-tiet/list/' + idYeuCau)
+            console.log(response.data)
             $scope.listYeuCauChiTietResponse = response.data;
-            console.log($scope.listYeuCauChiTietResponse)
             $scope.yeuCau = response.data[0].yeuCau;
             $scope.hoaDon = $scope.yeuCau.hoaDon;
-            getAllLyDo();
+            getAllLyDo()
             tinhTongTienHangTra();
             tinhTongTienHangDoi();
             getNhanVien($scope.yeuCau);
-
-            console.log($scope.yeuCau)
-            $scope.isLoading = false;
         })
         .catch(function (error) {
             console.log(error)
             toastr["error"]("Lấy dữ liệu thất bại 1");
-            $scope.isLoading = false;
         });
 
 
@@ -467,16 +449,14 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
                 if (response.status === 200) {
                     toastr["success"]("Đã xác nhận yêu cầu!");
                 }
-                $location.path("/list");
-                $scope.isLoading = false;
+                window.location.href = 'http://localhost:8080/admin/yeu-cau';
             })
             .catch(function (error) {
-                toastr["error"]("Xác nhận yêu cầu thất bại!");
+                toastr["error"]("Yêu cầu đã được xác nhận/hủy!");
                 if (error.status === 400) {
                     $scope.addYeuCauForm.hoaDon.$dirty = false;
                     $scope.errors = error.data;
                 }
-                $scope.isLoading = false;
             });
     }
 
@@ -552,15 +532,12 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
 
 
     function getAllLyDo() {
-        $scope.isLoading = true;
         $http.get(host + '/rest/admin/ly-do/list')
             .then(function (response) {
                 $scope.listLyDo = response.data;
-                $scope.isLoading = false;
             }).catch(function (error) {
             toastr["error"]("Không lấy được danh sách lý do!");
             throw error; // Đẩy lỗi để xử lý ở nơi gọi hàm
-            $scope.isLoading = false;
         });
     }
 
@@ -570,7 +547,6 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
             $http.get(host + '/rest/admin/nhan-vien/' + yeuCau.nguoiThucHien)
                 .then(function (response) {
                     $scope.nguoiThucHien = response.data;
-                    $scope.isLoading = false;
                 })
                 .catch(function (error) {
                     console.log(error)
@@ -582,7 +558,6 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
             $http.get(host + '/rest/admin/nhan-vien/' + yeuCau.nguoiSua)
                 .then(function (response) {
                     $scope.nguoiSua = response.data;
-                    $scope.isLoading = false;
                 })
                 .catch(function (error) {
                     console.log(error)
@@ -594,7 +569,6 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
             $http.get(host + '/rest/admin/khach-hang/' + yeuCau.nguoiTao)
                 .then(function (response) {
                     $scope.nguoiTao = response.data;
-                    $scope.isLoading = false;
                 })
                 .catch(function (error) {
                     console.log(error)
@@ -774,17 +748,14 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
 
 
     function getListHoaDonChiTiet(id) {
-        $scope.isLoading = true;
         $http.get(host + '/rest/admin/yeu-cau/hoa-don/' + id)
             .then(function (response) {
                 $scope.hoaDon = response.data;
                 console.log($scope.hoaDon)
                 $scope.listHoaDonChiTiet = response.data.listHoaDonChiTiet;
-                $scope.isLoading = false;
             }).catch(function (error) {
             console.log(error);
             toastr["error"]("Chuyển hóa đơn thất bại. Vui lòng thử lại");
-            $scope.isLoading = false;
         });
     }
 
@@ -814,7 +785,7 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
 
 
 app.controller("selectedHoaDonController", function ($scope, $http, $location, $routeParams) {
-    $scope.isLoading = true, $scope.searchText;
+  $scope.searchText;
     $scope.hoaDonSearch = {}, $scope.tongTienThanhToan = "0";
     $scope.itemsPerPage = 5, $scope.hoaDonSearch.pageSize = 6, $scope.maxSize = 5, $scope.curPage = 1;
     $scope.typeSearch = "1", $scope.textSearch = '';
@@ -1004,17 +975,14 @@ app.controller("selectedHoaDonController", function ($scope, $http, $location, $
 
 
     function getData(hoaDonSearch) {
-        $scope.isLoading = true;
         $http.post(host + '/rest/admin/hoa-don/yeu-cau', JSON.stringify(hoaDonSearch))
             .then(function (response) {
                 $scope.listHoaDon = response.data.content;
                 $scope.numOfPages = response.data.totalPages;
-                $scope.isLoading = false;
             })
             .catch(function (error) {
                 console.log(error)
                 // window.location.href = feHost + '/trang-chu';
-                $scope.isLoading = false;
             });
     }
 

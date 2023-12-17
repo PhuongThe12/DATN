@@ -617,8 +617,8 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
                     ghiChu: yeuCauChiTiet.ghiChu,
                     loaiYeuCauChiTiet: sanPhamDoi ? 1 : 2,
                     tinhTrangSanPham: false,
-                    tienGiam: yeuCauChiTiet.bienTheGiay ? tienGiamSanPhamDoi : 0,
-                    thanhTien: tienHoanKhach ? tienHoanKhach : 0,
+                    tienGiam: sanPhamDoi ? tienGiamSanPhamDoi : 0,
+                    thanhTien: tienHoanKhach,
                 });
             });
 
@@ -941,6 +941,7 @@ app.controller("updateYeuCauKhachHangController", function ($scope, $http, $rout
     $http.get(host + '/rest/user/yeu-cau-chi-tiet/list/' + idYeuCau)
         .then(function (response) {
             $scope.listYeuCauChiTietResponse = response.data;
+            console.log( $scope.listYeuCauChiTietResponse)
             $scope.yeuCau = response.data[0].yeuCau;
             $scope.feeShippingPerOne = $scope.yeuCau.phiShip;
             $scope.hoaDon = $scope.yeuCau.hoaDon;
