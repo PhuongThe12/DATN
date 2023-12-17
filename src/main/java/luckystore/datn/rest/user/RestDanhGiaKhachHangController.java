@@ -38,6 +38,11 @@ public class RestDanhGiaKhachHangController {
         return new ResponseEntity<>(danhGiaService.getAllByIdKhachHang(idKhachHang), HttpStatus.OK);
     }
 
+    @GetMapping("/get-danh-gia-by-id-giay/{idGiay}")
+    public ResponseEntity<?> getDanhGiaByIdGiay(@PathVariable("idGiay") Long idGiay){
+        return ResponseEntity.ok(danhGiaService.getDanhGiaByIdGiay(idGiay));
+    }
+
     private ResponseEntity<?> getErrorJson(BindingResult result) {
         if (result.hasErrors()) {
             List<String> fieldErrors = new ArrayList<>();

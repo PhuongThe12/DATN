@@ -2,10 +2,7 @@ package luckystore.datn.rest.user;
 
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
-import luckystore.datn.model.request.GiayRequest;
-import luckystore.datn.model.request.GioHangThanhToanRequest;
-import luckystore.datn.model.request.HoaDonRequest;
-import luckystore.datn.model.request.HoaDonThanhToanTaiQuayRequest;
+import luckystore.datn.model.request.*;
 import luckystore.datn.service.user.HoaDonKhachHangService;
 import luckystore.datn.validation.groups.CreateGroup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,5 +34,16 @@ public class RestHoaDonKhachHangController {
     public ResponseEntity getOne(@PathVariable("id") Long id) {
         return ResponseEntity.ok(hoaDonKhachHangService.findById(id));
     }
+
+    @PutMapping("/update-dia-chi-nhan")
+    public ResponseEntity updateDiaChiNhan(@RequestBody HoaDonDiaChiNhanRequest hoaDonDiaChiNhanRequest){
+        return ResponseEntity.ok(hoaDonKhachHangService.capNhatDiaChiNhan(hoaDonDiaChiNhanRequest));
+    }
+
+    @GetMapping("/get-chi-tiet-thanh-toan/{id}")
+    public ResponseEntity getChiTietThanhToan(@PathVariable("id") Long id){
+        return ResponseEntity.ok(hoaDonKhachHangService.getThanhToanChiTiet(id));
+    }
+
 
 }

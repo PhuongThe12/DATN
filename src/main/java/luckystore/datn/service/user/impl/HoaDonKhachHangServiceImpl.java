@@ -9,11 +9,13 @@ import luckystore.datn.infrastructure.constraints.ErrorMessage;
 import luckystore.datn.infrastructure.constraints.TrangThaiHoaDon;
 import luckystore.datn.model.request.BienTheGiayGioHangRequest;
 import luckystore.datn.model.request.GioHangThanhToanRequest;
+import luckystore.datn.model.request.HoaDonDiaChiNhanRequest;
 import luckystore.datn.model.request.HoaDonThanhToanTaiQuayRequest;
 import luckystore.datn.model.response.BienTheGiayResponse;
 import luckystore.datn.model.response.GioHangChiTietResponse;
 import luckystore.datn.model.response.GioHangResponse;
 import luckystore.datn.model.response.HoaDonResponse;
+import luckystore.datn.model.response.print.HoaDonPrintResponse;
 import luckystore.datn.repository.*;
 import luckystore.datn.service.impl.EmailSenderService;
 import luckystore.datn.service.user.HoaDonKhachHangService;
@@ -24,11 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
@@ -93,7 +91,6 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         if (gioHangThanhToanRequest.getKhachHang() == null) {
             subtractSoLuongGiay(hoaDonChiTiets);
             hoaDon = hoaDonRepository.save(hoaDon);
-            emailSenderService.sendEmailOrder(gioHangThanhToanRequest.getEmail(), "abc", generateHtmlTable(hoaDonChiTiets, hoaDon), null);
             return new HoaDonResponse(hoaDon);
         } else {
             checkKhuyenMaiSanPham(gioHangThanhToanRequest);
@@ -112,8 +109,6 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
                 phieuGiamGiaRepository.save(phieuGiamGia);
             }
 
-
-            emailSenderService.sendEmailOrder(gioHangThanhToanRequest.getEmail(), "abc", generateHtmlTable(hoaDonChiTiets, hoaDon), null);
 
             List<GioHangChiTietResponse> bienTheGiayResponseList = gioHangChiTietRepository.findGioHangChiTietByIdGioHang(gioHangThanhToanRequest.getId());
             for (BienTheGiayGioHangRequest bienTheGiayRequest : gioHangThanhToanRequest.getBienTheGiayRequests()) {
@@ -209,6 +204,31 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         });
         hoaDonRepository.save(hoaDon);
         return hoaDon.getId();
+    }
+
+    @Override
+    public HoaDonResponse sendMailHoaDon(Long idHoaDon) throws MessagingException {
+        HoaDon hoaDon = hoaDonRepository.findById(idHoaDon).get();
+        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findAllByIdHoaDon(idHoaDon);
+        Set<HoaDonChiTiet> linkedHashSet = new LinkedHashSet<>(hoaDonChiTietList);
+        emailSenderService.sendEmailOrder(hoaDon.getEmail(), "Thông tin đơn hàng", generateHtmlTable(linkedHashSet, hoaDon), null);
+
+        return new HoaDonResponse(hoaDon);
+    }
+
+    @Override
+    public HoaDonResponse capNhatDiaChiNhan(HoaDonDiaChiNhanRequest hoaDonDiaChiNhanRequest) {
+        HoaDon hoaDon = hoaDonRepository.findById(hoaDonDiaChiNhanRequest.getId()).get();
+        hoaDon.setSoDienThoaiNhan(hoaDonDiaChiNhanRequest.getSoDienThoaiNhan());
+        hoaDon.setDiaChiNhan(hoaDonDiaChiNhanRequest.getDiaChiNhan());
+        hoaDon.setPhiShip(hoaDonDiaChiNhanRequest.getPhiShip());
+
+        return new HoaDonResponse(hoaDonRepository.save(hoaDon));
+    }
+
+    @Override
+    public HoaDonPrintResponse getThanhToanChiTiet(Long idHoaDon) {
+        return hoaDonRepository.getThanhToanChiTiet(idHoaDon);
     }
 
     private HoaDon getHoaDon(HoaDon hoaDon, GioHangThanhToanRequest gioHangThanhToanRequest) {

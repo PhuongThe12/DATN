@@ -56,8 +56,9 @@ public class DanhGiaServiceImpl implements DanhGiaService {
         danhGia.setSaoDanhGia(danhGiaRequest.getSaoDanhGia());
         danhGia.setBinhLuan(danhGiaRequest.getBinhLuan());
         danhGia.setTrangThai(1);
-        Giay giay =  giayRepository.findById(danhGiaRequest.getIdGiay()).orElseThrow(() -> new RuntimeException());
-        KhachHang khachHang = khachHangRepository.findById(danhGiaRequest.getIdKhachHang()).orElseThrow(() -> new RuntimeException());;
+        Giay giay = giayRepository.findById(danhGiaRequest.getIdGiay()).orElseThrow(() -> new RuntimeException());
+        KhachHang khachHang = khachHangRepository.findById(danhGiaRequest.getIdKhachHang()).orElseThrow(() -> new RuntimeException());
+        ;
         danhGia.setGiay(giay);
         danhGia.setKhachHang(khachHang);
         danhGia.setNgayTao(ngayHienTai);
@@ -67,12 +68,17 @@ public class DanhGiaServiceImpl implements DanhGiaService {
 
     @Override
     public DanhGiaResponse findByIdKhAndIdGiay(Long idKhachHang, Long idGiay) {
-        return danhGiaRepository.findByIdKhAndIdGiay(idKhachHang,idGiay);
+        return danhGiaRepository.findByIdKhAndIdGiay(idKhachHang, idGiay);
     }
 
     @Override
     public List<DanhGiaResponse> getAllByIdKhachHang(Long idKhachHang) {
         return danhGiaRepository.findByIdKhachHang(idKhachHang);
+    }
+
+    @Override
+    public List<DanhGiaResponse> getDanhGiaByIdGiay(Long idGiay) {
+        return danhGiaRepository.getSaoDanhGiaByIdGiay(idGiay);
     }
 
     private void checkWhenInsert(DanhGiaRequest danhGiaRequest) {

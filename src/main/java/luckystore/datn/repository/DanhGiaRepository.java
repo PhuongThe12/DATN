@@ -29,5 +29,9 @@ public interface DanhGiaRepository extends JpaRepository<DanhGia, Long> {
     List<DanhGiaResponse> findByIdKhachHang(Long idKhachHang);
 
 
+    @Query("select new luckystore.datn.model.response.DanhGiaResponse(dg.id,dg.saoDanhGia,dg.binhLuan,dg.trangThai,dg.thoiGian,dg.ngayTao,dg.khachHang) from DanhGia dg where dg.giay.id = :idGiay")
+    List<DanhGiaResponse> getSaoDanhGiaByIdGiay(Long idGiay);
+
+
     boolean existsByKhachHangIdAndGiayId(Long idKhachHang, Long idGiay);
 }

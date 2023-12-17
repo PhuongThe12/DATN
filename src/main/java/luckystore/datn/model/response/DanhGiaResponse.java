@@ -46,6 +46,17 @@ public class DanhGiaResponse {
     }
 
     public DanhGiaResponse(Long id, Integer saoDanhGia, String binhLuan, Integer trangThai, Date thoiGian,
+                           Date ngayTao, KhachHang khachHang) {
+        this.id = id;
+        this.saoDanhGia = saoDanhGia;
+        this.binhLuan = binhLuan;
+        this.trangThai = trangThai;
+        this.thoiGian = thoiGian;
+        this.ngayTao = ngayTao;
+        this.khachHangResponse = new KhachHangResponse(khachHang);
+    }
+
+    public DanhGiaResponse(Long id, Integer saoDanhGia, String binhLuan, Integer trangThai, Date thoiGian,
                            Date ngayTao, Long idGiay, String ten, String thumbnail, KhachHang khachHang) {
         this.id = id;
         this.saoDanhGia = saoDanhGia;

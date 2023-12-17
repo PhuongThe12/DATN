@@ -23,5 +23,6 @@ public interface DanhGiaService {
 
     List<DanhGiaResponse> getAllByIdKhachHang(Long idKhachHang);
 
+    List<DanhGiaResponse> getDanhGiaByIdGiay(Long idGiay);
 
 }
