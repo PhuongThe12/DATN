@@ -30,6 +30,7 @@ app.controller("yeuCauListController", function ($scope, $http, $window, $locati
     });
 
 
+
     $scope.changeRadioYeuCau = function () {
         $scope.yeuCauSearch.trangThai = $scope.trangThai;
         getData($scope.yeuCauSearch);
