@@ -136,11 +136,13 @@
             <div ng-repeat="hoaDon in hoaDons" class="pb-4 border-bottom-1">
                 <div class=" p-2">
                     <div class="d-flex align-items-center justify-content-between">
-                        <p>Mã Hóa Đơn <span class="fw-bold">{{hoaDon.id}}</span></p>
+                        <p>Mã Hóa Đơn <span class="fw-bold">{{hoaDon.loaiHoaDon == 1 ? "HD" : hoaDon.loaiHoaDon == 2 ? "HDD" : "TH"}}{{hoaDon.id}}</span></p>
                         <p>Ngày Tạo Đơn :{{hoaDon.ngayTao}}</p>
                     </div>
                     <div class="d-flex align-items-center justify-content-between ">
-                        <h5 class="font-size-16-ncl ">Mã vận đơn : <span>{{hoaDon.maVanDon}}</span></h5>
+                        <h5 class="font-size-16-ncl" ng-show="hoaDon.loaiHoaDon == 1">Mã vận đơn : <span>{{hoaDon.maVanDon}}</span></h5>
+                        <h5 class="font-size-16-ncl" ng-show="hoaDon.loaiHoaDon == 2">Hóa đơn gốc : <span>{{hoaDon.hoaDonGoc}}</span></h5>
+                        <h5 class="font-size-16-ncl" ng-show="hoaDon.loaiHoaDon == 3">Hóa đơn gốc : <span>{{hoaDon.hoaDonGoc}}</span></h5>
                         <h5 class="font-size-16-ncl ">Tổng tiền : <span class="fw-bold">110.000 đ</span></h5>
                     </div>
                     <div class="d-flex align-items-center justify-content-between">

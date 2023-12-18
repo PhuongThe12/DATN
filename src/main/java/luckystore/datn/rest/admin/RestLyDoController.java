@@ -45,7 +45,12 @@ public class RestLyDoController {
         if (errorJson != null) return errorJson;
         return new ResponseEntity<>(lyDoService.update(lyDoRequest), HttpStatus.OK);
     }
-
+    @PutMapping("/update-trang-thai")
+    public ResponseEntity<?> updateTrangThaiLyDo(@Valid @RequestBody LyDoRequest lyDoRequest, BindingResult result) {
+        ResponseEntity<?> errorJson = getErrorJson(result);
+        if (errorJson != null) return errorJson;
+        return new ResponseEntity<>(lyDoService.updateTrangThaiLyDo(lyDoRequest), HttpStatus.OK);
+    }
 
     private ResponseEntity<?> getErrorJson(BindingResult result) {
         if (result.hasErrors()) {

@@ -7,6 +7,7 @@ import luckystore.datn.exception.InvalidIdException;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.infrastructure.constraints.Config;
 import luckystore.datn.infrastructure.constraints.ErrorMessage;
+import luckystore.datn.infrastructure.constraints.KenhBan;
 import luckystore.datn.infrastructure.constraints.TrangThaiHoaDon;
 import luckystore.datn.infrastructure.security.session.SessionService;
 import luckystore.datn.model.request.*;
@@ -64,6 +65,9 @@ public class HoaDonServiceImpl implements HoaDonService {
         if(hoaDonSearch.getNgayKetThuc()!=null){
             hoaDonSearch.setNgayKetThuc(hoaDonSearch.getNgayKetThuc().withHour(23).withMinute(59).withSecond(59));
         }
+
+        System.out.println("hóa đơn search: "+hoaDonSearch);
+
         return hoaDonRepository.getPageHoaDonYeuCauResponse(hoaDonSearch, pageable);
     }
 
@@ -412,7 +416,7 @@ public class HoaDonServiceImpl implements HoaDonService {
             tangHang(hoaDon.getKhachHang(), request.getTienMat());
         }
 
-        hoaDon.setKenhBan(1);
+        hoaDon.setKenhBan(KenhBan.OFFLINE);
         hoaDon.setChiTietThanhToans(chiTietThanhToans);
         hoaDon.setGhiChu(request.getGhiChu());
         List<Long> idsBienThe = hoaDon.getListHoaDonChiTiet().stream().map(hdct -> hdct.getBienTheGiay().getId()).toList();
@@ -554,7 +558,7 @@ public class HoaDonServiceImpl implements HoaDonService {
         }
 
         hoaDon.setTienGiam(request.getTienGiam());
-        hoaDon.setKenhBan(1);
+        hoaDon.setKenhBan(KenhBan.OFFLINE);
         hoaDon.setDiaChiNhan(request.getDiaChiNhan());
         hoaDon.setSoDienThoaiNhan(request.getSdtNhan());
         hoaDon.setPhiShip(request.getTienShip());

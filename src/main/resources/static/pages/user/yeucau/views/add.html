@@ -91,10 +91,25 @@
 
     .checkbox-label-mau-sac {
         margin: 8px;
-        border-radius: 18px;
-        width: 29px;
-        height: 29px;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
         border: 1px solid #e5e5e5;
+    }
+
+    .mau-sac.active {
+        display: block !important;
+        position: absolute;
+        top: 0;
+        right: 0;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+        transition: transform 0.5s ease-in-out;
+    }
+
+    .giayHover:hover {
+        border: 1px solid #ee4d2d;
+        padding: 0 5px;
+        transition: padding 0.2s ease-in-out;
     }
 
     #buttons-container {
@@ -216,9 +231,9 @@
         <div class="col-md-9">
             <div style="border-bottom: 1px solid grey">
                 <h4 class="fw-bold text-dark mb-3">Yêu Cầu Đổi Trả</h4>
-                <div class="d-flex mb-3" ng-repeat="hoaDonChiTiet in listHoaDonChiTiet"
+                <div class="d-flex mb-3" ng-repeat="(index,hoaDonChiTiet) in listHoaDonChiTiet"
                      ng-show="hoaDonChiTiet.soLuongDuocTra > 0">
-                    <div>
+                    <div style="max-width: 190px">
                         <img class="rounded" width="100%"
                              ng-src="{{hoaDonChiTiet.bienTheGiay.giayResponse.lstAnh.length > 0 ? hoaDonChiTiet.bienTheGiay.giayResponse.lstAnh[0] : 'https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg'}}"
                              alt="Ảnh giày">
@@ -266,8 +281,8 @@
                      style="border-bottom: 1px solid grey">
                     <div class="col-md-12">
                         <div class="d-flex mb-3">
-                            <div>
-                                <img class="rounded" width="94%"
+                            <div style="max-width: 150px">
+                                <img class="rounded" width="100%"
                                      ng-src="{{yeuCauChiTiet.value.hoaDonChiTiet.bienTheGiay.giayResponse.lstAnh.length > 0 ? yeuCauChiTiet.value.hoaDonChiTiet.bienTheGiay.giayResponse.lstAnh[0] : 'https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg'}}"
                                      alt="">
                             </div>
@@ -310,7 +325,7 @@
                     <div class="col-md-6">
                         <div class="sanPhamTra">
                             <div class="d-flex mb-3">
-                                <div>
+                                <div style="max-width: 150px">
                                     <img class="rounded" width="100%"
                                          ng-src="{{yeuCauChiTiet.value.hoaDonChiTiet.bienTheGiay.giayResponse.lstAnh.length > 0 ? yeuCauChiTiet.value.hoaDonChiTiet.bienTheGiay.giayResponse.lstAnh[0] : 'https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg'}}"
                                          alt="Ảnh giày">
@@ -354,9 +369,9 @@
                     </div>
 
                     <div class="col-md-6">
-                        <div class="sanPhamDoi" style="padding-left: 60px;">
+                        <div class="sanPhamDoi" style="padding-left: 20px;">
                             <div class="d-flex mb-3">
-                                <div>
+                                <div style="max-width: 100px">
                                     <img class="rounded" width="100%"
                                          ng-src="{{yeuCauChiTiet.value.bienTheGiayDoi.giayResponse.lstAnh.length > 0 ? yeuCauChiTiet.value.bienTheGiayDoi.giayResponse.lstAnh[0] : 'https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg'}}"
                                          alt="Ảnh giày">
@@ -388,12 +403,13 @@
                                            ng-show="yeuCauChiTiet.value.bienTheGiayDoi.khuyenMai <= 0">Giá:
                                             {{yeuCauChiTiet.value.bienTheGiayDoi.giaBan | formatToVND}}</p>
                                         <p class="font-size-16-ncl fw-bold text-dark"
-                                           ng-show="yeuCauChiTiet.value.bienTheGiayDoi.khuyenMai > 0">Giá: <span
-                                                class="badge text-bg-dark" style="text-decoration-line: line-through">{{yeuCauChiTiet.value.bienTheGiayDoi.giaBan | formatToVND}}</span>{{yeuCauChiTiet.value.bienTheGiayDoi.giaBan
-                                            -
-                                            (yeuCauChiTiet.value.bienTheGiayDoi.giaBan*yeuCauChiTiet.value.bienTheGiayDoi.khuyenMai
-                                            / 100) | formatToVND}}</p>
+                                           ng-show="yeuCauChiTiet.value.bienTheGiayDoi.khuyenMai > 0">Giá: <span>
+                                        <strong class="font-size-16-ncl fw-bold text-dark" style="text-decoration-line: line-through">{{yeuCauChiTiet.value.bienTheGiayDoi.giaBan | formatToVND}}</strong>
+                                        <strong class="font-size-16-ncl fw-bold text-danger ">{{yeuCauChiTiet.value.bienTheGiayDoi.giaBan-(yeuCauChiTiet.value.bienTheGiayDoi.giaBan*yeuCauChiTiet.value.bienTheGiayDoi.khuyenMai/ 100) | formatToVND}}</strong>
+                                        </span>
+                                        </p>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -493,6 +509,7 @@
                     </div>
                     <div class="row pt-3">
                         <button class="btn btn-dark py-2" ng-click="taoYeuCau()">Tạo Yêu Cầu</button>
+                        <a class="btn btn-outline-dark py-2" style="margin-top: 10px" href="http://localhost:8080/home#/don-hang/detail/{{hoaDon.id}}" >Trở Về</a>
                     </div>
                 </div>
 
@@ -602,16 +619,16 @@
                                     <i class="fas fa-caret-down" id="iconMauSac"></i>
                                 </div>
                                 <div class="collapse show" id="dsMauSac">
-                        <span ng-repeat="mauSac in mauSacs">
-                        <label for="mauSac{{mauSac.id}}"
-                               class="position-relative pointer-event form-check-label ps-2 checkbox-label-mau-sac"
-                               ng-style="{'background-color': mauSac.maMau}">
-                            <i class="fas fa-check" style="display: none; top: -10%; right: -15%; color: green"
-                               ng-class="mauSac.selected? 'mau-sac active' : ''"></i>
-                        </label>
-                        <input type="checkbox" name="mauSac" id="mauSac{{mauSac.id}}" ng-model="mauSac.selected"
-                               style="display: none">
-                        </span>
+                                    <span ng-repeat="mauSac in mauSacs">
+                                    <label for="mauSac{{mauSac.id}}"
+                                           class="position-relative pointer-event form-check-label ps-2 checkbox-label-mau-sac"
+                                           ng-style="{'background-color': mauSac.maMau}">
+                                        <i class="fas fa-check" style="display: none; top: -10%; right: -15%; color: green"
+                                           ng-class="mauSac.selected? 'mau-sac active' : ''"></i>
+                                    </label>
+                                    <input type="checkbox" name="mauSac" id="mauSac{{mauSac.id}}" ng-model="mauSac.selected"
+                                           style="display: none">
+                                    </span>
                                 </div>
                             </div>
 
@@ -805,10 +822,8 @@
                             <h5 class="py-2 text-danger fw-bold">
                         <span id="price-product" class="py-3">
 
-                                <span ng-show="!giayDetail.giaBan">
-                                    {{ '₫' + (giaySeletect.giaThapNhat | number) + (giaySeletect.giaThapNhat !== giaySeletect.giaLonNhat ? '
-                                            - ₫' + (giaySeletect.giaLonNhat | number) : '') }}
-                                </span>
+                                <span ng-show="!giayDetail.giaBan">{{ '₫' + (giaySeletect.giaThapNhat | number) + (giaySeletect.giaThapNhat !== giaySeletect.giaLonNhat ? '
+                                            - ₫' + (giaySeletect.giaLonNhat | number) : '') }}</span>
                                         <span ng-show="giayDetail.khuyenMai">
                                             <del>{{giayDetail.giaBan  | number:0 }}</del>
                                         <span class="position-relative">
@@ -886,7 +901,9 @@
                             </div>
                             <div>
                                 <div class="d-flex">
-                                    <button class="btn btn-outline-dark" data-bs-dismiss="modal"  ng-click="updateDiaChiNhan(diaChiNhanHang)">Chọn</button>
+                                    <button class="btn btn-outline-dark" data-bs-dismiss="modal"
+                                            ng-click="updateDiaChiNhan(diaChiNhanHang)">Chọn
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -894,8 +911,12 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-dark" data-bs-dismiss="modal"><i class="fas fa-chevron-left"></i>Trở về</button>
-                <button class="btn btn-dark" data-bs-target="#exampleModalToggle4" data-bs-dismiss="modal" data-bs-toggle="modal"><i class="fas fa-plus"></i> Thêm mới</button>
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal"><i class="fas fa-chevron-left"></i>Trở
+                    về
+                </button>
+                <button class="btn btn-dark" data-bs-target="#exampleModalToggle4" data-bs-dismiss="modal"
+                        data-bs-toggle="modal"><i class="fas fa-plus"></i> Thêm mới
+                </button>
             </div>
         </div>
     </div>
@@ -962,7 +983,9 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-dark" data-bs-target="#exampleModalToggle3" data-bs-dismiss="modal"><i class="fas fa-chevron-left"></i> Trở về</button>
+                <button type="button" class="btn btn-dark" data-bs-target="#exampleModalToggle3"
+                        data-bs-dismiss="modal"><i class="fas fa-chevron-left"></i> Trở về
+                </button>
                 <button type="button" class="btn btn-dark" data-bs-dismiss="modal" ng-disabled="checkAddDress()"
                         ng-click="saveDiaChi()"><i class="fas fa-check"></i> Lưu
                 </button>

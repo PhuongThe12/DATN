@@ -205,7 +205,7 @@
                                         </td>
                                         <td>
                                             <button type="button" class="btn btn-dark" data-bs-toggle="modal"
-                                                    data-bs-target="#staticBackdrop2" ng-click="detailLyDo(lyDo)"><i
+                                                    data-bs-target="#staticBackdrop2" ng-click="detailLyDo(lyDo,lyDo.ten,lyDo.trangThai)"><i
                                                     class="fas fa-info"></i></button>
                                         </td>
                                     </tr>
@@ -251,8 +251,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-dark" data-bs-dismiss="modal"><i class="fas fa-chevron-left"></i> Trở Về</button>
-                    <button type="button" class="btn btn-dark" data-bs-dismiss="modal" ng-click="updateLyDo()"><i class="fas fa-save"></i> Lưu</button>
-                    <button type="button" class="btn btn-dark" data-bs-dismiss="modal" ng-click="deletelyDo()"><i class="fas fa-trash-alt"></i></button>
+                    <button type="button" class="btn btn-dark" data-bs-dismiss="modal" ng-click="updateLyDo()"><i class="fas fa-save"></i> Cập Nhật</button>
                 </div>
             </div>
         </div>

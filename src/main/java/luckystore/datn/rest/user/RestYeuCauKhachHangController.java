@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/rest/user/yeu-cau/khach-hang")
+@RequestMapping("/rest/user/yeu-cau")
 public class RestYeuCauKhachHangController {
     private final YeuCauKhachHangService yeuCauKhachHangService;
 
@@ -25,8 +25,8 @@ public class RestYeuCauKhachHangController {
     }
 
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getYeuCau(@PathVariable("id") Long id) {
+    @GetMapping("/hoa-don/{id}")
+    public ResponseEntity<?> getHoaDonYeuCau(@PathVariable("id") Long id) {
         return new ResponseEntity<>(yeuCauKhachHangService.getOneHoaDonYeuCauRespone(id), HttpStatus.OK);
     }
 

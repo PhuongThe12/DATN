@@ -69,6 +69,7 @@
             <table class="table align-middle text-center" border="1">
                 <tr>
                     <th>Mã HD</th>
+                    <th>Hóa đơn gốc</th>
                     <th>Nhân viên</th>
                     <th>Khách hàng</th>
                     <th>Ngày thanh toán</th>
@@ -77,9 +78,8 @@
                 </tr>
 
                 <tr ng-repeat="hoaDon in hoaDons">
-                    <td>
-                        {{(hoaDon.loaiHoaDon == 1 ? 'HD_HDD' : (hoaDon.loaiHoaDon == 2 ? 'TH' : 'HD')) + hoaDon.id}}
-                    </td>
+                    <td>{{(hoaDon.loaiHoaDon == 1 ? 'HD' : (hoaDon.loaiHoaDon == 2 ? 'HDD' : 'TH')) + hoaDon.id}}</td>
+                    <td>{{hoaDon.hoaDonGoc ? hoaDon.hoaDonGoc : '-'}}</td>
                     <td>{{hoaDon.nhanVien? hoaDon.nhanvien.hoTen : ''}}</td>
                     <td>{{hoaDon.khachHang? hoaDon.khachHang.hoTen : ''}}</td>
                     <td>{{hoaDon.ngayThanhToan? hoaDon.ngayThanhToan : ''}}</td>
@@ -141,7 +141,7 @@
                          aria-labelledby="nav-home-tab">
                         <div class="invoice-details">
                             <p class="py-2"><strong>Mã Hóa Đơn :</strong>
-                                {{(hoaDonDetail.loaiHoaDon == 1 ? 'HD_HDD' : (hoaDonDetail.loaiHoaDon == 2 ? 'TH' : 'HD')) + hoaDonDetail.id}}
+                                {{(hoaDonDetail.loaiHoaDon == 1 ? 'HD' : (hoaDonDetail.loaiHoaDon == 2 ? 'HDD' : 'TH')) + hoaDonDetail.id}}
                             </p>
                             <p class="py-2"><strong>Khách Hàng :</strong> {{hoaDonDetail.khachHang?
                                 hoaDonDetail.khachHang.hoTen
