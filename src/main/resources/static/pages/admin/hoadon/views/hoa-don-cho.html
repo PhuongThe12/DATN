@@ -77,9 +77,8 @@
                 </tr>
 
                 <tr ng-repeat="hoaDon in hoaDons">
-                    <td style="width: 5%"><input type="checkbox" name="hoaDonSelected" ng-model="hoaDon.selected"
-                                                 ng-checked="all"></td>
-                    <td>{{(hoaDon.loaiHoaDon == 1 ? 'HD' : (hoaDon.loaiHoaDon == 2 ? 'HD_HDD' : 'HD_HDT')) + hoaDon.id}}</td>
+                    <td style="width: 5%"><input type="checkbox" name="hoaDonSelected" ng-model="hoaDon.selected" ng-checked="all"></td>
+                    <td>{{(hoaDon.loaiHoaDon == 1 ? 'HD' : (hoaDon.loaiHoaDon == 2 ? 'HDD' : 'TH')) + hoaDon.id}}</td>
                     <td>{{hoaDon.hoaDonGoc ? hoaDon.hoaDonGoc : '-'}}</td>
                     <td>{{hoaDon.nhanVien? hoaDon.nhanVien.hoTen : ''}}</td>
                     <td>{{hoaDon.khachHang? hoaDon.khachHang.hoTen : ''}}</td>

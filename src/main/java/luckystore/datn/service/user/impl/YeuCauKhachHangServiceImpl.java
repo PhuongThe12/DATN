@@ -71,6 +71,7 @@ public class YeuCauKhachHangServiceImpl implements YeuCauKhachHangService {
                     .thanhTien(ycct.getThanhTien())
                     .trangThai(TrangThaiYeuCauChiTiet.DEFAULT)
                     .tinhTrangSanPham(false)
+                    .loaiYeuCauChiTiet(ycct.getLoaiYeuCauChiTiet())
                     .ghiChu(ycct.getGhiChu())
                     .build();
             yeuCauChiTietList.add(yeuCauChiTiet);

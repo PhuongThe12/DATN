@@ -444,23 +444,23 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
         $scope.yeuCau.hoaDon = $scope.hoaDon.id;
         $scope.yeuCau.listYeuCauChiTiet = listYeuCauChiTiet;
         $scope.yeuCau.phiShip = $scope.phiVanChuyen;
+
+        console.log(JSON.stringify($scope.yeuCau))
+
         $http.put(host + '/rest/admin/yeu-cau/confirm', JSON.stringify($scope.yeuCau))
             .then(function (response) {
                 if (response.status === 200) {
                     toastr["success"]("Đã xác nhận yêu cầu!");
                 }
-                window.location.href = 'http://localhost:8080/admin/yeu-cau#/update/'+$scope.yeuCau.id;
             })
             .catch(function (error) {
-                // toastr["error"]("Yêu cầu đã được xác nhận/hủy!");
-                console.log(error.status);
+                console.log(error)
+                toastr["error"]("Yêu cầu đã được xác nhận/hủy!");
                 if (error.status === 404) {
                     toastr["error"]("Yêu cầu đã được hủy gần đây vui làm mới trang! ");
                 }else if(error.status === 400){
                     toastr["error"]("Yêu cầu đã được xác nhận gần đây vui làm mới trang! ")
                 }
-                window.location.href = 'http://localhost:8080/admin/yeu-cau#/update/'+$scope.yeuCau.id;
-                // location.reload(true);
             });
     }
 
