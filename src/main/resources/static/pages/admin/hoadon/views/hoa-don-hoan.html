@@ -71,7 +71,7 @@
                 </tr>
 
                 <tr ng-repeat="hoaDon in hoaDons">
-                    <td>{{(hoaDon.loaiHoaDon == 1 ? 'HD_HDD' : (hoaDon.loaiHoaDon == 2 ? 'TH' : 'HD')) + hoaDon.id}}</td>
+                    <td>{{(hoaDon.loaiHoaDon == 1 ? 'HD' : (hoaDon.loaiHoaDon == 2 ? 'HD_HDD' : 'HD_HDT')) + hoaDon.id}}</td>
                     <td>{{hoaDon.nhanVien? hoaDon.nhanvien.hoTen : ''}}</td>
                     <td>{{hoaDon.khachHang? hoaDon.khachHang.hoTen : ''}}</td>
                     <td>{{hoaDon.ngayThanhToan? hoaDon.ngayThanhToan : ''}}</td>

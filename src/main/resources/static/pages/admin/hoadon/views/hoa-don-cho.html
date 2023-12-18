@@ -69,6 +69,7 @@
                 <tr>
                     <th style="width: 5%"><input type="checkbox" ng-model="all"></th>
                     <th>Mã HD</th>
+                    <th>Hóa đơn gốc</th>
                     <th>Nhân viên</th>
                     <th>Khách hàng</th>
                     <th>{{status == 3 ? 'Ngày ship' : 'Ngày tạo'}}</th>
@@ -78,8 +79,8 @@
                 <tr ng-repeat="hoaDon in hoaDons">
                     <td style="width: 5%"><input type="checkbox" name="hoaDonSelected" ng-model="hoaDon.selected"
                                                  ng-checked="all"></td>
-                    <td>{{(hoaDon.loaiHoaDon == 1 ? 'HD_HDD' : (hoaDon.loaiHoaDon == 2 ? 'TH' : 'HD')) + hoaDon.id}}
-                    </td>
+                    <td>{{(hoaDon.loaiHoaDon == 1 ? 'HD' : (hoaDon.loaiHoaDon == 2 ? 'HD_HDD' : 'HD_HDT')) + hoaDon.id}}</td>
+                    <td>{{hoaDon.hoaDonGoc ? hoaDon.hoaDonGoc : '-'}}</td>
                     <td>{{hoaDon.nhanVien? hoaDon.nhanVien.hoTen : ''}}</td>
                     <td>{{hoaDon.khachHang? hoaDon.khachHang.hoTen : ''}}</td>
                     <td>

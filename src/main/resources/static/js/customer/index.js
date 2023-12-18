@@ -1424,6 +1424,8 @@ app.controller("detailDonHangController", function ($scope, $http, $window, $loc
     $http.get("http://localhost:8080/rest/user/hoa-don/get-chi-tiet-thanh-toan/" + id)
         .then(function (response) {
             $scope.hoaDon = response.data;
+            console.log($scope.hoaDon)
+            checkNgayNhanHang($scope.hoaDon.ngayThanhToan);
             $scope.hoaDon.conLai = 0;
             $scope.hoaDon.thongTinThanhToan = {
                 show: false
@@ -1448,12 +1450,14 @@ app.controller("detailDonHangController", function ($scope, $http, $window, $loc
         // $location.path("/list");
     });
 
-    $http.get("http://localhost:8080/rest/user/yeu-cau/khach-hang/list/" + id)
+    $http.get("http://localhost:8080/rest/user/yeu-cau/list/" + id)
         .then(function (response) {
             $scope.listYeuCau = response.data;
+            console.log($scope.listYeuCau)
         }).catch(function (error) {
         toastr["error"]("Lấy dữ liệu thất bại");
     });
+
 
 
     function checkNgayNhanHang(ngayNhan) {
