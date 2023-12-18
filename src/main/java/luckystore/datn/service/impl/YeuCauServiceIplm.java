@@ -303,7 +303,7 @@ public class YeuCauServiceIplm implements YeuCauService {
             chiTietThanhToans.add(chiTietThanhToan);
 
             hoaDonDoi.setChiTietThanhToans(chiTietThanhToans);
-
+            hoaDonDoi.setListHoaDonChiTiet(listHoaDonChiTietDoi);
             return hoaDonRepository.save(hoaDonDoi);
         }
         return null;
