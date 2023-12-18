@@ -91,6 +91,7 @@ public class BienTheGiayResponse extends BaseBienTheResponse {
         this.mauSac = MauSacResponse.builder().ten(tenMS).build();
         this.kichThuoc = KichThuocResponse.builder().ten(tenKT).build();
         this.giayResponse = GiayResponse.builder().ten(giay.getTen()).build();
+        giayResponse.setLstAnh(giay.getLstAnh().stream().filter(anh -> anh.getUuTien() == 1).map(anh -> ImageHubServiceImpl.getBase64FromFileStatic(anh.getLink())).toList());
     }
 
     public BienTheGiayResponse(Long id, BigDecimal giaBan, Integer phanTramGiam, Integer trangThai) {

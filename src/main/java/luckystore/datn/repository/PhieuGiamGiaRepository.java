@@ -73,10 +73,10 @@ public interface PhieuGiamGiaRepository extends JpaRepository<PhieuGiamGia, Long
                 	   pgg.NGAY_TAO FROM PhieuGiamGia pgg\s
                 			LEFT JOIN HangKhachHang hkh ON pgg.DOI_TUONG_AP_DUNG = hkh.ID
                 			LEFT JOIN NhanVien nv ON nv.ID = pgg.NGUOI_TAO 
-                        WHERE 
+                        WHERE  q
                             (:#{#hangKhachHang} IS NULL 
                             OR :#{#hangKhachHang} LIKE '' 
-                            OR hkh.TEN_HANG LIKE %:#{#hangKhachHang}%) AND pgg.TRANG_THAI = 0
+                            OR hkh.TEN_HANG = :#{#hangKhachHang}) AND pgg.TRANG_THAI = 0
             ORDER BY pgg.NGAY_TAO DESC        
             """, nativeQuery = true)
     List<PhieuGiamGiaResponse> getListPhieuByHangKhachHang(@Param("hangKhachHang")String hangKhachHang);
