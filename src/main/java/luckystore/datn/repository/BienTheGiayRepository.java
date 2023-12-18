@@ -4,6 +4,7 @@ import com.jayway.jsonpath.internal.function.numeric.Sum;
 import luckystore.datn.entity.BienTheGiay;
 import luckystore.datn.model.response.BienTheGiayResponse;
 import luckystore.datn.model.response.GiayResponse;
+import luckystore.datn.model.response.thongKe.ThongKeByHangAndThuongHieu;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,6 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -96,9 +98,6 @@ public interface BienTheGiayRepository extends JpaRepository<BienTheGiay, Long> 
             "group by btg, g, ms, kt " +
             "order by (sum(hdct.soLuongTra) * 1.0 / case when sum(hdct.soLuong) > 0 then sum(hdct.soLuong) else 1 end)*100 desc")
     Page<BienTheGiayResponse> findVariantHighReturnRates(Pageable pageable);
-
-
-
 
 }
 

@@ -12,8 +12,11 @@ import luckystore.datn.infrastructure.security.session.SessionService;
 import luckystore.datn.model.request.*;
 import luckystore.datn.model.response.*;
 import luckystore.datn.model.response.print.HoaDonPrintResponse;
+import luckystore.datn.model.response.thongKe.ThongKeByHangAndThuongHieu;
+import luckystore.datn.model.response.thongKe.ThongKeTongQuan;
 import luckystore.datn.repository.*;
 import luckystore.datn.service.HoaDonService;
+import luckystore.datn.util.ConvertDate;
 import luckystore.datn.util.JsonString;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +25,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -971,6 +978,27 @@ public class HoaDonServiceImpl implements HoaDonService {
     @Override
     public HoaDonPrintResponse getTraCuuDon(Long maHD, String sdt) {
         return hoaDonRepository.getTraCuuDon(maHD, sdt);
+    }
+
+    @Override
+    public List<ThongKeByHangAndThuongHieu> getDoanhThuByHangKhachHang() {
+        return hoaDonRepository.getDoanhThuByHangKhachHang();
+    }
+
+    @Override
+    public List<ThongKeByHangAndThuongHieu> getDoanhThuByThuongHieu() {
+        return hoaDonRepository.getDoanhThuByThuongHieu();
+    }
+
+    @Override
+    public List<ThongKeByHangAndThuongHieu> getThongKeTheoNam(Integer year) {
+        return hoaDonRepository.getThongKeTheoNam(year);
+    }
+
+    @Override
+    public ThongKeTongQuan getThongKeTongQuan(String ngay1) {
+        Date sqlDate1 = ConvertDate.convertStringToSQLDate(ngay1);
+        return hoaDonRepository.getThongKeTongQuan(sqlDate1);
     }
 
     @Override
