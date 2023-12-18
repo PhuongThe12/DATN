@@ -2126,6 +2126,10 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
             $http.get("/rest/admin/phieu-giam-gia/get-all-by-hang-khach-hang?hangKhachHang=" + $scope.khachHang.hangKhachHang.tenHang)
                 .then(function (response) {
                     $scope.phieuGiamGiaList = response.data;
+                    $scope.phieuGiamGiaList = response.data.filter(function(item) {
+                        return item.trangThai === 1;
+                    });
+                    console.log($scope.phieuGiamGiaList);
                 }).catch(function (error) {
                 console.log(error)
             })
