@@ -2,17 +2,23 @@ package luckystore.datn.model.response.thongKe;
 
 import org.springframework.beans.factory.annotation.Value;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.sql.Date;
 
 public interface ThongKeHoaDon {
 
-    @Value("#{target.tongHoaDon}")
-    Integer getTongHoaDon();
+    @Value("#{target.ngay}")
+    Date getNgay();
 
-    @Value("#{target.tongSanPham}")
-    Integer getTongSanPham();
+    @Value("#{target.soLuongHoaDon}")
+    Integer getSoLuongHoaDon();
 
-    @Value("#{target.tongYeuCau}")
-    Integer getTongYeuCau();
+    @Value("#{target.soLuongSanPham}")
+    Integer getSoLuongSanPham();
+
+    @Value("#{target.tongTien}")
+    Integer getTongTien();
+
+    @Value("#{target.HO_TEN}")
+    String getHoTen();
+
 }

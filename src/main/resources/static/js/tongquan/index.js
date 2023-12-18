@@ -30,7 +30,6 @@ app.controller("homeController", function ($scope, $http, $location, $cookies) {
         $http.get(host + '/rest/admin/thong-ke/tong-quan?ngay1=' + ngay1)
             .then(function (response) {
                 $scope.tongSanPham = response.data.tongSanPham;
-                $scope.tongYeuCau = response.data.tongYeuCau;
                 $scope.tongDoanhThu = response.data.tongDoanhThu;
                 $scope.tongHoaDon = response.data.tongHoaDon;
             })

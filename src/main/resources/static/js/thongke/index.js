@@ -6,8 +6,8 @@ app.config(function ($routeProvider, $locationProvider) {
             templateUrl: '/pages/admin/thongke/views/thongkesanpham.html',
             controller: 'thongKeSanPhamController'
         }).when("/doanhthu", {
-        templateUrl: '/pages/admin/thuonghieu/views/update.html',
-        controller: 'updateThuongHieuController'
+        templateUrl: '/pages/admin/thongke/views/thongKeHoaDonByNgay.html',
+        controller: 'thongKeHoaDonController'
     })
         .otherwise({redirectTo: '/sanpham'});
 });
@@ -552,4 +552,49 @@ app.controller("thongKeSanPhamController", function ($scope, $http, $location) {
         });
     }
 
+});
+
+app.controller("thongKeHoaDonController", function ($scope, $http, $location){
+
+    $scope.curPage = 1;
+    let ngayBatDau = "2023-12-01";
+    let ngayKetThuc = "2023-12-19";
+    getData(1);
+    $scope.search = function () {
+        if(!$scope.ngayBatDau && !$scope.ngayKetThuc) {
+            toastr["error"]("Vui lòng nhập khoảng ngày muốn tìm kiếm");
+            return;
+        }
+        $scope.ngayBatDau.setDate($scope.ngayBatDau.getDate() + 1);
+        $scope.ngayKetThuc.setDate($scope.ngayKetThuc.getDate() + 1);
+        ngayBatDau = $scope.ngayBatDau.toISOString().split('T')[0];
+        ngayKetThuc = $scope.ngayKetThuc.toISOString().split('T')[0];
+        getData(1, ngayBatDau, ngayKetThuc);
+    };
+
+    function getData(currentPage) {
+
+        $scope.isLoading = true;
+        let apiUrl = host + '/rest/admin/thong-ke/hoa-don?page=' + currentPage;
+
+        if (ngayBatDau && ngayKetThuc) {
+            apiUrl += '&date1=' +ngayBatDau + '&date2=' +ngayKetThuc;
+        }
+
+        $http.get(apiUrl)
+            .then(function (response) {
+                $scope.lstThongKe = response.data.content;
+                $scope.numOfPages = response.data.totalPages;
+                $scope.isLoading = false;
+            })
+            .catch(function (error) {
+                toastr["error"]("Lấy dữ liệu thất bại");
+                $scope.isLoading = false;
+            });
+
+    }
+
+    $scope.$watch('curPage + numPerPage', function () {
+        getData($scope.curPage);
+    });
 });

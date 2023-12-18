@@ -98,4 +98,11 @@ public class RestThongKeConTroller {
         return ResponseEntity.ok(hoaDonService.getThongKeTongQuan(ngay1));
     }
 
+    @GetMapping("/hoa-don")
+    public ResponseEntity<?> getHoaDonTheoNgay(@RequestParam(value = "page") Integer page,
+                                               @RequestParam(value = "date1",required = false) String date1,
+                                               @RequestParam(value = "date2", required = false)String date2) {
+        return ResponseEntity.ok(hoaDonService.getThongKeHoaDon(page, date1, date2));
+    }
+
 }
