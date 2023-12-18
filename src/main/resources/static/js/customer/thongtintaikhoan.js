@@ -25,7 +25,7 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
                     let apiUrl = host + '/rest/khach-hang/dia-chi-nhan-hang/khach-hang';
 
                     apiUrl += '?idKhachHang=' + $scope.khachHang.id;
-                    console.log(apiUrl);
+
                     $http.get(apiUrl)
                         .then(function (response) {
                             $scope.diaChiNhanHangs = response.data;
@@ -38,7 +38,7 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
             })
     } else {
         $window.location.href = '/home';
-        return ;
+        return;
     }
 
     $scope.toggleShowPassUpdate = function (idDom) {
@@ -132,6 +132,11 @@ app.controller("thongTinTaiKhoanController", function ($scope, $http, $window, $
     //         });
     // }
 
+
+    $http.get(host + "/rest/admin/hang-khach-hang/get-all")
+        .then(response => {
+            $scope.hangKhachHangs = response.data;
+        })
 
     $scope.updateTrangThai = function (dieuKien) {
         console.log(dieuKien)
