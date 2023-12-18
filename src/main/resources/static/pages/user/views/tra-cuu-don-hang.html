@@ -121,7 +121,8 @@
                         <p class="py-2"><strong>Tiền ship : </strong> {{hoaDonDetail.tienShip ? hoaDonDetail.tienShip :
                             0 |
                             number : 0}} VND</p>
-                        <p class="py-2"><strong>Phải trả : </strong>{{hoaDonDetail.tongCong | number : 0}} VND</p>
+                        <p class="py-2"><strong>Phải trả : </strong>{{hoaDonDetail.conLai +(hoaDonDetail.tienShip ? hoaDonDetail.tienShip :
+                            0)  | number : 0}} VND</p>
                     </div>
                 </div>
 
