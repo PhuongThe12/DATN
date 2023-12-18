@@ -71,7 +71,7 @@ public class RestThongKeConTroller {
     }
 
     @GetMapping("/cout-so-luong")
-    public ResponseEntity<?> countRequestDetailsByStatus(@PathVariable("date") Date ngay1){
+    public ResponseEntity<?> countRequestDetailsByStatus(@RequestParam("ngay1") String ngay1){
         return new ResponseEntity<>(yeuCauChiTietService.countRequestDetailsByStatus(ngay1), HttpStatus.OK);
     }
 
@@ -98,6 +98,13 @@ public class RestThongKeConTroller {
     @GetMapping("/tong-quan")
     public ResponseEntity<?> getTongQuan(@RequestParam("ngay1") String ngay1) {
         return ResponseEntity.ok(hoaDonService.getThongKeTongQuan(ngay1));
+    }
+
+    @GetMapping("/hoa-don")
+    public ResponseEntity<?> getHoaDonTheoNgay(@RequestParam(value = "page") Integer page,
+                                               @RequestParam(value = "date1",required = false) String date1,
+                                               @RequestParam(value = "date2", required = false)String date2) {
+        return ResponseEntity.ok(hoaDonService.getThongKeHoaDon(page, date1, date2));
     }
 
 }

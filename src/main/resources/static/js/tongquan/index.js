@@ -24,15 +24,22 @@ app.controller("homeController", function ($scope, $http, $location, $cookies) {
 
     getDataByYear('2023');
 
-    filterDate("2023-12-19");
+    filterDate("2023-12-18");
 
     function filterDate(ngay1) {
         $http.get(host + '/rest/admin/thong-ke/tong-quan?ngay1=' + ngay1)
             .then(function (response) {
                 $scope.tongSanPham = response.data.tongSanPham;
-                $scope.tongYeuCau = response.data.tongYeuCau;
                 $scope.tongDoanhThu = response.data.tongDoanhThu;
                 $scope.tongHoaDon = response.data.tongHoaDon;
+            })
+            .catch(function (error) {
+                toastr["error"]("Lấy dữ liệu thất bại");
+            });
+
+        $http.get(host + '/rest/admin/thong-ke/cout-so-luong?ngay1=' + ngay1)
+            .then(function (response) {
+                $scope.tongYeuCau = response.data.tongSanPham;
             })
             .catch(function (error) {
                 toastr["error"]("Lấy dữ liệu thất bại");

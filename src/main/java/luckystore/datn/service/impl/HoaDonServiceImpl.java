@@ -15,6 +15,7 @@ import luckystore.datn.model.request.*;
 import luckystore.datn.model.response.*;
 import luckystore.datn.model.response.print.HoaDonPrintResponse;
 import luckystore.datn.model.response.thongKe.ThongKeByHangAndThuongHieu;
+import luckystore.datn.model.response.thongKe.ThongKeHoaDon;
 import luckystore.datn.model.response.thongKe.ThongKeTongQuan;
 import luckystore.datn.repository.*;
 import luckystore.datn.service.HoaDonService;
@@ -1009,6 +1010,14 @@ public class HoaDonServiceImpl implements HoaDonService {
     }
 
     @Override
+    public Page<ThongKeHoaDon> getThongKeHoaDon(Integer page, String ngay1, String ngay2) {
+        Date sqlDate1 = ConvertDate.convertStringToSQLDate(ngay1);
+        Date sqlDate2 = ConvertDate.convertStringToSQLDate(ngay2);
+        System.out.println("SQL ++++0"+sqlDate1);
+        return hoaDonRepository.getThongKeHoaDon(sqlDate1, sqlDate2,PageRequest.of(page - 1, 10));
+    }
+
+    @Override
     public Page<HoaDonResponse> getPageByIdKhachHang(int page, String searchText, Integer status, Long idKhachHang) {
         return hoaDonRepository.getPageResponseByIdKhachHang(searchText, status, PageRequest.of((page - 1), 9999), idKhachHang);
     }
@@ -1016,5 +1025,6 @@ public class HoaDonServiceImpl implements HoaDonService {
     private void setNhanVienToHoaDon(HoaDon hoaDon) {
         hoaDon.setNhanVien(sessionService.getAdmintrator());
     }
+
 
 }

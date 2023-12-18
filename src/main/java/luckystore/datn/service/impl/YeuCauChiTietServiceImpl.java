@@ -8,6 +8,7 @@ import luckystore.datn.model.response.YeuCauResponse;
 import luckystore.datn.repository.*;
 import luckystore.datn.service.ImageHubService;
 import luckystore.datn.service.YeuCauChiTietService;
+import luckystore.datn.util.ConvertDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -50,7 +51,8 @@ public class YeuCauChiTietServiceImpl implements YeuCauChiTietService {
     }
 
     @Override
-    public Long countRequestDetailsByStatus(Date ngay1) {
-        return yeuCauChiTietRepository.countRequestDetailsByStatus(ngay1);
+    public Long countRequestDetailsByStatus(String ngay1) {
+        Date date1 = ConvertDate.convertStringToSQLDate(ngay1);
+        return yeuCauChiTietRepository.countRequestDetailsByStatus(date1);
     }
 }

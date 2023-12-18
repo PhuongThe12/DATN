@@ -16,6 +16,7 @@ import luckystore.datn.model.response.HoaDonYeuCauRespone;
 import luckystore.datn.model.response.KhachHangResponse;
 import luckystore.datn.model.response.print.HoaDonPrintResponse;
 import luckystore.datn.model.response.thongKe.ThongKeByHangAndThuongHieu;
+import luckystore.datn.model.response.thongKe.ThongKeHoaDon;
 import luckystore.datn.model.response.thongKe.ThongKeTongQuan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
@@ -97,4 +98,6 @@ public interface HoaDonService {
     List<ThongKeByHangAndThuongHieu> getThongKeTheoNam(Integer year);
 
     ThongKeTongQuan getThongKeTongQuan(String ngay1);
+
+    Page<ThongKeHoaDon> getThongKeHoaDon(Integer page, String date1, String date2);
 }
