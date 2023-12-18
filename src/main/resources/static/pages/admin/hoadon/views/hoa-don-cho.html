@@ -204,8 +204,7 @@
 <!--                        </div>-->
 <!--                    </div>-->
                     <div class="invoice-total col-6">
-                        <p class="py-2"><strong>Tổng Cộng : </strong> {{hoaDonDetail.conLai - (hoaDonDetail.tienShip? hoaDonDetail.tienShip :
-                            0) + hoaDonDetail.tongTru | number : 0}} VND</p>
+                        <p class="py-2"><strong>Tổng Cộng : </strong> {{hoaDonDetail.conLai  + hoaDonDetail.tongTru | number : 0}} VND</p>
                         <p class="py-2"><strong>Giảm giá : </strong>- {{hoaDonDetail.tongTru | number : 0}} VND</p>
                         <p class="py-2"><strong>Tiền ship : </strong> {{hoaDonDetail.tienShip ? hoaDonDetail.tienShip :
                             0 |
