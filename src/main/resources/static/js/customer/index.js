@@ -854,9 +854,7 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
                 return response.json();
             })
             .then(function successCallback(response) {
-                $window.location.reload();
-                console.log('Đã thêm thành công danh sách yêu thích', response);
-                console.log(response);
+                $scope.giaySeletect.yeuThich = true;
             })
             .catch(function (error) {
                 // Xử lý lỗi nếu có
@@ -877,9 +875,7 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
         };
         fetch(apiUrl, requestOptions)
             .then(function (response) {
-                $window.location.reload();
-                console.log('Đã thêm thành công danh sách yêu thích', response);
-                console.log(response);
+                $scope.giaySeletect.yeuThich = false;
             })
 
             .catch(function (error) {
