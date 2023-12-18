@@ -124,19 +124,22 @@
                                     </div>
                                 </div>
                                 <div class="invoice-total col-6">
-                                    <p class="py-2"><strong>Tổng Cộng : </strong> {{hoaDon.conLai  + hoaDon.tongTru | number : 0}} VND</p>
-                                    <p class="py-2"><strong>Giảm giá : </strong>- {{hoaDon.tongTru | number : 0}} VND</p>
+                                    <p class="py-2"><strong>Tổng Cộng : </strong> {{hoaDon.conLai + hoaDon.tongTru |
+                                        number : 0}} VND</p>
+                                    <p class="py-2"><strong>Giảm giá : </strong>- {{hoaDon.tongTru | number : 0}} VND
+                                    </p>
                                     <p class="py-2"><strong>Tiền ship : </strong> {{hoaDon.tienShip ? hoaDon.tienShip :
                                         0 |
                                         number : 0}} VND</p>
-                                    <p class="py-2"><strong>Phải trả : </strong>{{hoaDon.conLai +(hoaDon.tienShip ? hoaDon.tienShip :
-                                        0)  | number : 0}} VND</p>
+                                    <p class="py-2"><strong>Phải trả : </strong>{{hoaDon.conLai +(hoaDon.tienShip ?
+                                        hoaDon.tienShip :
+                                        0) | number : 0}} VND</p>
                                 </div>
                             </div>
                             <div class="justify-content-end d-flex mb-3">
                                 <a type="button" class="btn btn-dark"
                                    ng-if="hoaDon.trangThai == 4"
-                                   href="/user/yeu-cau#/add/{{hoaDon.id}}">Hủy Đơn Hàng</a>
+                                   data-bs-toggle="modal" data-bs-target="#modalHuyHang">Hủy Đơn Hàng</a>
                             </div>
                             <div class="justify-content-end d-flex mb-3">
                                 <a type="button" class="btn btn-dark"
@@ -251,20 +254,21 @@
     </div>
 </div>
 
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-</button>
-
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modalHuyHang" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Hủy Đơn Hàng</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                ...
+                <form action="">
+                    <div class="form-floating">
+                        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
+                        <label for="floatingTextarea2">Lý do</label>
+                    </div>
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
