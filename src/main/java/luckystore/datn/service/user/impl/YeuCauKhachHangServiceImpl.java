@@ -96,7 +96,7 @@ public class YeuCauKhachHangServiceImpl implements YeuCauKhachHangService {
         List<YeuCauChiTiet> yeuCauChiTietList = new ArrayList<>();
         for (YeuCauChiTietRequest ycct: yeuCauRequest.getListYeuCauChiTiet()) {
             HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findById(ycct.getHoaDonChiTiet()).orElse(null);
-            hoaDonChiTiet.setSoLuongTra(hoaDonChiTiet.getSoLuongTra()-1);
+
             hoaDonChiTietRepository.save(hoaDonChiTiet);
             LyDo lyDo = lyDoRepository.findById(ycct.getLyDo()).orElse(null);
             BienTheGiay bienTheGiayDoi = ycct.getBienTheGiay() == null ? null : bienTheGiayRepository.findById(ycct.getBienTheGiay()).orElse(null);
@@ -136,7 +136,8 @@ public class YeuCauKhachHangServiceImpl implements YeuCauKhachHangService {
             yeuCauChiTiet.setTinhTrangSanPham(ycctRequest.getTinhTrangSanPham());
             yeuCauChiTietRepository.save(yeuCauChiTiet);
             HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findById(ycctRequest.getHoaDonChiTiet()).orElse(null);
-            hoaDonChiTiet.setSoLuongTra(hoaDonChiTiet.getSoLuongTra() - 1);
+            int soLuongTra = hoaDonChiTiet.getSoLuongTra() != null ? hoaDonChiTiet.getSoLuongTra() -1 : 0;
+            hoaDonChiTiet.setSoLuongTra(soLuongTra);
             hoaDonChiTietRepository.save(hoaDonChiTiet);
         }
 

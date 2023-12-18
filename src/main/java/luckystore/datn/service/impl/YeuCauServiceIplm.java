@@ -114,8 +114,8 @@ public class YeuCauServiceIplm implements YeuCauService {
                     bienTheGiayTra.setSoLuong(bienTheGiayTra.getSoLuong() + 1);
                     bienTheGiayRepository.save(bienTheGiayTra);
                 } else if (ycctRequest.getTinhTrangSanPham() == true) { // giày lỗi
-                    int soLuongLoi = bienTheGiayTra.getSoLuongLoi() != null ? bienTheGiayTra.getSoLuongLoi() : 0;
-                    bienTheGiayTra.setSoLuongLoi(soLuongLoi + 1);
+                    int soLuongLoi = bienTheGiayTra.getSoLuongLoi() != null ? bienTheGiayTra.getSoLuongLoi() + 1 : 1;
+                    bienTheGiayTra.setSoLuongLoi(soLuongLoi);
                     bienTheGiayRepository.save(bienTheGiayTra);
                 }
 
@@ -135,7 +135,8 @@ public class YeuCauServiceIplm implements YeuCauService {
 
                 }
             } else { // từ chối trả = từ chối yêu cầu
-                hoaDonChiTietUpdate.setSoLuongTra(hoaDonChiTietUpdate.getSoLuongTra() - 1);
+                int soLuongTra = hoaDonChiTietUpdate.getSoLuongTra() != null ? hoaDonChiTietUpdate.getSoLuongTra() - 1 : 0;
+                hoaDonChiTietUpdate.setSoLuongTra(soLuongTra);
                 hoaDonChiTietRepository.save(hoaDonChiTietUpdate);
                 YeuCauChiTiet yeuCauChiTietSaved = YeuCauChiTiet.builder().id(ycctRequest.getId()).yeuCau(yeuCauSaved).hoaDonChiTiet(hoaDonChiTietUpdate).bienTheGiay(bienTheGiayDoi).lyDo(lyDoUpdate).trangThai(TrangThaiYeuCauChiTiet.HUY_TRA).ghiChu(ycctRequest.getGhiChu()).loaiYeuCauChiTiet(ycctRequest.getLoaiYeuCauChiTiet()).tinhTrangSanPham(ycctRequest.getTinhTrangSanPham()).tienGiam(ycctRequest.getTienGiam()).thanhTien(ycctRequest.getThanhTien()).build();
                 listYeuCauChiTiet.add(yeuCauChiTietSaved);
@@ -329,7 +330,8 @@ public class YeuCauServiceIplm implements YeuCauService {
             yeuCauChiTiet.setTinhTrangSanPham(ycctRequest.getTinhTrangSanPham());
             yeuCauChiTietRepository.save(yeuCauChiTiet);
             HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findById(ycctRequest.getHoaDonChiTiet()).orElse(null);
-            hoaDonChiTiet.setSoLuongTra(hoaDonChiTiet.getSoLuongTra() - 1);
+            int soLuongTra = hoaDonChiTiet.getSoLuongTra() != null ? hoaDonChiTiet.getSoLuongTra() - 1 : 0;
+            hoaDonChiTiet.setSoLuongTra(soLuongTra);
             hoaDonChiTietRepository.save(hoaDonChiTiet);
         }
 
@@ -355,13 +357,14 @@ public class YeuCauServiceIplm implements YeuCauService {
             yeuCauChiTiet.setLyDo(lyDoRepository.findById(ycctRequest.getLyDo()).orElse(null));
             if (yeuCauChiTiet.getTinhTrangSanPham() == true && ycctRequest.getTinhTrangSanPham() == false) {
                 BienTheGiay bienTheGiayTra = bienTheGiayRepository.findById(ycctRequest.getBienTheGiayTra()).orElse(null);
-                bienTheGiayTra.setSoLuongLoi(bienTheGiayTra.getSoLuongLoi() - 1);
+                int soLuongLoi = bienTheGiayTra.getSoLuongLoi() != null ? bienTheGiayTra.getSoLuongLoi()-1 : 0;
+                bienTheGiayTra.setSoLuongLoi(soLuongLoi);
                 bienTheGiayTra.setSoLuong(bienTheGiayTra.getSoLuong() + 1);
                 bienTheGiayRepository.save(bienTheGiayTra);
             } else if (yeuCauChiTiet.getTinhTrangSanPham() == false && ycctRequest.getTinhTrangSanPham() == true) {
                 BienTheGiay bienTheGiayTra = bienTheGiayRepository.findById(ycctRequest.getBienTheGiayTra()).orElse(null);
-                int soLuongLoi = bienTheGiayTra.getSoLuongLoi() != null ? bienTheGiayTra.getSoLuongLoi() : 0;
-                bienTheGiayTra.setSoLuongLoi(soLuongLoi + 1);
+                int soLuongLoi = bienTheGiayTra.getSoLuongLoi() != null ? bienTheGiayTra.getSoLuongLoi()+1 : 1;
+                bienTheGiayTra.setSoLuongLoi(soLuongLoi);
                 bienTheGiayTra.setSoLuong(bienTheGiayTra.getSoLuong() - 1);
                 bienTheGiayRepository.save(bienTheGiayTra);
             }
