@@ -380,7 +380,7 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
 
         ChiTietThanhToan chiTietThanhToan = new ChiTietThanhToan();
         chiTietThanhToan.setHoaDon(hoaDon);
-        chiTietThanhToan.setTienThanhToan(gioHangThanhToanRequest.getTongTienThanhToan());
+        chiTietThanhToan.setTienThanhToan(gioHangThanhToanRequest.getTongTienThanhToan().subtract(hoaDon.getPhiShip()));
         if (gioHangThanhToanRequest.getPhuongThuc() == 2) {
             chiTietThanhToan.setHinhThucThanhToan(2);
             chiTietThanhToan.setTrangThai(0);

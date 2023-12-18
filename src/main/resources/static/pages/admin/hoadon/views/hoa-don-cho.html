@@ -192,20 +192,19 @@
                 </table>
 
                 <div class="row">
-                    <div class="col-6"
-                         ng-hide="hoaDonDetail.thongTinThanhToan.show && hoaDonDetail.trangThai != -1"></div>
-                    <div class="col-6" ng-show="hoaDonDetail.thongTinThanhToan.show && hoaDonDetail.trangThai != -1">
-                        <div class="py-2"><strong>Thông tin thanh toán(Chưa bao gồm tiền ship):</strong></div>
-                        <div class="py-2"
-                             ng-show="hoaDonDetail.thongTinThanhToan.show && hoaDonDetail.thongTinThanhToan.chuyenKhoan">
-                            Chuyển khoản:
-                            <strong>{{hoaDonDetail.thongTinThanhToan.chuyenKhoan?
-                                hoaDonDetail.thongTinThanhToan.chuyenKhoan : 0 | number : 0}} VND</strong>
-                            <div>Mã giao dịch: <strong>{{hoaDonDetail.thongTinThanhToan.maGiaoDich}}</strong></div>
-                        </div>
-                    </div>
+                    <div class="col-6"></div>
+<!--                    <div class="col-6" ng-show="hoaDonDetail.thongTinThanhToan.show && hoaDonDetail.trangThai != -1">-->
+<!--                        <div class="py-2"><strong>Thông tin thanh toán(Chưa bao gồm tiền ship):</strong></div>-->
+<!--                        <div class="py-2"-->
+<!--                             ng-show="hoaDonDetail.thongTinThanhToan.show && hoaDonDetail.thongTinThanhToan.chuyenKhoan">-->
+<!--                            Chuyển khoản:-->
+<!--                            <strong>{{hoaDonDetail.thongTinThanhToan.chuyenKhoan?-->
+<!--                                hoaDonDetail.thongTinThanhToan.chuyenKhoan : 0 | number : 0}} VND</strong>-->
+<!--                            <div>Mã giao dịch: <strong>{{hoaDonDetail.thongTinThanhToan.maGiaoDich}}</strong></div>-->
+<!--                        </div>-->
+<!--                    </div>-->
                     <div class="invoice-total col-6">
-                        <p class="py-2"><strong>Tổng Cộng : </strong> {{hoaDonDetail.conLai + hoaDonDetail.tongTru| number : 0}} VND</p>
+                        <p class="py-2"><strong>Tổng Cộng : </strong> {{hoaDonDetail.conLai  + hoaDonDetail.tongTru | number : 0}} VND</p>
                         <p class="py-2"><strong>Giảm giá : </strong>- {{hoaDonDetail.tongTru | number : 0}} VND</p>
                         <p class="py-2"><strong>Tiền ship : </strong> {{hoaDonDetail.tienShip ? hoaDonDetail.tienShip :
                             0 |
