@@ -423,7 +423,7 @@ public class HoaDonServiceImpl implements HoaDonService {
             tangHang(hoaDon.getKhachHang(), request.getTienMat());
         }
 
-        hoaDon.setKenhBan(1);
+        hoaDon.setKenhBan(KenhBan.OFFLINE);
         hoaDon.setChiTietThanhToans(chiTietThanhToans);
         hoaDon.setGhiChu(request.getGhiChu());
         List<Long> idsBienThe = hoaDon.getListHoaDonChiTiet().stream().map(hdct -> hdct.getBienTheGiay().getId()).toList();
