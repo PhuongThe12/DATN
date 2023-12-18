@@ -1034,7 +1034,6 @@ public class GiayServiceImpl implements GiayService {
     public List<BienTheGiayResponse> getBienTheGiayByListId(List<Long> ids) {
         List<BienTheGiayResponse> listNotCheckKhuyenMai = bienTheGiayRepository.findAllByIdIn(ids);
         List<BienTheGiayResponse> listCheckKhuyenMai = bienTheGiayRepository.bienTheGiay(ids);
-        System.out.println(listNotCheckKhuyenMai.size() + "abc" + listCheckKhuyenMai.size());
         for (BienTheGiayResponse bienTheGiayResponse : listNotCheckKhuyenMai) {
             boolean tonTai = false;
             for (BienTheGiayResponse bienTheGiayResponseKhuyenMai : listCheckKhuyenMai) {
@@ -1049,7 +1048,6 @@ public class GiayServiceImpl implements GiayService {
                 bienTheGiayResponse.setPhanTramGiam(0);
             }
         }
-        System.out.println("Dayla" + listNotCheckKhuyenMai.size());
         return listNotCheckKhuyenMai;
     }
 

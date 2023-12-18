@@ -85,11 +85,6 @@
                                        style="border-bottom: 2px solid #212529;">Đơn Hàng</a>
                                 </div>
                             </div>
-                            <div class="col-auto">
-                                <div>
-                                    <a class="text-decoration-none text-dark fw-bold" href="">Yêu Thích</a>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -125,12 +120,12 @@
                            ng-change="changeRadio(1)">
                     <label class="radio-label" for="choGiaoHang">Hoàn thành</label>
                 </div>
-                <div class="custom-radio">
-                    <input type="radio" id="dangGiaoHang" name="status" ng-model="status" value="5"
-                           ng-checked="status == 0"
-                           ng-change="changeRadio(0)">
-                    <label class="radio-label" for="dangGiaoHang">Chờ thanh toán</label>
-                </div>
+<!--                <div class="custom-radio">-->
+<!--                    <input type="radio" id="dangGiaoHang" name="status" ng-model="status" value="5"-->
+<!--                           ng-checked="status == 0"-->
+<!--                           ng-change="changeRadio(0)">-->
+<!--                    <label class="radio-label" for="dangGiaoHang">Chờ thanh toán</label>-->
+<!--                </div>-->
 
             </div>
             <div ng-repeat="hoaDon in hoaDons" class="pb-4 border-bottom-1">

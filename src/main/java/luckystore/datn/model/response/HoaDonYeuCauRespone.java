@@ -102,6 +102,7 @@ public class HoaDonYeuCauRespone {
         this.diaChiNhan = hoaDon.getDiaChiNhan();
     }
 
+
     private BigDecimal tongTienKhachThanhToan(List<ChiTietThanhToanResponse> listChiTietThanhToan) {
         BigDecimal result = BigDecimal.ZERO;
         if (listChiTietThanhToan != null) { // Kiểm tra xem list không phải là null
@@ -117,7 +118,7 @@ public class HoaDonYeuCauRespone {
     private Double tinhPhanTramGiam(BigDecimal tongGiaTriHoaDon, BigDecimal tienGiam){
         if (tongGiaTriHoaDon == null || tienGiam == null || BigDecimal.ZERO.compareTo(tongGiaTriHoaDon) == 0) {
             // Xử lý trường hợp tổng giá trị hóa đơn là 0 hoặc null
-            return null;
+            return 0.0;
         }
         BigDecimal phanTram = tienGiam.multiply(new BigDecimal("100")).divide(tongGiaTriHoaDon, 2, RoundingMode.HALF_UP);
         return phanTram.doubleValue(); // Chuyển đổi sang Integer

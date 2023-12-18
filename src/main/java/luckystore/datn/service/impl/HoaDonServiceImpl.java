@@ -8,6 +8,7 @@ import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.infrastructure.constraints.Config;
 import luckystore.datn.infrastructure.constraints.ErrorMessage;
 import luckystore.datn.infrastructure.constraints.KenhBan;
+import luckystore.datn.infrastructure.constraints.LoaiHoaDon;
 import luckystore.datn.infrastructure.constraints.TrangThaiHoaDon;
 import luckystore.datn.infrastructure.security.session.SessionService;
 import luckystore.datn.model.request.*;
@@ -218,6 +219,8 @@ public class HoaDonServiceImpl implements HoaDonService {
 
         setNhanVienToHoaDon(hoaDon);
 
+        hoaDon.setLoaiHoaDon(LoaiHoaDon.HOA_DON_MUA);
+        hoaDon.setKenhBan(KenhBan.OFFLINE);
         hoaDon = hoaDonRepository.save(hoaDon);
         return new HoaDonBanHangResponse(hoaDon, hoaDon.getTrangThai());
     }

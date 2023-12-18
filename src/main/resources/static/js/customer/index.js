@@ -424,6 +424,15 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
                 }).catch(function (error) {
                 console.log(error);
             })
+            console.log($scope.khachHang);
+            if ($scope.khachHang) {
+                $http.get(host + "/rest/khach-hang/san-pham-yeu-thich/existsByIdKhachHangAndIdIdGiay?idKhachHang=" + $scope.khachHang.id + "&idGiay=" + $scope.giaySeletect.id)
+                    .then(function (response) {
+                        $scope.giaySeletect.yeuThich = response.data;
+                    }).catch(function (error) {
+                    console.log(error);
+                })
+            }
 
             detailGiayChiTiet($scope.giaySeletect);
 
@@ -822,38 +831,30 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
     }
 
 // cường làm thêm yêu thích vào đây
-    $scope.sanPhamYeuThich = function () {
-        console.log("vào trong rùi")
-        // Dữ liệu bạn muốn gửi đến API
+    $scope.addSanPhamYeuThich = function () {
         var requestData = {
-            "khachHangId": 5,
-            "giayId": $scope.giayDetail.id
+            "khachHangId": $scope.khachHang.id,
+            "giayId": $scope.giaySeletect.id
         };
         // Địa chỉ URL của API
         var apiUrl = 'http://localhost:8080/rest/khach-hang/san-pham-yeu-thich';
 
-        // Thiết lập các tùy chọn cho cuộc gọi Fetch
         var requestOptions = {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json', // Kiểu dữ liệu bạn đang gửi đi
-                // Các header khác nếu cần
+                'Content-Type': 'application/json',
             },
-            body: JSON.stringify(requestData), // Chuyển đổi đối tượng thành chuỗi JSON
+            body: JSON.stringify(requestData),
         };
-        // Thực hiện cuộc gọi Fetch
         fetch(apiUrl, requestOptions)
             .then(function (response) {
-                // Kiểm tra trạng thái của phản hồi từ API
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-                return response.json(); // Chuyển đổi dữ liệu JSON từ phản hồi
+                return response.json();
             })
             .then(function successCallback(response) {
-                // Xử lý dữ liệu từ phản hồi thành công
-                console.log('Đã thêm thành công danh sách yêu thích', response);
-                console.log(response);
+                $scope.giaySeletect.yeuThich = true;
             })
             .catch(function (error) {
                 // Xử lý lỗi nếu có
@@ -862,8 +863,26 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
 
     }
 
-//
+    $scope.deleteSanPhamYeuThich = function () {
 
+        var apiUrl = 'http://localhost:8080/rest/khach-hang/san-pham-yeu-thich?idKhachHang=' + $scope.khachHang.id + "&idGiay=" + $scope.giaySeletect.id;
+        console.log(apiUrl);
+        var requestOptions = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        };
+        fetch(apiUrl, requestOptions)
+            .then(function (response) {
+                $scope.giaySeletect.yeuThich = false;
+            })
+
+            .catch(function (error) {
+                // Xử lý lỗi nếu có
+                console.error('Error:', error);
+            });
+    }
 })
 
 
@@ -1424,7 +1443,7 @@ app.controller("detailDonHangController", function ($scope, $http, $window, $loc
     $http.get("http://localhost:8080/rest/user/hoa-don/get-chi-tiet-thanh-toan/" + id)
         .then(function (response) {
             $scope.hoaDon = response.data;
-            console.log($scope.hoaDon)
+            console.log(response.data);
             checkNgayNhanHang($scope.hoaDon.ngayThanhToan);
             $scope.hoaDon.conLai = 0;
             $scope.hoaDon.thongTinThanhToan = {
@@ -1439,6 +1458,7 @@ app.controller("detailDonHangController", function ($scope, $http, $window, $loc
                 if (item.hinhThucThanhToan === 2) {
                     $scope.hoaDon.thongTinThanhToan.chuyenKhoan = item.tienThanhToan;
                     $scope.hoaDon.thongTinThanhToan.maGiaoDich = item.maGiaoDich;
+                    $scope.hoaDon.trangThai = item.trangThai;
                 }
             });
             $scope.hoaDon.tongTru = $scope.hoaDon.tienGiam ? $scope.hoaDon.tienGiam : 0;
@@ -1457,7 +1477,6 @@ app.controller("detailDonHangController", function ($scope, $http, $window, $loc
         }).catch(function (error) {
         toastr["error"]("Lấy dữ liệu thất bại");
     });
-
 
 
     function checkNgayNhanHang(ngayNhan) {
@@ -1861,7 +1880,6 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
                 }
             })
         };
-
     }
 
     $scope.selectedDiaChiNhanHang = function (diaChiNhanHang) {
@@ -2125,7 +2143,10 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
             $scope.khachHang = response.data;
             $http.get("/rest/admin/phieu-giam-gia/get-all-by-hang-khach-hang?hangKhachHang=" + $scope.khachHang.hangKhachHang.tenHang)
                 .then(function (response) {
-                    $scope.phieuGiamGiaList = response.data;
+                    $scope.phieuGiamGiaList = response.data.filter(function(giamGia) {
+                        return $scope.tongTienSanPham >= giamGia.giaTriDonToiThieu;
+                    });
+                    console.log($scope.phieuGiamGiaList);
                 }).catch(function (error) {
                 console.log(error)
             })
@@ -2138,7 +2159,8 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
     $scope.addPhieuGiamGia = function (phieuGiamGia) {
         $http.get("/rest/admin/phieu-giam-gia/" + phieuGiamGia.id)
             .then(function (response) {
-                if ($scope.tongTien >= response.data.giaTriDonToiThieu && response.data.trangThai === 1 && response.data.soLuongPhieu > 0) {
+                console.log(response.data);
+                if ($scope.tongTien >= response.data.giaTriDonToiThieu && response.data.trangThai === 0 && response.data.soLuongPhieu > 0) {
                     $scope.tongTienPhieuGiamSelected = ($scope.tongTien * response.data.phanTramGiam) / 100;
                     if ($scope.tongTienPhieuGiamSelected > response.data.giaTriGiamToiDa) {
                         $scope.tongTienPhieuGiamSelected = response.data.giaTriGiamToiDa;
@@ -2149,6 +2171,8 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
                         $scope.tongTienSauKhuyenMai = 0;
                     }
                     $scope.phieuGiamGiaChoosed = response.data;
+                    $scope.phieuGiamGiaChoosed.remove("nguoiTao");
+                    console.log($scope.phieuGiamGiaChoosed);
                     $scope.getPhieuGiamGia();
                 } else if ($scope.tongTien <= response.data.giaTriDonToiThieu) {
                     toastr["info"]("Không khả dụng , Tổng tiền đơn hàng chưa đủ điều kiện !");

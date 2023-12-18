@@ -29,9 +29,10 @@ public class RestSanPhamYeuThichController {
 
     @GetMapping
     public ResponseEntity getSanPhamYeuThichPage(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                               @RequestParam(value = "search", required = false) String searchText
-                                               ) {
-        return new ResponseEntity(sanPhamYeuThichService.getPage(page, searchText), HttpStatus.OK);
+                                                 @RequestParam(value = "search", required = false) String searchText,
+                                                 @RequestParam(value = "idKhachHang", required = false) Long idKhachHang
+    ) {
+        return new ResponseEntity(sanPhamYeuThichService.getPage(page, searchText, idKhachHang), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -47,6 +48,22 @@ public class RestSanPhamYeuThichController {
         if (errorJson != null) return errorJson;
 
         return new ResponseEntity(sanPhamYeuThichService.addSanPhamYeuThich(sanPhamYeuThichRequest), HttpStatus.OK);
+    }
+
+    @GetMapping("/existsByIdKhachHangAndIdIdGiay")
+    public ResponseEntity existsByIdKhachHangAndIdGiay(@RequestParam("idKhachHang") Long idKhachHang, @RequestParam("idGiay") Long idGiay) {
+        return new ResponseEntity(sanPhamYeuThichService.existsByIdKhachHangAndIdIdGiay(idKhachHang, idGiay), HttpStatus.OK);
+    }
+
+    @DeleteMapping
+    public ResponseEntity deleteSanPhamYeuThichByIdKhachHangAndIdGiay(@RequestParam("idKhachHang") Long idKhachHang, @RequestParam("idGiay") Long idGiay) {
+        try {
+            sanPhamYeuThichService.deleteSanPhamYeuThichByIdKhachHangAndIdGiay(idKhachHang, idGiay);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     private ResponseEntity getErrorJson(BindingResult result) {

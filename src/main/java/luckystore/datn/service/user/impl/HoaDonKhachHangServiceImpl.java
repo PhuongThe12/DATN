@@ -7,6 +7,7 @@ import luckystore.datn.exception.InvalidIdException;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.infrastructure.constraints.ErrorMessage;
 import luckystore.datn.infrastructure.constraints.KenhBan;
+import luckystore.datn.infrastructure.constraints.LoaiHoaDon;
 import luckystore.datn.infrastructure.constraints.TrangThaiHoaDon;
 import luckystore.datn.model.request.BienTheGiayGioHangRequest;
 import luckystore.datn.model.request.GioHangThanhToanRequest;
@@ -87,6 +88,7 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         Set<HoaDonChiTiet> hoaDonChiTiets = getBienTheGiay(gioHangThanhToanRequest.getBienTheGiayRequests(), hoaDon);
         hoaDon.setListHoaDonChiTiet(hoaDonChiTiets);
         hoaDon.setKenhBan(KenhBan.ONLINE);
+        hoaDon.setLoaiHoaDon(LoaiHoaDon.HOA_DON_MUA);
 
         setChiTietThanhToan(hoaDon, gioHangThanhToanRequest);
 
@@ -203,6 +205,7 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         hoaDon.setTrangThai(TrangThaiHoaDon.CHO_XAC_NHAN);
         hoaDon.getChiTietThanhToans().forEach(chiTiet -> {
             chiTiet.setTrangThai(1);
+            chiTiet.setMaGiaoDich(request.getMaGiaoDich());
         });
         hoaDonRepository.save(hoaDon);
         return hoaDon.getId();
@@ -349,7 +352,7 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         if (phieuGiamGia.getNgayBatDau() > currentSeconds || phieuGiamGia.getNgayKetThuc() < currentSeconds) {
             throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("phieuGiamGiaError", "Phiếu giảm giá vừa được cập nhật lại , vui lòng kiểm tra lại !")));
         }
-        if (phieuGiamGia.getSoLuongPhieu() == 0 || phieuGiamGia.getTrangThai() != 1) {
+        if (phieuGiamGia.getSoLuongPhieu() == 0 || phieuGiamGia.getTrangThai() != 0) {
             throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("phieuGiamGiaError", "Phiếu giảm giá đã được sử dụng hết !")));
         }
 
@@ -378,7 +381,7 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
 
         ChiTietThanhToan chiTietThanhToan = new ChiTietThanhToan();
         chiTietThanhToan.setHoaDon(hoaDon);
-        chiTietThanhToan.setTienThanhToan(gioHangThanhToanRequest.getTongTienThanhToan());
+        chiTietThanhToan.setTienThanhToan(gioHangThanhToanRequest.getTongTienThanhToan().subtract(hoaDon.getPhiShip()));
         if (gioHangThanhToanRequest.getPhuongThuc() == 2) {
             chiTietThanhToan.setHinhThucThanhToan(2);
             chiTietThanhToan.setTrangThai(0);

@@ -114,6 +114,22 @@
 
 </style>
 
+<div ng-show="isLoading" class="loading-spinner">
+    <div class="text-center" style="  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Màu nền đục để làm mờ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; ">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
 <div class="container">
     <div class="row">
         <div id="" class=" col-md-5">
@@ -196,8 +212,11 @@
     padding: 13px 0px;" ng-click="themVaoGioHang()">Thêm Vào Giỏ Hàng
             </button>
             <br>
-            <button class="btn btn-outline-dark mt-3" style="    width: 263px;
-    padding: 13px 0px;" ng-click="sanPhamYeuThich()"><i class="far fa-heart" style=""></i> Yêu Thích
+            <button ng-if="khachHang.id && !giaySeletect.yeuThich" class="btn btn-outline-dark mt-3" style="width: 263px;
+    padding: 13px 0px;" ng-click="addSanPhamYeuThich()"><i class="far fa-heart" style=""></i> Yêu Thích
+            </button>
+            <button ng-if="giaySeletect.yeuThich" ng-click="deleteSanPhamYeuThich()" class="btn btn-dark mt-3" style="    width: 263px;
+    padding: 13px 0px;"><i class="far fa-heart" style=""></i> Đã Yêu Thích
             </button>
         </div>
     </div>
@@ -207,7 +226,8 @@
     </div>
 
     <p>
-        <button class="btn w-100" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+        <button class="btn w-100" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample"
+                aria-expanded="false" aria-controls="collapseExample">
             Xem đánh giá từ khách hàng
         </button>
     </p>
@@ -215,7 +235,9 @@
         <div class="card card-body">
             <div ng-repeat="danhGia in listDanhGia">
                 <div class="d-flex">
-                    <img class="rounded-circle" src="https://cdn5.vectorstock.com/i/1000x1000/20/74/woman-avatar-profile-vector-21372074.jpg" width="40px" alt="">
+                    <img class="rounded-circle"
+                         src="https://cdn5.vectorstock.com/i/1000x1000/20/74/woman-avatar-profile-vector-21372074.jpg"
+                         width="40px" alt="">
                     <div>
                         <p class="font-size-12-ncl m-0">{{danhGia.khachHangResponse.hoTen}}</p>
                         <p class="font-size-12 m-0">Đã đánh giá {{danhGia.saoDanhGia}} sao</p>

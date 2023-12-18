@@ -77,8 +77,10 @@
                 </tr>
 
                 <tr ng-repeat="hoaDon in hoaDons">
-                    <td style="width: 5%"><input type="checkbox" name="hoaDonSelected" ng-model="hoaDon.selected" ng-checked="all"></td>
-                    <td>{{(hoaDon.loaiHoaDon == 1 ? 'HD' : (hoaDon.loaiHoaDon == 2 ? 'HDD' : 'TH')) + hoaDon.id}}</td>
+                    <td style="width: 5%"><input type="checkbox" name="hoaDonSelected" ng-model="hoaDon.selected"
+                                                 ng-checked="all"></td>
+                    <td>{{(hoaDon.loaiHoaDon == 2 ? 'HD_HDD' : (hoaDon.loaiHoaDon == 3 ? 'TH' : 'HD')) + hoaDon.id}}
+                    </td>
                     <td>{{hoaDon.hoaDonGoc ? hoaDon.hoaDonGoc : '-'}}</td>
                     <td>{{hoaDon.nhanVien? hoaDon.nhanVien.hoTen : ''}}</td>
                     <td>{{hoaDon.khachHang? hoaDon.khachHang.hoTen : ''}}</td>
@@ -137,8 +139,8 @@
             </div>
             <div class="modal-body">
                 <div class="invoice-details">
-                    <p class="py-2"><strong>Mã Hóa Đơn :</strong> {{(hoaDonDetail.loaiHoaDon == 1 ? 'HD_HDD' :
-                        (hoaDonDetail.loaiHoaDon == 2 ? 'TH' : 'HD')) + hoaDonDetail.id}}</p>
+                    <p class="py-2"><strong>Mã Hóa Đơn :</strong> {{(hoaDonDetail.loaiHoaDon == 2 ? 'HD_HDD' :
+                        (hoaDonDetail.loaiHoaDon == 3 ? 'TH' : 'HD')) + hoaDonDetail.id}}</p>
                     <p class="py-2"><strong>Khách Hàng :</strong> {{hoaDonDetail.khachHang? hoaDonDetail.khachHang.hoTen
                         : ''}}</p>
                     <p class="py-2"><strong>Nhân viên :</strong> {{hoaDonDetail.nhanVien? hoaDonDetail.nhanVien.hoTen :
@@ -194,23 +196,39 @@
                 <div class="row">
                     <div class="col-6"
                          ng-hide="hoaDonDetail.thongTinThanhToan.show && hoaDonDetail.trangThai != -1"></div>
-                    <div class="col-6" ng-show="hoaDonDetail.thongTinThanhToan.show && hoaDonDetail.trangThai != -1">
-                        <div class="py-2"><strong>Thông tin thanh toán(Chưa bao gồm tiền ship):</strong></div>
+                    <div class="col-6"
+                         ng-show="hoaDonDetail.thongTinThanhToan.show && hoaDonDetail.trangThai != -1">
+                        <div class="py-2"><strong>Thông tin thanh toán:</strong></div>
+                        <div class="py-2"
+                             ng-show="hoaDonDetail.thongTinThanhToan.show && hoaDonDetail.thongTinThanhToan.tienMat">
+                            Tiền mặt:
+                            <strong>{{(hoaDonDetail.thongTinThanhToan.tienMat?hoaDonDetail.thongTinThanhToan.tienMat: 0)
+                                + hoaDonDetail.tienShip
+                                | number : 0}} VND</strong>
+                            <div ng-show="hoaDonDetail.thongTinThanhToan.show && hoaDonDetail.thongTinThanhToan.chuyenKhoan"
+                                 style="border-bottom: 2px slategray dashed;"></div>
+                        </div>
                         <div class="py-2"
                              ng-show="hoaDonDetail.thongTinThanhToan.show && hoaDonDetail.thongTinThanhToan.chuyenKhoan">
                             Chuyển khoản:
-                            <strong>{{hoaDonDetail.thongTinThanhToan.chuyenKhoan?
-                                hoaDonDetail.thongTinThanhToan.chuyenKhoan : 0 | number : 0}} VND</strong>
-                            <div>Mã giao dịch: <strong>{{hoaDonDetail.thongTinThanhToan.maGiaoDich}}</strong></div>
+                            <strong>{{(hoaDonDetail.thongTinThanhToan.chuyenKhoan?
+                                hoaDonDetail.thongTinThanhToan.chuyenKhoan : 0) + hoaDonDetail.tienShip | number : 0}}
+                                VND</strong>
+                            <div>Mã giao dịch:
+                                <strong>{{hoaDonDetail.thongTinThanhToan.maGiaoDich}}</strong>
+                            </div>
                         </div>
                     </div>
                     <div class="invoice-total col-6">
-                        <p class="py-2"><strong>Tổng Cộng : </strong> {{hoaDonDetail.conLai + hoaDonDetail.tongTru| number : 0}} VND</p>
+                        <p class="py-2"><strong>Tổng Cộng : </strong> {{hoaDonDetail.conLai + hoaDonDetail.tongTru |
+                            number : 0}} VND</p>
                         <p class="py-2"><strong>Giảm giá : </strong>- {{hoaDonDetail.tongTru | number : 0}} VND</p>
                         <p class="py-2"><strong>Tiền ship : </strong> {{hoaDonDetail.tienShip ? hoaDonDetail.tienShip :
                             0 |
                             number : 0}} VND</p>
-                        <p class="py-2"><strong>Phải trả : </strong>{{hoaDonDetail.tongCong | number : 0}} VND</p>
+                        <p class="py-2"><strong>Phải trả : </strong>{{hoaDonDetail.conLai +(hoaDonDetail.tienShip ?
+                            hoaDonDetail.tienShip :
+                            0) | number : 0}} VND</p>
                     </div>
                 </div>
 
@@ -245,8 +263,8 @@
                     được áp dụng. Hãy thông báo với khách hàng khi xác nhận<i class="fas fa-info-circle"></i></div>
 
                 <div class="invoice-details mt-3">
-                    <p class="py-2"><strong>Mã Hóa Đơn :</strong> {{(hoaDonTra.loaiHoaDon == 1 ? 'HD_HDD' :
-                        (hoaDonTra.loaiHoaDon == 2 ? 'TH' : 'HD')) + hoaDonTra.id}}</p>
+                    <p class="py-2"><strong>Mã Hóa Đơn :</strong> {{(hoaDonTra.loaiHoaDon == 2 ? 'HD_HDD' :
+                        (hoaDonTra.loaiHoaDon == 3 ? 'TH' : 'HD')) + hoaDonTra.id}}</p>
                     <p class="py-2"><strong>Khách Hàng :</strong> {{hoaDonTra.khachHang? hoaDonTra.khachHang.hoTen
                         : ''}}</p>
                     <p class="py-2"><strong>Nhân viên :</strong> {{hoaDonTra.nhanVien? hoaDonTra.nhanVien.hoTen :
@@ -379,7 +397,7 @@
                         </tr>
 
                         <tr ng-repeat="hoaDon in hoaDons | filter : {selected : true}">
-                            <td>{{(hoaDon.loaiHoaDon == 1 ? 'HD_HDD' : (hoaDon.loaiHoaDon == 2 ? 'TH' : 'HD')) +
+                            <td>{{(hoaDon.loaiHoaDon == 2 ? 'HD_HDD' : (hoaDon.loaiHoaDon == 3 ? 'TH' : 'HD')) +
                                 hoaDon.id}}
                             </td>
                             <td>
