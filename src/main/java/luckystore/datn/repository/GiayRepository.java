@@ -220,7 +220,7 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
         left join HoaDon hd on hdct.ID_HOA_DON = hd.ID\s
         left join Giay g on btg.ID_GIAY = g.ID 
         left join ChiTietThanhToan cttt on cttt.ID_HOA_DON = hd.ID
-        where hd.TRANG_THAI = 1 and hd.NGAY_TAO between '2023-12-17' and '2023-12-19'
+        where hd.TRANG_THAI = 1 and hd.NGAY_TAO between '2023-12-10' and '2023-12-25'
         group by g.TEN
         order by tongDoanhThu desc
     """, nativeQuery = true)

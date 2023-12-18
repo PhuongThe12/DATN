@@ -75,7 +75,8 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
 
     @Query("select new luckystore.datn.model.response.HoaDonResponse(hd) from HoaDon hd " +
             "WHERE (:searchText IS NULL OR hd.ghiChu LIKE %:searchText%) AND (:status IS NULL OR hd.trangThai = :status)" +
-            "AND hd.khachHang.id = :idKhachHang")
+            "AND hd.khachHang.id = :idKhachHang " +
+            "ORDER BY  hd.id desc ")
     Page<HoaDonResponse> getPageResponseByIdKhachHang(String searchText, Integer status, Pageable pageable, Long idKhachHang);
 
     @Query("select new luckystore.datn.model.response.print.HoaDonPrintResponse(hd) from HoaDon hd where hd.id = :id")
@@ -130,7 +131,7 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
             FROM
             HoaDon hd
             LEFT JOIN ChiTietThanhToan cttt ON hd.ID = cttt.ID_HOA_DON
-            WHERE hd.TRANG_THAI = 1 AND hd.NGAY_TAO BETWEEN '2023-12-17' AND '2023-12-19'
+            WHERE hd.TRANG_THAI = 1 AND hd.NGAY_TAO BETWEEN '2023-12-10' AND '2023-12-25'
         ) AS sub
         LEFT JOIN
             KhachHang kh ON sub.ID_KHACH_HANG = kh.ID
@@ -151,7 +152,7 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
             LEFT JOIN Giay g ON g.ID = btg.ID_GIAY
         ) AS sub ON hd.ID = sub.ID_HOA_DON
         LEFT JOIN ThuongHieu th ON th.ID = sub.ID_THUONG_HIEU
-        WHERE hd.TRANG_THAI = 1 AND hd.NGAY_TAO BETWEEN '2023-12-17' AND '2023-12-19'
+        WHERE hd.TRANG_THAI = 1 AND hd.NGAY_TAO BETWEEN '2023-12-10' AND '2023-12-25'
         GROUP BY th.TEN
     """, nativeQuery = true)
     List<ThongKeByHangAndThuongHieu> getDoanhThuByThuongHieu();
