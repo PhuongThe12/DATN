@@ -42,8 +42,8 @@ public interface BienTheGiayRepository extends JpaRepository<BienTheGiay, Long> 
     @Query("select new luckystore.datn.model.response.BienTheGiayResponse(bt.id, bt.soLuong) from BienTheGiay bt where bt.barCode = :barCode")
     Optional<BienTheGiayResponse> getBienTheGiayByBarCode(String barCode);
 
-    @Query("select distinct new luckystore.datn.model.response.BienTheGiayResponse(bt.id, bt.kichThuoc.ten, bt.mauSac.ten, bt.soLuong, bt.giaBan,bt.hinhAnh,bt.trangThai, bt.giay, km.phanTramGiam) " +
-            "  from BienTheGiay bt left join bt.khuyenMaiChiTietList km  where bt.id IN  :ids" )
+    @Query("select new luckystore.datn.model.response.BienTheGiayResponse(bt.id, bt.kichThuoc.ten, bt.mauSac.ten, bt.soLuong, bt.giaBan,bt.hinhAnh,bt.trangThai, bt.giay) " +
+            "  from BienTheGiay bt   where bt.id IN  :ids" )
     List<BienTheGiayResponse> findAllByIdIn(@Param("ids") List<Long> ids);
 
     @Query("select distinct new luckystore.datn.model.response.BienTheGiayResponse(kmct.bienTheGiay.id, kmct.bienTheGiay.giaBan, kmct.phanTramGiam, kmct.bienTheGiay.trangThai)  " +

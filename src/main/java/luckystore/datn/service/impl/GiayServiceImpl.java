@@ -1039,16 +1039,17 @@ public class GiayServiceImpl implements GiayService {
             boolean tonTai = false;
             for (BienTheGiayResponse bienTheGiayResponseKhuyenMai : listCheckKhuyenMai) {
                 if (bienTheGiayResponse.getId().equals(bienTheGiayResponseKhuyenMai.getId())) {
-                  tonTai = true;
-                  bienTheGiayResponse.setKhuyenMai(bienTheGiayResponseKhuyenMai.getKhuyenMai());
-                  bienTheGiayResponse.setPhanTramGiam(bienTheGiayResponseKhuyenMai.getPhanTramGiam());
+                    tonTai = true;
+                    bienTheGiayResponse.setKhuyenMai(bienTheGiayResponseKhuyenMai.getKhuyenMai());
+                    bienTheGiayResponse.setPhanTramGiam(bienTheGiayResponseKhuyenMai.getPhanTramGiam());
                 }
             }
-            if(!tonTai){
+            if (!tonTai) {
                 bienTheGiayResponse.setKhuyenMai(0);
                 bienTheGiayResponse.setPhanTramGiam(0);
             }
         }
+        System.out.println("Dayla" + listNotCheckKhuyenMai.size());
         return listNotCheckKhuyenMai;
     }
 
