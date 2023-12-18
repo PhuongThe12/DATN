@@ -18,7 +18,7 @@
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <h5 class="fw-bold"><i class="fas fa-shopping-basket" style="background: white;padding: 10px;
     border-radius: 10px;
-    color: rgb(12 231 250);">  {{ tongDoanhThu | currency:0}} VND</i></h5>
+    color: rgb(12 231 250);">  {{ tongDoanhThu | currency}} </i></h5>
                         </div>
                     </div>
                 </div>
@@ -27,7 +27,7 @@
             <div class="col-md-3">
                 <div class="m-2">
                     <div class="p-4 rounded box-shadow-page " style="background: rgb(12 231 250 / 15%);">
-                        <p class="mb-2 font-size-14-ncl">Hóa đơn bán</p>
+                        <p class="mb-2 font-size-14-ncl">Tổng hóa đơn</p>
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <h5 class="fw-bold"><i class="fas fa-shopping-basket" style="background: white;padding: 10px;
     border-radius: 10px;
@@ -40,7 +40,7 @@
             <div class="col-md-3">
                 <div class="m-2">
                     <div class="p-4 rounded box-shadow-page" style=" background: rgb(250 145 107 / 15%);">
-                        <p class="mb-2 font-size-14-ncl">Sản phẩm bán</p>
+                        <p class="mb-2 font-size-14-ncl">Tổng sản phẩm</p>
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <h5 class="fw-bold"><i class="fas fa-wallet" style="background: white;padding: 10px;
     border-radius: 10px;
@@ -71,11 +71,6 @@
                     <div class="card m-2 p-2 rounded box-shadow-page bg-white">
                         <div class="card-header bg-white">
                             <p class="fw-bold p-1 mt-1">Doanh thu các tháng trong năm</p>
-                            <select ng-model="selectedYear"  ng-init="selectedYear = '2023'" style="float: right; border-radius: 5px">
-                                <option selected value="2023">2023</option>
-                                <option value="2021">2021</option>
-                                <option value="2022">2022</option>
-                            </select>
                         </div>
                         <div class="card-body">
                             <div class="">
@@ -124,61 +119,6 @@
                                 <div id="myPlot" style="width:100%;max-width:700px"></div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="">
-        <div class="modal fade" id="showNhanVien" tabindex="-1" aria-labelledby="exampleModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Chi Tiết Nhân Viên</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <table class="table mw-100">
-                            <tr>
-                                <td>ID :</td>
-                                <th>{{nhanVienDetail.id}}</th>
-                            </tr>
-                            <tr>
-                                <td>Tên :</td>
-                                <th>{{nhanVienDetail.hoTen}}</th>
-                            </tr>
-                            <tr>
-                                <td>Giới Tính :</td>
-                                <th>{{nhanVienDetail.gioiTinh == 1 ? "Nam" : "Nữ"}}</th>
-                            </tr>
-                            <tr>
-                                <td>Ngày Sinh :</td>
-                                <th>{{nhanVienDetail.ngaySinh}}</th>
-                            </tr>
-                            <tr>
-                                <td>Số Điện Thoại :</td>
-                                <th>{{nhanVienDetail.soDienThoai}}</th>
-                            </tr>
-                            <tr>
-                                <td> Email :</td>
-                                <th>{{nhanVienDetail.email}}</th>
-                            </tr>
-                            <tr>
-                                <td> Trạng Thái :</td>
-                                <th>{{nhanVienDetail.trangThai == 1 ? "Đang Làm" : "Nghỉ Làm"}}</th>
-                            </tr>
-                            <tr>
-                                <td>Địa Chỉ :</td>
-                                <th>{{nhanVienDetail.xa}} - {{nhanVienDetail.huyen}} - {{nhanVienDetail.tinh}}</th>
-                            </tr>
-                            <tr>
-                                <td>Chức Vụ :</td>
-                                <th>{{nhanVienDetail.chucVu == 1 ? "Nhân Viên" : "Chủ Cửa Hàng"}}</th>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="modal-footer">
                     </div>
                 </div>
             </div>
