@@ -1208,6 +1208,8 @@ app.controller("donHangListController", function ($scope, $http, $window, $locat
             apiUrl += '&status=' + 4;
         } else if ($scope.status == 5) {
             apiUrl += '&status=' + 5;
+        }else if ($scope.status == -1) {
+            apiUrl += '&status=' + -1;
         } else {
             apiUrl += '&status=' + 1;
         }
@@ -2293,9 +2295,11 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
 
                                 })
                                 if ($scope.khachHang && $scope.khachHang.id !== undefined && $scope.khachHang.id !== null) {
+                                    $scope.$parent.loadCartByIdKhachHang();
                                     $location.path("/don-hang");
                                 } else {
                                     $window.localStorage.removeItem('gioHang');
+                                    $scope.$parent.loadLocalStorage();
                                     $location.path("/home");
                                 }
                             }
