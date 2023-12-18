@@ -16,5 +16,5 @@ public interface YeuCauChiTietService {
 
     List<YeuCauChiTietResponse> getAllYeuCauChiTietResponse(Long id);
 
-    Long countRequestDetailsByStatus(Date ngay1);
+    Long countRequestDetailsByStatus(String ngay1);
 }

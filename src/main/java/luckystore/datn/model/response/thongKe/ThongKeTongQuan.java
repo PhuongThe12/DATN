@@ -15,8 +15,4 @@ public interface ThongKeTongQuan {
     @Value("#{target.tongSanPham}")
     Integer getTongSanPham();
 
-    @Value("#{target.tongYeuCau}")
-    Integer getTongYeuCau();
-
-
 }

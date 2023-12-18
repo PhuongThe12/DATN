@@ -71,7 +71,7 @@ public class RestThongKeConTroller {
     }
 
     @GetMapping("/cout-so-luong")
-    public ResponseEntity<?> countRequestDetailsByStatus(@PathVariable("date") Date ngay1){
+    public ResponseEntity<?> countRequestDetailsByStatus(@RequestParam("ngay1") String ngay1){
         return new ResponseEntity<>(yeuCauChiTietService.countRequestDetailsByStatus(ngay1), HttpStatus.OK);
     }
 
