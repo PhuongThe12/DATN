@@ -9,6 +9,7 @@ import luckystore.datn.model.response.HoaDonResponse;
 import luckystore.datn.model.response.HoaDonYeuCauRespone;
 import luckystore.datn.model.response.print.HoaDonPrintResponse;
 import luckystore.datn.model.response.thongKe.ThongKeByHangAndThuongHieu;
+import luckystore.datn.model.response.thongKe.ThongKeHoaDon;
 import luckystore.datn.model.response.thongKe.ThongKeTongQuan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -169,19 +170,32 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
     @Query(value = """
             select sum(cttt.TIEN_THANH_TOAN) as 'tongDoanhThu',
                    count(DISTINCT hd.ID) as 'tongHoaDon',
-                   sum(hdct.SO_LUONG) as 'tongSanPham',
-                   count(yctt.ID) as 'tongYeuCau'
+                   sum(hdct.SO_LUONG) as 'tongSanPham'
                from HoaDon hd
                 left join HoaDonChiTiet hdct on hd.ID = hdct.ID_HOA_DON
                 left join ChiTietThanhToan cttt on hd.ID = cttt.ID_HOA_DON
-                left join PhieuGiamGiaChiTiet pggct on hd.ID = pggct.ID_HOA_DON
-                left join YeuCauChiTiet yctt on hdct.ID = yctt.ID_HOA_DON_CHI_TIET
-                where CONVERT(DATE, hd.NGAY_TAO) = :ngay1
+                where CONVERT(DATE, hd.NGAY_TAO) = :ngay1 AND hd.TRANG_THAI = 1
             """, nativeQuery = true)
     ThongKeTongQuan getThongKeTongQuan(@Param("ngay1") Date ngay1);
     @Query("select new luckystore.datn.model.response.print.HoaDonPrintResponse(hd, 2) " +
             "from HoaDon hd where hd.id = :maHD ")
     HoaDonPrintResponse getThanhToanChiTiet(Long maHD);
+
+    @Query(value = """
+        SELECT
+            CAST(hd.NGAY_TAO AS DATE) AS 'ngay',
+            COUNT(DISTINCT hd.ID) AS 'soLuongHoaDon',
+            SUM(hdct.SO_LUONG) AS 'soLuongSanPham',
+            SUM(cttt.TIEN_THANH_TOAN) AS 'tongTien',
+            nv.HO_TEN
+        FROM HoaDon hd
+        LEFT JOIN HoaDonChiTiet hdct ON hd.ID = hdct.ID_HOA_DON
+        LEFT JOIN ChiTietThanhToan cttt ON cttt.ID_HOA_DON = hd.ID
+        LEFT JOIN NhanVien nv ON nv.ID = hd.ID_NHAN_VIEN
+        WHERE CAST(hd.NGAY_TAO AS DATE) BETWEEN :ngay1 AND :ngay2
+        GROUP BY CAST(hd.NGAY_TAO AS DATE), nv.HO_TEN
+    """, nativeQuery = true)
+    Page<ThongKeHoaDon> getThongKeHoaDon(Date ngay1, Date ngay2,Pageable pageable);
 }
 
 
