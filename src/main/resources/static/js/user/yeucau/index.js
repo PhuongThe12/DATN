@@ -1574,11 +1574,15 @@ app.controller("updateYeuCauKhachHangController", function ($scope, $http, $rout
                     window.location.href = 'http://localhost:8080/home#/don-hang/detail/'+$scope.hoaDon.id;
                 })
                 .catch(function (error) {
-                    toastr["error"]("Gửi yêu cầu đổi/trả thất bại!");
+                    toastr["error"]("Lưu yêu cầu đổi/trả thất bại!");
+
                     if (error.status === 400) {
-                        $scope.addYeuCauForm.hoaDon.$dirty = false;
+                        toastr["error"]("Yêu cầu đã được xác nhận, không thể cập nhât!");
                         $scope.errors = error.data;
+                    }else if(error.status === 404){
+                        toastr["error"]("Yêu cầu đã bị hủy/đã xác nhận, vui lòng làm mới trang!");
                     }
+
                 });
         }
     };
@@ -1634,10 +1638,12 @@ app.controller("updateYeuCauKhachHangController", function ($scope, $http, $rout
                     window.location.href = 'http://localhost:8080/home#/don-hang/list';
                 })
                 .catch(function (error) {
-                    toastr["error"]("Gửi yêu cầu đổi/trả thất bại!");
+                    toastr["error"]("Hủy yêu cầu đổi/trả thất bại!");
                     if (error.status === 400) {
-                        $scope.addYeuCauForm.hoaDon.$dirty = false;
+                        toastr["error"]("Yêu cầu đã được xác nhận, không thể cập nhât!");
                         $scope.errors = error.data;
+                    }else if(error.status === 404){
+                        toastr["error"]("Yêu cầu đã bị hủy/đã xác nhận, vui lòng làm mới trang!");
                     }
                 });
         }

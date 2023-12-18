@@ -1,6 +1,9 @@
 package luckystore.datn.service.user.impl;
 
 import luckystore.datn.entity.*;
+import luckystore.datn.exception.DuplicateException;
+import luckystore.datn.exception.NotFoundException;
+import luckystore.datn.infrastructure.constraints.ErrorMessage;
 import luckystore.datn.infrastructure.constraints.TrangThaiYeuCau;
 import luckystore.datn.infrastructure.constraints.TrangThaiYeuCauChiTiet;
 import luckystore.datn.infrastructure.security.session.SessionService;
@@ -78,8 +81,13 @@ public class YeuCauKhachHangServiceImpl implements YeuCauKhachHangService {
 
     @Override
     public YeuCauResponse updateYeuCau(YeuCauRequest yeuCauRequest) {
-        YeuCau yeuCauSave = yeuCauRepository.findById(yeuCauRequest.getId()).orElse(null);
+        YeuCau yeuCauSave = yeuCauRepository.findById(yeuCauRequest.getId()).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND));
         //ngày sửa
+        if(yeuCauSave.getTrangThai() == TrangThaiYeuCau.BI_HUY){
+            throw new NotFoundException();
+        }else if(yeuCauSave.getTrangThai() != TrangThaiYeuCau.DA_XAC_NHAN){
+            throw new DuplicateException();
+        }
         yeuCauSave.setNgaySua(LocalDateTime.now());
 
         yeuCauSave.setGhiChu(yeuCauRequest.getGhiChu());

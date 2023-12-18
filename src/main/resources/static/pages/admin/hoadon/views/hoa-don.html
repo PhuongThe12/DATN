@@ -69,6 +69,7 @@
             <table class="table align-middle text-center" border="1">
                 <tr>
                     <th>Mã HD</th>
+                    <th>Hóa đơn gốc</th>
                     <th>Nhân viên</th>
                     <th>Khách hàng</th>
                     <th>Ngày thanh toán</th>
@@ -78,8 +79,8 @@
 
                 <tr ng-repeat="hoaDon in hoaDons">
                     <td>
-                        {{(hoaDon.loaiHoaDon == 1 ? 'HD_HDD' : (hoaDon.loaiHoaDon == 2 ? 'TH' : 'HD')) + hoaDon.id}}
-                    </td>
+                    <td>{{(hoaDon.loaiHoaDon == 1 ? 'HD' : (hoaDon.loaiHoaDon == 2 ? 'HD_HDD' : 'HD_HDT')) + hoaDon.id}}</td>
+                    <td>{{hoaDon.hoaDonGoc ? hoaDon.hoaDonGoc : '-'}}</td>
                     <td>{{hoaDon.nhanVien? hoaDon.nhanvien.hoTen : ''}}</td>
                     <td>{{hoaDon.khachHang? hoaDon.khachHang.hoTen : ''}}</td>
                     <td>{{hoaDon.ngayThanhToan? hoaDon.ngayThanhToan : ''}}</td>

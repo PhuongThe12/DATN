@@ -72,6 +72,8 @@ public class RestYeuCauController {
 
     @PutMapping("/update")
     public ResponseEntity updateYeuCau(@Valid @RequestBody YeuCauRequest yeuCauRequest, BindingResult result) {
+        ResponseEntity errorJson = getErrorJson(result);
+        if (errorJson != null) return errorJson;
         return new ResponseEntity(yeuCauService.updateYeuCau(yeuCauRequest), HttpStatus.OK);
     }
 

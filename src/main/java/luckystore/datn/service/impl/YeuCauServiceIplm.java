@@ -1,6 +1,7 @@
 package luckystore.datn.service.impl;
 
 import luckystore.datn.entity.*;
+import luckystore.datn.exception.DuplicateException;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.infrastructure.constraints.*;
 import luckystore.datn.infrastructure.security.session.SessionService;
@@ -87,9 +88,12 @@ public class YeuCauServiceIplm implements YeuCauService {
         Long nguoiSuaAndThucHien = sessionService.getAdmintrator().getId() == null ? null : sessionService.getAdmintrator().getId();
         YeuCau yeuCauGoc = yeuCauRepository.findById(yeuCauRequest.getId()).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND));
 
-        if(yeuCauGoc.getTrangThai() != TrangThaiYeuCau.CHO_XAC_NHAN){
-            throw new NotFoundException();
+        if(yeuCauGoc.getTrangThai() == TrangThaiYeuCau.BI_HUY){
+            throw new NotFoundException("Yêu cầu đã bị hủy gần đây vui lòng làm mới trang!");
+        }else if(yeuCauGoc.getTrangThai() == TrangThaiYeuCau.DA_XAC_NHAN){
+            throw new DuplicateException("Yêu cầu đã được xác nhận gần đây vui lòng làm mới trang!");
         }
+
 
         YeuCau yeuCauSaved = YeuCau.builder().id(yeuCauGoc.getId()).hoaDon(yeuCauGoc.getHoaDon()).nguoiThucHien(nguoiSuaAndThucHien).trangThai(TrangThaiYeuCau.DA_XAC_NHAN).ngayTao(yeuCauGoc.getNgayTao()).ngaySua(LocalDateTime.now()).ghiChu(yeuCauRequest.getGhiChu()).thongTinNhanHang(yeuCauGoc.getThongTinNhanHang()).phiShip(yeuCauGoc.getPhiShip()).nguoiTao(yeuCauGoc.getNguoiTao()).nguoiSua(nguoiSuaAndThucHien).build();
 
@@ -237,8 +241,9 @@ public class YeuCauServiceIplm implements YeuCauService {
                     .nhanVien(nhanVien)
                     .email(khachHang.getEmail())
                     .ngayTao(ngayHienTai)
+                    .ngayThanhToan(ngayHienTai)
                     .kenhBan(KenhBan.ONLINE)
-                    .trangThai(TrangThaiHoaDon.CHUA_THANH_TOAN)
+                    .trangThai(TrangThaiHoaDon.DA_THANH_TOAN)
                     .loaiHoaDon(LoaiHoaDon.HOA_DON_TRA)
                     .ghiChu("" + yeuCau.getId())
                     .uuDai(0)
@@ -268,11 +273,12 @@ public class YeuCauServiceIplm implements YeuCauService {
                     .nhanVien(nhanVien)
                     .email(khachHang.getEmail())
                     .ngayTao(ngayHienTai)
+                    .ngayThanhToan(ngayHienTai)
                     .phiShip(yeuCau.getPhiShip())
                     .soDienThoaiNhan(sdtNhan)
                     .diaChiNhan(diaChiNhan)
                     .kenhBan(KenhBan.ONLINE)
-                    .trangThai(TrangThaiHoaDon.CHUA_THANH_TOAN)
+                    .trangThai(TrangThaiHoaDon.DA_THANH_TOAN)
                     .ghiChu("" + yeuCau.getId())
                     .loaiHoaDon(LoaiHoaDon.HOA_DON_DOI)
                     .uuDai(0)
@@ -438,6 +444,7 @@ public class YeuCauServiceIplm implements YeuCauService {
                 .nhanVien(nhanVien)
                 .email(hoaDon.getKhachHang().getEmail())
                 .ngayTao(ngayHienTai)
+                .ngayThanhToan(ngayHienTai)
                 .kenhBan(KenhBan.OFFLINE)
                 .trangThai(TrangThaiHoaDon.DA_THANH_TOAN)
                 .ghiChu("" + yeuCauSaved.getId())

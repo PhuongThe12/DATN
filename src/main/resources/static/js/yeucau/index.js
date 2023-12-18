@@ -30,7 +30,6 @@ app.controller("yeuCauListController", function ($scope, $http, $window, $locati
     });
 
 
-
     $scope.changeRadioYeuCau = function () {
         $scope.yeuCauSearch.trangThai = $scope.trangThai;
         getData($scope.yeuCauSearch);
@@ -450,14 +449,18 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
                 if (response.status === 200) {
                     toastr["success"]("Đã xác nhận yêu cầu!");
                 }
-                window.location.href = 'http://localhost:8080/admin/yeu-cau';
+                window.location.href = 'http://localhost:8080/admin/yeu-cau#/update/'+$scope.yeuCau.id;
             })
             .catch(function (error) {
-                toastr["error"]("Yêu cầu đã được xác nhận/hủy!");
-                if (error.status === 400) {
-                    $scope.addYeuCauForm.hoaDon.$dirty = false;
-                    $scope.errors = error.data;
+                // toastr["error"]("Yêu cầu đã được xác nhận/hủy!");
+                console.log(error.status);
+                if (error.status === 404) {
+                    toastr["error"]("Yêu cầu đã được hủy gần đây vui làm mới trang! ");
+                }else if(error.status === 400){
+                    toastr["error"]("Yêu cầu đã được xác nhận gần đây vui làm mới trang! ")
                 }
+                window.location.href = 'http://localhost:8080/admin/yeu-cau#/update/'+$scope.yeuCau.id;
+                // location.reload(true);
             });
     }
 
@@ -483,14 +486,10 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
                 if (response.status === 200) {
                     toastr["success"]("Đã lưu yêu cầu!");
                 }
-                $location.path("/list");
+                window.location.href = 'http://localhost:8080/admin/yeu-cau#/update/'+$scope.yeuCau.id;
             })
             .catch(function (error) {
-                toastr["error"]("Xác nhận yêu cầu thất bại! 3");
-                if (error.status === 400) {
-                    $scope.addYeuCauForm.hoaDon.$dirty = false;
-                    $scope.errors = error.data;
-                }
+                toastr["error"]("Lưu yêu cầu thất bại!");
             });
     }
 
@@ -521,7 +520,7 @@ app.controller("updateYeuCauController", function ($scope, $http, $routeParams, 
                 if (response.status === 200) {
                     toastr["success"]("Đã từ chối yêu cầu!");
                 }
-                $location.path("/list");
+                window.location.href = 'http://localhost:8080/admin/yeu-cau#/update/'+$scope.yeuCau.id;
             })
             .catch(function (error) {
                 toastr["error"]("Từ chối yêu cầu thất bại!");
@@ -738,9 +737,8 @@ app.controller("addYeuCauController", function ($scope, $http, $location, $route
                     $location.path("/home");
                 })
                 .catch(function (error) {
-                    toastr["error"]("Gửi yêu cầu đổi/trả thất bại!");
+                    toastr["error"](""+error.data.message);
                     if (error.status === 400) {
-                        $scope.addYeuCauForm.hoaDon.$dirty = false;
                         $scope.errors = error.data;
                     }
                 });
