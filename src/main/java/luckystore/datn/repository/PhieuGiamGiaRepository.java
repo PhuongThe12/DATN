@@ -76,7 +76,7 @@ public interface PhieuGiamGiaRepository extends JpaRepository<PhieuGiamGia, Long
                         WHERE 
                             (:#{#hangKhachHang} IS NULL 
                             OR :#{#hangKhachHang} LIKE '' 
-                            OR hkh.TEN_HANG LIKE %:#{#hangKhachHang}%) AND pgg.TRANG_THAI = 0
+                            OR hkh.TEN_HANG = :#{#hangKhachHang}) AND pgg.TRANG_THAI = 0
             ORDER BY pgg.NGAY_TAO DESC        
             """, nativeQuery = true)
     List<PhieuGiamGiaResponse> getListPhieuByHangKhachHang(@Param("hangKhachHang")String hangKhachHang);

@@ -9,6 +9,7 @@ import luckystore.datn.entity.BienTheGiay;
 import luckystore.datn.entity.Giay;
 import luckystore.datn.entity.GioHangChiTiet;
 import luckystore.datn.entity.KhuyenMaiChiTiet;
+import luckystore.datn.service.impl.ImageHubServiceImpl;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -50,7 +51,9 @@ public class GioHangChiTietResponse {
         bienTheGiayResponse.setTrangThai(bienTheGiay.getTrangThai());
         bienTheGiayResponse.setMauSac(MauSacResponse.builder().ten(bienTheGiay.getMauSac().getTen()).build());
         bienTheGiayResponse.setKichThuoc(KichThuocResponse.builder().ten(bienTheGiay.getKichThuoc().getTen()).build());
-        bienTheGiayResponse.setGiayResponse(GiayResponse.builder().ten(bienTheGiay.getGiay().getTen()).build());
+        bienTheGiayResponse.setGiayResponse(GiayResponse.builder()
+                .ten(bienTheGiay.getGiay().getTen())
+                .lstAnh(bienTheGiay.getGiay().getLstAnh().stream().filter(anh -> anh.getUuTien() == 1).map(anh -> ImageHubServiceImpl.getBase64FromFileStatic(anh.getLink())).toList()).build());
         if(bienTheGiay.getKhuyenMaiChiTietList().size() > 0){
             Integer phanTramGiam = 0;
             for(KhuyenMaiChiTiet khuyenMaiChiTiet : bienTheGiay.getKhuyenMaiChiTietList()){
