@@ -35,25 +35,41 @@
 
 <body ng-controller="loginController">
 <form name="loginForm" ng-submit="loginUser()">
-    <div class="mb-3">
-        <label for="exampleInputEmail1" class="form-label">Email address</label>
-        <input type="email" ng-model="userLogin.tenDangNhap" name="tenDangNhap" class="form-control"
-               id="exampleInputEmail1" aria-describedby="emailHelp" maxlength="30">
-        <small class="text-danger" ng-show="errors.tenDangNhap && !loginForm.tenDangNhap.$dirty">{{errors.tenDangNhap}}</small>
-    </div>
-    <div class="mb-3">
-        <label for="exampleInputPassword1" class="form-label">Password</label>
-        <input ng-model="userLogin.matKhau" name="matKhau" type="password" class="form-control"
-               id="exampleInputPassword1">
-        <small class="text-danger" ng-show="errors.matKhau && !loginForm.matKhau.$dirty">{{errors.matKhau}}</small>
-    </div>
-    <div class="mb-3 form-check">
-        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-        <label class="form-check-label" for="exampleCheck1">Check me out</label>
-    </div>
-    <button type="submit" class="btn btn-primary" >Submit</button>
 
-    <a class="btn btn-primary" href="#/signup">Signup</a>
+    <div class="card border-success mb-3 mx-auto" style="max-width: 800px; margin-top: 20px">
+        <div class="card-header bg-transparent border-success"><h5 class="text-center">Đăng nhập</h5></div>
+        <div class="card-body text-success">
+            <label for="exampleInputEmail1" class="form-label">Email address</label>
+            <input type="email" ng-model="userLogin.tenDangNhap" name="tenDangNhap" class="form-control"
+                   id="exampleInputEmail1" aria-describedby="emailHelp" maxlength="30">
+            <small class="text-danger" ng-show="errors.tenDangNhap && !loginForm.tenDangNhap.$dirty">{{errors.tenDangNhap}}</small>
+        </div>
+
+        <div class="card-body text-success">
+            <label for="exampleInputPassword1" class="form-label">Password</label>
+            <input ng-model="userLogin.matKhau" name="matKhau" type="password" class="form-control"
+                   id="exampleInputPassword1">
+            <small class="text-danger" ng-show="errors.matKhau && !loginForm.matKhau.$dirty">{{errors.matKhau}}</small>
+        </div>
+        <div class="card-footer bg-transparent border-success">
+            <button type="submit" class="btn btn-primary float-end">Signin</button>
+        </div>
+    </div>
+    <!--    <div class="mb-3">-->
+    <!--        <label for="exampleInputEmail1" class="form-label">Email address</label>-->
+    <!--        <input type="email" ng-model="userLogin.tenDangNhap" name="tenDangNhap" class="form-control"-->
+    <!--               id="exampleInputEmail1" aria-describedby="emailHelp" maxlength="30">-->
+    <!--        <small class="text-danger" ng-show="errors.tenDangNhap && !loginForm.tenDangNhap.$dirty">{{errors.tenDangNhap}}</small>-->
+    <!--    </div>-->
+    <!--    <div class="mb-3">-->
+    <!--        <label for="exampleInputPassword1" class="form-label">Password</label>-->
+    <!--        <input ng-model="userLogin.matKhau" name="matKhau" type="password" class="form-control"-->
+    <!--               id="exampleInputPassword1">-->
+    <!--        <small class="text-danger" ng-show="errors.matKhau && !loginForm.matKhau.$dirty">{{errors.matKhau}}</small>-->
+    <!--    </div>-->
+    <!--    <div class="mb-3 form-check">-->
+    <!--    </div>-->
+    <!--    <button type="submit" class="btn btn-primary" >Submit</button>-->
 </form>
 <script src="/js/user/index1.js"></script>
 </body>
