@@ -205,6 +205,7 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         hoaDon.setTrangThai(TrangThaiHoaDon.CHO_XAC_NHAN);
         hoaDon.getChiTietThanhToans().forEach(chiTiet -> {
             chiTiet.setTrangThai(1);
+            chiTiet.setMaGiaoDich(request.getMaGiaoDich());
         });
         hoaDonRepository.save(hoaDon);
         return hoaDon.getId();
