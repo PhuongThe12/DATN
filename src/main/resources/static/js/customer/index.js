@@ -487,13 +487,12 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
             } else {
                 var gioHangFromCookies = localStorage.getItem('gioHang') || '[]';
                 $scope.gioHang = JSON.parse(gioHangFromCookies);
-                console.log($scope.gioHang);
                 var giaTriCanThem = {idBienTheGiay: $scope.giayChoosed.id, soLuong: $scope.soLuongMua};
 
                 var tonTai = kiemTraTonTai($scope.gioHang, giaTriCanThem.idBienTheGiay);
                 if (!tonTai) {
-                    $scope.gioHang.push(giaTriCanThem);
                     $scope.listBienTheGiayLocalStorage.push($scope.giayChoosed);
+                    $scope.gioHang.push(giaTriCanThem);
                     localStorage.setItem('gioHang', JSON.stringify($scope.gioHang));
                     toastr["success"]("Thêm vào giỏ hàng thành công");
                     $scope.$parent.loadLocalStorage();
