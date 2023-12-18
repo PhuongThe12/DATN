@@ -437,37 +437,40 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         }
     }
 
-    public String generateHtmlTable(Set<HoaDonChiTiet> hoaDonChiTiets, HoaDon hoaDon) {
-        StringBuilder htmlTable = new StringBuilder();
+        public String generateHtmlTable(Set<HoaDonChiTiet> hoaDonChiTiets, HoaDon hoaDon) {
+            StringBuilder htmlTable = new StringBuilder();
 
-        Long idHoaDon = hoaDon.getId();
-        String soDienThoai = hoaDon.getSoDienThoaiNhan().substring(hoaDon.getSoDienThoaiNhan().length() - 4);
+            Long idHoaDon = hoaDon.getId();
+            String soDienThoai = hoaDon.getSoDienThoaiNhan().substring(hoaDon.getSoDienThoaiNhan().length() - 4);
 
-        htmlTable.append("<p>Tra cứu đơn hàng <a href=" + "http://localhost:8080/home#/tra-cuu-don-hang?maHD=" + hoaDon.getId() + "&sdt=" + soDienThoai + ">tại đây</a></p>");
+            htmlTable.append("<p>Thông tin đơn hàng:</p>");
+            htmlTable.append("<p>Mã hóa đơn: ").append(hoaDon.getId()).append("</p>");
+            htmlTable.append("<p>Số điện thoại tra cứu: ").append(hoaDon.getSoDienThoaiNhan().substring(hoaDon.getSoDienThoaiNhan().length() - 4)).append("</p>");
+            htmlTable.append("<p>Tra cứu đơn hàng <a href=" + "http://localhost:8080/home#/tra-cuu-don-hang?maHD=" + hoaDon.getId() + "&sdt=" + hoaDon.getSoDienThoaiNhan().substring(hoaDon.getSoDienThoaiNhan().length() - 4) + ">tại đây</a></p>");
 
-        htmlTable.append("<table border='1'>");
+            htmlTable.append("<table border='1'>");
 
-        htmlTable.append("<tr>");
-        htmlTable.append("<th>Tên giày</th>");
-        htmlTable.append("<th>Đơn giá</th>");
-        htmlTable.append("<th>Số lượng</th>");
-        htmlTable.append("</tr>");
-
-        for (HoaDonChiTiet hoaDonChiTiet : hoaDonChiTiets) {
             htmlTable.append("<tr>");
-            htmlTable.append("<td>").append(hoaDonChiTiet.getBienTheGiay().getGiay().getTen()
-                    + "( " + hoaDonChiTiet.getBienTheGiay().getKichThuoc().getTen() + " - "
-                    + hoaDonChiTiet.getBienTheGiay().getMauSac().getTen() + " )").append("</td>");
-            htmlTable.append("<td>").append(hoaDonChiTiet.getDonGia()).append("</td>");
-            htmlTable.append("<td>").append(hoaDonChiTiet.getSoLuong()).append("</td>");
+            htmlTable.append("<th>Tên giày</th>");
+            htmlTable.append("<th>Đơn giá</th>");
+            htmlTable.append("<th>Số lượng</th>");
             htmlTable.append("</tr>");
+
+            for (HoaDonChiTiet hoaDonChiTiet : hoaDonChiTiets) {
+                htmlTable.append("<tr>");
+                htmlTable.append("<td>").append(hoaDonChiTiet.getBienTheGiay().getGiay().getTen()
+                        + "( " + hoaDonChiTiet.getBienTheGiay().getKichThuoc().getTen() + " - "
+                        + hoaDonChiTiet.getBienTheGiay().getMauSac().getTen() + " )").append("</td>");
+                htmlTable.append("<td>").append(hoaDonChiTiet.getDonGia()).append("</td>");
+                htmlTable.append("<td>").append(hoaDonChiTiet.getSoLuong()).append("</td>");
+                htmlTable.append("</tr>");
+            }
+
+            htmlTable.append("</table>");
+
+
+            return htmlTable.toString();
         }
-
-        htmlTable.append("</table>");
-
-
-        return htmlTable.toString();
-    }
 
 }
 
