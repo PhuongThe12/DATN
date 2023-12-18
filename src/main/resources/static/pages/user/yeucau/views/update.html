@@ -220,12 +220,12 @@
 
       <div ng-repeat=" yeuCauChiTiet in listYeuCauChiTiet">
 
-        <div class="formTra pt-3" ng-show="!yeuCauChiTiet.value.bienTheGiayDoi"
+        <div class="formTra pt-3" ng-show="!yeuCauChiTiet.value.bienTheGiayDoi.id"
              style="border-bottom: 1px solid grey">
           <div class="col-md-12">
             <div class="d-flex mb-3">
-              <div>
-                <img class="rounded" width="94%"
+              <div style="width: 160px">
+                <img class="rounded" width="100%"
                      ng-src="{{yeuCauChiTiet.value.hoaDonChiTiet.bienTheGiay.giayResponse.lstAnh.length > 0 ? yeuCauChiTiet.value.hoaDonChiTiet.bienTheGiay.giayResponse.lstAnh[0] : 'https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg'}}"
                      alt="">
               </div>
@@ -266,12 +266,12 @@
           </div>
         </div>
 
-        <div class="formDoi row pt-3" ng-show="yeuCauChiTiet.value.bienTheGiayDoi"
+        <div class="formDoi row pt-3" ng-show="yeuCauChiTiet.value.bienTheGiayDoi.id"
              style="border-bottom: 1px solid grey">
           <div class="col-md-6">
             <div class="sanPhamTra">
               <div class="d-flex mb-3">
-                <div>
+                <div style="width: 150px">
                   <img class="rounded" width="100%"
                        ng-src="{{yeuCauChiTiet.value.hoaDonChiTiet.bienTheGiay.giayResponse.lstAnh.length > 0 ? yeuCauChiTiet.value.hoaDonChiTiet.bienTheGiay.giayResponse.lstAnh[0] : 'https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg'}}"
                        alt="Ảnh giày">
@@ -317,11 +317,11 @@
           </div>
 
           <div class="col-md-6">
-            <div class="sanPhamDoi" style="padding-left: 60px;">
+            <div class="sanPhamDoi" style="padding-left: 20px;">
               <div class="d-flex mb-3">
-                <div>
+                <div style="width: 120px">
                   <img class="rounded" width="100%"
-                       ng-src="{{yeuCauChiTiet.value.bienTheGiayDoi.giayResponse.lstAnh.length > 0 ? yeuCauChiTiet.value.bienTheGiayDoi.giayResponse.lstAnh[0] : 'https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg'}}"
+                       ng-src="{{yeuCauChiTiet.value.bienTheGiayDoi.id && yeuCauChiTiet.value.bienTheGiayDoi.giayResponse.lstAnh.length > 0  ? yeuCauChiTiet.value.bienTheGiayDoi.giayResponse.lstAnh[0] : 'https://secure-images.nike.com/is/image/DotCom/FB8900_100?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg'}}"
                        alt="Ảnh giày">
                 </div>
                 <div class="w-75 ps-3">
@@ -348,13 +348,13 @@
                   </div>
                   <div class="d-flex">
                     <p class="font-size-16-ncl fw-bold text-dark"
-                       ng-show="yeuCauChiTiet.value.bienTheGiayDoi.khuyenMai <= 0">Giá:
+                       ng-show="yeuCauChiTiet.value.tienGiam <= 0">Giá:
                       {{yeuCauChiTiet.value.bienTheGiayDoi.giaBan | formatToVND}}</p>
                     <p class="font-size-16-ncl fw-bold text-dark"
-                       ng-show="yeuCauChiTiet.value.bienTheGiayDoi.khuyenMai > 0">Giá: <span
-                            class="badge text-bg-dark" style="text-decoration-line: line-through">{{yeuCauChiTiet.value.bienTheGiayDoi.giaBan | formatToVND}}</span>{{yeuCauChiTiet.value.bienTheGiayDoi.giaBan
-                      -
-                      (yeuCauChiTiet.value.tienGiam) | formatToVND}}</p>
+                       ng-show="yeuCauChiTiet.value.tienGiam > 0">Giá:
+                      <strong class="font-size-16-ncl fw-bold text-dark" style="text-decoration-line: line-through">{{yeuCauChiTiet.value.bienTheGiayDoi.giaBan | formatToVND}}</strong>
+                      <strong class="font-size-16-ncl fw-bold text-danger ">{{yeuCauChiTiet.value.bienTheGiayDoi.giaBan - (yeuCauChiTiet.value.tienGiam) | formatToVND}}</strong>
+                    </p>
                     <div style="flex-grow: 1;"></div>
                     <p ng-if="yeuCauChiTiet.value.trangThai === 2"
                        class="ps-2 font-size-14-ncl fw-bold text-dark mb-2 text-wrap-none">(
@@ -458,9 +458,9 @@
             </div>
           </div>
           <div class="row pt-3">
-            <button class="btn btn-dark py-2" ng-click="taoYeuCau()" ng-show="listYeuCauChiTiet.length > 0 && yeuCau.trangThai === 1">Xác Nhận</button>
+            <button class="btn btn-dark py-2" ng-click="taoYeuCau()" ng-show="listYeuCauChiTiet.length > 0 && yeuCau.trangThai === 1">Cập Nhật</button>
             <button class="btn btn-outline-dark py-2" ng-click="huyYeuCau()" style="margin-top: 10px" ng-show="yeuCau.trangThai === 1" >Hủy Yêu Cầu</button>
-            <a class="btn btn-outline-dark py-2" ng-href="/home#/don-hang/detail/{{hoaDon.id}}" style="margin-top: 10px" ng-show="yeuCau.trangThai != 1" >Xác Nhận</a>
+            <a class="btn btn-outline-dark py-2" style="margin-top: 10px" href="http://localhost:8080/home#/don-hang/detail/{{hoaDon.id}}" >Trở Về</a>
           </div>
         </div>
       </div>

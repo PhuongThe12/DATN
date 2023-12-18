@@ -15,6 +15,7 @@ public interface LyDoService {
     boolean insert(LyDoRequest lyDoRequest);
 
     boolean update(LyDoRequest lyDoRequest);
+    boolean updateTrangThaiLyDo(LyDoRequest lyDoRequest);
    Page<LyDoResponse> findReasonsForReturn(ThongKeRequest thongKeRequest);
 
 }

@@ -18,6 +18,11 @@ public class RestHoaDonChiTietController {
         return new ResponseEntity<>(hoaDonChiTietService.getAllByIdHoaDon(id),HttpStatus.OK);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity findById(@PathVariable("id") Long id){
+        return new ResponseEntity<>(hoaDonChiTietService.findById(id),HttpStatus.OK);
+    }
+
     @GetMapping("/get-all")
     public ResponseEntity getHangKhachHangPage(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                                @RequestParam(value = "status", required = false) Integer status) {

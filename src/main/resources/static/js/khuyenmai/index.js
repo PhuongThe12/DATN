@@ -1,4 +1,4 @@
-var app = angular.module("app", ["ngRoute", "ui.bootstrap"]);
+var app = angular.module("app", ["ngRoute", "ui.bootstrap","ngCookies"]);
 app.config(function ($routeProvider, $locationProvider) {
     $locationProvider.hashPrefix('');
     $routeProvider
@@ -258,14 +258,19 @@ app.controller("addKhuyenMaiController", function ($scope, $http, $location) {
                     };
                     if (!khuyenMaiChiTietRequest.phanTramGiam) {
                         invalidCount++;
-                        bienTheGiay.errors = "Phần trăm giảm phải là số nguyên từ 1 - 100";
+                        bienTheGiay.errors = "Phần trăm giảm phải là số nguyên từ 1 - 50";
                     }
                     $scope.khuyenMai.khuyenMaiChiTietRequests.push(khuyenMaiChiTietRequest);
                 }
             });
         })
-        $scope.khuyenMai.ngayBatDau.setHours($scope.khuyenMai.ngayBatDau.getHours() + 7);
-        $scope.khuyenMai.ngayKetThuc.setHours($scope.khuyenMai.ngayKetThuc.getHours() + 7);
+
+        if ($scope.khuyenMai.ngayBatDau.getHours() === 0) {
+            $scope.khuyenMai.ngayBatDau.setHours($scope.khuyenMai.ngayBatDau.getHours() + 7);
+        }
+        if ($scope.khuyenMai.ngayKetThuc.getHours() === 0) {
+            $scope.khuyenMai.ngayKetThuc.setHours($scope.khuyenMai.ngayKetThuc.getHours() + 7);
+        }
 
         if (invalidCount !== 0) {
             toastr["warning"]("Vui lòng kiểm tra lại các trường không hợp lệ");
@@ -318,6 +323,7 @@ app.controller("addKhuyenMaiController", function ($scope, $http, $location) {
                                 const index = $scope.selectedGiayTableData.findIndex(item => item.id === id);
                                 if (index !== -1) {
                                     $scope.selectedGiayTableData.splice(index, 1);
+                                    $scope.selectedGiay.filter(item => item.id !== id);
                                 }
 
                             })
@@ -350,6 +356,7 @@ app.controller("addKhuyenMaiController", function ($scope, $http, $location) {
             angular.forEach(giay.lstBienTheGiay, function (bienTheGiay) {
                 if (giay.selected) {
                     bienTheGiay.phanTramGiam = giamPhanTram
+                    bienTheGiay.errors = null;
                 }
             });
 

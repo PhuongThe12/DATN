@@ -143,7 +143,7 @@
                 <tbody ng-repeat="(index,hoaDon) in listHoaDon">
                     <tr>
                         <td class="text-center">{{index+1}}</td>
-                        <td><a>{{hoaDon.loaiHoaDon == 1? "HD" : "HD_HDD"}}{{hoaDon.id}}</a></td>
+                        <td><a>{{hoaDon.loaiHoaDon == 1? "HD" : "HDD"}}{{hoaDon.id}}</a></td>
                         <td><a ng-show="hoaDon.hoaDonGoc">{{hoaDon.hoaDonGoc}}</a></td>
                         <td>{{hoaDon.khachHang.hoTen}}</td>
                         <td>{{hoaDon.khachHang.soDienThoai}}</td>
@@ -151,11 +151,11 @@
                         <td>{{hoaDon.kenhBan ==1?"online":"Tại Quầy"}}</td>
                         <td>{{hoaDon.loaiHoaDon==1?"Hóa Đơn Mua":hoaDon.loaiHoaDon==2?"Hóa Đơn
                             Đổi":hoaDon.loaiHoaDon==3?"Hóa
-                            Đơn Trả Hàng - Hòa Tiền":"Hóa Đơn Trả Hàng - Đổi Mới"}}
+                            Đơn Trả Hàng - Hòan Tiền":"Hóa Đơn Trả Hàng - Đổi Mới"}}
                         </td>
                         <td class="text-center">{{ hoaDon.tongTienKhachThanhToan | formatToVND }}</td>
                         <td>{{ hoaDon.ngayTao | formatDate}}</td>
-                        <td>{{hoaDon.trangThai==5?"Đã Hoàn Thành":"Trạng Thái Khác"}}
+                        <td>{{hoaDon.trangThai==1?"Đã Hoàn Thành":"Trạng Thái Khác"}}
                         </td>
                         <td><input type="radio" name="hoaDonGroup" ng-click="selectedHoaDon(hoaDon)"></td>
                     </tr>

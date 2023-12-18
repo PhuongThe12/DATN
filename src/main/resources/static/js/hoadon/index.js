@@ -121,9 +121,9 @@ app.controller('hoaDonController', function ($scope, $http, $location) {
                 }
             });
             $scope.hoaDonDetail.tongTru = hoaDon.tienGiam ? hoaDon.tienGiam : 0;
-            $scope.hoaDonDetail.tienShip = hoaDon.tienShip ? hoaDon.tienShip : 0;
+            $scope.hoaDonDetail.tienShip = hoaDon.phiShip ? hoaDon.phiShip : 0;
 
-            $scope.hoaDonDetail.tongCong = $scope.hoaDonDetail.conLai + $scope.hoaDonDetail.tongTru + $scope.hoaDonDetail.tienShip;
+            $scope.hoaDonDetail.tongCong = $scope.hoaDonDetail.conLai + $scope.hoaDonDetail.tienShip;
 
             $scope.hoaDonDetail.trangThai = hoaDon.trangThai;
             getDetailDoiTra($scope.hoaDonDetail.id);

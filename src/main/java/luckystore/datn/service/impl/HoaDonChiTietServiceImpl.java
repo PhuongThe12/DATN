@@ -52,7 +52,7 @@ public class HoaDonChiTietServiceImpl implements HoaDonChiTietService {
 
     @Override
     public HoaDonChiTietResponse findById(Long id) {
-        return null;
+        return new HoaDonChiTietResponse(hoaDonChiTietRepo.findById(id).get());
     }
 
     @Override

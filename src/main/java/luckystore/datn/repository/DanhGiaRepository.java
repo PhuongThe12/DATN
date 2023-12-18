@@ -19,6 +19,19 @@ public interface DanhGiaRepository extends JpaRepository<DanhGia, Long> {
             "WHERE (:star IS NULL OR dg.saoDanhGia = :star) order by dg.id desc")
     Page<DanhGiaResponse> getPageResponse(Integer star, Pageable pageable);
 
+    @Query("select new luckystore.datn.model.response.DanhGiaResponse(dg) from DanhGia dg" +
+            " WHERE dg.khachHang.id = :idKhachHang and dg.giay.id = :idGiay")
+    DanhGiaResponse findByIdKhAndIdGiay(Long idKhachHang, Long idGiay);
+
+    @Query("select new luckystore.datn.model.response.DanhGiaResponse(dg.id,dg.saoDanhGia,dg.binhLuan,dg.trangThai,dg.thoiGian,dg.ngayTao,giay.id,giay.ten,anh.link,dg.khachHang) " +
+            "from DanhGia dg inner join dg.giay giay inner join dg.khachHang khachHang left join giay.lstAnh anh" +
+            " WHERE dg.khachHang.id = :idKhachHang ")
+    List<DanhGiaResponse> findByIdKhachHang(Long idKhachHang);
+
+
+    @Query("select new luckystore.datn.model.response.DanhGiaResponse(dg.id,dg.saoDanhGia,dg.binhLuan,dg.trangThai,dg.thoiGian,dg.ngayTao,dg.khachHang) from DanhGia dg where dg.giay.id = :idGiay")
+    List<DanhGiaResponse> getSaoDanhGiaByIdGiay(Long idGiay);
+
 
     boolean existsByKhachHangIdAndGiayId(Long idKhachHang, Long idGiay);
 }

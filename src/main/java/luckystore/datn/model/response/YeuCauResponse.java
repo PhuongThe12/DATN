@@ -5,20 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import luckystore.datn.entity.AnhGiayTra;
-import luckystore.datn.entity.HoaDon;
+
 import luckystore.datn.entity.YeuCau;
-import luckystore.datn.entity.YeuCauChiTiet;
-import luckystore.datn.service.impl.ImageHubServiceImpl;
+
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
@@ -35,8 +29,6 @@ public class YeuCauResponse {
     private LocalDateTime ngaySua;
     private String thongTinNhanHang;
     private BigDecimal phiShip;
-
-    private BigDecimal tienKhachTra;
     private Long nguoiTao;
     private Long nguoiSua;
     private String ghiChu;
@@ -58,24 +50,6 @@ public class YeuCauResponse {
             this.nguoiTao = yeuCau.getNguoiTao();
             this.nguoiSua = yeuCau.getNguoiSua();
             this.ghiChu = yeuCau.getGhiChu();
-            this.tienKhachTra = yeuCau.getTienKhachTra();
-        }
-    }
-
-    public YeuCauResponse(YeuCau yeuCau, Long idYeuCauKhachHang){
-        if(yeuCau != null){
-            this.id = yeuCau.getId();
-            this.nguoiThucHien = yeuCau.getNguoiThucHien();
-            this.hoaDon = new HoaDonYeuCauRespone(yeuCau.getHoaDon(),"getAllYeuCau");
-            this.trangThai = yeuCau.getTrangThai();
-            this.thongTinNhanHang = yeuCau.getThongTinNhanHang();
-            this.phiShip = yeuCau.getPhiShip();
-            this.ngayTao = yeuCau.getNgayTao();
-            this.ngaySua = yeuCau.getNgaySua();
-            this.nguoiTao = yeuCau.getNguoiTao();
-            this.nguoiSua = yeuCau.getNguoiSua();
-            this.ghiChu = yeuCau.getGhiChu();
-            this.tienKhachTra = yeuCau.getTienKhachTra();
         }
     }
 
@@ -91,7 +65,6 @@ public class YeuCauResponse {
             this.nguoiTao = yeuCau.getNguoiTao();
             this.nguoiSua = yeuCau.getNguoiSua();
             this.ghiChu = yeuCau.getGhiChu();
-            this.tienKhachTra = yeuCau.getTienKhachTra();
         }
     }
 
@@ -106,7 +79,6 @@ public class YeuCauResponse {
             this.ngaySua = responseByStatus.getNgaySua();
             this.ghiChu = responseByStatus.getGhiChu();
             this.listYeuCauChiTiet = responseByStatus.getListYeuCauChiTiet();
-            this.tienKhachTra = responseByStatus.getTienKhachTra();
         }
     }
 }

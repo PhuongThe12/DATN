@@ -1,4 +1,4 @@
-var app = angular.module("app", ["ngRoute", "ui.bootstrap"]);
+var app = angular.module("app", ["ngRoute", "ui.bootstrap","ngCookies"]);
 app.config(function ($routeProvider, $locationProvider) {
     $locationProvider.hashPrefix('');
     $routeProvider
@@ -26,11 +26,10 @@ app.controller("addDotGiamGiaController", function ($scope, $http, $location) {
         phanTramGiam: ""
     }];
 
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0); // Đặt giờ về 0 để so sánh ngày mà không tính giờ, phút, giây
     $scope.checkNgayBatDau = function () {
-        var currentDate = new Date();
-        currentDate.setHours(0, 0, 0, 0); // Đặt giờ về 0 để so sánh ngày mà không tính giờ, phút, giây
         var ngayBatDau = new Date($scope.dotGiamGia.ngayBatDau);
-
         return ngayBatDau >= currentDate;
     };
 
@@ -73,6 +72,14 @@ app.controller("addDotGiamGiaController", function ($scope, $http, $location) {
             }
 
             if (item.errors.tongHoaDon) {
+                invalid = true;
+            }
+
+            if (!$scope.checkNgayBatDau()) {
+                invalid = true;
+            }
+
+            if($scope.dotGiamGia.ngayKetThuc < $scope.dotGiamGia.ngayBatDau) {
                 invalid = true;
             }
         });
@@ -401,15 +408,16 @@ app.controller("updateDotGiamGiaController", function ($scope, $http, $location,
         })
         .catch(function (error) {
             toastr["error"]("Lấy dữ liệu thất bại");
+            $location.path("/list");
         });
 
     $scope.change = function (input) {
         input.$dirty = true;
     }
 
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0); // Đặt giờ về 0 để so sánh ngày mà không tính giờ, phút, giây
     $scope.checkNgayBatDau = function () {
-        var currentDate = new Date();
-        currentDate.setHours(0, 0, 0, 0); // Đặt giờ về 0 để so sánh ngày mà không tính giờ, phút, giây
         var ngayBatDau = new Date($scope.dotGiamGia.ngayBatDau);
 
         return ngayBatDau >= currentDate;
@@ -442,6 +450,13 @@ app.controller("updateDotGiamGiaController", function ($scope, $http, $location,
             if (item.errors.tongHoaDon) {
                 invalid = true;
             }
+            if(!$scope.checkNgayBatDau()) {
+                invalid = true;
+            }
+            if($scope.dotGiamGia.ngayKetThuc < $scope.dotGiamGia.ngayBatDau) {
+                invalid = true;
+            }
+
         });
 
         if (invalid) {

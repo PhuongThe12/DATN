@@ -58,6 +58,7 @@ public class DotGiamGiaServiceImpl implements DotGiamGiaService {
         if (dotGiamGiaRequest.getDieuKienRequests().isEmpty()) {
             throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không có điều kiện cho đợt giảm giá")));
         }
+        checkNgayBatDau(dotGiamGia);
 
         for (DieuKienRequest dieuKienRequest : dotGiamGiaRequest.getDieuKienRequests()) {
             DieuKien dieuKien = new DieuKien();
@@ -68,6 +69,16 @@ public class DotGiamGiaServiceImpl implements DotGiamGiaService {
         }
 
         return new DotGiamGiaResponse(dotGiamGiaRepository.save(dotGiamGia));
+    }
+
+    private void checkNgayBatDau(DotGiamGia dotGiamGia) {
+        if (dotGiamGia.getNgayBatDau().isBefore(LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0))) {
+            throw new InvalidIdException("Ngày không được là ngày trong quá khứ");
+        }
+
+        if (!dotGiamGia.getNgayBatDau().isBefore(dotGiamGia.getNgayKetThuc())) {
+            throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("error", "Ngày kết thúc phải lớn hơn ngày bắt đầu")));
+        }
     }
 
     @Override
@@ -92,6 +103,8 @@ public class DotGiamGiaServiceImpl implements DotGiamGiaService {
         if (dotGiamGiaRequest.getDieuKienRequests().isEmpty()) {
             throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("data", "Không có điều kiện cho đợt giảm giá")));
         }
+
+        checkNgayBatDau(dotGiamGia);
 
         for (DieuKienRequest dieuKienRequest : dotGiamGiaRequest.getDieuKienRequests()) {
             DieuKien dieuKien = new DieuKien();
