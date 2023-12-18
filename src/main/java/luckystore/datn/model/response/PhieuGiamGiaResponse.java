@@ -44,9 +44,6 @@ public interface PhieuGiamGiaResponse {
     @Value("#{target.TRANG_THAI}")
     Integer getTrangThai();
 
-    @Value("#{target.EMAIL}")
-    String getNguoiTao();
-
     @Value("#{target.NGAY_TAO}")
     LocalDateTime getNgayTao();
 

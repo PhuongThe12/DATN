@@ -32,7 +32,7 @@ app.controller("danhSachYeuThichController", function ($scope, $http, $window, $
     }
 
     function getData(currentPage) {
-        let apiUrl = host + '/rest/khach-hang/san-pham-yeu-thich?page=' + currentPage;
+        let apiUrl = host + '/rest/khach-hang/san-pham-yeu-thich?page=' + currentPage +"&idKhachHang="+$scope.khachHang.id;
         if (searchText) {
             apiUrl += '&search=' + searchText;
         }

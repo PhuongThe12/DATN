@@ -8,9 +8,13 @@ import java.util.List;
 
 public interface SanPhamYeuThichService {
 
-    Page<SanPhamYeuThichResponse> getPage(int page, String searchText);
+    Page<SanPhamYeuThichResponse> getPage(int page, String searchText, Long idKhachHang);
 
     SanPhamYeuThichResponse addSanPhamYeuThich(SanPhamYeuThichRequest sanPhamYeuThichRequest);
 
+    void deleteSanPhamYeuThichByIdKhachHangAndIdGiay(Long idKhachHang, Long idGiay);
+
     void deleteSanPhamYeuThick(Long id);
+
+    boolean existsByIdKhachHangAndIdIdGiay(Long idKhachHang, Long idGiay);
 }
