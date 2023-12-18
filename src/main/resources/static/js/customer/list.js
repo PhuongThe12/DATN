@@ -1,10 +1,19 @@
-app.controller('listProductController', function ($scope, $http, $location, $window) {
+app.controller('listProductController', function ($scope, $http, $location, $window,$cookies) {
+    $scope.khachHang = {};
 
-    $http.get(host + "/session/get-customer")
-        .then(response => {
-            $scope.currentKhachHang = response.data;
-            console.log($scope.currentKhachHang);
-        })
+    var token = $cookies.get('token');
+    if (token){
+        $http.get(host + "/session/get-customer")
+            .then(response => {
+                $scope.currentKhachHang = response.data;
+                $scope.khachHang = response.data;
+                console.log($scope.khachHang);
+            })
+    }else{
+
+    }
+
+
 
     $scope.giays = [];
 
@@ -20,10 +29,9 @@ app.controller('listProductController', function ($scope, $http, $location, $win
         if ($scope.status === 1) {
             giaySearch.trangThai = 1;
         } else if ($scope.status === 2) { // giày yêu thích
-            const currentUser = JSON.parse($window.localStorage.getItem('currentUser'));
-            if (currentUser) {
+            if ($scope.khachHang) {
                 giaySearch.trangThai = 2;
-                giaySearch.idKhachHang = currentUser.idKhachHang;
+                giaySearch.idKhachHang = $scope.khachHang.id;
             } else {
                 // $scope.status = 0;
                 console.log($scope.status);

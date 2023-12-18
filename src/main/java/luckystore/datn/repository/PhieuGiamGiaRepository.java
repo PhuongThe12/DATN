@@ -76,7 +76,7 @@ public interface PhieuGiamGiaRepository extends JpaRepository<PhieuGiamGia, Long
                         WHERE 
                             (:#{#hangKhachHang} IS NULL 
                             OR :#{#hangKhachHang} LIKE '' 
-                            OR hkh.TEN_HANG LIKE %:#{#hangKhachHang}%)
+                            OR hkh.TEN_HANG LIKE %:#{#hangKhachHang}%) AND pgg.TRANG_THAI = 0
             ORDER BY pgg.NGAY_TAO DESC        
             """, nativeQuery = true)
     List<PhieuGiamGiaResponse> getListPhieuByHangKhachHang(@Param("hangKhachHang")String hangKhachHang);
@@ -84,7 +84,7 @@ public interface PhieuGiamGiaRepository extends JpaRepository<PhieuGiamGia, Long
     @Query(value = """
                 SELECT pgg.ID, pgg.MA_GIAM_GIA, pgg.PHAN_TRAM_GIAM, pgg.SO_LUONG_PHIEU,
                 	   pgg.NGAY_BAT_DAU, pgg.NGAY_KET_THUC, pgg.GIA_TRI_DON_TOI_THIEU,
-                	   pgg.GIA_TRI_GIAM_TOI_DA, hkh.TEN_HANG, pgg.TRANG_THAI, nv.EMAIL,
+                	   pgg.GIA_TRI_GIAM_TOI_DA, hkh.TEN_HANG, pgg.TRANG_THAI,
                 	   pgg.NGAY_TAO FROM PhieuGiamGia pgg\s
                 			LEFT JOIN HangKhachHang hkh ON pgg.DOI_TUONG_AP_DUNG = hkh.ID
                 			LEFT JOIN NhanVien nv ON nv.ID = pgg.NGUOI_TAO 

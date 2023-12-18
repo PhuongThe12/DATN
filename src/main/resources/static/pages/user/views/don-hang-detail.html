@@ -66,16 +66,20 @@
                                         </div>
                                     </div>
                                 </div>
-                                <p ><span class="font-size-16-ncl fw-bold">Địa chỉ nhận hàng : </span>
+                                <p><span class="font-size-16-ncl fw-bold">Địa chỉ nhận hàng : </span>
                                     {{hoaDon.diaChiNhan}}
                                 </p>
                             </form>
-                            <button ng-if="hoaDon.trangThai === 4" data-bs-toggle="modal" data-bs-target="#capNhatDiaChi" class="btn btn-dark">Cập nhật địa chỉ nhận hàng</button>
+                            <button ng-if="hoaDon.trangThai === 4" data-bs-toggle="modal"
+                                    data-bs-target="#capNhatDiaChi" class="btn btn-dark">Cập nhật địa chỉ nhận hàng
+                            </button>
                         </div>
                     </div>
                     <div class="col-md-12">
                         <div class="d-flex py-3">
-                            <h5 class=" fw-bold">SẢN PHẨM <strong ng-show="hoaDon.loaiHoaDon == 2">(Hóa Đơn Đổi - YC{{hoaDon.ghiChu}})</strong> <strong ng-show="hoaDon.loaiHoaDon == 3">(Hóa Đơn Trả - YC{{hoaDon.ghiChu}})</strong></h5>
+                            <h5 class=" fw-bold">SẢN PHẨM <strong ng-show="hoaDon.loaiHoaDon == 2">(Hóa Đơn Đổi -
+                                YC{{hoaDon.ghiChu}})</strong> <strong ng-show="hoaDon.loaiHoaDon == 3">(Hóa Đơn Trả -
+                                YC{{hoaDon.ghiChu}})</strong></h5>
                         </div>
                         <div>
                             <table class="w-100">
@@ -112,8 +116,10 @@
                             <hr>
                             <div class="row">
                                 <div class="invoice-total col-6">
-                                    <p class="py-2"><strong>Tổng Cộng : </strong> {{hoaDon.conLai + hoaDon.tongTru| number : 0}} VND</p>
-                                    <p class="py-2"><strong>Giảm giá : </strong>- {{hoaDon.tongTru | number : 0}} VND</p>
+                                    <p class="py-2"><strong>Tổng Cộng : </strong> {{hoaDon.conLai + hoaDon.tongTru|
+                                        number : 0}} VND</p>
+                                    <p class="py-2"><strong>Giảm giá : </strong>- {{hoaDon.tongTru | number : 0}} VND
+                                    </p>
                                     <p class="py-2"><strong>Tiền ship : </strong> {{hoaDon.tienShip ? hoaDon.tienShip :
                                         0 |
                                         number : 0}} VND</p>
@@ -121,7 +127,14 @@
                                 </div>
                             </div>
                             <div class="justify-content-end d-flex mb-3">
-                                <a type="button" class="btn btn-dark" ng-show="hoaDon.loaiHoaDon != 3" ng-disabled="!checkNgayNhan" href="/user/yeu-cau#/add/{{hoaDon.id}}">Trả Hàng</a>
+                                <a type="button" class="btn btn-dark"
+                                   ng-if="hoaDon.trangThai == 4"
+                                   href="/user/yeu-cau#/add/{{hoaDon.id}}">Hủy Đơn Hàng</a>
+                            </div>
+                            <div class="justify-content-end d-flex mb-3">
+                                <a type="button" class="btn btn-dark"
+                                   ng-if="hoaDon.trangThai == 1 && hoaDon.loaiHoaDon != 3" ng-disabled="!checkNgayNhan"
+                                   href="/user/yeu-cau#/add/{{hoaDon.id}}">Trả Hàng</a>
                             </div>
                         </div>
                     </div>
@@ -132,31 +145,34 @@
                         <div>
                             <table class="table">
                                 <thead>
-                                    <tr>
-                                        <th>STT</th>
-                                        <th>Yêu Cầu</th>
-                                        <th>Ngày Tạo</th>
-                                        <th>Trạng Thái</th>
-                                        <th>Thao Tác</th>
-                                    </tr>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Yêu Cầu</th>
+                                    <th>Ngày Tạo</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Thao Tác</th>
+                                </tr>
                                 </thead>
                                 <tbody ng-repeat="(index,yeuCau) in listYeuCau">
-                                    <tr>
-                                        <th>{{index+1}}</th>
-                                        <td>{{yeuCau.id}}</td>
-                                        <td>{{yeuCau.ngayTao | formatDate}}</td>
-                                        <td> <span class="badge rounded-pill text-bg-warning"
-                                                   style="background-color: black" ng-show="yeuCau.trangThai == 1">Chờ Xác Nhận</span>
-                                            <span class="badge rounded-pill text-bg-success"
-                                                  style="background-color: black" ng-show="yeuCau.trangThai == 2">Đã Xác Nhận</span>
-                                            <span class="badge rounded-pill text-bg-success"
-                                                  style="background-color: black" ng-show="yeuCau.trangThai == 3">Hoàn Thành</span>
-                                            <span class="badge rounded-pill text-bg-danger"
-                                                  style="background-color: #bf0606"
-                                                  ng-show="yeuCau.trangThai == 0">Bị Hủy</span>
-                                        </td>
-                                        <td><a type="button" class="btn btn-dark" href="http://localhost:8080/user/yeu-cau#/update/{{yeuCau.id}}"><i class="far fa-eye"></i></a></td>
-                                    </tr>
+                                <tr>
+                                    <th>{{index+1}}</th>
+                                    <td>{{yeuCau.id}}</td>
+                                    <td>{{yeuCau.ngayTao | formatDate}}</td>
+                                    <td> <span class="badge rounded-pill text-bg-warning"
+                                               style="background-color: black" ng-show="yeuCau.trangThai == 1">Chờ Xác Nhận</span>
+                                        <span class="badge rounded-pill text-bg-success"
+                                              style="background-color: black" ng-show="yeuCau.trangThai == 2">Đã Xác Nhận</span>
+                                        <span class="badge rounded-pill text-bg-success"
+                                              style="background-color: black"
+                                              ng-show="yeuCau.trangThai == 3">Hoàn Thành</span>
+                                        <span class="badge rounded-pill text-bg-danger"
+                                              style="background-color: #bf0606"
+                                              ng-show="yeuCau.trangThai == 0">Bị Hủy</span>
+                                    </td>
+                                    <td><a type="button" class="btn btn-dark"
+                                           href="http://localhost:8080/user/yeu-cau#/update/{{yeuCau.id}}"><i
+                                            class="far fa-eye"></i></a></td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -166,8 +182,6 @@
         </div>
     </div>
 </div>
-
-
 
 
 <!-- Modal -->
@@ -180,11 +194,14 @@
                         <div class="col-md-12">
 
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" placeholder="hoTen" name="soDienThoaiNhan" ng-required="true"
+                                <input type="text" class="form-control" placeholder="hoTen" name="soDienThoaiNhan"
+                                       ng-required="true"
                                        ng-model="diaChiNhanHangAdd.soDienThoaiNhan">
                                 <label for="floatingInput">Số Điện Thoại</label>
                             </div>
-                            <p class="font-size-12-ncl text-danger" ng-show="diaChiNhanHangForm.soDienThoaiNhan.$touched && diaChiNhanHangForm.soDienThoaiNhan.$error.required">Vui lòng nhập Số điện thoại</p>
+                            <p class="font-size-12-ncl text-danger"
+                               ng-show="diaChiNhanHangForm.soDienThoaiNhan.$touched && diaChiNhanHangForm.soDienThoaiNhan.$error.required">
+                                Vui lòng nhập Số điện thoại</p>
 
                             <div class="col-md-12">
                                 <div class="form-floating mb-3">
@@ -215,12 +232,37 @@
                                            name="diaChiNhan" ng-model="diaChiNhanHangAdd.diaChiNhan">
                                     <label for="floatingInput">Địa Chỉ Chi Tiết</label>
                                 </div>
-                                <p class="font-size-12-ncl text-danger" ng-show="diaChiNhanErrors">{{diaChiNhanErrors}}</p>
+                                <p class="font-size-12-ncl text-danger" ng-show="diaChiNhanErrors">
+                                    {{diaChiNhanErrors}}</p>
                             </div>
                             <button class="btn btn-dark">Thêm địa chỉ</button>
                         </div>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
             </div>
         </div>
     </div>

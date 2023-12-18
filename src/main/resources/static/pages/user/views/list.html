@@ -129,7 +129,7 @@
                     <label class="radio-label" for="active">Sản phẩm bán chạy</label>
                 </div>
 
-                <div class="custom-radio">
+                <div class="custom-radio" ng-if="khachHang.id">
                     <input type="radio" id="disable" name="status" ng-model="status" value="2" ng-checked="status == 2"
                            ng-change="changeRadio(2)">
                     <label class="radio-label" for="disable">Sản phẩm yêu thích</label>
