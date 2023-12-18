@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,6 +20,5 @@ public class ThongKeRequest {
 
     //Top Y
     private Integer lastDate = 30;
-
 
 }

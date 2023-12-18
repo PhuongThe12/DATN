@@ -16,4 +16,5 @@ public interface HangKhachHangService {
     HangKhachHangResponse updateHangKhachHang(Long id, HangKhachHangRequest hangKhachHangRequest);
 
     HangKhachHangResponse findById(Long id);
+
 }

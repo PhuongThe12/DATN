@@ -5,12 +5,15 @@ import luckystore.datn.model.request.GiaySearch;
 import luckystore.datn.model.request.KhuyenMaiSearch;
 import luckystore.datn.model.response.GiayResponse;
 import luckystore.datn.model.response.GiayResponseI;
+import luckystore.datn.model.response.thongKe.ThongKeByHangAndThuongHieu;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -210,5 +213,17 @@ public interface GiayRepository extends JpaRepository<Giay, Long> {
             "group by g " +
             "order by count(spyt) desc")
     Page<GiayResponse> findTopFavoritedShoes(Pageable pageable);
+
+    @Query(value = """
+        select top 10 g.TEN as 'ten', SUM(cttt.TIEN_THANH_TOAN) as 'tongDoanhThu' from BienTheGiay btg
+        left join HoaDonChiTiet hdct on btg.ID = hdct.ID_BIEN_THE_GIAY
+        left join HoaDon hd on hdct.ID_HOA_DON = hd.ID\s
+        left join Giay g on btg.ID_GIAY = g.ID 
+        left join ChiTietThanhToan cttt on cttt.ID_HOA_DON = hd.ID
+        where hd.TRANG_THAI = 1 and hd.NGAY_TAO between '2023-12-17' and '2023-12-19'
+        group by g.TEN
+        order by tongDoanhThu desc
+    """, nativeQuery = true)
+    List<ThongKeByHangAndThuongHieu> getTopGiayBanChay();
 
 }
