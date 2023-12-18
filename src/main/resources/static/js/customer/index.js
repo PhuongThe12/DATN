@@ -855,6 +855,7 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
             })
             .then(function successCallback(response) {
                 $scope.giaySeletect.yeuThich = true;
+                $window.location.reload();
             })
             .catch(function (error) {
                 // Xử lý lỗi nếu có
@@ -876,6 +877,7 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
         fetch(apiUrl, requestOptions)
             .then(function (response) {
                 $scope.giaySeletect.yeuThich = false;
+                $window.location.reload();
             })
 
             .catch(function (error) {
@@ -1206,6 +1208,8 @@ app.controller("donHangListController", function ($scope, $http, $window, $locat
             apiUrl += '&status=' + 4;
         } else if ($scope.status == 5) {
             apiUrl += '&status=' + 5;
+        }else if ($scope.status == -1) {
+            apiUrl += '&status=' + -1;
         } else {
             apiUrl += '&status=' + 1;
         }
@@ -1644,6 +1648,24 @@ app.controller("detailDonHangController", function ($scope, $http, $window, $loc
             });
 
 
+    }
+
+    $scope.xacNhanHuyHang = function () {
+        console.log($scope.lyDo.noiDung);
+        $scope.donHuy = {};
+        $scope.donHuy.id = $scope.hoaDon.id;
+        $scope.donHuy.ghiChu = $scope.lyDo;
+        $http.put(host + "/rest/user/hoa-don/huy-don-hang",$scope.donHuy)
+            .then(function (response) {
+                toastr["success"]("Lấy dữ liệu xã thất bại");
+                $('#modalHuyHang').modal('hide');
+                $location.path("/don-hang");
+            }).catch(function (error) {
+                if(error.data.donHangError){
+                    toastr["warning"](error.data.donHangError);
+                }
+            console.log(error);
+        })
     }
 
 });
@@ -2143,7 +2165,7 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
             $scope.khachHang = response.data;
             $http.get("/rest/admin/phieu-giam-gia/get-all-by-hang-khach-hang?hangKhachHang=" + $scope.khachHang.hangKhachHang.tenHang)
                 .then(function (response) {
-                    $scope.phieuGiamGiaList = response.data.filter(function(giamGia) {
+                    $scope.phieuGiamGiaList = response.data.filter(function (giamGia) {
                         return $scope.tongTienSanPham >= giamGia.giaTriDonToiThieu;
                     });
                     console.log($scope.phieuGiamGiaList);
@@ -2273,9 +2295,11 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
 
                                 })
                                 if ($scope.khachHang && $scope.khachHang.id !== undefined && $scope.khachHang.id !== null) {
+                                    $scope.$parent.loadCartByIdKhachHang();
                                     $location.path("/don-hang");
                                 } else {
                                     $window.localStorage.removeItem('gioHang');
+                                    $scope.$parent.loadLocalStorage();
                                     $location.path("/home");
                                 }
                             }

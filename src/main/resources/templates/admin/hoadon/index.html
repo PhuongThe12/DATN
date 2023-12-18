@@ -124,6 +124,10 @@
                 </ul>
             </div>
         </div>
+        <div ng-controller="navbarStaffController">
+            <p class="pb-3 text-center">{{nhanVienBanHangSession.hoTen}}</p>
+            <button class="btn btn-dark w-100" ng-click="logOutNhanVien()">Đăng xuất</button>
+        </div>
     </aside>
 
     <div class="main-wrapper">

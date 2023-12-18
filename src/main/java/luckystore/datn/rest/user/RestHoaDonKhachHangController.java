@@ -45,5 +45,9 @@ public class RestHoaDonKhachHangController {
         return ResponseEntity.ok(hoaDonKhachHangService.getThanhToanChiTiet(id));
     }
 
+    @PutMapping("/huy-don-hang")
+    public ResponseEntity huyDonHang(@RequestBody HuyDonRequest huyDonRequest){
+        return ResponseEntity.ok(hoaDonKhachHangService.huyDonHang(huyDonRequest));
+    }
 
 }

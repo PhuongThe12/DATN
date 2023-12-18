@@ -57,6 +57,44 @@ app.controller('navbarAdminController', function ($rootScope, $scope, $http, $lo
 
 });
 
+
+app.controller("navbarStaffController", function ($scope, $http, $location, $cookies, $rootScope,$window){
+    $scope.nhanVienBanHangSession = {};
+    var token = $cookies.get('token');
+    if (token) {
+        $http.get(host + "/session/get-staff")
+            .then(response => {
+                $scope.nhanVienBanHangSession = response.data;
+            })
+    } else {
+        $window.location.href = '/login';
+    }
+
+    $scope.logOutNhanVien = function () {
+        Swal.fire({
+            text: "Xác nhận đăng xuất?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                setTokenCookie(null, null);
+                $window.localStorage.clear();
+                $window.location.href = '/login';
+            }
+        });
+    }
+
+    function setTokenCookie(token, expiryDays) {
+        const d = new Date();
+        d.setTime(d.getTime() + (expiryDays * 24 * 60 * 60 * 1000));
+        const expires = "expires=" + d.toUTCString();
+        document.cookie = `token=${token}; ${expires}; path=/`;
+    }
+});
 function getTokenFromCookie() {
     const name = "token=";
     const decodedCookie = decodeURIComponent(document.cookie);

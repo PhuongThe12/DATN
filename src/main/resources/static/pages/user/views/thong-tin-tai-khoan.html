@@ -101,58 +101,11 @@
                         tin</a>
                 </div>
 
-                <div style="margin-left: 700px">
-                    <a class="btn btn-dark font-size-16-ncl fw-bold " data-bs-toggle="modal"
-                       data-bs-target="#modalThemDiaChi" ng-click="ThemDiaChiNhan()">Thêm địa chỉ</a>
-                </div>
+<!--                <div style="margin-left: 700px">-->
+<!--                    <a class="btn btn-dark font-size-16-ncl fw-bold " data-bs-toggle="modal"-->
+<!--                       data-bs-target="#modalThemDiaChi" ng-click="ThemDiaChiNhan()">Thêm địa chỉ</a>-->
+<!--                </div>-->
 
-                <h5 class="fw-bold font-size-16-ncl">Địa Chỉ Nhận Hàng</h5>
-                <div ng-repeat="diaChiNhanHang in diaChiNhanHangs">
-                    <div class="border-bottom-1 mb-3 ">
-
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <div class="d-flex align-items-center">
-                                    <h5 class="mb-0">{{diaChiNhanHang.hoTen}}</h5>
-                                    <p class="font-size-16-ncl  mb-0 ps-3">{{diaChiNhanHang.soDienThoaiNhan}}</p>
-                                </div>
-                                <h5 class="font-size-16-ncl">
-                                    {{diaChiNhanHang.diaChiNhan}}
-                                </h5>
-                                <h5 class="font-size-14-ncl">
-                                    Xã <span>{{diaChiNhanHang.wards}}</span>, Huyện
-                                    <span>{{diaChiNhanHang.districts}}</span>, <span>{{diaChiNhanHang.provinces}}</span>
-                                </h5>
-                                <div class="mb-2">
-                            <span class="badge-custom" ng-show="diaChiNhanHang.trangThai == 1">
-                                {{diaChiNhanHang.trangThai == 1 ? 'Mặc Định' : 'Không áp dụng'}}
-                            </span>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="d-flex justify-content-end">
-
-                                    <div>
-                                        <p class="fw-bold pointer border-bottom-2" data-bs-toggle="modal"
-                                           data-bs-target="#modalDiaChi" ng-click="updateDiaChiNhan(diaChiNhanHang.id)">
-                                            Cập Nhật</p>
-                                    </div>
-
-                                    <div class="ps-2 fw-bold">
-                                        <p class="pointer border-bottom-2" ng-click="removeDieuKien(diaChiNhanHang.id)">
-                                            Xóa</p>
-                                    </div>
-                                </div>
-                                <div class="d-flex">
-                                    <button class="btn btn-outline-dark" ng-click="updateTrangThai(diaChiNhanHang.id)">
-                                        Thiết Lập Mặc Định
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
             </div>
 
             <div ng-show="numOfPages > 1" data-pagination="" data-num-pages="numOfPages" data-current-page="curPage"

@@ -103,10 +103,10 @@
                 </div>
 
                 <div class="custom-radio">
-                    <input type="radio" id="daThanhToan" name="status" ng-model="status" value="2"
+                    <input type="radio" id="choGiao" name="status" ng-model="status" value="2"
                            ng-checked="status == 2"
                            ng-change="changeRadio(2)">
-                    <label class="radio-label" for="daThanhToan">Chờ giao</label>
+                    <label class="radio-label" for="choGiao">Chờ giao</label>
                 </div>
                 <div class="custom-radio">
                     <input type="radio" id="choDongGoi" name="status" ng-model="status" value="3"
@@ -115,10 +115,17 @@
                     <label class="radio-label" for="choDongGoi">Đang giao</label>
                 </div>
                 <div class="custom-radio">
-                    <input type="radio" id="choGiaoHang" name="status" ng-model="status" value="4"
+                    <input type="radio" id="daThanhToan" name="status" ng-model="status" value="1"
                            ng-checked="status == 1"
                            ng-change="changeRadio(1)">
-                    <label class="radio-label" for="choGiaoHang">Hoàn thành</label>
+                    <label class="radio-label" for="daThanhToan">Đã hoàn thành</label>
+                </div>
+
+                <div class="custom-radio">
+                    <input type="radio" id="daHuy" name="status" ng-model="status" value="1"
+                           ng-checked="status == -1"
+                           ng-change="changeRadio(-1)">
+                    <label class="radio-label" for="daHuy">Đã hủy</label>
                 </div>
 <!--                <div class="custom-radio">-->
 <!--                    <input type="radio" id="dangGiaoHang" name="status" ng-model="status" value="5"-->
