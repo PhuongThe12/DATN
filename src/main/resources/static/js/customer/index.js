@@ -1462,6 +1462,7 @@ app.controller("detailDonHangController", function ($scope, $http, $window, $loc
                 if (item.hinhThucThanhToan === 2) {
                     $scope.hoaDon.thongTinThanhToan.chuyenKhoan = item.tienThanhToan;
                     $scope.hoaDon.thongTinThanhToan.maGiaoDich = item.maGiaoDich;
+                    $scope.hoaDon.trangThai = item.trangThai;
                 }
             });
             $scope.hoaDon.tongTru = $scope.hoaDon.tienGiam ? $scope.hoaDon.tienGiam : 0;

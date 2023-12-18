@@ -90,7 +90,6 @@ app.controller('hoaDonChoController', function ($scope, $http, $location) {
         const hoaDon = $scope.hoaDons.find(item => item.id === id);
         if (hoaDon) {
             $scope.hoaDonDetail = hoaDon;
-            console.log($scope.hoaDonDetail);
             $scope.hoaDonDetail.conLai = 0;
 
             $scope.hoaDonDetail.thongTinThanhToan = {

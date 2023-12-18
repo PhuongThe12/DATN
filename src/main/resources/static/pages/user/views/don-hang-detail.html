@@ -115,15 +115,22 @@
                             </table>
                             <hr>
                             <div class="row">
+                                <div class="col-6">
+                                    <div class="py-2 display-none" ng-class="hoaDon.trangThai==1?'display-block' : ''">
+                                        <span class="da-thanh-toan px-2">Đã thanh toán</span>
+                                    </div>
+                                    <div class="py-2 display-none" ng-class="hoaDon.trangThai==-1?'display-block' : ''">
+                                        <span class="chua-thanh-toan">Đã hủy</span>
+                                    </div>
+                                </div>
                                 <div class="invoice-total col-6">
-                                    <p class="py-2"><strong>Tổng Cộng : </strong> {{hoaDon.conLai + hoaDon.tongTru|
-                                        number : 0}} VND</p>
-                                    <p class="py-2"><strong>Giảm giá : </strong>- {{hoaDon.tongTru | number : 0}} VND
-                                    </p>
+                                    <p class="py-2"><strong>Tổng Cộng : </strong> {{hoaDon.conLai  + hoaDon.tongTru | number : 0}} VND</p>
+                                    <p class="py-2"><strong>Giảm giá : </strong>- {{hoaDon.tongTru | number : 0}} VND</p>
                                     <p class="py-2"><strong>Tiền ship : </strong> {{hoaDon.tienShip ? hoaDon.tienShip :
                                         0 |
                                         number : 0}} VND</p>
-                                    <p class="py-2"><strong>Phải trả : </strong>{{hoaDon.tongCong | number : 0}} VND</p>
+                                    <p class="py-2"><strong>Phải trả : </strong>{{hoaDon.conLai +(hoaDon.tienShip ? hoaDon.tienShip :
+                                        0)  | number : 0}} VND</p>
                                 </div>
                             </div>
                             <div class="justify-content-end d-flex mb-3">
@@ -246,7 +253,6 @@
 
 <!-- Button trigger modal -->
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    Launch demo modal
 </button>
 
 <!-- Modal -->
