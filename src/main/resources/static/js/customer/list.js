@@ -20,10 +20,9 @@ app.controller('listProductController', function ($scope, $http, $location, $win
         if ($scope.status === 1) {
             giaySearch.trangThai = 1;
         } else if ($scope.status === 2) { // giày yêu thích
-            const currentUser = JSON.parse($window.localStorage.getItem('currentUser'));
-            if (currentUser) {
+            if ($scope.currentKhachHang) {
                 giaySearch.trangThai = 2;
-                giaySearch.idKhachHang = currentUser.idKhachHang;
+                giaySearch.idKhachHang = $scope.currentKhachHang.id;
             } else {
                 // $scope.status = 0;
                 console.log($scope.status);
