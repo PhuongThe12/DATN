@@ -7,6 +7,7 @@ import luckystore.datn.exception.InvalidIdException;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.infrastructure.constraints.Config;
 import luckystore.datn.infrastructure.constraints.ErrorMessage;
+import luckystore.datn.infrastructure.constraints.KenhBan;
 import luckystore.datn.infrastructure.constraints.TrangThaiHoaDon;
 import luckystore.datn.infrastructure.security.session.SessionService;
 import luckystore.datn.model.request.*;
@@ -412,7 +413,7 @@ public class HoaDonServiceImpl implements HoaDonService {
             tangHang(hoaDon.getKhachHang(), request.getTienMat());
         }
 
-        hoaDon.setKenhBan(1);
+        hoaDon.setKenhBan(KenhBan.ONLINE);
         hoaDon.setChiTietThanhToans(chiTietThanhToans);
         hoaDon.setGhiChu(request.getGhiChu());
         List<Long> idsBienThe = hoaDon.getListHoaDonChiTiet().stream().map(hdct -> hdct.getBienTheGiay().getId()).toList();
