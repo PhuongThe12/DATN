@@ -20,4 +20,6 @@ public interface HoaDonKhachHangService {
     HoaDonResponse capNhatDiaChiNhan(HoaDonDiaChiNhanRequest hoaDonDiaChiNhanRequest);
 
     HoaDonPrintResponse getThanhToanChiTiet(Long idHoaDon);
+
+    HoaDonResponse huyDonHang(HuyDonRequest huyDonRequest);
 }

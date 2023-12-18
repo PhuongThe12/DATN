@@ -115,10 +115,10 @@
                     <label class="radio-label" for="choDongGoi">Đang giao</label>
                 </div>
                 <div class="custom-radio">
-                    <input type="radio" id="choGiaoHang" name="status" ng-model="status" value="4"
-                           ng-checked="status == 1"
-                           ng-change="changeRadio(1)">
-                    <label class="radio-label" for="choGiaoHang">Hoàn thành</label>
+                    <input type="radio" id="daHuy" name="status" ng-model="status" value="4"
+                           ng-checked="status == -1"
+                           ng-change="changeRadio(-1)">
+                    <label class="radio-label" for="daHuy">Đã hủy</label>
                 </div>
 <!--                <div class="custom-radio">-->
 <!--                    <input type="radio" id="dangGiaoHang" name="status" ng-model="status" value="5"-->
