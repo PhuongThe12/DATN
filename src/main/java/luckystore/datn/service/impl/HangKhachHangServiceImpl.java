@@ -58,6 +58,7 @@ public class HangKhachHangServiceImpl implements HangKhachHangService {
         return new HangKhachHangResponse(hangKhachHangRepo.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND)));
     }
 
+
     private void checkWhenInsert(HangKhachHangRequest hangKhachHangRequest) {
         if (hangKhachHangRepo.existsByTenHang(hangKhachHangRequest.getTenHang())) {
             String errorObject = JsonString.errorToJsonObject("ten", "Tên đã tồn tại");

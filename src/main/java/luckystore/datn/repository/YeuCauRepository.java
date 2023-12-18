@@ -11,8 +11,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -43,4 +43,5 @@ public interface YeuCauRepository extends JpaRepository<YeuCau,Long> {
 
     @Query("select new luckystore.datn.model.response.YeuCauResponse(yc) from YeuCau yc  where yc.id = :idYeuCau")
     YeuCauResponse getOneYeuCau(Long idYeuCau);
+
 }

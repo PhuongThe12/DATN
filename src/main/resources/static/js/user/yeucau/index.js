@@ -663,6 +663,8 @@ app.controller("addYeuCauKhachHangController", function ($scope, $http, $routePa
             .then(function (response) {
                 $scope.hoaDon = response.data;
                 $scope.listHoaDonChiTiet = response.data.listHoaDonChiTiet;
+                console.log($scope.hoaDon)
+                console.log($scope.listHoaDonChiTiet)
                 layPhiShip($scope.hoaDon.diaChiNhan);
                 $scope.isLoading = false;
             }).catch(function (error) {

@@ -11,6 +11,7 @@ import luckystore.datn.service.YeuCauChiTietService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,5 +47,10 @@ public class YeuCauChiTietServiceImpl implements YeuCauChiTietService {
     @Override
     public List<YeuCauChiTietResponse> getAllYeuCauChiTietResponse(Long id) {
         return  yeuCauChiTietRepository.getPageResponse(id);
+    }
+
+    @Override
+    public Long countRequestDetailsByStatus(Date ngay1) {
+        return yeuCauChiTietRepository.countRequestDetailsByStatus(ngay1);
     }
 }

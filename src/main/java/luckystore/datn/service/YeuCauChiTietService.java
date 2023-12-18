@@ -6,6 +6,7 @@ import luckystore.datn.model.response.YeuCauChiTietResponse;
 import luckystore.datn.model.response.YeuCauResponse;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.List;
 
 @Service
@@ -15,4 +16,5 @@ public interface YeuCauChiTietService {
 
     List<YeuCauChiTietResponse> getAllYeuCauChiTietResponse(Long id);
 
+    Long countRequestDetailsByStatus(Date ngay1);
 }

@@ -8,6 +8,8 @@ import luckystore.datn.model.response.HoaDonBanHangResponse;
 import luckystore.datn.model.response.HoaDonResponse;
 import luckystore.datn.model.response.HoaDonYeuCauRespone;
 import luckystore.datn.model.response.print.HoaDonPrintResponse;
+import luckystore.datn.model.response.thongKe.ThongKeByHangAndThuongHieu;
+import luckystore.datn.model.response.thongKe.ThongKeTongQuan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,6 +19,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -120,6 +123,62 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
             "from HoaDon hd where hd.id = :maHD and hd.soDienThoaiNhan like %:sdt")
     HoaDonPrintResponse getTraCuuDon(Long maHD, String sdt);
 
+    @Query(value = """
+            SELECT hkh.TEN_HANG AS 'ten', SUM(sub.TIEN_THANH_TOAN) AS 'tongDoanhThu'
+        FROM (
+            SELECT hd.ID_KHACH_HANG, cttt.TIEN_THANH_TOAN
+            FROM
+            HoaDon hd
+            LEFT JOIN ChiTietThanhToan cttt ON hd.ID = cttt.ID_HOA_DON
+            WHERE hd.TRANG_THAI = 1 AND hd.NGAY_TAO BETWEEN '2023-12-17' AND '2023-12-19'
+        ) AS sub
+        LEFT JOIN
+            KhachHang kh ON sub.ID_KHACH_HANG = kh.ID
+        LEFT JOIN HangKhachHang hkh ON kh.ID_HANG_KHACH_HANG = hkh.ID
+            GROUP BY hkh.TEN_HANG;
+            """, nativeQuery = true)
+    List<ThongKeByHangAndThuongHieu> getDoanhThuByHangKhachHang();
+
+    @Query(value = """
+        		SELECT th.TEN AS 'ten', SUM(cttt.TIEN_THANH_TOAN) AS 'tongDoanhThu'
+        FROM HoaDon hd
+        LEFT JOIN HoaDonChiTiet hdct ON hd.ID = hdct.ID_HOA_DON
+        LEFT JOIN ChiTietThanhToan cttt ON hd.ID = cttt.ID_HOA_DON
+        LEFT JOIN (
+            SELECT hdct.ID_HOA_DON, g.ID_THUONG_HIEU
+            FROM HoaDonChiTiet hdct
+            LEFT JOIN BienTheGiay btg ON btg.ID = hdct.ID_BIEN_THE_GIAY
+            LEFT JOIN Giay g ON g.ID = btg.ID_GIAY
+        ) AS sub ON hd.ID = sub.ID_HOA_DON
+        LEFT JOIN ThuongHieu th ON th.ID = sub.ID_THUONG_HIEU
+        WHERE hd.TRANG_THAI = 1 AND hd.NGAY_TAO BETWEEN '2023-12-17' AND '2023-12-19'
+        GROUP BY th.TEN
+    """, nativeQuery = true)
+    List<ThongKeByHangAndThuongHieu> getDoanhThuByThuongHieu();
+
+    @Query(value = """
+        select MONTH(NGAY_TAO) as 'ten', sum(cttt.TIEN_THANH_TOAN) as 'tongDoanhThu' from HoaDon hd
+        left join HoaDonChiTiet hdct on hd.ID = hdct.ID_HOA_DON
+        left join ChiTietThanhToan cttt on hd.ID = cttt.ID_HOA_DON
+        where YEAR(hd.NGAY_TAO) = :year AND hd.TRANG_THAI = 1
+        group by MONTH(NGAY_TAO)
+        order by MONTH(NGAY_TAO)
+    """, nativeQuery = true)
+    List<ThongKeByHangAndThuongHieu> getThongKeTheoNam(@Param("year") Integer year);
+
+    @Query(value = """
+            select sum(cttt.TIEN_THANH_TOAN) as 'tongDoanhThu',
+                   count(DISTINCT hd.ID) as 'tongHoaDon',
+                   sum(hdct.SO_LUONG) as 'tongSanPham',
+                   count(yctt.ID) as 'tongYeuCau'
+               from HoaDon hd
+                left join HoaDonChiTiet hdct on hd.ID = hdct.ID_HOA_DON
+                left join ChiTietThanhToan cttt on hd.ID = cttt.ID_HOA_DON
+                left join PhieuGiamGiaChiTiet pggct on hd.ID = pggct.ID_HOA_DON
+                left join YeuCauChiTiet yctt on hdct.ID = yctt.ID_HOA_DON_CHI_TIET
+                where CONVERT(DATE, hd.NGAY_TAO) = :ngay1
+            """, nativeQuery = true)
+    ThongKeTongQuan getThongKeTongQuan(@Param("ngay1") Date ngay1);
     @Query("select new luckystore.datn.model.response.print.HoaDonPrintResponse(hd, 2) " +
             "from HoaDon hd where hd.id = :maHD ")
     HoaDonPrintResponse getThanhToanChiTiet(Long maHD);

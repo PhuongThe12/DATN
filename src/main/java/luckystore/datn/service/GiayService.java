@@ -3,10 +3,13 @@ package luckystore.datn.service;
 import luckystore.datn.model.request.*;
 import luckystore.datn.model.response.BienTheGiayResponse;
 import luckystore.datn.model.response.GiayResponse;
+import luckystore.datn.model.response.thongKe.ThongKeByHangAndThuongHieu;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.List;
 
 @Service
@@ -52,6 +55,8 @@ public interface GiayService {
     Page<GiayResponse> findTopFavoritedShoes(ThongKeRequest thongKeRequest);
     Page<BienTheGiayResponse> findTopCartVariants(ThongKeRequest thongKeRequest);
     Page<BienTheGiayResponse> findVariantReturnRates(ThongKeRequest thongKeRequest);
+
+    List<ThongKeByHangAndThuongHieu> getTopGiayBanChay();
 
 
 }

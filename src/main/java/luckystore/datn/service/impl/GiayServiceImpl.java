@@ -41,6 +41,7 @@ import luckystore.datn.model.response.MauSacResponse;
 import luckystore.datn.model.response.MuiGiayResponse;
 import luckystore.datn.model.response.ThuongHieuResponse;
 import luckystore.datn.model.response.GiayResponseI;
+import luckystore.datn.model.response.thongKe.ThongKeByHangAndThuongHieu;
 import luckystore.datn.repository.BienTheGiayRepository;
 import luckystore.datn.repository.ChatLieuRepository;
 import luckystore.datn.repository.CoGiayRepository;
@@ -57,6 +58,7 @@ import luckystore.datn.repository.MuiGiayRepository;
 import luckystore.datn.repository.ThuongHieuRepository;
 import luckystore.datn.service.GiayService;
 import luckystore.datn.service.ImageHubService;
+import luckystore.datn.util.ConvertDate;
 import luckystore.datn.util.JsonString;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -65,6 +67,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1148,6 +1151,11 @@ public class GiayServiceImpl implements GiayService {
     public Page<BienTheGiayResponse> findVariantReturnRates(ThongKeRequest thongKeRequest) {
         Pageable pageable = PageRequest.of(thongKeRequest.getCurrentPage() - 1, thongKeRequest.getPageSize());
         return bienTheGiayRepository.findVariantHighReturnRates(pageable);
+    }
+
+    @Override
+    public List<ThongKeByHangAndThuongHieu> getTopGiayBanChay() {
+        return giayRepository.getTopGiayBanChay();
     }
 
 

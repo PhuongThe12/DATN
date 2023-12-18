@@ -1,29 +1,30 @@
 package luckystore.datn.rest.admin;
 
+import lombok.RequiredArgsConstructor;
 import luckystore.datn.model.request.ThongKeRequest;
 import luckystore.datn.service.GiayService;
+import luckystore.datn.service.HoaDonService;
 import luckystore.datn.service.LyDoService;
+import luckystore.datn.service.YeuCauChiTietService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.sql.Date;
 
 @RestController
 @RequestMapping("/rest/admin/thong-ke")
+@RequiredArgsConstructor
 public class RestThongKeConTroller {
 
     private final GiayService giayService;
     private final LyDoService lyDoService;
+    private final HoaDonService hoaDonService;
 
+    private final YeuCauChiTietService yeuCauChiTietService;
 
-    @Autowired
-    public RestThongKeConTroller(GiayService giayService, LyDoService lyDoService) {
-        this.giayService = giayService;
-        this.lyDoService = lyDoService;
-    }
 
 
     // Danh sách giày bán chạy
@@ -69,7 +70,34 @@ public class RestThongKeConTroller {
         return new ResponseEntity<>(giayService.findVariantReturnRates(thongKeRequest), HttpStatus.OK);
     }
 
+    @GetMapping("/cout-so-luong")
+    public ResponseEntity<?> countRequestDetailsByStatus(@PathVariable("date") Date ngay1){
+        return new ResponseEntity<>(yeuCauChiTietService.countRequestDetailsByStatus(ngay1), HttpStatus.OK);
+    }
 
+    @GetMapping("/hang_khach_hang")
+    public ResponseEntity<?> thongKeByHangKhachHang() {
+        return ResponseEntity.ok(hoaDonService.getDoanhThuByHangKhachHang());
+    }
 
+    @GetMapping("/thuong_hieu")
+    public ResponseEntity<?> thongKeByThuongHieu() {
+        return ResponseEntity.ok(hoaDonService.getDoanhThuByThuongHieu());
+    }
+
+    @GetMapping("/top-ban-chay")
+    public ResponseEntity<?> getTopBanChay() {
+        return ResponseEntity.ok(giayService.getTopGiayBanChay());
+    }
+
+    @GetMapping("/doanh-thu-theo-nam")
+    public ResponseEntity<?> getDoanhThuTheoNam(@RequestParam("year") Integer year) {
+        return ResponseEntity.ok(hoaDonService.getThongKeTheoNam(year));
+    }
+
+    @GetMapping("/tong-quan")
+    public ResponseEntity<?> getTongQuan(@RequestParam("ngay1") String ngay1) {
+        return ResponseEntity.ok(hoaDonService.getThongKeTongQuan(ngay1));
+    }
 
 }
