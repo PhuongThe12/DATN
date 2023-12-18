@@ -7,6 +7,7 @@ import luckystore.datn.exception.InvalidIdException;
 import luckystore.datn.exception.NotFoundException;
 import luckystore.datn.infrastructure.constraints.ErrorMessage;
 import luckystore.datn.infrastructure.constraints.KenhBan;
+import luckystore.datn.infrastructure.constraints.LoaiHoaDon;
 import luckystore.datn.infrastructure.constraints.TrangThaiHoaDon;
 import luckystore.datn.model.request.BienTheGiayGioHangRequest;
 import luckystore.datn.model.request.GioHangThanhToanRequest;
@@ -87,6 +88,7 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         Set<HoaDonChiTiet> hoaDonChiTiets = getBienTheGiay(gioHangThanhToanRequest.getBienTheGiayRequests(), hoaDon);
         hoaDon.setListHoaDonChiTiet(hoaDonChiTiets);
         hoaDon.setKenhBan(KenhBan.ONLINE);
+        hoaDon.setLoaiHoaDon(LoaiHoaDon.HOA_DON_MUA);
 
         setChiTietThanhToan(hoaDon, gioHangThanhToanRequest);
 
