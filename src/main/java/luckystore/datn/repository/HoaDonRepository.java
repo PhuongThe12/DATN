@@ -123,25 +123,31 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
     HoaDonPrintResponse getTraCuuDon(Long maHD, String sdt);
 
     @Query(value = """
-        select hkh.TEN_HANG as 'ten', SUM(cttt.TIEN_THANH_TOAN) as 'tongDoanhThu'  from HoaDon hd
-        left join HoaDonChiTiet hdct on hd.ID = hdct.ID_HOA_DON
-        left join ChiTietThanhToan cttt on hd.ID = cttt.ID_HOA_DON
-        left join KhachHang kh on kh.ID = hd.ID_KHACH_HANG
-        left join HangKhachHang hkh on hkh.ID = kh.ID_HANG_KHACH_HANG
-        where hd.TRANG_THAI = 1 and hd.NGAY_TAO between '2023-12-17' and '2023-12-19'
-        group by hkh.TEN_HANG
-    """, nativeQuery = true)
+        SELECT hkh.TEN_HANG AS 'ten', SUM(cttt.TIEN_THANH_TOAN) AS 'tongDoanhThu'
+              FROM HoaDon hd
+              LEFT JOIN HoaDonChiTiet hdct ON hd.ID = hdct.ID_HOA_DON
+              LEFT JOIN ChiTietThanhToan cttt ON hd.ID = cttt.ID_HOA_DON
+              LEFT JOIN KhachHang kh ON kh.ID = hd.ID_KHACH_HANG
+              LEFT JOIN HangKhachHang hkh ON hkh.ID = kh.ID_HANG_KHACH_HANG
+              WHERE hd.TRANG_THAI = 1 AND hd.NGAY_TAO BETWEEN '2023-12-17' AND '2023-12-19'
+              GROUP BY hkh.TEN_HANG
+            """, nativeQuery = true)
     List<ThongKeByHangAndThuongHieu> getDoanhThuByHangKhachHang();
 
     @Query(value = """
-        select th.TEN as 'ten', SUM(cttt.TIEN_THANH_TOAN) as 'tongDoanhThu' from HoaDon hd
-        left join HoaDonChiTiet hdct on hd.ID = hdct.ID_HOA_DON
-        left join ChiTietThanhToan cttt on hd.ID = cttt.ID_HOA_DON
-        left join BienTheGiay btg on btg.ID = hdct.ID_BIEN_THE_GIAY
-        left join Giay g on g.ID = btg.ID_GIAY
-        left join ThuongHieu th on th.ID = g.ID_THUONG_HIEU
-        where hd.TRANG_THAI = 1 and hd.NGAY_TAO between '2023-12-17' and '2023-12-19'
-        group by th.TEN
+        		SELECT th.TEN AS 'ten', SUM(cttt.TIEN_THANH_TOAN) AS 'tongDoanhThu'
+        FROM HoaDon hd
+        LEFT JOIN HoaDonChiTiet hdct ON hd.ID = hdct.ID_HOA_DON
+        LEFT JOIN ChiTietThanhToan cttt ON hd.ID = cttt.ID_HOA_DON
+        LEFT JOIN (
+            SELECT hdct.ID_HOA_DON, g.ID_THUONG_HIEU
+            FROM HoaDonChiTiet hdct
+            LEFT JOIN BienTheGiay btg ON btg.ID = hdct.ID_BIEN_THE_GIAY
+            LEFT JOIN Giay g ON g.ID = btg.ID_GIAY
+        ) AS sub ON hd.ID = sub.ID_HOA_DON
+        LEFT JOIN ThuongHieu th ON th.ID = sub.ID_THUONG_HIEU
+        WHERE hd.TRANG_THAI = 1 AND hd.NGAY_TAO BETWEEN '2023-12-17' AND '2023-12-19'
+        GROUP BY th.TEN
     """, nativeQuery = true)
     List<ThongKeByHangAndThuongHieu> getDoanhThuByThuongHieu();
 
