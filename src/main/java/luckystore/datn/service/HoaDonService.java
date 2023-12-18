@@ -15,9 +15,14 @@ import luckystore.datn.model.response.HoaDonResponse;
 import luckystore.datn.model.response.HoaDonYeuCauRespone;
 import luckystore.datn.model.response.KhachHangResponse;
 import luckystore.datn.model.response.print.HoaDonPrintResponse;
+import luckystore.datn.model.response.thongKe.ThongKeByHangAndThuongHieu;
+import luckystore.datn.model.response.thongKe.ThongKeTongQuan;
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -84,4 +89,12 @@ public interface HoaDonService {
     List<HoaDonResponse> getHoaDonDoiTra(Long id);
 
     HoaDonPrintResponse getTraCuuDon(Long maHD, String sdt);
+
+    List<ThongKeByHangAndThuongHieu> getDoanhThuByHangKhachHang();
+
+    List<ThongKeByHangAndThuongHieu> getDoanhThuByThuongHieu();
+
+    List<ThongKeByHangAndThuongHieu> getThongKeTheoNam(Integer year);
+
+    ThongKeTongQuan getThongKeTongQuan(String ngay1);
 }
