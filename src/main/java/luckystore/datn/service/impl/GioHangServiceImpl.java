@@ -11,10 +11,7 @@ import luckystore.datn.model.request.GioHangRequest;
 import luckystore.datn.model.response.BienTheGiayResponse;
 import luckystore.datn.model.response.GioHangChiTietResponse;
 import luckystore.datn.model.response.GioHangResponse;
-import luckystore.datn.repository.BienTheGiayRepository;
-import luckystore.datn.repository.GioHangChiTietRepository;
-import luckystore.datn.repository.GioHangRepository;
-import luckystore.datn.repository.KhachHangRepository;
+import luckystore.datn.repository.*;
 import luckystore.datn.service.GioHangService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,7 +48,31 @@ public class GioHangServiceImpl implements GioHangService {
 
     @Override
     public GioHangResponse getGioHangByKhachHang(Long id) {
-        return gioHangRepository.getGioHangByIdKhachHang(id);
+        GioHangResponse gioHangResponse = gioHangRepository.getGioHangByIdKhachHang(id);
+        List<GioHangChiTietResponse> gioHangResponseList = gioHangResponse.getGioHangChiTietResponses();
+        List<Long> ids = new ArrayList<>();
+        for (GioHangChiTietResponse gioHangChiTietResponse : gioHangResponseList) {
+            ids.add(gioHangChiTietResponse.getBienTheGiay().getId());
+        }
+
+        List<BienTheGiayResponse> listBienTheGiayKhuyenMai = bienTheGiayRepository.bienTheGiay(ids);
+
+        for (GioHangChiTietResponse gioHangChiTietResponse : gioHangResponseList) {
+            boolean tonTai = false;
+            for (BienTheGiayResponse bienTheGiayResponseKhuyenMai : listBienTheGiayKhuyenMai) {
+                if (gioHangChiTietResponse.getBienTheGiay().getId().equals(bienTheGiayResponseKhuyenMai.getId())) {
+                    tonTai = true;
+                    gioHangChiTietResponse.getBienTheGiay().setKhuyenMai(bienTheGiayResponseKhuyenMai.getKhuyenMai());
+                    gioHangChiTietResponse.getBienTheGiay().setPhanTramGiam(bienTheGiayResponseKhuyenMai.getPhanTramGiam());
+                }
+            }
+            if(!tonTai){
+                gioHangChiTietResponse.getBienTheGiay().setKhuyenMai(0);
+                gioHangChiTietResponse.getBienTheGiay().setPhanTramGiam(0);
+            }
+        }
+        gioHangResponse.setGioHangChiTietResponses(gioHangResponseList);
+        return gioHangResponse;
     }
 
     @Override

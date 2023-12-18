@@ -487,13 +487,12 @@ app.controller('detailProductController', function ($scope, $http, $location, $c
             } else {
                 var gioHangFromCookies = localStorage.getItem('gioHang') || '[]';
                 $scope.gioHang = JSON.parse(gioHangFromCookies);
-
                 var giaTriCanThem = {idBienTheGiay: $scope.giayChoosed.id, soLuong: $scope.soLuongMua};
 
                 var tonTai = kiemTraTonTai($scope.gioHang, giaTriCanThem.idBienTheGiay);
                 if (!tonTai) {
-                    $scope.gioHang.push(giaTriCanThem);
                     $scope.listBienTheGiayLocalStorage.push($scope.giayChoosed);
+                    $scope.gioHang.push(giaTriCanThem);
                     localStorage.setItem('gioHang', JSON.stringify($scope.gioHang));
                     toastr["success"]("Thêm vào giỏ hàng thành công");
                     $scope.$parent.loadLocalStorage();
@@ -888,6 +887,7 @@ app.controller('cartProductController', function ($scope, $http, $location, $coo
         $http.post("http://localhost:8080/rest/admin/giay/bien-the/get-all-by-list-id", resultJson)
             .then(function (response) {
                 $scope.listBienTheGiayLocalStorage = response.data;
+                console.log($scope.listBienTheGiayLocalStorage);
                 $scope.gioHang.forEach(function (item1) {
                     var correspondingObject = $scope.listBienTheGiayLocalStorage.find(function (item2) {
                         return item2.id === item1.idBienTheGiay;
@@ -2126,6 +2126,10 @@ app.controller("thanhToanController", function ($scope, $http, $window, $locatio
             $http.get("/rest/admin/phieu-giam-gia/get-all-by-hang-khach-hang?hangKhachHang=" + $scope.khachHang.hangKhachHang.tenHang)
                 .then(function (response) {
                     $scope.phieuGiamGiaList = response.data;
+                    $scope.phieuGiamGiaList = response.data.filter(function(item) {
+                        return item.trangThai === 1;
+                    });
+                    console.log($scope.phieuGiamGiaList);
                 }).catch(function (error) {
                 console.log(error)
             })
