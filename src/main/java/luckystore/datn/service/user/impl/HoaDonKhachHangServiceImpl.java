@@ -351,7 +351,7 @@ public class HoaDonKhachHangServiceImpl implements HoaDonKhachHangService {
         if (phieuGiamGia.getNgayBatDau() > currentSeconds || phieuGiamGia.getNgayKetThuc() < currentSeconds) {
             throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("phieuGiamGiaError", "Phiếu giảm giá vừa được cập nhật lại , vui lòng kiểm tra lại !")));
         }
-        if (phieuGiamGia.getSoLuongPhieu() == 0 || phieuGiamGia.getTrangThai() != 1) {
+        if (phieuGiamGia.getSoLuongPhieu() == 0 || phieuGiamGia.getTrangThai() != 0) {
             throw new InvalidIdException(JsonString.stringToJson(JsonString.errorToJsonObject("phieuGiamGiaError", "Phiếu giảm giá đã được sử dụng hết !")));
         }
 

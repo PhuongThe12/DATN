@@ -5,18 +5,14 @@ import luckystore.datn.model.request.ThongKeRequest;
 import luckystore.datn.service.GiayService;
 import luckystore.datn.service.HoaDonService;
 import luckystore.datn.service.LyDoService;
+import luckystore.datn.service.YeuCauChiTietService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
+import java.sql.Date;
 
 @RestController
 @RequestMapping("/rest/admin/thong-ke")
@@ -25,8 +21,9 @@ public class RestThongKeConTroller {
 
     private final GiayService giayService;
     private final LyDoService lyDoService;
-
     private final HoaDonService hoaDonService;
+
+    private final YeuCauChiTietService yeuCauChiTietService;
 
 
 
@@ -71,6 +68,11 @@ public class RestThongKeConTroller {
     @PostMapping("/top-bien-the-ty-le-tra")
     public ResponseEntity<?> findTopVariantReturnRates(@RequestBody ThongKeRequest thongKeRequest){
         return new ResponseEntity<>(giayService.findVariantReturnRates(thongKeRequest), HttpStatus.OK);
+    }
+
+    @GetMapping("/cout-so-luong")
+    public ResponseEntity<?> countRequestDetailsByStatus(@PathVariable("date") Date ngay1){
+        return new ResponseEntity<>(yeuCauChiTietService.countRequestDetailsByStatus(ngay1), HttpStatus.OK);
     }
 
     @GetMapping("/hang_khach_hang")
