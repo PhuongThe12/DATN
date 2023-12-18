@@ -12,19 +12,19 @@ app.config(function ($routeProvider, $locationProvider) {
 app.controller("homeController", function ($scope, $http, $location, $cookies) {
 
     $scope.optionChanged = function () {
-
         var parts = $scope.selectedDate.split('/');
         var formattedDate = parts[2] + '-' + parts[1] + '-' + parts[0];
         filterDate(formattedDate);
     };
 
+    $scope.optionChangedYear = function () {
+        $scope.selectedYear
+        getDataByYear($scope.selectedYear);
+    };
 
-    $scope.stringDate1 = '2023-12-17';
-    $scope.stringDate2 = '2023-12-18';
-    $scope.year = "2023";
-    getDataByYear($scope.year);
-    // getData($scope.stringDate1, $scope.stringDate2);
-    filterDate($scope.stringDate2);
+    getDataByYear('2023');
+
+    filterDate("2023-12-19");
 
     function filterDate(ngay1) {
         $http.get(host + '/rest/admin/thong-ke/tong-quan?ngay1=' + ngay1)
@@ -74,7 +74,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies) {
                 labels: labels,
                 datasets:
                     [{
-                        label: 'Số lượng bán',
+                        label: 'Doanh thu',
                         data: datas,
                         backgroundColor: [
                             'rgba(54, 162, 235, 0.6)',
