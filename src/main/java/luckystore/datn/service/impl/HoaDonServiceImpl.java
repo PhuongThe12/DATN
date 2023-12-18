@@ -718,6 +718,7 @@ public class HoaDonServiceImpl implements HoaDonService {
         hoaDons.forEach(hd -> {
             setNhanVienToHoaDon(hd);
             if (hd.getTrangThai() == TrangThaiHoaDon.CHO_GIAO_HANG) {
+                hd.setNgayShip(LocalDateTime.now());
                 hd.setTrangThai(TrangThaiHoaDon.DANG_GIAO_HANG);
                 count.getAndIncrement();
             }
