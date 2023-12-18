@@ -23,7 +23,6 @@ app.controller("homeController", function ($scope, $http, $location, $cookies) {
     };
 
     getDataByYear('2023');
-
     filterDate("2023-12-18");
 
     function filterDate(ngay1) {
@@ -39,7 +38,7 @@ app.controller("homeController", function ($scope, $http, $location, $cookies) {
 
         $http.get(host + '/rest/admin/thong-ke/cout-so-luong?ngay1=' + ngay1)
             .then(function (response) {
-                $scope.tongYeuCau = response.data.tongSanPham;
+                $scope.tongYeuCau = response.data;
             })
             .catch(function (error) {
                 toastr["error"]("Lấy dữ liệu thất bại");
