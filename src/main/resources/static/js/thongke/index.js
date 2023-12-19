@@ -546,9 +546,10 @@ app.controller("thongKeSanPhamController", function ($scope, $http, $location) {
         $http.post(host + '/rest/admin/thong-ke/top-bien-the-ty-le-tra', JSON.stringify(thongKeRequest))
             .then(function (response) {
                 $scope.listTopVariantReturnRates = response.data.content;
+                console.log( $scope.listTopVariantReturnRates)
             }).catch(function (error) {
             console.log(error);
-            toastr["error"]("Lấy top biến thể giày được quan tâm thất bại!");
+            toastr["warning"]("Chưa có hóa đơn trả nào!");
         });
     }
 
